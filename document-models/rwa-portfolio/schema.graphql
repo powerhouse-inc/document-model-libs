@@ -1,49 +1,47 @@
 type RwaPortfolioState {
-		accounts: [RwaAccount!]!
-		principalLender: ID! # RwaAccount.id (That relates to the Maker account)
-		spvs: [RwaSpv!]!
-		feeTypes: [RwaFeeType!]!
-		fixedIncomeTypes: [RwaFixedIncomeType!]!
+    accounts: [RwaAccount!]!
+    principalLender: ID! # RwaAccount.id (That relates to the Maker account)
+    spvs: [RwaSpv!]!
+    feeTypes: [RwaFeeType!]!
+    fixedIncomeTypes: [RwaFixedIncomeType!]!
     attachments: [RwaAttachment!]!
-		portfolio: [RwaAsset!]!
+    portfolio: [RwaAsset!]!
     transactions: [RwaGroupTransaction!]!
 }
 
 union RwaAsset = RwaFixedIncome | RwaCash
 
 type RwaFixedIncome {
-		id: ID!
-		type: ID! # RwaFixedIncomeType.id
+    id: ID!
+    type: ID! # RwaFixedIncomeType.id
     name: String!
-		ISIN: String
-		CUSIP: String
+    ISIN: String
+    CUSIP: String
     spv: ID! # RwaSpv.id
-
     coupon: Float
     maturity: DateTime!
-		purchaseDate: DateTime!      # Weighted average of underlying transactions
-    
-    notional: Float!             # Face value
-    purchaseProceeds: Float!     # Total cash outflow spent on purchases
-    purchasePrice: Float!        # purchaseProceeds / notional
-    totalDiscount: Float!        # notional - purchaseProceeds
-		marketValue: Float!           
+    purchaseDate: DateTime! # Weighted average of underlying transactions
+    notional: Float! # Face value
+    purchaseProceeds: Float! # Total cash outflow spent on purchases
+    purchasePrice: Float! # purchaseProceeds / notional
+    totalDiscount: Float! # notional - purchaseProceeds
+    marketValue: Float!
 
-		currentValue(when: DateTime): Float     # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds   
-    annualizedYield: Float!      # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
-		realizedSurplus: Float!      
+    currentValue(when: DateTime): Float # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds
+    annualizedYield: Float! # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
+    realizedSurplus: Float!
     totalSurplus: Float!
 }
 
 type RwaCash {
-		id: ID!
-		spv: ID! # RwaSpv.id
-    currency: String!  # Will always be "USD" for version 1
+    id: ID!
+    spv: ID! # RwaSpv.id
+    currency: String! # Will always be "USD" for version 1
 }
 
 type RwaFixedIncomeType {
-		id: ID!
-		name: String!
+    id: ID!
+    name: String!
 }
 
 type RwaSpv {
@@ -51,172 +49,166 @@ type RwaSpv {
     name: String!
 }
 
-type RwaBaseTransaction { 
-		id: ID!
-		asset: ID! # RwaAsset.id
-		amount: Float!
-		entryTime: DateTime!
-		tradeTime: DateTime
-		settlementTime: DateTime
-		txRef: String
-		account: ID # RwaAccount.id
-		counterParty: ID, # RwaAccount.id
-		
+type RwaBaseTransaction {
+    id: ID!
+    asset: ID! # RwaAsset.id
+    amount: Float!
+    entryTime: DateTime!
+    tradeTime: DateTime
+    settlementTime: DateTime
+    txRef: String
+    account: ID # RwaAccount.id
+    counterParty: ID # RwaAccount.id
 }
 
 type RwaAccount {
-		id: ID!
-		reference: String! # e.g. bank account number or ETH address
-		label: String
+    id: ID!
+    reference: String! # e.g. bank account number or ETH address
+    label: String
 }
 
 type RwaGroupTransaction {
-		id: ID!
-		type: GroupTransactionType!
-		assetTransaction: RwaBaseTransaction
-		cashTransaction: RwaBaseTransaction
-		interestTransaction: RwaBaseTransaction
-		feeTransactions: [RwaBaseTransaction]
-		attachments: [ID!] # Refers to RwaAttachment.id
+    id: ID!
+    type: GroupTransactionType!
+    assetTransaction: RwaBaseTransaction
+    cashTransaction: RwaBaseTransaction
+    interestTransaction: RwaBaseTransaction
+    feeTransactions: [RwaBaseTransaction]
+    attachments: [ID!] # Refers to RwaAttachment.id
 }
 
 enum GroupTransactionType {
-		PrincipalDraw
-		PrincipalReturn
-		AssetPurchase
-		AssetSale
-		InterestDraw # Payment from Borrower to Arranger (If there is a coupon)
-		InterestReturn # Payment from Arranger to Maker
-		FeesPayment
+    PrincipalDraw
+    PrincipalReturn
+    AssetPurchase
+    AssetSale
+    InterestDraw # Payment from Borrower to Arranger (If there is a coupon)
+    InterestReturn # Payment from Arranger to Maker
+    FeesPayment
 }
 
 type RwaFeeType {
     id: ID!
     serviceProvider: String!
-		feeType: String!
+    feeType: String!
 }
 
 type RwaTransactionFee {
     serviceProviderId: ID!
-    amount: Float! 
+    amount: Float!
 }
 
 type RwaAttachment {
     id: ID!
     title: String!
-		fileType: String!
-    hash: String! 
+    fileType: String!
+    hash: String!
 }
 
 scalar DateTime
 
-
-
 # General
 
 input CreateSpvInput {
-	id: ID!
-  name: String!
+    id: ID!
+    name: String!
 }
 
 input EditSpvInput {
-	id: ID!
-  name: String!
+    id: ID!
+    name: String!
 }
 
 input DeleteSpvInput {
-	id: ID!
+    id: ID!
 }
 
 input AddServiceProviderInput {
-	id: ID!
-	name: String!
-	category: String!
+    id: ID!
+    name: String!
+    category: String!
 }
 
 input EditServiceProviderInput {
-	id: ID!
-	name: String!
-	category: String!
+    id: ID!
+    name: String!
+    category: String!
 }
 
 input DeleteServiceProviderInput {
-	id: ID!
+    id: ID!
 }
 
 # Portfolio
 
 input AddRwaFixedIncomeAssetInput {
-	id: ID!
-	type: ID! # RwaFixedIncomeType.id
-  name: String!
-	ISIN: String
-	CUSIP: String
-  coupon: Float
-  maturity: DateTime!
+    id: ID!
+    type: ID! # RwaFixedIncomeType.id
+    name: String!
+    ISIN: String
+    CUSIP: String
+    coupon: Float
+    maturity: DateTime!
 }
 
 input AddRwaCashAssetInput {
-id: ID!
-	spv: ID! # RwaSpv.id
-  currency: String! # Will always be "USD" for version 1
+    id: ID!
+    spv: ID! # RwaSpv.id
+    currency: String! # Will always be "USD" for version 1
 }
 
 input EditRwaFixedIncomeAssetInput {
-	id: ID!
-	type: ID! # RwaFixedIncomeType.id
-  name: String!
-	ISIN: String
-	CUSIP: String
-  coupon: Float
-  maturity: DateTime!
+    id: ID!
+    type: ID! # RwaFixedIncomeType.id
+    name: String!
+    ISIN: String
+    CUSIP: String
+    coupon: Float
+    maturity: DateTime!
 }
 
 input EditRwaCashAssetInput {
-	id: ID!
-	spv: ID! # RwaSpv.id
-  currency: String! # Will always be "USD" for version 1
-
+    id: ID!
+    spv: ID! # RwaSpv.id
+    currency: String! # Will always be "USD" for version 1
 }
 
 input DeleteRwaFixedIncomeAssetInput {
-id: ID!
+    id: ID!
 }
 
 input DeleteRwaCashAssetInput {
-id: ID!
+    id: ID!
 }
 
 # Transactions
 
 input AddBaseTransactionInput {
-	id: ID!
-	asset: ID! # RwaAsset.id
-	amount: Float!
-	entryTime: DateTime!
-	tradeTime: DateTime
-	settlementTime: DateTime
-	txRef: String
-	account: ID # RwaAccount.id
-	counterParty: ID, # RwaAccount.id
-
+    id: ID!
+    asset: ID! # RwaAsset.id
+    amount: Float!
+    entryTime: DateTime!
+    tradeTime: DateTime
+    settlementTime: DateTime
+    txRef: String
+    account: ID # RwaAccount.id
+    counterParty: ID # RwaAccount.id
 }
 
 input EditTransactionInput {
-  id: ID!
-  asset: ID! # RwaAsset.id
-	amount: Float!
-	entryTime: DateTime!
-	tradeTime: DateTime
-	settlementTime: DateTime
-	txRef: String
-	account: ID # RwaAccount.id
-	counterParty: ID # RwaAccount.id
-
+    id: ID!
+    asset: ID! # RwaAsset.id
+    amount: Float!
+    entryTime: DateTime!
+    tradeTime: DateTime
+    settlementTime: DateTime
+    txRef: String
+    account: ID # RwaAccount.id
+    counterParty: ID # RwaAccount.id
 }
 
 input DeleteTransactionInput {
-id: ID!
+    id: ID!
 }
 
 # Attachments
@@ -224,19 +216,17 @@ id: ID!
 input CreateAttachmentInput {
     id: ID!
     title: String!
-		fileType: String!
-    hash: String! 
-
+    fileType: String!
+    hash: String!
 }
 
 input EditAttachmentInput {
-	attachmentID: ID!
-	title: String!
-	fileType: String!    
-	hash: String! 
-
+    attachmentID: ID!
+    title: String!
+    fileType: String!
+    hash: String!
 }
 
 input DeleteAttachmentInput {
-id: ID!
+    id: ID!
 }
