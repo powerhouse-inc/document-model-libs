@@ -230,7 +230,7 @@
                             "id": "tZnz6RUWtvZuXBj1mso3ko+Nvhc=",
                             "name": "EDIT_ATTACHMENT",
                             "description": "",
-                            "schema": "input EditAttachmentInput {\n\tattachmentID: ID!\n\ttitle: String!\n\tfileType: String!    \n\thash: String! \n\n}",
+                            "schema": "input EditAttachmentInput {\n\tid: ID!\n\ttitle: String!\n\tfileType: String!    \n\thash: String! \n\n}",
                             "template": "",
                             "reducer": "",
                             "errors": [],

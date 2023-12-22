@@ -221,7 +221,7 @@ input CreateAttachmentInput {
 }
 
 input EditAttachmentInput {
-    attachmentID: ID!
+    id: ID!
     title: String!
     fileType: String!
     hash: String!
