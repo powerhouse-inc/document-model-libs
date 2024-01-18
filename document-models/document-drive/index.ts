@@ -1,7 +1,7 @@
 /**
-* This is a scaffold file meant for customization.
-* Delete the file and run the code generator again to have it reset
-*/
+ * This is a scaffold file meant for customization.
+ * Delete the file and run the code generator again to have it reset
+ */
 
 import { actions as BaseActions, DocumentModel } from 'document-model/document';
 import { actions as DocumentDriveActions, DocumentDrive } from './gen';
@@ -24,17 +24,10 @@ export const module: DocumentModel<
     reducer,
     actions,
     utils,
-    documentModel
+    documentModel,
 };
 
-export {
-    DocumentDrive,
-    Document,
-    reducer,
-    actions,
-    utils,
-    documentModel
-}
+export { DocumentDrive, Document, reducer, actions, utils, documentModel };
 
 export * from './gen/types';
 export * from './src/utils';
