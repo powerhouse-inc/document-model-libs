@@ -47,8 +47,9 @@
     },
     "scripts": {
         "generate": "powerhouse generate",
-        "lint": "eslint --ext .js,.ts,tsx . && tsc --noemit --project tsconfig.spec.json",
-        "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+        "check-types": "tsc",
+        "lint": "eslint . && yarn check-types",
+        "lint:fix": "eslint . --fix",
         "build": "vite build",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
