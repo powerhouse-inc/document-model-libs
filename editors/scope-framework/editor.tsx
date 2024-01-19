@@ -97,7 +97,7 @@ function ScopeFrameworkEditor(props: IProps) {
         dispatch(
             actions.updateElementComponents({
                 id,
-                components: { content: components['content'] },
+                components: { content: components.content },
             }),
         );
 
@@ -209,7 +209,7 @@ function ScopeFrameworkEditor(props: IProps) {
                             .toString()
                             .slice(0, 16)
                             .replace('T', ' ')}{' '}
-                        UTC &ndash; Version: {document.revision}
+                        UTC &ndash; Version: {document.revision.global}
                     </p>
                 </div>
                 <div

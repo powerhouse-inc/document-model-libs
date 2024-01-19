@@ -13,13 +13,13 @@
             "changeLog": [],
             "state": {
                 "global": {
-                    "schema": "type FolderNode {\n    id: String!\n    name: String!\n    kind: String!\n    parentFolder: String\n}\n\ntype FileNode {\n    id: String!\n    name: String!\n    kind: String!\n    documentType: String!\n    parentFolder: String\n}\n\nunion Node = FolderNode | FileNode\n\ntype DocumentDriveState {\n    id: ID!\n    name: String!\n    nodes: [Node!]!\n    icon: String\n    remoteUrl: String\n}",
+                    "schema": "type FolderNode {\n    id: String!\n    name: String!\n    kind: String!\n    parentFolder: String\n}\n\ntype SynchronizationUnit {\n    syncId: ID!\n    scope: String!\n    branch: String!\n}\n\ntype FileNode {\n    id: String!\n    name: String!\n    kind: String!\n    documentType: String!\n    scopes: [String!]!\n    parentFolder: String\n    synchronizationUnits: [SynchronizationUnit!]!\n}\n\nunion Node = FolderNode | FileNode\n\ntype DocumentDriveState {\n    id: ID!\n    name: String!\n    nodes: [Node!]!\n    icon: String\n    remoteUrl: String\n}",
                     "initialValue": "{\"id\":\"\",\"name\":\"\",\"nodes\":[],\"icon\":null,\"remoteUrl\":null}",
                     "examples": []
                 },
                 "local": {
-                    "schema": "type DocumentDriveLocalState{\n    sharingType: String\n    availableOffline: Boolean!\n}",
-                    "initialValue": "{ \"sharingType\": \"private\", \"availableOffline\": false}",
+                    "schema": "type ListenerFilter {\n    documentType: [String!]!\n    documentId: [ID!]\n    scope: [String!]\n    branch: [String!]\n}\n\nenum TransmitterType {\n    Internal,\n    SwitchboardPush,\n    PullResponder,\n    SecureConnect, \n    MatrixConnect,\n    RESTWebhook\n}\n\ntype ListenerCallInfo {\n    transmitterType: TransmitterType\n    name: String\n    data: String\n}\n\ntype Listener {\n    listenerId: ID!\n    label: String\n    block: Boolean!\n    system: Boolean!\n    filter: ListenerFilter!\n    callInfo: ListenerCallInfo\n}\n\ntype DocumentDriveLocalState{\n    sharingType: String\n    listeners: [Listener!]!\n    availableOffline: Boolean!\n}",
+                    "initialValue": "{ \"listeners\": [], \"sharingType\": \"private\", \"availableOffline\": false}",
                     "examples": []
                 }
             },
@@ -33,7 +33,7 @@
                             "id": "7xiTdxonc9yEASR8sfV/KnbSV10=",
                             "name": "ADD_FILE",
                             "description": "",
-                            "schema": "input AddFileInput {\n    id: ID!\n    name: String!\n    documentType: String!\n    parentFolder: ID\n}",
+                            "schema": "input AddFileInput {\n    id: ID!\n    name: String!\n    documentType: String!\n    parentFolder: ID\n    scopes: [String!]!\n}",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -140,6 +140,28 @@
                             "name": "SET_AVAILABLE_OFFLINE",
                             "description": "",
                             "schema": "input SetAvailableOfflineInput {\n    availableOffline: Boolean!\n}",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "local"
+                        },
+                        {
+                            "id": "qGCiPGpTt/cyz3HzyrBn92z9dsU=",
+                            "name": "ADD_LISTENER",
+                            "description": "",
+                            "schema": "input AddListenerInput {\n    listener: Listener!\n}",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "local"
+                        },
+                        {
+                            "id": "qGCiPGpTt/cyz3HzyrBn92z10dsU=",
+                            "name": "REMOVE_LISTENER",
+                            "description": "",
+                            "schema": "input RemoveListenerInput {\n    listenerId: String!\n}",
                             "template": "",
                             "reducer": "",
                             "errors": [],

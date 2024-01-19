@@ -1,8 +1,9 @@
-import { State } from 'document-model/document';
+import { BaseAction, State, Operation } from 'document-model/document';
 import {
     DocumentModelState,
     DocumentModelLocalState,
     DocumentSpecification,
+    DocumentModelAction,
 } from 'document-model/document-model';
 import { useEffect, useState } from 'react';
 import z from 'zod';
@@ -20,6 +21,7 @@ interface UseSchemaEditorProps {
     scope: ScopeType;
     state: State<DocumentModelState, DocumentModelLocalState>;
     setInitialState: (initialValue: string, scope: ScopeType) => void;
+    latestOperation?: Operation<DocumentModelAction | BaseAction> | null;
 }
 
 export interface SchemaResult {
@@ -33,12 +35,12 @@ export interface SchemaResult {
 }
 
 export const useSchemaEditor = (props: UseSchemaEditorProps): SchemaResult => {
-    const { state, scope, setInitialState } = props;
+    const { state, scope, setInitialState, latestOperation } = props;
 
-    const stateScope = state[scope];
+    const stateScope = state.global;
 
-    const specification = stateScope.specifications?.length
-        ? stateScope.specifications[stateScope.specifications?.length - 1]
+    const specification = stateScope.specifications.length
+        ? stateScope.specifications[stateScope.specifications.length - 1]
         : undefined;
 
     const specScope = specification?.state[scope];
@@ -50,7 +52,10 @@ export const useSchemaEditor = (props: UseSchemaEditorProps): SchemaResult => {
     useEffect(() => {
         const currentValue = specScope?.initialValue || '{}';
 
-        if (!isJSONEqual(initialValue, currentValue)) {
+        if (
+            !isJSONEqual(initialValue, currentValue) &&
+            latestOperation?.type !== 'SET_INITIAL_STATE'
+        ) {
             setInitialState(JSON.stringify(initialValue), scope);
         }
     }, [initialValue, specScope?.initialValue]);

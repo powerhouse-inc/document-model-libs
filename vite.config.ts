@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
-import { getConfig } from '@acaldas/powerhouse';
+import { getConfig } from '@powerhousedao/codegen';
 import { readdirSync } from 'node:fs';
 import { InlineConfig } from 'vitest';
 
@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
         optimizeDeps: {
             disabled: false,
         },
-        plugins: [dts({ insertTypesEntry: true })],
+        plugins: [dts({ insertTypesEntry: true, exclude: ['**/*.stories.tsx'] })],
         define: {
             'process.env.NODE_ENV': JSON.stringify(mode),
             __vite_process_env_NODE_ENV: JSON.stringify(mode),

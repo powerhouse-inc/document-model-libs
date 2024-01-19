@@ -5,12 +5,20 @@ type FolderNode {
     parentFolder: String
 }
 
+type SynchronizationUnit {
+    syncId: ID!
+    scope: String!
+    branch: String!
+}
+
 type FileNode {
     id: String!
     name: String!
     kind: String!
     documentType: String!
+    scopes: [String!]!
     parentFolder: String
+    synchronizationUnits: [SynchronizationUnit!]!
 }
 
 union Node = FolderNode | FileNode
@@ -23,8 +31,40 @@ type DocumentDriveState {
     remoteUrl: String
 }
 
+type ListenerFilter {
+    documentType: [String!]!
+    documentId: [ID!]
+    scope: [String!]
+    branch: [String!]
+}
+
+enum TransmitterType {
+    Internal,
+    SwitchboardPush,
+    PullResponder,
+    SecureConnect, 
+    MatrixConnect,
+    RESTWebhook
+}
+
+type ListenerCallInfo {
+    transmitterType: TransmitterType
+    name: String
+    data: String
+}
+
+type Listener {
+    listenerId: ID!
+    label: String
+    block: Boolean!
+    system: Boolean!
+    filter: ListenerFilter!
+    callInfo: ListenerCallInfo
+}
+
 type DocumentDriveLocalState{
     sharingType: String
+    listeners: [Listener!]!
     availableOffline: Boolean!
 }
 
@@ -35,6 +75,7 @@ input AddFileInput {
     name: String!
     documentType: String!
     parentFolder: ID
+    scopes: [String!]!
 }
 
 input AddFolderInput {
@@ -84,4 +125,12 @@ input SetSharingTypeInput {
 
 input SetAvailableOfflineInput {
     availableOffline: Boolean!
+}
+
+input AddListenerInput {
+    listener: Listener!
+}
+
+input RemoveListenerInput {
+    listenerId: String!
 }
