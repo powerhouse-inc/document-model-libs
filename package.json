@@ -48,8 +48,8 @@
     "scripts": {
         "generate": "powerhouse generate",
         "check-types": "tsc",
-        "lint": "eslint . && yarn check-types",
-        "lint:fix": "eslint . --fix",
+        "lint": "yarn generate && yarn eslint . && yarn check-types",
+        "lint:fix": "yarn generate && yarn eslint . --fix",
         "build": "vite build",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build",
