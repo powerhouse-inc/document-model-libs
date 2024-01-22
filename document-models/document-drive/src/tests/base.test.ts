@@ -157,12 +157,12 @@ describe('DocumentDrive Class', () => {
                     {
                         branch: 'main',
                         scope: 'global',
-                        syncId: 1,
+                        syncId: '1',
                     },
                     {
                         branch: 'main',
                         scope: 'local',
-                        syncId: 2,
+                        syncId: '2',
                     },
                 ],
             },
