@@ -1,0 +1,256 @@
+type RwaPortfolioState {
+    accounts: [RwaAccount!]!
+    principalLender: ID! # RwaAccount.id (That relates to the Maker account)
+    spvs: [RwaSpv!]!
+    feeTypes: [RwaServiceProvider!]!
+    fixedIncomeTypes: [RwaFixedIncomeType!]!
+    attachments: [RwaAttachment!]!
+    portfolio: [RwaAsset!]!
+    transactions: [RwaGroupTransaction!]!
+}
+
+union RwaAsset = RwaFixedIncome | RwaCash
+
+type RwaFixedIncome {
+    id: ID!
+    type: ID! # RwaFixedIncomeType.id
+    name: String!
+    ISIN: String
+    CUSIP: String
+    spv: ID! # RwaSpv.id
+    coupon: Float
+    maturity: DateTime!
+    purchaseDate: DateTime! # Weighted average of underlying transactions
+    notional: Float! # Face value
+    purchaseProceeds: Float! # Total cash outflow spent on purchases
+    purchasePrice: Float! # purchaseProceeds / notional
+    totalDiscount: Float! # notional - purchaseProceeds
+    marketValue: Float!
+
+    currentValue(when: DateTime): Float # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds
+    annualizedYield: Float! # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
+    realizedSurplus: Float!
+    totalSurplus: Float!
+}
+
+type RwaCash {
+    id: ID!
+    spv: ID! # RwaSpv.id
+    currency: String! # Will always be "USD" for version 1
+}
+
+type RwaFixedIncomeType {
+    id: ID!
+    name: String!
+}
+
+type RwaSpv {
+    id: ID!
+    name: String!
+}
+
+type RwaBaseTransaction {
+    id: ID!
+    asset: ID! # RwaAsset.id
+    amount: Float!
+    entryTime: DateTime!
+    tradeTime: DateTime
+    settlementTime: DateTime
+    txRef: String
+    account: ID # RwaAccount.id
+    counterParty: ID # RwaAccount.id
+}
+
+type RwaAccount {
+    id: ID!
+    reference: String! # e.g. bank account number or ETH address
+    label: String
+}
+
+type RwaGroupTransaction {
+    id: ID!
+    type: GroupTransactionType!
+    assetTransaction: RwaBaseTransaction
+    cashTransaction: RwaBaseTransaction
+    interestTransaction: RwaBaseTransaction
+    feeTransactions: [RwaBaseTransaction]
+    attachments: [ID!] # Refers to RwaAttachment.id
+}
+
+enum GroupTransactionType {
+    PrincipalDraw
+    PrincipalReturn
+    AssetPurchase
+    AssetSale
+    InterestDraw # Payment from Borrower to Arranger (If there is a coupon)
+    InterestReturn # Payment from Arranger to Maker
+    FeesPayment
+}
+
+type RwaServiceProvider {
+    id: ID!
+    name: String!
+    feeType: String!
+}
+
+type RwaTransactionFee {
+    serviceProviderId: ID!
+    amount: Float!
+}
+
+type RwaAttachment {
+    id: ID!
+    title: String!
+    fileType: String!
+    hash: String!
+}
+
+scalar DateTime
+
+# general
+
+input CreateSpvInput {
+    id: ID!
+    name: String!
+}
+
+# add new types here
+
+input EditSpvInput {
+    id: ID!
+    name: String
+}
+
+# add new types here
+
+input DeleteSpvInput {
+    id: ID!
+}
+
+# add new types here
+
+input CreateServiceProviderInput {
+    id: ID!
+    name: String!
+    feeType: String!
+}
+
+# add new types here
+
+input EditServiceProviderInput {
+    id: ID!
+    name: String
+    feeType: String
+}
+
+# add new types here
+
+input DeleteServiceProviderInput {
+    id: ID!
+}
+
+# add new types here
+
+# portfolio
+
+input CreateRwaFixedIncomeAssetInput {
+    id: ID!
+    type: ID! # RwaFixedIncomeType.id
+    name: String!
+    ISIN: String
+    CUSIP: String
+    coupon: Float
+    maturity: DateTime!
+}
+
+input CreateRwaCashAssetInput {
+    id: ID!
+    spv: ID! # RwaSpv.id
+    currency: String! # Will always be "USD" for version 1
+}
+
+# add new types here
+
+input EditRwaCashAssetInput {
+    id: ID!
+    spv: ID # RwaSpv.id
+    currency: String # Will always be "USD" for version 1
+}
+
+input EditRwaFixedIncomeAssetInput {
+    id: ID!
+    type: ID # RwaFixedIncomeType.id
+    name: String
+    ISIN: String
+    CUSIP: String
+    coupon: Float
+    maturity: DateTime
+}
+
+# add new types here
+
+input DeleteRwaFixedIncomeAssetInput {
+    id: ID!
+}
+
+# add new types here
+
+input DeleteRwaCashAssetInput {
+    id: ID!
+}
+
+# add new types here
+
+# transactions
+
+input CreateGroupTransactionInput {
+    id: ID!
+    type: GroupTransactionType!
+    assetTransaction: RwaBaseTransaction
+    cashTransaction: RwaBaseTransaction
+    interestTransaction: RwaBaseTransaction
+    feeTransactions: [RwaBaseTransaction]
+    attachments: [ID] # Refers to RwaAttachment.id
+}
+
+input EditGroupTransactionInput {
+    id: ID!
+    type: GroupTransactionType
+    assetTransaction: RwaBaseTransaction
+    cashTransaction: RwaBaseTransaction
+    interestTransaction: RwaBaseTransaction
+    feeTransactions: [RwaBaseTransaction]
+    attachments: [ID] # Refers to RwaAttachment.id
+}
+
+input DeleteGroupTransactionInput {
+    id: ID!
+}
+
+# add new types here
+
+# attachments
+
+input CreateAttachmentInput {
+    id: ID!
+    title: String!
+    fileType: String!
+    hash: String!
+}
+
+# add new types here
+
+input EditAttachmentInput {
+    id: ID!
+    title: String
+    fileType: String
+    hash: String
+}
+
+# add new types here
+
+input DeleteAttachmentInput {
+    id: ID!
+}
+
+# add new types here
