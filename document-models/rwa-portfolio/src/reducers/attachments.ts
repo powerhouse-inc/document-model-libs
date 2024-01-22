@@ -4,25 +4,26 @@
  * - delete the file and run the code generator again to have it reset
  */
 
+import { RwaAttachment } from '../..';
 import { RwaPortfolioAttachmentsOperations } from '../../gen/attachments/operations';
 
 export const reducer: RwaPortfolioAttachmentsOperations = {
     createAttachmentOperation(state, action, dispatch) {
-        // TODO: Implement "createAttachmentOperation" reducer
-        throw new Error(
-            'Reducer "createAttachmentOperation" not yet implemented',
-        );
+        state.attachments.push(action.input);
     },
     editAttachmentOperation(state, action, dispatch) {
-        // TODO: Implement "editAttachmentOperation" reducer
-        throw new Error(
-            'Reducer "editAttachmentOperation" not yet implemented',
+        state.attachments = state.attachments.map(attachment =>
+            attachment.id === action.input.id
+                ? ({
+                      ...attachment,
+                      ...action.input,
+                  } as RwaAttachment)
+                : attachment,
         );
     },
     deleteAttachmentOperation(state, action, dispatch) {
-        // TODO: Implement "deleteAttachmentOperation" reducer
-        throw new Error(
-            'Reducer "deleteAttachmentOperation" not yet implemented',
+        state.attachments = state.attachments.filter(
+            attachment => attachment.id !== action.input.id,
         );
     },
 };
