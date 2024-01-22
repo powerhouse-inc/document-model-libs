@@ -9,9 +9,27 @@ import { RwaPortfolioAttachmentsOperations } from '../../gen/attachments/operati
 
 export const reducer: RwaPortfolioAttachmentsOperations = {
     createAttachmentOperation(state, action, dispatch) {
+        if (
+            state.attachments.find(
+                attachment => attachment.id === action.input.id,
+            )
+        ) {
+            throw new Error(
+                `Attachment with id ${action.input.id} already exists!`,
+            );
+        }
         state.attachments.push(action.input);
     },
     editAttachmentOperation(state, action, dispatch) {
+        if (
+            state.attachments.find(
+                attachment => attachment.id === action.input.id,
+            ) === undefined
+        ) {
+            throw new Error(
+                `Attachment with id ${action.input.id} does not exist!`,
+            );
+        }
         state.attachments = state.attachments.map(attachment =>
             attachment.id === action.input.id
                 ? ({
@@ -22,6 +40,15 @@ export const reducer: RwaPortfolioAttachmentsOperations = {
         );
     },
     deleteAttachmentOperation(state, action, dispatch) {
+        if (
+            state.attachments.find(
+                attachment => attachment.id === action.input.id,
+            ) === undefined
+        ) {
+            throw new Error(
+                `Attachment with id ${action.input.id} does not exist!`,
+            );
+        }
         state.attachments = state.attachments.filter(
             attachment => attachment.id !== action.input.id,
         );
