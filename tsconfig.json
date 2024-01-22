@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "Bundler",
         "types": ["node", "vitest/globals"],
@@ -12,7 +13,7 @@
         "skipLibCheck": true,
         "emitDeclarationOnly": true,
         "jsx": "react-jsx",
-        "lib": ["ESNext"],
+        "lib": ["ESNext", "dom", "dom.iterable"],
     },
     "include": ["./index.ts", "**/*.ts", "**/*.tsx", "*.config.js", "*.config.ts"],
     "exclude": ["dist/", "node_modules"]
