@@ -47,6 +47,7 @@
     },
     "scripts": {
         "generate": "powerhouse generate",
+        "postgenerate": "yarn eslint . --fix",
         "check-types": "tsc",
         "lint": "yarn generate && yarn eslint . && yarn check-types",
         "lint:fix": "yarn generate && yarn eslint . --fix",
@@ -64,7 +65,7 @@
         "@emotion/styled": "^11.11.0",
         "@monaco-editor/react": "^4.6.0",
         "@mui/material": "^5.15.5",
-        "@powerhousedao/codegen": "0.0.9",
+        "@powerhousedao/codegen": "0.0.10",
         "@storybook/addon-essentials": "^7.6.10",
         "@storybook/addon-interactions": "^7.6.10",
         "@storybook/addon-links": "^7.6.10",
