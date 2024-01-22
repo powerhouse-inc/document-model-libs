@@ -9,7 +9,11 @@ import { reducer } from './gen/reducer';
 import { documentModel } from './gen/document-model';
 import genUtils from './gen/utils';
 import * as customUtils from './src/utils';
-import { ScopeFrameworkState, ScopeFrameworkAction } from './gen/types';
+import {
+    ScopeFrameworkState,
+    ScopeFrameworkAction,
+    ScopeFrameworkLocalState,
+} from './gen/types';
 
 const Document = ScopeFramework;
 const utils = { ...genUtils, ...customUtils };
@@ -18,7 +22,7 @@ const actions = { ...BaseActions, ...ScopeFrameworkActions };
 export const module: DocumentModel<
     ScopeFrameworkState,
     ScopeFrameworkAction,
-    ScopeFramework
+    ScopeFrameworkLocalState
 > = {
     Document,
     reducer,

@@ -9,7 +9,11 @@ import { reducer } from './gen/reducer';
 import { documentModel } from './gen/document-model';
 import genUtils from './gen/utils';
 import * as customUtils from './src/utils';
-import { BudgetStatementState, BudgetStatementAction } from './gen/types';
+import {
+    BudgetStatementState,
+    BudgetStatementAction,
+    BudgetStatementLocalState,
+} from './gen/types';
 
 const Document = BudgetStatement;
 const utils = { ...genUtils, ...customUtils };
@@ -18,7 +22,7 @@ const actions = { ...BaseActions, ...BudgetStatementActions };
 export const module: DocumentModel<
     BudgetStatementState,
     BudgetStatementAction,
-    BudgetStatement
+    BudgetStatementLocalState
 > = {
     Document,
     reducer,
