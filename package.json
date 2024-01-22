@@ -50,11 +50,11 @@
         "check-types": "tsc",
         "lint": "yarn generate && yarn eslint . && yarn check-types",
         "lint:fix": "yarn generate && yarn eslint . --fix",
-        "build": "vite build",
-        "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build",
-        "test": "vitest run",
-        "test:watch": "vitest"
+        "build": "yarn generate && vite build",
+        "storybook": "yarn generate && storybook dev -p 6006",
+        "build-storybook": "yarn generate && storybook build",
+        "test": "yarn generate && vitest run",
+        "test:watch": "yarn generate && vitest"
     },
     "devDependencies": {
         "@commitlint/cli": "^18.4.4",
