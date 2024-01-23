@@ -264,7 +264,6 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle editGroupTransaction operation', () => {
-        const input = generateMock(z.EditGroupTransactionInputSchema());
         const document = utils.createDocument({
             state: {
                 global: {
@@ -301,10 +300,26 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle deleteGroupTransaction operation', () => {
-        const input = generateMock(z.DeleteGroupTransactionInputSchema());
+        const input = { id: groupTransactionId };
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    accounts: [account, counterParty],
+                    principalLender: account.id,
+                    spvs: [],
+                    feeTypes: [],
+                    fixedIncomeTypes: [],
+                    attachments: [],
+                    portfolio: [asset],
+                    // @ts-expect-error mock
+                    transactions: [groupTransaction],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
-            creators.deleteGroupTransaction(input),
+            creators.deleteGroupTransaction({ id: groupTransactionId }),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);

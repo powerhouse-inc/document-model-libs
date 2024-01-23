@@ -163,5 +163,13 @@ export const reducer: RwaPortfolioTransactionsOperations = {
                 : t,
         );
     },
-    deleteGroupTransactionOperation(state, action, dispatch) {},
+    deleteGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        state.transactions = state.transactions.filter(
+            transaction => transaction.id !== action.input.id,
+        );
+    },
 };
