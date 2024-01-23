@@ -6,6 +6,7 @@
 
 import { z } from 'zod';
 import {
+    InputMaybe,
     RwaBaseTransaction,
     RwaGroupTransaction,
     RwaPortfolioState,
@@ -15,9 +16,9 @@ import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/opera
 
 export function validateRwaBaseTransaction(
     state: RwaPortfolioState,
-    input: RwaBaseTransaction,
+    input: InputMaybe<RwaBaseTransaction>,
 ) {
-    if (!input.id) {
+    if (!input?.id) {
         throw new Error(`Transaction must have an id`);
     }
     if (state.transactions.find(transaction => transaction.id === input.id)) {
@@ -72,6 +73,46 @@ export function validateRwaBaseTransaction(
     }
 }
 
+export function validateInputTransactions(
+    state: RwaPortfolioState,
+    input: {
+        assetTransaction?: InputMaybe<RwaBaseTransaction>;
+        cashTransaction?: InputMaybe<RwaBaseTransaction>;
+        interestTransaction?: InputMaybe<RwaBaseTransaction>;
+        feeTransactions?: InputMaybe<InputMaybe<RwaBaseTransaction>[]>;
+    },
+) {
+    if (input.assetTransaction) {
+        validateRwaBaseTransaction(state, input.assetTransaction);
+    }
+    if (input.cashTransaction) {
+        validateRwaBaseTransaction(state, input.cashTransaction);
+    }
+    if (input.interestTransaction) {
+        validateRwaBaseTransaction(state, input.interestTransaction);
+    }
+    if (input.feeTransactions?.length) {
+        input.feeTransactions.forEach(feeTransaction => {
+            validateRwaBaseTransaction(state, feeTransaction);
+        });
+    }
+}
+
+export function validateInputAttachments(
+    state: RwaPortfolioState,
+    attachments: InputMaybe<InputMaybe<string>[]>,
+) {
+    if (attachments?.length) {
+        attachments.forEach(attachmentId => {
+            if (!state.attachments.find(a => a.id === attachmentId)) {
+                throw new Error(
+                    `Attachment with id ${attachmentId} does not exist!`,
+                );
+            }
+        });
+    }
+}
+
 export const reducer: RwaPortfolioTransactionsOperations = {
     createGroupTransactionOperation(state, action, dispatch) {
         if (!action.input.id) {
@@ -89,53 +130,8 @@ export const reducer: RwaPortfolioTransactionsOperations = {
         if (!GroupTransactionTypeSchema.safeParse(action.input.type).success) {
             throw new Error(`Invalid group transaction type`);
         }
-        if (action.input.assetTransaction) {
-            try {
-                validateRwaBaseTransaction(
-                    state,
-                    action.input.assetTransaction,
-                );
-            } catch (e) {
-                console.error(`Invalid asset transaction: `, e);
-            }
-        }
-        if (action.input.cashTransaction) {
-            try {
-                validateRwaBaseTransaction(state, action.input.cashTransaction);
-            } catch (e) {
-                console.error(`Invalid cash transaction: `, e);
-            }
-        }
-        if (action.input.interestTransaction) {
-            try {
-                validateRwaBaseTransaction(
-                    state,
-                    action.input.interestTransaction,
-                );
-            } catch (e) {
-                console.error(`Invalid interest transaction: `, e);
-            }
-        }
-        if (action.input.feeTransactions?.length) {
-            action.input.feeTransactions.forEach(feeTransaction => {
-                if (feeTransaction) {
-                    try {
-                        validateRwaBaseTransaction(state, feeTransaction);
-                    } catch (e) {
-                        console.error(`Invalid fee transaction: `, e);
-                    }
-                }
-            });
-        }
-        if (action.input.attachments?.length) {
-            action.input.attachments.forEach(attachmentId => {
-                if (!state.attachments.find(a => a.id === attachmentId)) {
-                    throw new Error(
-                        `Attachment with id ${attachmentId} does not exist!`,
-                    );
-                }
-            });
-        }
+        validateInputTransactions(state, action.input);
+        validateInputAttachments(state, action.input.attachments);
         state.transactions.push(action.input as RwaGroupTransaction);
     },
     editGroupTransactionOperation(state, action, dispatch) {},
