@@ -4,37 +4,97 @@
  * - delete the file and run the code generator again to have it reset
  */
 
+import { RwaServiceProvider, RwaSpv } from '../..';
 import { RwaPortfolioGeneralOperations } from '../../gen/general/operations';
 
 export const reducer: RwaPortfolioGeneralOperations = {
     createSpvOperation(state, action, dispatch) {
-        // TODO: Implement "createSpvOperation" reducer
-        throw new Error('Reducer "createSpvOperation" not yet implemented');
+        if (!action.input.id) {
+            throw new Error(`SPV must have an id`);
+        }
+        if (!action.input.name) {
+            throw new Error(`SPV must have a name`);
+        }
+        if (state.spvs.find(spv => spv.id === action.input.id)) {
+            throw new Error(`SPV with id ${action.input.id} already exists!`);
+        }
+        state.spvs.push(action.input);
     },
     editSpvOperation(state, action, dispatch) {
-        // TODO: Implement "editSpvOperation" reducer
-        throw new Error('Reducer "editSpvOperation" not yet implemented');
-    },
-    deleteSpvOperation(state, action, dispatch) {
-        // TODO: Implement "deleteSpvOperation" reducer
-        throw new Error('Reducer "deleteSpvOperation" not yet implemented');
-    },
-    createServiceProviderOperation(state, action, dispatch) {
-        // TODO: Implement "createServiceProviderOperation" reducer
-        throw new Error(
-            'Reducer "createServiceProviderOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`SPV must have an id`);
+        }
+        const spv = state.spvs.find(spv => spv.id === action.input.id);
+        if (!spv) {
+            throw new Error(`SPV with id ${action.input.id} does not exist!`);
+        }
+        state.spvs = state.spvs.map(spv =>
+            spv.id === action.input.id
+                ? ({
+                      ...spv,
+                      ...action.input,
+                  } as RwaSpv)
+                : spv,
         );
     },
+    deleteSpvOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error(`SPV must have an id`);
+        }
+        const spv = state.spvs.find(spv => spv.id === action.input.id);
+        if (!spv) {
+            throw new Error(`SPV with id ${action.input.id} does not exist!`);
+        }
+        state.spvs = state.spvs.filter(spv => spv.id !== action.input.id);
+    },
+    createServiceProviderOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error(`Service provider must have an id`);
+        }
+        if (!action.input.name) {
+            throw new Error(`Service provider must have a name`);
+        }
+        if (!action.input.feeType) {
+            throw new Error(`Service provider must have a fee type`);
+        }
+        if (state.feeTypes.find(spv => spv.id === action.input.id)) {
+            throw new Error(
+                `Service provider with id ${action.input.id} already exists!`,
+            );
+        }
+        state.feeTypes.push(action.input);
+    },
     editServiceProviderOperation(state, action, dispatch) {
-        // TODO: Implement "editServiceProviderOperation" reducer
-        throw new Error(
-            'Reducer "editServiceProviderOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`Service provider must have an id`);
+        }
+        const spv = state.feeTypes.find(spv => spv.id === action.input.id);
+        if (!spv) {
+            throw new Error(
+                `Service provider with id ${action.input.id} does not exist!`,
+            );
+        }
+        state.feeTypes = state.feeTypes.map(spv =>
+            spv.id === action.input.id
+                ? ({
+                      ...spv,
+                      ...action.input,
+                  } as RwaServiceProvider)
+                : spv,
         );
     },
     deleteServiceProviderOperation(state, action, dispatch) {
-        // TODO: Implement "deleteServiceProviderOperation" reducer
-        throw new Error(
-            'Reducer "deleteServiceProviderOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`Service provider must have an id`);
+        }
+        const spv = state.feeTypes.find(spv => spv.id === action.input.id);
+        if (!spv) {
+            throw new Error(
+                `Service provider with id ${action.input.id} does not exist!`,
+            );
+        }
+        state.feeTypes = state.feeTypes.filter(
+            spv => spv.id !== action.input.id,
         );
     },
 };
