@@ -134,6 +134,34 @@ export const reducer: RwaPortfolioTransactionsOperations = {
         validateInputAttachments(state, action.input.attachments);
         state.transactions.push(action.input as RwaGroupTransaction);
     },
-    editGroupTransactionOperation(state, action, dispatch) {},
+    editGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        const transaction = state.transactions.find(
+            transaction => transaction.id === action.input.id,
+        );
+        if (!transaction) {
+            throw new Error(
+                `Group transaction with id ${action.input.id} does not exist!`,
+            );
+        }
+        if (
+            action.input.type &&
+            !GroupTransactionTypeSchema.safeParse(action.input.type).success
+        ) {
+            throw new Error(`Invalid group transaction type`);
+        }
+        validateInputTransactions(state, action.input);
+        validateInputAttachments(state, action.input.attachments);
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      ...action.input,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
     deleteGroupTransactionOperation(state, action, dispatch) {},
 };
