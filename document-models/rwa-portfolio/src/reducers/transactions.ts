@@ -13,7 +13,7 @@ import {
 import { GroupTransactionTypeSchema } from '../../gen/schema/zod';
 import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
 
-function validateRwaBaseTransaction(
+export function validateRwaBaseTransaction(
     state: RwaPortfolioState,
     input: RwaBaseTransaction,
 ) {

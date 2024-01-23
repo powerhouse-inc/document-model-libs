@@ -10,12 +10,195 @@ import { z } from '../../gen/schema';
 import * as creators from '../../gen/transactions/creators';
 import { RwaPortfolioDocument } from '../../gen/types';
 import utils from '../../gen/utils';
+import { validateRwaBaseTransaction } from '../reducers/transactions';
 
 describe('Transactions Operations', () => {
     let document: RwaPortfolioDocument;
 
     beforeEach(() => {
         document = utils.createDocument();
+    });
+
+    test('validateRwaBaseTransaction - should throw error when id is missing', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = { asset: 'asset1', amount: 100, entryTime: new Date() };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Transaction must have an id',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when transaction id already exists', () => {
+        const state = {
+            transactions: [{ id: 'trans1' }],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'asset1',
+            amount: 100,
+            entryTime: new Date(),
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            `Transaction with id ${input.id} already exists!`,
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when asset is missing', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = { id: 'trans1', amount: 100, entryTime: new Date() };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Transaction must have an asset',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when asset does not exist', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'not-existent-asset',
+            amount: 100,
+            entryTime: new Date(),
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            `Asset with id ${input.asset} does not exist!`,
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when amount is missing', () => {
+        const state = {
+            transactions: [],
+            accounts: [],
+            portfolio: [{ id: 'asset1' }],
+        };
+        const input = { id: 'trans1', asset: 'asset1', entryTime: new Date() };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Transaction must have an amount',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when entryTime is missing', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = { id: 'trans1', asset: 'asset1', amount: 100 };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Transaction must have an entry time',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when entryTime is not a valid date', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'asset1',
+            amount: 100,
+            entryTime: 'invalid date',
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Entry time must be a valid date',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when tradeTime is not a valid date', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'asset1',
+            amount: 100,
+            entryTime: new Date(),
+            tradeTime: 'invalid date',
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Trade time must be a valid date',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when settlementTime is not a valid date', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'asset1',
+            amount: 100,
+            entryTime: new Date(),
+            settlementTime: 'invalid date',
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            'Settlement time must be a valid date',
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when account does not exist', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'asset1',
+            amount: 100,
+            entryTime: new Date(),
+            account: 'account1',
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            `Account with id ${input.account} does not exist!`,
+        );
+    });
+
+    test('validateRwaBaseTransaction - should throw error when counterParty does not exist', () => {
+        const state = {
+            transactions: [],
+            portfolio: [{ id: 'asset1' }],
+            accounts: [],
+        };
+        const input = {
+            id: 'trans1',
+            asset: 'asset1',
+            amount: 100,
+            entryTime: new Date(),
+            counterParty: 'counterParty1',
+        };
+        // @ts-expect-error mock
+        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+            `Counter party account with id ${input.counterParty} does not exist!`,
+        );
     });
 
     it('should handle createGroupTransaction operation', () => {
