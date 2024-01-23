@@ -5,11 +5,11 @@
 
 import { generateMock } from '@powerhousedao/codegen';
 
-import utils from '../../gen/utils';
-import { z } from '../../gen/schema';
-import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/attachments/creators';
+import { reducer } from '../../gen/reducer';
+import { z } from '../../gen/schema';
 import { RwaPortfolioDocument } from '../../gen/types';
+import utils from '../../gen/utils';
 
 describe('Attachments Operations', () => {
     let document: RwaPortfolioDocument;
@@ -34,6 +34,9 @@ describe('Attachments Operations', () => {
     });
     it('should handle editAttachment operation', () => {
         const input = generateMock(z.EditAttachmentInputSchema());
+        const document = utils.createDocument({
+            attachments: [input],
+        });
         const updatedDocument = reducer(
             document,
             creators.editAttachment(input),

@@ -54,7 +54,7 @@
         "build": "powerhouse generate && vite build",
         "storybook": "powerhouse generate && storybook dev -p 6006",
         "build-storybook": "powerhouse generate && storybook build",
-        "test": "powerhouse generate && vitest run",
+        "test": "vitest run",
         "test:watch": "powerhouse generate && vitest"
     },
     "devDependencies": {
