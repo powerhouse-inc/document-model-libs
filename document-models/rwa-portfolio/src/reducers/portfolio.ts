@@ -37,10 +37,26 @@ export const reducer: RwaPortfolioPortfolioOperations = {
         state.portfolio.push(action.input as RwaAsset);
     },
     createRwaCashAssetOperation(state, action, dispatch) {
-        // TODO: Implement "createRwaCashAssetOperation" reducer
-        throw new Error(
-            'Reducer "createRwaCashAssetOperation" not yet implemented',
-        );
+        if (!action.input.id) {
+            throw new Error(`RWA cash asset must have an id`);
+        }
+        if (!action.input.spv) {
+            throw new Error(`RWA cash asset must have a spv`);
+        }
+        if (!action.input.currency) {
+            throw new Error(`RWA cash asset must have a currency`);
+        }
+        if (!state.spvs.find(spv => spv.id === action.input.spv)) {
+            throw new Error(`SPV with id ${action.input.id} does not exist!`);
+        }
+        if (action.input.currency !== 'USD') {
+            // todo: add support for other currencies
+            throw new Error('Only USD currency is supported');
+        }
+        if (state.portfolio.find(asset => asset.id === action.input.id)) {
+            throw new Error(`Asset with id ${action.input.id} already exists!`);
+        }
+        state.portfolio.push(action.input as RwaAsset);
     },
     editRwaFixedIncomeAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
@@ -76,21 +92,60 @@ export const reducer: RwaPortfolioPortfolioOperations = {
         );
     },
     editRwaCashAssetOperation(state, action, dispatch) {
-        // TODO: Implement "editRwaCashAssetOperation" reducer
-        throw new Error(
-            'Reducer "editRwaCashAssetOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`RWA cash asset must have an id`);
+        }
+        const asset = state.portfolio.find(
+            asset => asset.id === action.input.id,
+        );
+        if (!asset) {
+            throw new Error(`Asset with id ${action.input.id} does not exist!`);
+        }
+        if (
+            action.input.spv &&
+            !state.spvs.find(spv => spv.id === action.input.spv)
+        ) {
+            throw new Error(`SPV with id ${action.input.id} does not exist!`);
+        }
+        if (action.input.currency && action.input.currency !== 'USD') {
+            // todo: add support for other currencies
+            throw new Error('Only USD currency is supported');
+        }
+        state.portfolio = state.portfolio.map(asset =>
+            asset.id === action.input.id
+                ? ({
+                      ...asset,
+                      ...action.input,
+                  } as RwaAsset)
+                : asset,
         );
     },
     deleteRwaFixedIncomeAssetOperation(state, action, dispatch) {
-        // TODO: Implement "deleteRwaFixedIncomeAssetOperation" reducer
-        throw new Error(
-            'Reducer "deleteRwaFixedIncomeAssetOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`RWA fixed income asset must have an id`);
+        }
+        const asset = state.portfolio.find(
+            asset => asset.id === action.input.id,
+        );
+        if (!asset) {
+            throw new Error(`Asset with id ${action.input.id} does not exist!`);
+        }
+        state.portfolio = state.portfolio.filter(
+            asset => asset.id !== action.input.id,
         );
     },
     deleteRwaCashAssetOperation(state, action, dispatch) {
-        // TODO: Implement "deleteRwaCashAssetOperation" reducer
-        throw new Error(
-            'Reducer "deleteRwaCashAssetOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`RWA fixed income asset must have an id`);
+        }
+        const asset = state.portfolio.find(
+            asset => asset.id === action.input.id,
+        );
+        if (!asset) {
+            throw new Error(`Asset with id ${action.input.id} does not exist!`);
+        }
+        state.portfolio = state.portfolio.filter(
+            asset => asset.id !== action.input.id,
         );
     },
 };

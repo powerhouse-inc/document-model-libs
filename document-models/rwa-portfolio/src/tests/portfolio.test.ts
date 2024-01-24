@@ -46,6 +46,17 @@ describe('Portfolio Operations', () => {
     });
     it('should handle createRwaCashAsset operation', () => {
         const input = generateMock(z.CreateRwaCashAssetInputSchema());
+        input.currency = 'USD';
+        const existingSpv = generateMock(z.RwaSpvSchema());
+        existingSpv.id = input.spv;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    spvs: [existingSpv],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.createRwaCashAsset(input),
@@ -92,6 +103,21 @@ describe('Portfolio Operations', () => {
     });
     it('should handle editRwaCashAsset operation', () => {
         const input = generateMock(z.EditRwaCashAssetInputSchema());
+        input.currency = 'USD';
+        const existingSpv = generateMock(z.RwaSpvSchema());
+        // @ts-expect-error mock
+        existingSpv.id = input.spv;
+        const existingAsset = generateMock(z.CreateRwaCashAssetInputSchema());
+        existingAsset.id = input.id;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    portfolio: [existingAsset],
+                    spvs: [existingSpv],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.editRwaCashAsset(input),
@@ -106,6 +132,19 @@ describe('Portfolio Operations', () => {
     });
     it('should handle deleteRwaFixedIncomeAsset operation', () => {
         const input = generateMock(z.DeleteRwaFixedIncomeAssetInputSchema());
+        const existingAsset = generateMock(
+            z.CreateRwaFixedIncomeAssetInputSchema(),
+        );
+        existingAsset.id = input.id;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    // @ts-expect-error mock
+                    portfolio: [existingAsset],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.deleteRwaFixedIncomeAsset(input),
@@ -120,6 +159,16 @@ describe('Portfolio Operations', () => {
     });
     it('should handle deleteRwaCashAsset operation', () => {
         const input = generateMock(z.DeleteRwaCashAssetInputSchema());
+        const existingAsset = generateMock(z.CreateRwaCashAssetInputSchema());
+        existingAsset.id = input.id;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    portfolio: [existingAsset],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.deleteRwaCashAsset(input),
