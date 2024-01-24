@@ -7,12 +7,18 @@
 import { z } from 'zod';
 import {
     InputMaybe,
+    RwaAsset,
     RwaBaseTransaction,
+    RwaFixedIncome,
     RwaGroupTransaction,
     RwaPortfolioState,
 } from '../..';
 import { GroupTransactionTypeSchema } from '../../gen/schema/zod';
 import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
+
+export function isFixedIncomeAsset(asset: RwaAsset): asset is RwaFixedIncome {
+    return 'type' in asset;
+}
 
 export function validateRwaBaseTransaction(
     state: RwaPortfolioState,
@@ -112,7 +118,9 @@ export const reducer: RwaPortfolioTransactionsOperations = {
                 `Group transaction with id ${action.input.id} already exists!`,
             );
         }
-        if (!GroupTransactionTypeSchema.safeParse(action.input.type).success) {
+        if (
+            !GroupTransactionTypeSchema().safeParse(action.input.type).success
+        ) {
             throw new Error(`Invalid group transaction type`);
         }
         validateInputTransactions(state, action.input);
@@ -132,7 +140,7 @@ export const reducer: RwaPortfolioTransactionsOperations = {
         }
         if (
             action.input.type &&
-            !GroupTransactionTypeSchema.safeParse(action.input.type).success
+            !GroupTransactionTypeSchema().safeParse(action.input.type).success
         ) {
             throw new Error(`Invalid group transaction type`);
         }

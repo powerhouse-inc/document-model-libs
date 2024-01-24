@@ -138,4 +138,72 @@ describe('General Operations', () => {
         );
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
+    it('should handle createRwaAccount operation', () => {
+        const input = generateMock(z.CreateRwaAccountInputSchema());
+        const updatedDocument = reducer(
+            document,
+            creators.createRwaAccount(input),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'CREATE_RWA_ACCOUNT',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle editRwaAccount operation', () => {
+        const initialInput = generateMock(z.CreateRwaAccountInputSchema());
+        const newInput = generateMock(z.EditRwaAccountInputSchema());
+        newInput.id = initialInput.id;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    // @ts-expect-error mock
+                    accounts: [initialInput],
+                },
+                local: {},
+            },
+        });
+        const updatedDocument = reducer(
+            document,
+            creators.editRwaAccount(newInput),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'EDIT_RWA_ACCOUNT',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(
+            newInput,
+        );
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle deleteRwaAccount operation', () => {
+        const initialInput = generateMock(z.CreateRwaAccountInputSchema());
+        const deleteInput = generateMock(z.DeleteRwaAccountInputSchema());
+        deleteInput.id = initialInput.id;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    // @ts-expect-error mock
+                    accounts: [initialInput],
+                },
+                local: {},
+            },
+        });
+        const updatedDocument = reducer(
+            document,
+            creators.deleteRwaAccount(deleteInput),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'DELETE_RWA_ACCOUNT',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(
+            deleteInput,
+        );
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
 });

@@ -75,15 +75,22 @@ type RwaGroupTransaction {
     feeTransactions: [RwaBaseTransaction]
 }
 
-enum GroupTransactionType {
+enum CashGroupTransactionType {
     PrincipalDraw
     PrincipalReturn
+}
+
+enum FixedIncomeGroupTransactionType {
     AssetPurchase
     AssetSale
     InterestDraw # Payment from Borrower to Arranger (If there is a coupon)
     InterestReturn # Payment from Arranger to Maker
     FeesPayment
 }
+
+union GroupTransactionType =
+    | CashGroupTransactionType
+    | FixedIncomeGroupTransactionType
 
 type RwaServiceProvider {
     id: ID!
@@ -216,4 +223,18 @@ input DeleteGroupTransactionInput {
     id: ID!
 }
 
-# add new types here
+input CreateRwaAccountInput {
+    id: ID!
+    reference: String! # e.g. bank account number or ETH address
+    label: String
+}
+
+input EditRwaAccountInput {
+    id: ID!
+    reference: String # e.g. bank account number or ETH address
+    label: String
+}
+
+input DeleteRwaAccountInput {
+    id: ID!
+}

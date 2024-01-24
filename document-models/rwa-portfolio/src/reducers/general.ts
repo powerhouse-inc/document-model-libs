@@ -4,7 +4,7 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { RwaServiceProvider, RwaSpv } from '../..';
+import { RwaAccount, RwaServiceProvider, RwaSpv } from '../..';
 import { RwaPortfolioGeneralOperations } from '../../gen/general/operations';
 
 export const reducer: RwaPortfolioGeneralOperations = {
@@ -95,6 +95,57 @@ export const reducer: RwaPortfolioGeneralOperations = {
         }
         state.feeTypes = state.feeTypes.filter(
             spv => spv.id !== action.input.id,
+        );
+    },
+    createRwaAccountOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error(`RWA account must have an id`);
+        }
+        if (!action.input.reference) {
+            throw new Error(`RWA account must have a reference`);
+        }
+        if (state.accounts.find(account => account.id === action.input.id)) {
+            throw new Error(
+                `RWA account with id ${action.input.id} already exists!`,
+            );
+        }
+        state.accounts.push(action.input as RwaAccount);
+    },
+    editRwaAccountOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error(`RWA account must have an id`);
+        }
+        const account = state.accounts.find(
+            account => account.id === action.input.id,
+        );
+        if (!account) {
+            throw new Error(
+                `RWA account with id ${action.input.id} does not exist!`,
+            );
+        }
+        state.accounts = state.accounts.map(account =>
+            account.id === action.input.id
+                ? ({
+                      ...account,
+                      ...action.input,
+                  } as RwaAccount)
+                : account,
+        );
+    },
+    deleteRwaAccountOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error(`RWA account must have an id`);
+        }
+        const account = state.accounts.find(
+            account => account.id === action.input.id,
+        );
+        if (!account) {
+            throw new Error(
+                `RWA account with id ${action.input.id} does not exist!`,
+            );
+        }
+        state.accounts = state.accounts.filter(
+            account => account.id !== action.input.id,
         );
     },
 };
