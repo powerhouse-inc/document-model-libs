@@ -98,21 +98,6 @@ export function validateInputTransactions(
     }
 }
 
-export function validateInputAttachments(
-    state: RwaPortfolioState,
-    attachments: InputMaybe<InputMaybe<string>[]>,
-) {
-    if (attachments?.length) {
-        attachments.forEach(attachmentId => {
-            if (!state.attachments.find(a => a.id === attachmentId)) {
-                throw new Error(
-                    `Attachment with id ${attachmentId} does not exist!`,
-                );
-            }
-        });
-    }
-}
-
 export const reducer: RwaPortfolioTransactionsOperations = {
     createGroupTransactionOperation(state, action, dispatch) {
         if (!action.input.id) {
@@ -131,7 +116,6 @@ export const reducer: RwaPortfolioTransactionsOperations = {
             throw new Error(`Invalid group transaction type`);
         }
         validateInputTransactions(state, action.input);
-        validateInputAttachments(state, action.input.attachments);
         state.transactions.push(action.input as RwaGroupTransaction);
     },
     editGroupTransactionOperation(state, action, dispatch) {
@@ -153,7 +137,6 @@ export const reducer: RwaPortfolioTransactionsOperations = {
             throw new Error(`Invalid group transaction type`);
         }
         validateInputTransactions(state, action.input);
-        validateInputAttachments(state, action.input.attachments);
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
                 ? ({

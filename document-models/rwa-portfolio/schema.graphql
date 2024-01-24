@@ -4,7 +4,6 @@ type RwaPortfolioState {
     spvs: [RwaSpv!]!
     feeTypes: [RwaServiceProvider!]!
     fixedIncomeTypes: [RwaFixedIncomeType!]!
-    attachments: [RwaAttachment!]!
     portfolio: [RwaAsset!]!
     transactions: [RwaGroupTransaction!]!
 }
@@ -74,7 +73,6 @@ type RwaGroupTransaction {
     cashTransaction: RwaBaseTransaction
     interestTransaction: RwaBaseTransaction
     feeTransactions: [RwaBaseTransaction]
-    attachments: [ID!] # Refers to RwaAttachment.id
 }
 
 enum GroupTransactionType {
@@ -96,13 +94,6 @@ type RwaServiceProvider {
 type RwaTransactionFee {
     serviceProviderId: ID!
     amount: Float!
-}
-
-type RwaAttachment {
-    id: ID!
-    title: String!
-    fileType: String!
-    hash: String!
 }
 
 scalar DateTime
@@ -210,7 +201,6 @@ input CreateGroupTransactionInput {
     cashTransaction: RwaBaseTransaction
     interestTransaction: RwaBaseTransaction
     feeTransactions: [RwaBaseTransaction]
-    attachments: [ID] # Refers to RwaAttachment.id
 }
 
 input EditGroupTransactionInput {
@@ -220,36 +210,9 @@ input EditGroupTransactionInput {
     cashTransaction: RwaBaseTransaction
     interestTransaction: RwaBaseTransaction
     feeTransactions: [RwaBaseTransaction]
-    attachments: [ID] # Refers to RwaAttachment.id
 }
 
 input DeleteGroupTransactionInput {
-    id: ID!
-}
-
-# add new types here
-
-# attachments
-
-input CreateAttachmentInput {
-    id: ID!
-    title: String!
-    fileType: String!
-    hash: String!
-}
-
-# add new types here
-
-input EditAttachmentInput {
-    id: ID!
-    title: String
-    fileType: String
-    hash: String
-}
-
-# add new types here
-
-input DeleteAttachmentInput {
     id: ID!
 }
 

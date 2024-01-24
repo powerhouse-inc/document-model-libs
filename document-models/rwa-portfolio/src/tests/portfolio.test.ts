@@ -5,11 +5,11 @@
 
 import { generateMock } from '@powerhousedao/codegen';
 
-import utils from '../../gen/utils';
-import { z } from '../../gen/schema';
-import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/portfolio/creators';
+import { reducer } from '../../gen/reducer';
+import { RwaAsset, z } from '../../gen/schema';
 import { RwaPortfolioDocument } from '../../gen/types';
+import utils from '../../gen/utils';
 
 describe('Portfolio Operations', () => {
     let document: RwaPortfolioDocument;
@@ -20,6 +20,18 @@ describe('Portfolio Operations', () => {
 
     it('should handle createRwaFixedIncomeAsset operation', () => {
         const input = generateMock(z.CreateRwaFixedIncomeAssetInputSchema());
+        const existingFixedIncomeType = generateMock(
+            z.RwaFixedIncomeTypeSchema(),
+        );
+        existingFixedIncomeType.id = input.type;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    fixedIncomeTypes: [existingFixedIncomeType],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.createRwaFixedIncomeAsset(input),
@@ -47,7 +59,25 @@ describe('Portfolio Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle editRwaFixedIncomeAsset operation', () => {
+        const existingAsset = generateMock(
+            z.CreateRwaFixedIncomeAssetInputSchema(),
+        ) as RwaAsset;
         const input = generateMock(z.EditRwaFixedIncomeAssetInputSchema());
+        const existingFixedIncomeType = generateMock(
+            z.RwaFixedIncomeTypeSchema(),
+        );
+        existingAsset.id = input.id;
+        // @ts-expect-error mock
+        existingFixedIncomeType.id = input.type;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    portfolio: [existingAsset],
+                    fixedIncomeTypes: [existingFixedIncomeType],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.editRwaFixedIncomeAsset(input),

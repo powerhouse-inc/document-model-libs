@@ -4,14 +4,37 @@
  * - delete the file and run the code generator again to have it reset
  */
 
+import { z } from 'zod';
+import { RwaAsset } from '../..';
 import { RwaPortfolioPortfolioOperations } from '../../gen/portfolio/operations';
 
 export const reducer: RwaPortfolioPortfolioOperations = {
     createRwaFixedIncomeAssetOperation(state, action, dispatch) {
-        // TODO: Implement "createRwaFixedIncomeAssetOperation" reducer
-        throw new Error(
-            'Reducer "createRwaFixedIncomeAssetOperation" not yet implemented',
-        );
+        if (!action.input.id) {
+            throw new Error(`RWA fixed income asset must have an id`);
+        }
+        if (!action.input.type) {
+            throw new Error(`RWA fixed income asset must have a type`);
+        }
+        if (!action.input.name) {
+            throw new Error(`RWA fixed income asset must have a name`);
+        }
+        if (!action.input.maturity) {
+            throw new Error(`RWA fixed income asset must have a maturity`);
+        }
+        if (state.portfolio.find(asset => asset.id === action.input.id)) {
+            throw new Error(`Asset with id ${action.input.id} already exists!`);
+        }
+        if (!state.fixedIncomeTypes.find(fia => fia.id === action.input.type)) {
+            throw new Error(
+                `Fixed income type with id ${action.input.id} does not exist!`,
+            );
+        }
+        const dateSchema = z.coerce.date();
+        if (!dateSchema.safeParse(action.input.maturity).success) {
+            throw new Error(`Maturity must be a valid date`);
+        }
+        state.portfolio.push(action.input as RwaAsset);
     },
     createRwaCashAssetOperation(state, action, dispatch) {
         // TODO: Implement "createRwaCashAssetOperation" reducer
@@ -20,9 +43,36 @@ export const reducer: RwaPortfolioPortfolioOperations = {
         );
     },
     editRwaFixedIncomeAssetOperation(state, action, dispatch) {
-        // TODO: Implement "editRwaFixedIncomeAssetOperation" reducer
-        throw new Error(
-            'Reducer "editRwaFixedIncomeAssetOperation" not yet implemented',
+        if (!action.input.id) {
+            throw new Error(`RWA fixed income asset must have an id`);
+        }
+        const asset = state.portfolio.find(
+            asset => asset.id === action.input.id,
+        );
+        if (!asset) {
+            throw new Error(`Asset with id ${action.input.id} does not exist!`);
+        }
+        if (
+            action.input.type &&
+            !state.fixedIncomeTypes.find(fia => fia.id === action.input.type)
+        ) {
+            throw new Error(
+                `Fixed income type with id ${action.input.id} does not exist!`,
+            );
+        }
+        if (action.input.maturity) {
+            const dateSchema = z.coerce.date();
+            if (!dateSchema.safeParse(action.input.maturity).success) {
+                throw new Error(`Maturity must be a valid date`);
+            }
+        }
+        state.portfolio = state.portfolio.map(asset =>
+            asset.id === action.input.id
+                ? ({
+                      ...asset,
+                      ...action.input,
+                  } as RwaAsset)
+                : asset,
         );
     },
     editRwaCashAssetOperation(state, action, dispatch) {

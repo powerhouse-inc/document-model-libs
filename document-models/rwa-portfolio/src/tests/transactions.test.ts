@@ -40,7 +40,6 @@ const groupTransaction = {
     cashTransaction: baseTransaction,
     interestTransaction: baseTransaction,
     feeTransactions: [baseTransaction],
-    attachments: [] as string[],
 };
 
 describe('Transactions Operations', () => {
@@ -241,7 +240,6 @@ describe('Transactions Operations', () => {
                     spvs: [],
                     feeTypes: [],
                     fixedIncomeTypes: [],
-                    attachments: [],
                     portfolio: [asset],
                     transactions: [],
                 },
@@ -272,7 +270,6 @@ describe('Transactions Operations', () => {
                     spvs: [],
                     feeTypes: [],
                     fixedIncomeTypes: [],
-                    attachments: [],
                     portfolio: [asset],
                     // @ts-expect-error mock
                     transactions: [groupTransaction],
@@ -309,7 +306,6 @@ describe('Transactions Operations', () => {
                     spvs: [],
                     feeTypes: [],
                     fixedIncomeTypes: [],
-                    attachments: [],
                     portfolio: [asset],
                     // @ts-expect-error mock
                     transactions: [groupTransaction],

@@ -13,8 +13,8 @@
             "changeLog": [],
             "state": {
                 "global": {
-                    "schema": "type RwaPortfolioState {\n\t\taccounts: [RwaAccount!]!\n\t\tprincipalLender: ID! # RwaAccount.id (That relates to the Maker account)\n\t\tspvs: [RwaSpv!]!\n\t\tfeeTypes: [RwaServiceProvider!]!\n\t\tfixedIncomeTypes: [RwaFixedIncomeType!]!\n    attachments: [RwaAttachment!]!\n\t\tportfolio: [RwaAsset!]!\n    transactions: [RwaGroupTransaction!]!\n}\n\nunion RwaAsset = RwaFixedIncome | RwaCash\n\ntype RwaFixedIncome {\n\t\tid: ID!\n\t\ttype: ID! # RwaFixedIncomeType.id\n    name: String!\n\t\tISIN: String\n\t\tCUSIP: String\n    spv: ID! # RwaSpv.id\n\n    coupon: Float\n    maturity: DateTime!\n\t\tpurchaseDate: DateTime!      # Weighted average of underlying transactions\n    \n    notional: Float!             # Face value\n    purchaseProceeds: Float!     # Total cash outflow spent on purchases\n    purchasePrice: Float!        # purchaseProceeds / notional\n    totalDiscount: Float!        # notional - purchaseProceeds\n\t\tmarketValue: Float!           \n\n\t\tcurrentValue(when: DateTime): Float     # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds   \n    annualizedYield: Float!      # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100\n\t\trealizedSurplus: Float!      \n    totalSurplus: Float!\n}\n\ntype RwaCash {\n\t\tid: ID!\n\t\tspv: ID! # RwaSpv.id\n    currency: String!  # Will always be \"USD\" for version 1\n}\n\ntype RwaFixedIncomeType {\n\t\tid: ID!\n\t\tname: String!\n}\n\ntype RwaSpv {\n    id: ID!\n    name: String!\n}\n\ntype RwaBaseTransaction { \n\t\tid: ID!\n\t\tasset: ID! # RwaAsset.id\n\t\tamount: Float!\n\t\tentryTime: DateTime!\n\t\ttradeTime: DateTime\n\t\tsettlementTime: DateTime\n\t\ttxRef: String\n\t\taccount: ID # RwaAccount.id\n\t\tcounterParty: ID, # RwaAccount.id\n\t\t\n}\n\ntype RwaAccount {\n\t\tid: ID!\n\t\treference: String! # e.g. bank account number or ETH address\n\t\tlabel: String\n}\n\ntype RwaGroupTransaction {\n\t\tid: ID!\n\t\ttype: GroupTransactionType!\n\t\tassetTransaction: RwaBaseTransaction\n\t\tcashTransaction: RwaBaseTransaction\n\t\tinterestTransaction: RwaBaseTransaction\n\t\tfeeTransactions: [RwaBaseTransaction]\n\t\tattachments: [ID!] # Refers to RwaAttachment.id\n}\n\nenum GroupTransactionType {\n\t\tPrincipalDraw\n\t\tPrincipalReturn\n\t\tAssetPurchase\n\t\tAssetSale\n\t\tInterestDraw # Payment from Borrower to Arranger (If there is a coupon)\n\t\tInterestReturn # Payment from Arranger to Maker\n\t\tFeesPayment\n}\n\ntype RwaServiceProvider {\n    id: ID!\n    name: String!\n\t\tfeeType: String!\n}\n\ntype RwaTransactionFee {\n    serviceProviderId: ID!\n    amount: Float! \n}\n\ntype RwaAttachment {\n    id: ID!\n    title: String!\n\t\tfileType: String!\n    hash: String! \n}\n\nscalar DateTime",
-                    "initialValue": "{\"accounts\":[],\"principalLender\":\"initial-id\",\"spvs\":[],\"feeTypes\":[],\"fixedIncomeTypes\":[],\"attachments\":[],\"portfolio\":[],\"transactions\":[]}",
+                    "schema": "type RwaPortfolioState {\n\t\taccounts: [RwaAccount!]!\n\t\tprincipalLender: ID! # RwaAccount.id (That relates to the Maker account)\n\t\tspvs: [RwaSpv!]!\n\t\tfeeTypes: [RwaServiceProvider!]!\n\t\tfixedIncomeTypes: [RwaFixedIncomeType!]\n\t\tportfolio: [RwaAsset!]!\n    transactions: [RwaGroupTransaction!]!\n}\n\nunion RwaAsset = RwaFixedIncome | RwaCash\n\ntype RwaFixedIncome {\n\t\tid: ID!\n\t\ttype: ID! # RwaFixedIncomeType.id\n    name: String!\n\t\tISIN: String\n\t\tCUSIP: String\n    spv: ID! # RwaSpv.id\n\n    coupon: Float\n    maturity: DateTime!\n\t\tpurchaseDate: DateTime!      # Weighted average of underlying transactions\n    \n    notional: Float!             # Face value\n    purchaseProceeds: Float!     # Total cash outflow spent on purchases\n    purchasePrice: Float!        # purchaseProceeds / notional\n    totalDiscount: Float!        # notional - purchaseProceeds\n\t\tmarketValue: Float!           \n\n\t\tcurrentValue(when: DateTime): Float     # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds   \n    annualizedYield: Float!      # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100\n\t\trealizedSurplus: Float!      \n    totalSurplus: Float!\n}\n\ntype RwaCash {\n\t\tid: ID!\n\t\tspv: ID! # RwaSpv.id\n    currency: String!  # Will always be \"USD\" for version 1\n}\n\ntype RwaFixedIncomeType {\n\t\tid: ID!\n\t\tname: String!\n}\n\ntype RwaSpv {\n    id: ID!\n    name: String!\n}\n\ntype RwaBaseTransaction { \n\t\tid: ID!\n\t\tasset: ID! # RwaAsset.id\n\t\tamount: Float!\n\t\tentryTime: DateTime!\n\t\ttradeTime: DateTime\n\t\tsettlementTime: DateTime\n\t\ttxRef: String\n\t\taccount: ID # RwaAccount.id\n\t\tcounterParty: ID, # RwaAccount.id\n\t\t\n}\n\ntype RwaAccount {\n\t\tid: ID!\n\t\treference: String! # e.g. bank account number or ETH address\n\t\tlabel: String\n}\n\ntype RwaGroupTransaction {\n\t\tid: ID!\n\t\ttype: GroupTransactionType!\n\t\tassetTransaction: RwaBaseTransaction\n\t\tcashTransaction: RwaBaseTransaction\n\t\tinterestTransaction: RwaBaseTransaction\n\t\tfeeTransactions: [RwaBaseTransaction]\n}\n\nenum GroupTransactionType {\n\t\tPrincipalDraw\n\t\tPrincipalReturn\n\t\tAssetPurchase\n\t\tAssetSale\n\t\tInterestDraw # Payment from Borrower to Arranger (If there is a coupon)\n\t\tInterestReturn # Payment from Arranger to Maker\n\t\tFeesPayment\n}\n\ntype RwaServiceProvider {\n    id: ID!\n    name: String!\n\t\tfeeType: String!\n}\n\ntype RwaTransactionFee {\n    serviceProviderId: ID!\n    amount: Float! \n}\n\n\n}\n\nscalar DateTime",
+                    "initialValue": "{\"accounts\":[],\"principalLender\":\"initial-id\",\"spvs\":[],\"feeTypes\":[],\"fixedIncomeTypes\":[],\"portfolio\":[],\"transactions\":[]}",
                     "examples": []
                 },
                 "local": {
@@ -179,7 +179,7 @@
                             "id": "se84SDZj7n36PzIW5JPvUvYmOcg=",
                             "name": "CREATE_GROUP_TRANSACTION",
                             "description": "",
-                            "schema": "input CreateGroupTransactionInput {\n  id: ID!\n\ttype: GroupTransactionType!\n\tassetTransaction: RwaBaseTransaction\n\tcashTransaction: RwaBaseTransaction\n\tinterestTransaction: RwaBaseTransaction\n\tfeeTransactions: [RwaBaseTransaction]\n\tattachments: [ID] # Refers to RwaAttachment.id\n}",
+                            "schema": "input CreateGroupTransactionInput {\n  id: ID!\n\ttype: GroupTransactionType!\n\tassetTransaction: RwaBaseTransaction\n\tcashTransaction: RwaBaseTransaction\n\tinterestTransaction: RwaBaseTransaction\n\tfeeTransactions: [RwaBaseTransaction]\n}",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -190,7 +190,7 @@
                             "id": "HGDOQuUt3XiXsfQqgpLFUAJoerc=",
                             "name": "EDIT_GROUP_TRANSACTION",
                             "description": "",
-                            "schema": "input EditGroupTransactionInput {\n  id: ID!\n\ttype: GroupTransactionType\n\tassetTransaction: RwaBaseTransaction\n\tcashTransaction: RwaBaseTransaction\n\tinterestTransaction: RwaBaseTransaction\n\tfeeTransactions: [RwaBaseTransaction]\n\tattachments: [ID] # Refers to RwaAttachment.id\n}",
+                            "schema": "input EditGroupTransactionInput {\n  id: ID!\n\ttype: GroupTransactionType\n\tassetTransaction: RwaBaseTransaction\n\tcashTransaction: RwaBaseTransaction\n\tinterestTransaction: RwaBaseTransaction\n\tfeeTransactions: [RwaBaseTransaction]\n}",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -202,46 +202,6 @@
                             "name": "DELETE_GROUP_TRANSACTION",
                             "description": "",
                             "schema": "input DeleteGroupTransactionInput {\n    id: ID!\n}\n\n# add new types here\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        }
-                    ]
-                },
-                {
-                    "id": "I3TSoJIjQW1o/F8F8iftlbRgoYY=",
-                    "name": "attachments",
-                    "description": "",
-                    "operations": [
-                        {
-                            "id": "OTaRZV4Ec/lxIWv7YDnyZ4ZpFVE=",
-                            "name": "CREATE_ATTACHMENT",
-                            "description": "",
-                            "schema": "input CreateAttachmentInput {\n        id: ID!\n    title: String!\n\t\tfileType: String!\n    hash: String! \n}\n\n# add new types here\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "0i6igmX69+ekPEAyudG/2QBz1TE=",
-                            "name": "EDIT_ATTACHMENT",
-                            "description": "",
-                            "schema": "input EditAttachmentInput {\n    \tid: ID!\n\ttitle: String\n\tfileType: String    \n\thash: String \n}\n\n# add new types here\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "UNtwIgtl5Jyb4bQshkg7TQF5XXQ=",
-                            "name": "DELETE_ATTACHMENT",
-                            "description": "",
-                            "schema": "input DeleteAttachmentInput {\n    id: ID!\n}\n\n# add new types here\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],
