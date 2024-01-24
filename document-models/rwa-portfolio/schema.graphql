@@ -69,7 +69,7 @@ type RwaAccount {
 type RwaGroupTransaction {
     id: ID!
     type: GroupTransactionType!
-    assetTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: RwaBaseTransaction
     cashTransaction: RwaBaseTransaction
     interestTransaction: RwaBaseTransaction
     feeTransactions: [RwaBaseTransaction]
@@ -197,7 +197,7 @@ input DeleteRwaCashAssetInput {
 input CreateGroupTransactionInput {
     id: ID!
     type: GroupTransactionType!
-    assetTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: RwaBaseTransaction
     cashTransaction: RwaBaseTransaction
     interestTransaction: RwaBaseTransaction
     feeTransactions: [RwaBaseTransaction]
@@ -206,7 +206,7 @@ input CreateGroupTransactionInput {
 input EditGroupTransactionInput {
     id: ID!
     type: GroupTransactionType
-    assetTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: RwaBaseTransaction
     cashTransaction: RwaBaseTransaction
     interestTransaction: RwaBaseTransaction
     feeTransactions: [RwaBaseTransaction]

@@ -76,14 +76,14 @@ export function validateRwaBaseTransaction(
 export function validateInputTransactions(
     state: RwaPortfolioState,
     input: {
-        assetTransaction?: InputMaybe<RwaBaseTransaction>;
+        fixedIncomeTransaction?: InputMaybe<RwaBaseTransaction>;
         cashTransaction?: InputMaybe<RwaBaseTransaction>;
         interestTransaction?: InputMaybe<RwaBaseTransaction>;
         feeTransactions?: InputMaybe<InputMaybe<RwaBaseTransaction>[]>;
     },
 ) {
-    if (input.assetTransaction) {
-        validateRwaBaseTransaction(state, input.assetTransaction);
+    if (input.fixedIncomeTransaction) {
+        validateRwaBaseTransaction(state, input.fixedIncomeTransaction);
     }
     if (input.cashTransaction) {
         validateRwaBaseTransaction(state, input.cashTransaction);

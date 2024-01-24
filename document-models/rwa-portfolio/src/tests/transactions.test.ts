@@ -36,7 +36,7 @@ const baseTransaction = {
 const groupTransaction = {
     id: groupTransactionId,
     type: 'AssetPurchase',
-    assetTransaction: baseTransaction,
+    fixedIncomeTransaction: baseTransaction,
     cashTransaction: baseTransaction,
     interestTransaction: baseTransaction,
     feeTransactions: [baseTransaction],
