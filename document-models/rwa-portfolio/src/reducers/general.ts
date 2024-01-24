@@ -57,6 +57,20 @@ export const reducer: RwaPortfolioGeneralOperations = {
         if (!action.input.feeType) {
             throw new Error(`Service provider must have a fee type`);
         }
+        if (!action.input.accountId) {
+            throw new Error(
+                `Service provider must have an associated account id`,
+            );
+        }
+        if (
+            !state.accounts.find(
+                account => account.id === action.input.accountId,
+            )
+        ) {
+            throw new Error(
+                `Account with id ${action.input.accountId} does not exist!`,
+            );
+        }
         if (state.feeTypes.find(spv => spv.id === action.input.id)) {
             throw new Error(
                 `Service provider with id ${action.input.id} already exists!`,
@@ -68,33 +82,46 @@ export const reducer: RwaPortfolioGeneralOperations = {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }
-        const spv = state.feeTypes.find(spv => spv.id === action.input.id);
-        if (!spv) {
+        const serviceProvider = state.feeTypes.find(
+            rsp => rsp.id === action.input.id,
+        );
+        if (!serviceProvider) {
             throw new Error(
                 `Service provider with id ${action.input.id} does not exist!`,
             );
         }
-        state.feeTypes = state.feeTypes.map(spv =>
-            spv.id === action.input.id
+        if (action.input.accountId) {
+            if (
+                !state.accounts.find(
+                    account => account.id === action.input.accountId,
+                )
+            ) {
+                throw new Error(
+                    `Account with id ${action.input.accountId} does not exist!`,
+                );
+            }
+        }
+        state.feeTypes = state.feeTypes.map(rsp =>
+            rsp.id === action.input.id
                 ? ({
-                      ...spv,
+                      ...rsp,
                       ...action.input,
                   } as RwaServiceProvider)
-                : spv,
+                : rsp,
         );
     },
     deleteServiceProviderOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }
-        const spv = state.feeTypes.find(spv => spv.id === action.input.id);
-        if (!spv) {
+        const rsp = state.feeTypes.find(rsp => rsp.id === action.input.id);
+        if (!rsp) {
             throw new Error(
                 `Service provider with id ${action.input.id} does not exist!`,
             );
         }
         state.feeTypes = state.feeTypes.filter(
-            spv => spv.id !== action.input.id,
+            rsp => rsp.id !== action.input.id,
         );
     },
     createRwaAccountOperation(state, action, dispatch) {

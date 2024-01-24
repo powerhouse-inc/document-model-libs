@@ -74,6 +74,17 @@ describe('General Operations', () => {
     });
     it('should handle createServiceProvider operation', () => {
         const input = generateMock(z.CreateServiceProviderInputSchema());
+        const existingAccount = generateMock(z.CreateRwaAccountInputSchema());
+        existingAccount.id = input.accountId;
+        const document = utils.createDocument({
+            state: {
+                global: {
+                    // @ts-expect-error mock
+                    accounts: [existingAccount],
+                },
+                local: {},
+            },
+        });
         const updatedDocument = reducer(
             document,
             creators.createServiceProvider(input),
@@ -90,10 +101,15 @@ describe('General Operations', () => {
         const initialInput = generateMock(z.CreateServiceProviderInputSchema());
         const newInput = generateMock(z.EditServiceProviderInputSchema());
         newInput.id = initialInput.id;
+        const existingAccount = generateMock(z.CreateRwaAccountInputSchema());
+        // @ts-expect-error mock
+        existingAccount.id = newInput.accountId;
         const document = utils.createDocument({
             state: {
                 global: {
                     feeTypes: [initialInput],
+                    // @ts-expect-error mock
+                    accounts: [existingAccount],
                 },
                 local: {},
             },

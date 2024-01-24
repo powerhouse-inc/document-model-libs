@@ -96,6 +96,7 @@ type RwaServiceProvider {
     id: ID!
     name: String!
     feeType: String!
+    accountId: ID! # RwaAccount.id
 }
 
 type RwaTransactionFee {
@@ -131,6 +132,7 @@ input CreateServiceProviderInput {
     id: ID!
     name: String!
     feeType: String!
+    accountId: String!
 }
 
 # add new types here
@@ -139,6 +141,7 @@ input EditServiceProviderInput {
     id: ID!
     name: String
     feeType: String
+    accountId: String
 }
 
 # add new types here
