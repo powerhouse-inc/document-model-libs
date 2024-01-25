@@ -637,70 +637,57 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    // it('should handle editGroupTransaction operation', () => {
-    //     const document = utils.createDocument({
-    //         state: {
-    //             global: {
-    //                 accounts: [account, counterParty],
-    //                 principalLender: counterParty.id,
-    //                 spvs: [],
-    //                 feeTypes: [],
-    //                 fixedIncomeTypes: [],
-    //                 portfolio: [cashAsset],
-    //                 // @ts-expect-error mock
-    //                 transactions: [groupTransaction],
-    //             },
-    //             local: {},
-    //         },
-    //     });
-    //     const updatedGroupTransaction = {
-    //         ...groupTransaction,
-    //         counterParty: counterParty.id,
-    //         asset: cashAsset.id,
-    //         type: 'AssetSale',
-    //     };
-    //     const updatedDocument = reducer(
-    //         document,
-    //         // @ts-expect-error mock
-    //         creators.editGroupTransaction(updatedGroupTransaction),
-    //     );
+    it('should handle editGroupTransaction operation', () => {
+        const existingGroupTransaction = makeBlankGroupTransactionInput();
+        const input = makeBlankGroupTransactionInput();
+        input.id = existingGroupTransaction.id;
+        const initialDocument = utils.createDocument({
+            ...document,
+            state: {
+                ...document.state,
+                global: {
+                    ...document.state.global,
+                    transactions: [existingGroupTransaction],
+                },
+            },
+        });
+        const updatedDocument = reducer(
+            initialDocument,
+            creators.editGroupTransaction(input),
+        );
 
-    //     expect(updatedDocument.operations.global).toHaveLength(1);
-    //     expect(updatedDocument.operations.global[0].type).toBe(
-    //         'EDIT_GROUP_TRANSACTION',
-    //     );
-    //     expect(updatedDocument.operations.global[0].input).toStrictEqual(
-    //         updatedGroupTransaction,
-    //     );
-    //     expect(updatedDocument.operations.global[0].index).toEqual(0);
-    // });
-    // it('should handle deleteGroupTransaction operation', () => {
-    //     const input = { id: groupTransactionId };
-    //     const document = utils.createDocument({
-    //         state: {
-    //             global: {
-    //                 accounts: [account, counterParty],
-    //                 principalLender: account.id,
-    //                 spvs: [],
-    //                 feeTypes: [],
-    //                 fixedIncomeTypes: [],
-    //                 portfolio: [asset],
-    //                 // @ts-expect-error mock
-    //                 transactions: [groupTransaction],
-    //             },
-    //             local: {},
-    //         },
-    //     });
-    //     const updatedDocument = reducer(
-    //         document,
-    //         creators.deleteGroupTransaction({ id: groupTransactionId }),
-    //     );
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'EDIT_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle deleteGroupTransaction operation', () => {
+        const existingGroupTransaction = makeBlankGroupTransactionInput();
+        const input = makeBlankGroupTransactionInput();
+        input.id = existingGroupTransaction.id;
+        const initialDocument = utils.createDocument({
+            ...document,
+            state: {
+                ...document.state,
+                global: {
+                    ...document.state.global,
+                    transactions: [existingGroupTransaction],
+                },
+            },
+        });
 
-    //     expect(updatedDocument.operations.global).toHaveLength(1);
-    //     expect(updatedDocument.operations.global[0].type).toBe(
-    //         'DELETE_GROUP_TRANSACTION',
-    //     );
-    //     expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-    //     expect(updatedDocument.operations.global[0].index).toEqual(0);
-    // });
+        const updatedDocument = reducer(
+            initialDocument,
+            creators.deleteGroupTransaction(input),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'DELETE_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
 });

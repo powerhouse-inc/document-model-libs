@@ -24,10 +24,7 @@ import {
 } from '../../gen/schema/zod';
 import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
 
-const numberValidator = z.number({
-    required_error: 'Amount is required',
-    invalid_type_error: 'Amount must be a number',
-});
+const numberValidator = z.number();
 
 const dateValidator = z.coerce.date();
 
@@ -88,17 +85,6 @@ export function validateRwaBaseTransaction(
     if (!input.entryTime) {
         throw new Error(`Transaction must have an entry time`);
     }
-
-    numberValidator
-        .finite({ message: 'Amount must be finite' })
-        .safeParse(input.amount);
-
-    numberValidator
-        .safe({
-            message:
-                'must be between Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER',
-        })
-        .safeParse(input.amount);
 
     if (!dateValidator.safeParse(input.entryTime).success) {
         throw new Error(`Entry time must be a valid date`);
