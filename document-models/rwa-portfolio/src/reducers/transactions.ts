@@ -203,16 +203,16 @@ export function validateInterestTransaction(
             `Counter party with id ${transaction.counterParty} must be a known service provider`,
         );
     }
-    numberValidator
-        .positive({ message: 'Interest transaction amount must be positive' })
-        .safeParse(transaction.amount);
+    if (!numberValidator.positive().safeParse(transaction.amount).success) {
+        throw new Error('Interest transaction amount must be positive');
+    }
 }
 
 export function validateFeeTransaction(
     state: RwaPortfolioState,
     transaction: RwaBaseTransaction,
 ) {
-    if (isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
         throw new Error(`Fee transaction must have a cash asset as the asset`);
     }
     if (!transaction.counterParty) {
@@ -223,9 +223,9 @@ export function validateFeeTransaction(
             `Counter party with id ${transaction.counterParty} must be a known service provider`,
         );
     }
-    numberValidator
-        .negative({ message: 'Fee transaction amount must be negative' })
-        .safeParse(transaction.amount);
+    if (!numberValidator.negative().safeParse(transaction.amount).success) {
+        throw new Error('Fee transaction amount must be negative');
+    }
 }
 
 export const reducer: RwaPortfolioTransactionsOperations = {
