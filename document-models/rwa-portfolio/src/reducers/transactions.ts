@@ -6,6 +6,9 @@
 
 import { z } from 'zod';
 import {
+    CashGroupTransactionType,
+    FixedIncomeGroupTransactionType,
+    GroupTransactionType,
     InputMaybe,
     RwaAsset,
     RwaBaseTransaction,
@@ -14,7 +17,11 @@ import {
     RwaGroupTransaction,
     RwaPortfolioState,
 } from '../..';
-import { GroupTransactionTypeSchema } from '../../gen/schema/zod';
+import {
+    CashGroupTransactionTypeSchema,
+    FixedIncomeGroupTransactionTypeSchema,
+    GroupTransactionTypeSchema,
+} from '../../gen/schema/zod';
 import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
 
 const numberValidator = z.number({
@@ -30,6 +37,33 @@ export function isFixedIncomeAsset(asset: RwaAsset): asset is RwaFixedIncome {
 
 export function isCashAsset(asset: RwaAsset): asset is RwaCash {
     return 'spv' in asset;
+}
+
+export function isCashAssetGroupTransactionType(
+    transactionType: RwaGroupTransaction['type'],
+): transactionType is CashGroupTransactionType {
+    return CashGroupTransactionTypeSchema.safeParse(transactionType).success;
+}
+
+export function isFixedIncomeAssetGroupTransactionType(
+    transactionType: RwaGroupTransaction['type'],
+): transactionType is FixedIncomeGroupTransactionType {
+    return FixedIncomeGroupTransactionTypeSchema.safeParse(transactionType)
+        .success;
+}
+
+export function hasCashAssetTransaction(transaction: RwaGroupTransaction) {
+    return Boolean(transaction.cashTransaction);
+}
+
+export function hasFixedIncomeAssetTransaction(
+    transaction: RwaGroupTransaction,
+) {
+    return Boolean(
+        transaction.fixedIncomeTransaction ||
+            transaction.interestTransaction ||
+            transaction.feeTransactions?.length,
+    );
 }
 
 export function validateRwaBaseTransaction(
@@ -213,6 +247,22 @@ export const reducer: RwaPortfolioTransactionsOperations = {
         ) {
             throw new Error(`Invalid group transaction type`);
         }
+        if (
+            isCashAssetGroupTransactionType(action.input.type) &&
+            hasFixedIncomeAssetTransaction(action.input as RwaGroupTransaction)
+        ) {
+            throw new Error(
+                `Cash group transaction cannot have a fixed income asset transaction`,
+            );
+        }
+        if (
+            isFixedIncomeAssetGroupTransactionType(action.input.type) &&
+            hasCashAssetTransaction(action.input as RwaGroupTransaction)
+        ) {
+            throw new Error(
+                `Fixed income group transaction cannot have a cash asset transaction`,
+            );
+        }
         validateInputTransactions(state, action.input);
         state.transactions.push(action.input as RwaGroupTransaction);
     },
@@ -228,11 +278,51 @@ export const reducer: RwaPortfolioTransactionsOperations = {
                 `Group transaction with id ${action.input.id} does not exist!`,
             );
         }
+        if (action.input.type) {
+            if (
+                !GroupTransactionTypeSchema().safeParse(action.input.type)
+                    .success
+            ) {
+                throw new Error(`Invalid group transaction type`);
+            }
+            if (
+                isCashAssetGroupTransactionType(action.input.type) &&
+                hasFixedIncomeAssetTransaction(transaction)
+            ) {
+                throw new Error(
+                    `This group transaction cannot be converted to a cash group transaction because it has a fixed income asset transaction`,
+                );
+            }
+            if (
+                isFixedIncomeAssetGroupTransactionType(action.input.type) &&
+                hasCashAssetTransaction(transaction)
+            ) {
+                throw new Error(
+                    `This group transaction cannot be converted to a fixed income group transaction because it has a cash asset transaction`,
+                );
+            }
+        }
         if (
-            action.input.type &&
-            !GroupTransactionTypeSchema().safeParse(action.input.type).success
+            hasCashAssetTransaction(action.input as RwaGroupTransaction) &&
+            isFixedIncomeAssetGroupTransactionType(
+                transaction.type as GroupTransactionType,
+            )
         ) {
-            throw new Error(`Invalid group transaction type`);
+            throw new Error(
+                `Cash group transaction cannot have a fixed income asset transaction`,
+            );
+        }
+        if (
+            hasFixedIncomeAssetTransaction(
+                action.input as RwaGroupTransaction,
+            ) &&
+            isCashAssetGroupTransactionType(
+                transaction.type as GroupTransactionType,
+            )
+        ) {
+            throw new Error(
+                `Fixed income group transaction cannot have a cash asset transaction`,
+            );
         }
         validateInputTransactions(state, action.input);
         state.transactions = state.transactions.map(t =>
