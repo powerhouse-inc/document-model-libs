@@ -222,7 +222,7 @@ export function validateFeeTransaction(
     if (!transaction.counterParty) {
         throw new Error(`Fee transaction must have a counter party account`);
     }
-    if (!state.feeTypes.find(a => a.id === transaction.counterParty)) {
+    if (!state.feeTypes.find(a => a.accountId === transaction.counterParty)) {
         throw new Error(
             `Counter party with id ${transaction.counterParty} must be a known service provider`,
         );

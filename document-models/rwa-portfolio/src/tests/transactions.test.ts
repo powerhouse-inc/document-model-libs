@@ -404,8 +404,9 @@ describe('validateFeeTransaction', () => {
                 { id: '1', type: 'equity' }, // assuming type property determines the asset type
             ],
             feeTypes: [
-                { id: 'serviceProvider1' }, // assuming id property determines the service provider
+                { accountId: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -440,8 +441,9 @@ describe('validateFeeTransaction', () => {
                 { id: '1', spv: 'cash' }, // assuming type property determines the asset type
             ],
             feeTypes: [
-                { id: 'serviceProvider1' }, // assuming id property determines the service provider
+                { accountId: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -460,8 +462,9 @@ describe('validateFeeTransaction', () => {
                 { id: '1', spv: 'cash' }, // assuming type property determines the asset type
             ],
             feeTypes: [
-                { id: 'serviceProvider1' }, // assuming id property determines the service provider
+                { accountId: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -480,8 +483,9 @@ describe('validateFeeTransaction', () => {
                 { id: '1', spv: 'cash' }, // assuming type property determines the asset type
             ],
             feeTypes: [
-                { id: 'serviceProvider1' }, // assuming id property determines the service provider
+                { accountId: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -591,6 +595,35 @@ describe('Transactions Operations', () => {
             tradeTime: new Date().toISOString(),
             txRef: 'txRef1',
         };
+
+        const updatedDocument = reducer(
+            document,
+            creators.createGroupTransaction(input),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'CREATE_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle createGroupTransaction with fee transaction', () => {
+        const input = makeBlankGroupTransactionInput();
+        input.type = 'FeesPayment';
+        input.feeTransactions = [
+            {
+                id: 'feeTransaction1',
+                asset: fixedIncomeAsset.id,
+                amount: -100,
+                account: principalLenderAccount.id,
+                counterParty: counterParty.id,
+                entryTime: new Date().toISOString(),
+                settlementTime: new Date().toISOString(),
+                tradeTime: new Date().toISOString(),
+                txRef: 'txRef1',
+            },
+        ];
 
         const updatedDocument = reducer(
             document,
