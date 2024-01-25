@@ -188,9 +188,13 @@ export function validateInterestTransaction(
     state: RwaPortfolioState,
     transaction: RwaBaseTransaction,
 ) {
-    if (isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+    if (
+        !isFixedIncomeAsset(
+            state.portfolio.find(a => a.id === transaction.asset)!,
+        )
+    ) {
         throw new Error(
-            `Interest transaction must have a cash asset as the asset`,
+            `Interest transaction must have a fixed income asset as the asset`,
         );
     }
     if (!transaction.counterParty) {
@@ -198,7 +202,7 @@ export function validateInterestTransaction(
             `Interest transaction must have a counter party account`,
         );
     }
-    if (!state.feeTypes.find(a => a.id === transaction.counterParty)) {
+    if (!state.feeTypes.find(a => a.accountId === transaction.counterParty)) {
         throw new Error(
             `Counter party with id ${transaction.counterParty} must be a known service provider`,
         );

@@ -4,8 +4,10 @@
  */
 
 import { generateMock } from '@powerhousedao/codegen';
-
+import { reducer } from '../../gen/reducer';
 import { RwaBaseTransaction, RwaPortfolioState, z } from '../../gen/schema';
+import * as creators from '../../gen/transactions/creators';
+import utils from '../../gen/utils';
 import {
     validateCashTransaction,
     validateFeeTransaction,
@@ -17,6 +19,8 @@ const principalLenderAccount = generateMock(z.RwaAccountSchema());
 const counterParty = generateMock(z.RwaAccountSchema());
 const cashAsset = generateMock(z.RwaCashSchema());
 const fixedIncomeAsset = generateMock(z.RwaFixedIncomeSchema());
+const serviceProvider = generateMock(z.RwaServiceProviderSchema());
+serviceProvider.accountId = counterParty.id;
 
 function makeBlankGroupTransactionInput() {
     const input = generateMock(z.RwaGroupTransactionSchema());
@@ -301,6 +305,7 @@ describe('validateInterestTransaction', () => {
             feeTypes: [
                 { id: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -309,7 +314,7 @@ describe('validateInterestTransaction', () => {
         }; // replace with actual transaction structure
 
         expect(() => validateInterestTransaction(state, transaction)).toThrow(
-            'Interest transaction must have a cash asset as the asset',
+            'Interest transaction must have a fixed income asset as the asset',
         );
     });
 
@@ -355,8 +360,9 @@ describe('validateInterestTransaction', () => {
                 { id: '1', type: 'fixed_income' }, // assuming type property determines the asset type
             ],
             feeTypes: [
-                { id: 'serviceProvider1' }, // assuming id property determines the service provider
+                { accountId: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -375,8 +381,9 @@ describe('validateInterestTransaction', () => {
                 { id: '1', type: 'fixed_income' }, // assuming type property determines the asset type
             ],
             feeTypes: [
-                { id: 'serviceProvider1' }, // assuming id property determines the service provider
+                { accountId: 'serviceProvider1' }, // assuming id property determines the service provider
             ],
+            accounts: [{ id: 'serviceProvider1' }],
         };
         const transaction: RwaBaseTransaction = {
             asset: '1',
@@ -486,103 +493,181 @@ describe('validateFeeTransaction', () => {
     });
 });
 
-// describe('Transactions Operations', () => {
-//     const document = utils.createDocument({
-//         state: {
-//             global: {
-//                 accounts: [principalLenderAccount, counterParty],
-//                 principalLender: principalLenderAccount.id,
-//                 spvs: [],
-//                 feeTypes: [],
-//                 fixedIncomeTypes: [],
-//                 portfolio: [cashAsset, fixedIncomeAsset],
-//                 transactions: [],
-//             },
-//             local: {},
-//         },
-//     });
+describe('Transactions Operations', () => {
+    const document = utils.createDocument({
+        state: {
+            global: {
+                accounts: [principalLenderAccount, counterParty],
+                principalLender: principalLenderAccount.id,
+                spvs: [],
+                feeTypes: [serviceProvider],
+                fixedIncomeTypes: [],
+                portfolio: [cashAsset, fixedIncomeAsset],
+                transactions: [],
+            },
+            local: {},
+        },
+    });
 
-//     it('should handle createGroupTransaction operation with no transactions to validate', () => {
-//         const input = makeBlankGroupTransactionInput();
-//         const updatedDocument = reducer(
-//             document,
-//             creators.createGroupTransaction(input),
-//         );
+    it('should handle createGroupTransaction operation with no transactions to validate', () => {
+        const input = makeBlankGroupTransactionInput();
+        const updatedDocument = reducer(
+            document,
+            creators.createGroupTransaction(input),
+        );
 
-//         expect(updatedDocument.operations.global).toHaveLength(1);
-//         expect(updatedDocument.operations.global[0].type).toBe(
-//             'CREATE_GROUP_TRANSACTION',
-//         );
-//         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-//         expect(updatedDocument.operations.global[0].index).toEqual(0);
-//     });
-//     it('should handle createGroupTransaction with cash transaction', () => {
-//         const input = makeBlankGroupTransactionInput();
-//     });
-//     it('should handle editGroupTransaction operation', () => {
-//         const document = utils.createDocument({
-//             state: {
-//                 global: {
-//                     accounts: [account, counterParty],
-//                     principalLender: counterParty.id,
-//                     spvs: [],
-//                     feeTypes: [],
-//                     fixedIncomeTypes: [],
-//                     portfolio: [cashAsset],
-//                     // @ts-expect-error mock
-//                     transactions: [groupTransaction],
-//                 },
-//                 local: {},
-//             },
-//         });
-//         const updatedGroupTransaction = {
-//             ...groupTransaction,
-//             counterParty: counterParty.id,
-//             asset: cashAsset.id,
-//             type: 'AssetSale',
-//         };
-//         const updatedDocument = reducer(
-//             document,
-//             // @ts-expect-error mock
-//             creators.editGroupTransaction(updatedGroupTransaction),
-//         );
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'CREATE_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle createGroupTransaction with cash transaction', () => {
+        const input = makeBlankGroupTransactionInput();
+        input.type = 'PrincipalDraw';
+        input.cashTransaction = {
+            id: 'cashTransaction1',
+            asset: cashAsset.id,
+            amount: 100,
+            account: principalLenderAccount.id,
+            counterParty: principalLenderAccount.id,
+            entryTime: new Date().toISOString(),
+            settlementTime: new Date().toISOString(),
+            tradeTime: new Date().toISOString(),
+            txRef: 'txRef1',
+        };
 
-//         expect(updatedDocument.operations.global).toHaveLength(1);
-//         expect(updatedDocument.operations.global[0].type).toBe(
-//             'EDIT_GROUP_TRANSACTION',
-//         );
-//         expect(updatedDocument.operations.global[0].input).toStrictEqual(
-//             updatedGroupTransaction,
-//         );
-//         expect(updatedDocument.operations.global[0].index).toEqual(0);
-//     });
-//     it('should handle deleteGroupTransaction operation', () => {
-//         const input = { id: groupTransactionId };
-//         const document = utils.createDocument({
-//             state: {
-//                 global: {
-//                     accounts: [account, counterParty],
-//                     principalLender: account.id,
-//                     spvs: [],
-//                     feeTypes: [],
-//                     fixedIncomeTypes: [],
-//                     portfolio: [asset],
-//                     // @ts-expect-error mock
-//                     transactions: [groupTransaction],
-//                 },
-//                 local: {},
-//             },
-//         });
-//         const updatedDocument = reducer(
-//             document,
-//             creators.deleteGroupTransaction({ id: groupTransactionId }),
-//         );
+        const updatedDocument = reducer(
+            document,
+            creators.createGroupTransaction(input),
+        );
 
-//         expect(updatedDocument.operations.global).toHaveLength(1);
-//         expect(updatedDocument.operations.global[0].type).toBe(
-//             'DELETE_GROUP_TRANSACTION',
-//         );
-//         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-//         expect(updatedDocument.operations.global[0].index).toEqual(0);
-//     });
-// });
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'CREATE_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle createGroupTransaction with fixed income transaction', () => {
+        const input = makeBlankGroupTransactionInput();
+        input.type = 'AssetPurchase';
+        input.fixedIncomeTransaction = {
+            id: 'fixedIncomeTransaction1',
+            asset: fixedIncomeAsset.id,
+            amount: 100,
+            account: principalLenderAccount.id,
+            counterParty: principalLenderAccount.id,
+            entryTime: new Date().toISOString(),
+            settlementTime: new Date().toISOString(),
+            tradeTime: new Date().toISOString(),
+            txRef: 'txRef1',
+        };
+
+        const updatedDocument = reducer(
+            document,
+            creators.createGroupTransaction(input),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'CREATE_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should handle createGroupTransaction with interest transaction', () => {
+        const input = makeBlankGroupTransactionInput();
+        input.type = 'InterestDraw';
+        input.interestTransaction = {
+            id: 'interestTransaction1',
+            asset: fixedIncomeAsset.id,
+            amount: 100,
+            account: principalLenderAccount.id,
+            counterParty: counterParty.id,
+            entryTime: new Date().toISOString(),
+            settlementTime: new Date().toISOString(),
+            tradeTime: new Date().toISOString(),
+            txRef: 'txRef1',
+        };
+
+        const updatedDocument = reducer(
+            document,
+            creators.createGroupTransaction(input),
+        );
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'CREATE_GROUP_TRANSACTION',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    // it('should handle editGroupTransaction operation', () => {
+    //     const document = utils.createDocument({
+    //         state: {
+    //             global: {
+    //                 accounts: [account, counterParty],
+    //                 principalLender: counterParty.id,
+    //                 spvs: [],
+    //                 feeTypes: [],
+    //                 fixedIncomeTypes: [],
+    //                 portfolio: [cashAsset],
+    //                 // @ts-expect-error mock
+    //                 transactions: [groupTransaction],
+    //             },
+    //             local: {},
+    //         },
+    //     });
+    //     const updatedGroupTransaction = {
+    //         ...groupTransaction,
+    //         counterParty: counterParty.id,
+    //         asset: cashAsset.id,
+    //         type: 'AssetSale',
+    //     };
+    //     const updatedDocument = reducer(
+    //         document,
+    //         // @ts-expect-error mock
+    //         creators.editGroupTransaction(updatedGroupTransaction),
+    //     );
+
+    //     expect(updatedDocument.operations.global).toHaveLength(1);
+    //     expect(updatedDocument.operations.global[0].type).toBe(
+    //         'EDIT_GROUP_TRANSACTION',
+    //     );
+    //     expect(updatedDocument.operations.global[0].input).toStrictEqual(
+    //         updatedGroupTransaction,
+    //     );
+    //     expect(updatedDocument.operations.global[0].index).toEqual(0);
+    // });
+    // it('should handle deleteGroupTransaction operation', () => {
+    //     const input = { id: groupTransactionId };
+    //     const document = utils.createDocument({
+    //         state: {
+    //             global: {
+    //                 accounts: [account, counterParty],
+    //                 principalLender: account.id,
+    //                 spvs: [],
+    //                 feeTypes: [],
+    //                 fixedIncomeTypes: [],
+    //                 portfolio: [asset],
+    //                 // @ts-expect-error mock
+    //                 transactions: [groupTransaction],
+    //             },
+    //             local: {},
+    //         },
+    //     });
+    //     const updatedDocument = reducer(
+    //         document,
+    //         creators.deleteGroupTransaction({ id: groupTransactionId }),
+    //     );
+
+    //     expect(updatedDocument.operations.global).toHaveLength(1);
+    //     expect(updatedDocument.operations.global[0].type).toBe(
+    //         'DELETE_GROUP_TRANSACTION',
+    //     );
+    //     expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+    //     expect(updatedDocument.operations.global[0].index).toEqual(0);
+    // });
+});
