@@ -8,47 +8,23 @@ import { generateMock } from '@powerhousedao/codegen';
 import { reducer } from '../../gen/reducer';
 import { z } from '../../gen/schema';
 import * as creators from '../../gen/transactions/creators';
-import { RwaPortfolioDocument } from '../../gen/types';
 import utils from '../../gen/utils';
 import { validateRwaBaseTransaction } from '../reducers/transactions';
-
-const baseTransactionId = 'base-test-id';
-const groupTransactionId = 'group-test-id';
-const asset = generateMock(z.RwaAssetSchema());
-const amount = 123;
-const account = generateMock(z.RwaAccountSchema());
+const principalLenderAccount = generateMock(z.RwaAccountSchema());
 const counterParty = generateMock(z.RwaAccountSchema());
-const txRef = 'tx-ref';
-const entryTime = new Date().toISOString();
-const tradeTime = new Date().toISOString();
-const settlementTime = new Date().toISOString();
-const baseTransaction = {
-    id: baseTransactionId,
-    asset: asset.id,
-    amount,
-    account: account.id,
-    counterParty: counterParty.id,
-    txRef,
-    entryTime,
-    tradeTime,
-    settlementTime,
-};
-const groupTransaction = {
-    id: groupTransactionId,
-    type: 'AssetPurchase',
-    fixedIncomeTransaction: baseTransaction,
-    cashTransaction: baseTransaction,
-    interestTransaction: baseTransaction,
-    feeTransactions: [baseTransaction],
-};
+const cashAsset = generateMock(z.RwaCashSchema());
+const fixedIncomeAsset = generateMock(z.RwaFixedIncomeSchema());
 
-describe('Transactions Operations', () => {
-    let document: RwaPortfolioDocument;
+function makeBlankGroupTransactionInput() {
+    const input = generateMock(z.RwaGroupTransactionSchema());
+    input.cashTransaction = null;
+    input.fixedIncomeTransaction = null;
+    input.interestTransaction = null;
+    input.feeTransactions = [];
+    return input;
+}
 
-    beforeEach(() => {
-        document = utils.createDocument();
-    });
-
+describe('Transaction validation functions', () => {
     test('validateRwaBaseTransaction - should throw error when id is missing', () => {
         const state = {
             transactions: [],
@@ -230,35 +206,36 @@ describe('Transactions Operations', () => {
             `Counter party account with id ${input.counterParty} does not exist!`,
         );
     });
+});
 
-    it('should handle createGroupTransaction operation', () => {
-        const document = utils.createDocument({
-            state: {
-                global: {
-                    accounts: [account, counterParty],
-                    principalLender: account.id,
-                    spvs: [],
-                    feeTypes: [],
-                    fixedIncomeTypes: [],
-                    portfolio: [asset],
-                    transactions: [],
-                },
-                local: {},
+describe('Transactions Operations', () => {
+    const document = utils.createDocument({
+        state: {
+            global: {
+                accounts: [principalLenderAccount, counterParty],
+                principalLender: principalLenderAccount.id,
+                spvs: [],
+                feeTypes: [],
+                fixedIncomeTypes: [],
+                portfolio: [cashAsset, fixedIncomeAsset],
+                transactions: [],
             },
-        });
+            local: {},
+        },
+    });
+
+    it('should handle createGroupTransaction operation with no transactions to validate', () => {
+        const input = makeBlankGroupTransactionInput();
         const updatedDocument = reducer(
             document,
-            // @ts-expect-error mock
-            creators.createGroupTransaction(groupTransaction),
+            creators.createGroupTransaction(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
             'CREATE_GROUP_TRANSACTION',
         );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(
-            groupTransaction,
-        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle editGroupTransaction operation', () => {
@@ -266,11 +243,11 @@ describe('Transactions Operations', () => {
             state: {
                 global: {
                     accounts: [account, counterParty],
-                    principalLender: account.id,
+                    principalLender: counterParty.id,
                     spvs: [],
                     feeTypes: [],
                     fixedIncomeTypes: [],
-                    portfolio: [asset],
+                    portfolio: [cashAsset],
                     // @ts-expect-error mock
                     transactions: [groupTransaction],
                 },
@@ -279,6 +256,8 @@ describe('Transactions Operations', () => {
         });
         const updatedGroupTransaction = {
             ...groupTransaction,
+            counterParty: counterParty.id,
+            asset: cashAsset.id,
             type: 'AssetSale',
         };
         const updatedDocument = reducer(

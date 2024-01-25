@@ -9,6 +9,7 @@ import {
     InputMaybe,
     RwaAsset,
     RwaBaseTransaction,
+    RwaCash,
     RwaFixedIncome,
     RwaGroupTransaction,
     RwaPortfolioState,
@@ -16,8 +17,19 @@ import {
 import { GroupTransactionTypeSchema } from '../../gen/schema/zod';
 import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
 
+const numberValidator = z.number({
+    required_error: 'Amount is required',
+    invalid_type_error: 'Amount must be a number',
+});
+
+const dateValidator = z.coerce.date();
+
 export function isFixedIncomeAsset(asset: RwaAsset): asset is RwaFixedIncome {
     return 'type' in asset;
+}
+
+export function isCashAsset(asset: RwaAsset): asset is RwaCash {
+    return 'spv' in asset;
 }
 
 export function validateRwaBaseTransaction(
@@ -39,30 +51,30 @@ export function validateRwaBaseTransaction(
     if (!input.amount) {
         throw new Error(`Transaction must have an amount`);
     }
-    const amount = z.number({
-        required_error: 'Amount is required',
-        invalid_type_error: 'Amount must be a positive number',
-    });
-
-    amount.positive({ message: 'Amount must be a positive' });
-    amount.finite({ message: 'Amount must be finite' });
-    amount.safe({
-        message:
-            'must be between Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER',
-    });
-    const dateSchema = z.coerce.date();
     if (!input.entryTime) {
         throw new Error(`Transaction must have an entry time`);
     }
-    if (!dateSchema.safeParse(input.entryTime).success) {
+
+    numberValidator
+        .finite({ message: 'Amount must be finite' })
+        .safeParse(input.amount);
+
+    numberValidator
+        .safe({
+            message:
+                'must be between Number.MIN_SAFE_INTEGER and Number.MAX_SAFE_INTEGER',
+        })
+        .safeParse(input.amount);
+
+    if (!dateValidator.safeParse(input.entryTime).success) {
         throw new Error(`Entry time must be a valid date`);
     }
-    if (input.tradeTime && !dateSchema.safeParse(input.tradeTime).success) {
+    if (input.tradeTime && !dateValidator.safeParse(input.tradeTime).success) {
         throw new Error(`Trade time must be a valid date`);
     }
     if (
         input.settlementTime &&
-        !dateSchema.safeParse(input.settlementTime).success
+        !dateValidator.safeParse(input.settlementTime).success
     ) {
         throw new Error(`Settlement time must be a valid date`);
     }
@@ -90,18 +102,96 @@ export function validateInputTransactions(
 ) {
     if (input.fixedIncomeTransaction) {
         validateRwaBaseTransaction(state, input.fixedIncomeTransaction);
+        validateFixedIncomeTransaction(state, input.fixedIncomeTransaction);
     }
     if (input.cashTransaction) {
         validateRwaBaseTransaction(state, input.cashTransaction);
+        validateCashTransaction(state, input.cashTransaction);
     }
     if (input.interestTransaction) {
         validateRwaBaseTransaction(state, input.interestTransaction);
+        validateInterestTransaction(state, input.interestTransaction);
     }
     if (input.feeTransactions?.length) {
         input.feeTransactions.forEach(feeTransaction => {
+            if (!feeTransaction) return;
             validateRwaBaseTransaction(state, feeTransaction);
+            validateFeeTransaction(state, feeTransaction);
         });
     }
+}
+
+export function validateFixedIncomeTransaction(
+    state: RwaPortfolioState,
+    transaction: RwaBaseTransaction,
+) {
+    if (
+        !isFixedIncomeAsset(
+            state.portfolio.find(a => a.id === transaction.asset)!,
+        )
+    ) {
+        throw new Error(
+            `Fixed income transaction must have a fixed income asset as the asset`,
+        );
+    }
+}
+
+export function validateCashTransaction(
+    state: RwaPortfolioState,
+    transaction: RwaBaseTransaction,
+) {
+    if (transaction.counterParty !== state.principalLender) {
+        throw new Error(
+            `Cash transaction must have Maker principal lender as the counter party`,
+        );
+    }
+    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+        throw new Error(`Cash transaction must have a cash asset as the asset`);
+    }
+}
+
+export function validateInterestTransaction(
+    state: RwaPortfolioState,
+    transaction: RwaBaseTransaction,
+) {
+    if (isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+        throw new Error(
+            `Interest transaction must have a cash asset as the asset`,
+        );
+    }
+    if (!transaction.counterParty) {
+        throw new Error(
+            `Interest transaction must have a counter party account`,
+        );
+    }
+    if (!state.feeTypes.find(a => a.id === transaction.counterParty)) {
+        throw new Error(
+            `Counter party with id ${transaction.counterParty} must be a known service provider`,
+        );
+    }
+    numberValidator
+        .positive({ message: 'Interest transaction amount must be positive' })
+        .safeParse(transaction.amount);
+}
+
+export function validateFeeTransaction(
+    state: RwaPortfolioState,
+    transaction: RwaBaseTransaction,
+) {
+    if (isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+        throw new Error(`Fee transaction must have a cash asset as the asset`);
+    }
+    if (!transaction.counterParty) {
+        throw new Error(`Fee transaction must have a counter party account`);
+    }
+    if (!state.feeTypes.find(a => a.id === transaction.counterParty)) {
+        throw new Error(
+            `Counter party with id ${transaction.counterParty} must be a known service provider`,
+        );
+    }
+    numberValidator
+        .negative({ message: 'Fee transaction amount must be negative' })
+        .safeParse(transaction.amount);
 }
 
 export const reducer: RwaPortfolioTransactionsOperations = {
