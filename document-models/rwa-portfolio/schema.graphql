@@ -66,12 +66,46 @@ type RwaAccount {
     label: String
 }
 
-type RwaGroupTransaction {
+union RwaGroupTransaction = PrincipalDrawGroupTransaction
+    | PrincipalReturnGroupTransaction
+    | AssetPurchaseGroupTransaction
+    | AssetSaleGroupTransaction
+    | InterestDrawGroupTransaction
+    | InterestReturnGroupTransaction
+    | FeesPaymentGroupTransaction
+
+type PrincipalDrawGroupTransaction {
     id: ID!
-    type: GroupTransactionType!
-    fixedIncomeTransaction: RwaBaseTransaction
     cashTransaction: RwaBaseTransaction
+}
+
+type PrincipalReturnGroupTransaction {
+    id: ID!
+    cashTransaction: RwaBaseTransaction
+}
+
+type AssetPurchaseGroupTransaction {
+    id: ID!
+    fixedIncomeTransaction: RwaBaseTransaction
+}
+
+type AssetSaleGroupTransaction {
+    id: ID!
+    fixedIncomeTransaction: RwaBaseTransaction
+}
+
+type InterestDrawGroupTransaction {
+    id: ID!
     interestTransaction: RwaBaseTransaction
+}
+
+type InterestReturnGroupTransaction {
+    id: ID!
+    interestTransaction: RwaBaseTransaction
+}
+
+type FeesPaymentGroupTransaction {
+    id: ID!
     feeTransactions: [RwaBaseTransaction]
 }
 
@@ -113,20 +147,14 @@ input CreateSpvInput {
     name: String!
 }
 
-# add new types here
-
 input EditSpvInput {
     id: ID!
     name: String
 }
 
-# add new types here
-
 input DeleteSpvInput {
     id: ID!
 }
-
-# add new types here
 
 input CreateServiceProviderInput {
     id: ID!
@@ -135,8 +163,6 @@ input CreateServiceProviderInput {
     accountId: String!
 }
 
-# add new types here
-
 input EditServiceProviderInput {
     id: ID!
     name: String
@@ -144,13 +170,9 @@ input EditServiceProviderInput {
     accountId: String
 }
 
-# add new types here
-
 input DeleteServiceProviderInput {
     id: ID!
 }
-
-# add new types here
 
 # portfolio
 
@@ -170,8 +192,6 @@ input CreateRwaCashAssetInput {
     currency: String! # Will always be "USD" for version 1
 }
 
-# add new types here
-
 input EditRwaCashAssetInput {
     id: ID!
     spv: ID # RwaSpv.id
@@ -188,41 +208,11 @@ input EditRwaFixedIncomeAssetInput {
     maturity: DateTime
 }
 
-# add new types here
-
 input DeleteRwaFixedIncomeAssetInput {
     id: ID!
 }
 
-# add new types here
-
 input DeleteRwaCashAssetInput {
-    id: ID!
-}
-
-# add new types here
-
-# transactions
-
-input CreateGroupTransactionInput {
-    id: ID!
-    type: GroupTransactionType!
-    fixedIncomeTransaction: RwaBaseTransaction
-    cashTransaction: RwaBaseTransaction
-    interestTransaction: RwaBaseTransaction
-    feeTransactions: [RwaBaseTransaction]
-}
-
-input EditGroupTransactionInput {
-    id: ID!
-    type: GroupTransactionType
-    fixedIncomeTransaction: RwaBaseTransaction
-    cashTransaction: RwaBaseTransaction
-    interestTransaction: RwaBaseTransaction
-    feeTransactions: [RwaBaseTransaction]
-}
-
-input DeleteGroupTransactionInput {
     id: ID!
 }
 
@@ -239,5 +229,106 @@ input EditRwaAccountInput {
 }
 
 input DeleteRwaAccountInput {
+    id: ID!
+}
+
+# transactions
+
+input CreatePrincipalDrawGroupTransactionInput {
+    id: ID!
+    cashTransaction: RwaBaseTransaction
+}
+
+input CreatePrincipalReturnGroupTransactionInput {
+    id: ID!
+    cashTransaction: RwaBaseTransaction
+}
+
+input CreateAssetPurchaseGroupTransactionInput {
+    id: ID!
+    fixedIncomeTransaction: RwaBaseTransaction
+}
+
+input CreateAssetSaleGroupTransactionInput {
+    id: ID!
+    fixedIncomeTransaction: RwaBaseTransaction
+}
+
+input CreateInterestDrawGroupTransactionInput {
+    id: ID!
+    interestTransaction: RwaBaseTransaction
+}
+
+input CreateInterestReturnGroupTransactionInput {
+    id: ID!
+    interestTransaction: RwaBaseTransaction
+}
+
+input CreateFeesPaymentGroupTransactionInput {
+    id: ID!
+    feeTransactions: [RwaBaseTransaction]
+}
+
+# when the type is changed, the transactions associated are deleted
+input EditGroupTransactionType {
+    id: ID!
+}
+
+input EditPrincipalDrawGroupTransactionInput {
+    id: ID!
+    cashTransaction: RwaBaseTransaction
+}
+
+input EditPrincipalReturnGroupTransactionInput {
+    id: ID!
+    cashTransaction: RwaBaseTransaction
+}
+
+input EditAssetPurchaseGroupTransactionInput {
+    id: ID!
+    fixedIncomeTransaction: RwaBaseTransaction
+}
+
+input EditAssetSaleGroupTransactionInput {
+    id: ID!
+    fixedIncomeTransaction: RwaBaseTransaction
+}
+
+input EditInterestDrawGroupTransactionInput {
+    id: ID!
+    interestTransaction: RwaBaseTransaction
+}
+
+input EditInterestReturnGroupTransactionInput {
+    id: ID!
+    interestTransaction: RwaBaseTransaction
+}
+
+# add a fee transaction to a fees payment group transaction's list of fee payments
+input AddFeeTransactionsToFeesPaymentGroupTransactionInput {
+    id: ID!
+    feeTransactions: [RwaBaseTransaction]
+}
+
+# edit a specific fee transaction in a fees payment group transaction's list of fee payments
+input EditFeeTransactionInput {
+    id: ID!
+    feeTransactionId: ID!
+    amount: Float
+    entryTime: DateTime
+    tradeTime: DateTime
+    settlementTime: DateTime
+    txRef: String
+    account: ID
+    counterParty: ID
+}
+
+# remove a fee transaction from a fees payment group transaction's list of fee payments
+input RemoveFeeTransactionFromFeesPaymentGroupTransactionInput {
+    id: ID!
+    feeTransactionId: ID!
+}
+
+input DeleteGroupTransactionInput {
     id: ID!
 }

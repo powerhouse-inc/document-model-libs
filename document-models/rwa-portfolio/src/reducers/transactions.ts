@@ -275,44 +275,6 @@ export const reducer: RwaPortfolioTransactionsOperations = {
             ) {
                 throw new Error(`Invalid group transaction type`);
             }
-            if (
-                isCashAssetGroupTransactionType(action.input.type) &&
-                hasFixedIncomeAssetTransaction(transaction)
-            ) {
-                throw new Error(
-                    `This group transaction cannot be converted to a cash group transaction because it has a fixed income asset transaction`,
-                );
-            }
-            if (
-                isFixedIncomeAssetGroupTransactionType(action.input.type) &&
-                hasCashAssetTransaction(transaction)
-            ) {
-                throw new Error(
-                    `This group transaction cannot be converted to a fixed income group transaction because it has a cash asset transaction`,
-                );
-            }
-        }
-        if (
-            hasCashAssetTransaction(action.input as RwaGroupTransaction) &&
-            isFixedIncomeAssetGroupTransactionType(
-                transaction.type as GroupTransactionType,
-            )
-        ) {
-            throw new Error(
-                `Cash group transaction cannot have a fixed income asset transaction`,
-            );
-        }
-        if (
-            hasFixedIncomeAssetTransaction(
-                action.input as RwaGroupTransaction,
-            ) &&
-            isCashAssetGroupTransactionType(
-                transaction.type as GroupTransactionType,
-            )
-        ) {
-            throw new Error(
-                `Fixed income group transaction cannot have a cash asset transaction`,
-            );
         }
         validateInputTransactions(state, action.input);
         state.transactions = state.transactions.map(t =>
