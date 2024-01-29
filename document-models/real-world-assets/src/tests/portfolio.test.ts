@@ -7,7 +7,7 @@ import { generateMock } from '@powerhousedao/codegen';
 
 import * as creators from '../../gen/portfolio/creators';
 import { reducer } from '../../gen/reducer';
-import { RwaAsset, z } from '../../gen/schema';
+import { Asset, z } from '../../gen/schema';
 import { RealWorldAssetsDocument } from '../../gen/types';
 import utils from '../../gen/utils';
 
@@ -18,11 +18,9 @@ describe('Portfolio Operations', () => {
         document = utils.createDocument();
     });
 
-    it('should handle createRwaFixedIncomeAsset operation', () => {
-        const input = generateMock(z.CreateRwaFixedIncomeAssetInputSchema());
-        const existingFixedIncomeType = generateMock(
-            z.RwaFixedIncomeTypeSchema(),
-        );
+    it('should handle createFixedIncomeAsset operation', () => {
+        const input = generateMock(z.CreateFixedIncomeAssetInputSchema());
+        const existingFixedIncomeType = generateMock(z.FixedIncomeTypeSchema());
         existingFixedIncomeType.id = input.type;
         const document = utils.createDocument({
             state: {
@@ -34,20 +32,20 @@ describe('Portfolio Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.createRwaFixedIncomeAsset(input),
+            creators.createFixedIncomeAsset(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_RWA_FIXED_INCOME_ASSET',
+            'CREATE_FIXED_INCOME_ASSET',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle createRwaCashAsset operation', () => {
-        const input = generateMock(z.CreateRwaCashAssetInputSchema());
+    it('should handle createCashAsset operation', () => {
+        const input = generateMock(z.CreateCashAssetInputSchema());
         input.currency = 'USD';
-        const existingSpv = generateMock(z.RwaSpvSchema());
+        const existingSpv = generateMock(z.SpvSchema());
         existingSpv.id = input.spv;
         const document = utils.createDocument({
             state: {
@@ -59,24 +57,22 @@ describe('Portfolio Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.createRwaCashAsset(input),
+            creators.createCashAsset(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_RWA_CASH_ASSET',
+            'CREATE_CASH_ASSET',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle editRwaFixedIncomeAsset operation', () => {
+    it('should handle editFixedIncomeAsset operation', () => {
         const existingAsset = generateMock(
-            z.CreateRwaFixedIncomeAssetInputSchema(),
-        ) as RwaAsset;
-        const input = generateMock(z.EditRwaFixedIncomeAssetInputSchema());
-        const existingFixedIncomeType = generateMock(
-            z.RwaFixedIncomeTypeSchema(),
-        );
+            z.CreateFixedIncomeAssetInputSchema(),
+        ) as Asset;
+        const input = generateMock(z.EditFixedIncomeAssetInputSchema());
+        const existingFixedIncomeType = generateMock(z.FixedIncomeTypeSchema());
         existingAsset.id = input.id;
         // @ts-expect-error mock
         existingFixedIncomeType.id = input.type;
@@ -91,23 +87,23 @@ describe('Portfolio Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.editRwaFixedIncomeAsset(input),
+            creators.editFixedIncomeAsset(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'EDIT_RWA_FIXED_INCOME_ASSET',
+            'EDIT_FIXED_INCOME_ASSET',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle editRwaCashAsset operation', () => {
-        const input = generateMock(z.EditRwaCashAssetInputSchema());
+    it('should handle editCashAsset operation', () => {
+        const input = generateMock(z.EditCashAssetInputSchema());
         input.currency = 'USD';
-        const existingSpv = generateMock(z.RwaSpvSchema());
+        const existingSpv = generateMock(z.SpvSchema());
         // @ts-expect-error mock
         existingSpv.id = input.spv;
-        const existingAsset = generateMock(z.CreateRwaCashAssetInputSchema());
+        const existingAsset = generateMock(z.CreateCashAssetInputSchema());
         existingAsset.id = input.id;
         const document = utils.createDocument({
             state: {
@@ -120,20 +116,20 @@ describe('Portfolio Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.editRwaCashAsset(input),
+            creators.editCashAsset(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'EDIT_RWA_CASH_ASSET',
+            'EDIT_CASH_ASSET',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle deleteRwaFixedIncomeAsset operation', () => {
-        const input = generateMock(z.DeleteRwaFixedIncomeAssetInputSchema());
+    it('should handle deleteFixedIncomeAsset operation', () => {
+        const input = generateMock(z.DeleteFixedIncomeAssetInputSchema());
         const existingAsset = generateMock(
-            z.CreateRwaFixedIncomeAssetInputSchema(),
+            z.CreateFixedIncomeAssetInputSchema(),
         );
         existingAsset.id = input.id;
         const document = utils.createDocument({
@@ -147,19 +143,19 @@ describe('Portfolio Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.deleteRwaFixedIncomeAsset(input),
+            creators.deleteFixedIncomeAsset(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'DELETE_RWA_FIXED_INCOME_ASSET',
+            'DELETE_FIXED_INCOME_ASSET',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle deleteRwaCashAsset operation', () => {
-        const input = generateMock(z.DeleteRwaCashAssetInputSchema());
-        const existingAsset = generateMock(z.CreateRwaCashAssetInputSchema());
+    it('should handle deleteCashAsset operation', () => {
+        const input = generateMock(z.DeleteCashAssetInputSchema());
+        const existingAsset = generateMock(z.CreateCashAssetInputSchema());
         existingAsset.id = input.id;
         const document = utils.createDocument({
             state: {
@@ -171,12 +167,12 @@ describe('Portfolio Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.deleteRwaCashAsset(input),
+            creators.deleteCashAsset(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'DELETE_RWA_CASH_ASSET',
+            'DELETE_CASH_ASSET',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);

@@ -10,12 +10,12 @@ import { z } from 'zod';
 import {
     FeesPaymentGroupTransaction,
     RealWorldAssetsState,
-    RwaAsset,
-    RwaBaseTransaction,
-    RwaCash,
-    RwaFixedIncome,
-    RwaGroupTransaction,
-    RwaGroupTransactionType,
+    Asset,
+    BaseTransaction,
+    Cash,
+    FixedIncome,
+    GroupTransaction,
+    GroupTransactionType,
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
 import {
@@ -35,12 +35,12 @@ const numberValidator = z.number();
 const dateValidator = z.coerce.date();
 
 export function validateHasCorrectTransactions(
-    groupTransactionType: RwaGroupTransactionType,
+    groupTransactionType: GroupTransactionType,
     transactionsInput: {
-        cashTransaction?: InputMaybe<RwaBaseTransaction>;
-        fixedIncomeTransaction?: InputMaybe<RwaBaseTransaction>;
-        interestTransaction?: InputMaybe<RwaBaseTransaction>;
-        feeTransactions?: InputMaybe<InputMaybe<RwaBaseTransaction>[]>;
+        cashTransaction?: InputMaybe<BaseTransaction>;
+        fixedIncomeTransaction?: InputMaybe<BaseTransaction>;
+        interestTransaction?: InputMaybe<BaseTransaction>;
+        feeTransactions?: InputMaybe<InputMaybe<BaseTransaction>[]>;
     },
 ) {
     const allowedTransaction =
@@ -58,20 +58,20 @@ export function validateHasCorrectTransactions(
 }
 
 export function isFixedIncomeAsset(
-    asset: RwaAsset | undefined,
-): asset is RwaFixedIncome {
+    asset: Asset | undefined,
+): asset is FixedIncome {
     if (!asset) return false;
     return 'type' in asset;
 }
 
-export function isCashAsset(asset: RwaAsset | undefined): asset is RwaCash {
+export function isCashAsset(asset: Asset | undefined): asset is Cash {
     if (!asset) return false;
     return 'spv' in asset;
 }
 
-export function validateRwaBaseTransaction(
+export function validateBaseTransaction(
     state: RealWorldAssetsState,
-    input: InputMaybe<RwaBaseTransaction>,
+    input: InputMaybe<BaseTransaction>,
 ) {
     if (!input?.id) {
         throw new Error(`Transaction must have an id`);
@@ -119,7 +119,7 @@ export function validateRwaBaseTransaction(
 
 export function validateFixedIncomeTransaction(
     state: RealWorldAssetsState,
-    transaction: RwaBaseTransaction,
+    transaction: BaseTransaction,
 ) {
     if (
         !isFixedIncomeAsset(
@@ -134,7 +134,7 @@ export function validateFixedIncomeTransaction(
 
 export function validateCashTransaction(
     state: RealWorldAssetsState,
-    transaction: RwaBaseTransaction,
+    transaction: BaseTransaction,
 ) {
     if (transaction === null) return;
     if (transaction.counterParty !== state.principalLender) {
@@ -149,7 +149,7 @@ export function validateCashTransaction(
 
 export function validateInterestTransaction(
     state: RealWorldAssetsState,
-    transaction: RwaBaseTransaction,
+    transaction: BaseTransaction,
 ) {
     if (
         !isFixedIncomeAsset(
@@ -177,7 +177,7 @@ export function validateInterestTransaction(
 
 export function validateFeeTransaction(
     state: RealWorldAssetsState,
-    transaction: RwaBaseTransaction,
+    transaction: BaseTransaction,
 ) {
     if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset))) {
         throw new Error(`Fee transaction must have a cash asset as the asset`);
@@ -415,7 +415,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 ? ({
                       ...t,
                       cashTransaction: action.input.cashTransaction,
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -436,7 +436,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 ? ({
                       ...t,
                       cashTransaction: action.input.cashTransaction,
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -456,7 +456,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                       ...t,
                       fixedIncomeTransaction:
                           action.input.fixedIncomeTransaction,
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -476,7 +476,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                       ...t,
                       fixedIncomeTransaction:
                           action.input.fixedIncomeTransaction,
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -495,7 +495,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 ? ({
                       ...t,
                       interestTransaction: action.input.interestTransaction,
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -514,7 +514,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 ? ({
                       ...t,
                       interestTransaction: action.input.interestTransaction,
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -537,7 +537,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                               .feeTransactions || []),
                           ...(action.input.feeTransactions || []),
                       ],
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -548,7 +548,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.feeTransactionId) {
             throw new Error('Fee transaction must have an id');
         }
-        validateFeeTransaction(state, action.input as RwaBaseTransaction);
+        validateFeeTransaction(state, action.input as BaseTransaction);
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
                 ? ({
@@ -561,7 +561,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                               ? action.input
                               : f,
                       ),
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },
@@ -583,7 +583,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                           (t as FeesPaymentGroupTransaction).feeTransactions ||
                           []
                       ).filter(f => f?.id !== action.input.feeTransactionId),
-                  } as RwaGroupTransaction)
+                  } as GroupTransaction)
                 : t,
         );
     },

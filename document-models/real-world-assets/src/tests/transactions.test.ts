@@ -7,8 +7,8 @@ import { generateMock } from '@powerhousedao/codegen';
 import { reducer } from '../../gen/reducer';
 import {
     RealWorldAssetsState,
-    RwaBaseTransaction,
-    RwaGroupTransactionType,
+    BaseTransaction,
+    GroupTransactionType,
     z,
 } from '../../gen/schema';
 import * as creators from '../../gen/transactions/creators';
@@ -30,15 +30,15 @@ import {
     validateFixedIncomeTransaction,
     validateHasCorrectTransactions,
     validateInterestTransaction,
-    validateRwaBaseTransaction,
+    validateBaseTransaction,
 } from '../reducers/transactions';
-const principalLenderAccount = generateMock(z.RwaAccountSchema());
-const counterParty = generateMock(z.RwaAccountSchema());
-const cashAsset = generateMock(z.RwaCashSchema());
-const fixedIncomeAsset = generateMock(z.RwaFixedIncomeSchema());
-const serviceProvider = generateMock(z.RwaServiceProviderSchema());
+const principalLenderAccount = generateMock(z.AccountSchema());
+const counterParty = generateMock(z.AccountSchema());
+const cashAsset = generateMock(z.CashSchema());
+const fixedIncomeAsset = generateMock(z.FixedIncomeSchema());
+const serviceProvider = generateMock(z.ServiceProviderSchema());
 serviceProvider.accountId = counterParty.id;
-const cashTransaction = generateMock(z.RwaBaseTransactionSchema());
+const cashTransaction = generateMock(z.BaseTransactionSchema());
 cashTransaction.counterParty = principalLenderAccount.id;
 cashTransaction.asset = cashAsset.id;
 const positiveCashTransaction = {
@@ -49,16 +49,16 @@ const negativeCashTransaction = {
     ...cashTransaction,
     amount: -100,
 };
-const fixedIncomeTransaction = generateMock(z.RwaBaseTransactionSchema());
+const fixedIncomeTransaction = generateMock(z.BaseTransactionSchema());
 fixedIncomeTransaction.asset = fixedIncomeAsset.id;
-const interestTransaction = generateMock(z.RwaBaseTransactionSchema());
+const interestTransaction = generateMock(z.BaseTransactionSchema());
 interestTransaction.asset = fixedIncomeAsset.id;
 interestTransaction.counterParty = serviceProvider.accountId;
 
 function makeBlankGroupTransactionInput(
-    groupTransactionType: RwaGroupTransactionType,
+    groupTransactionType: GroupTransactionType,
 ) {
-    const input = generateMock(z.RwaGroupTransactionSchema());
+    const input = generateMock(z.GroupTransactionSchema());
     const transactionsType =
         groupTransactionTypesToAllowedTransactions[groupTransactionType];
     input.type = groupTransactionType;
@@ -72,8 +72,8 @@ function makeBlankGroupTransactionInput(
     return input;
 }
 
-describe('validateRwaBaseTransaction', () => {
-    test('validateRwaBaseTransaction - should throw error when id is missing', () => {
+describe('validateBaseTransaction', () => {
+    test('validateBaseTransaction - should throw error when id is missing', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -81,12 +81,12 @@ describe('validateRwaBaseTransaction', () => {
         };
         const input = { asset: 'asset1', amount: 100, entryTime: new Date() };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Transaction must have an id',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when transaction id already exists', () => {
+    test('validateBaseTransaction - should throw error when transaction id already exists', () => {
         const state = {
             transactions: [{ id: 'trans1' }],
             portfolio: [{ id: 'asset1' }],
@@ -99,12 +99,12 @@ describe('validateRwaBaseTransaction', () => {
             entryTime: new Date(),
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             `Transaction with id ${input.id} already exists!`,
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when asset is missing', () => {
+    test('validateBaseTransaction - should throw error when asset is missing', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -112,12 +112,12 @@ describe('validateRwaBaseTransaction', () => {
         };
         const input = { id: 'trans1', amount: 100, entryTime: new Date() };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Transaction must have an asset',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when asset does not exist', () => {
+    test('validateBaseTransaction - should throw error when asset does not exist', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -130,12 +130,12 @@ describe('validateRwaBaseTransaction', () => {
             entryTime: new Date(),
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             `Asset with id ${input.asset} does not exist!`,
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when amount is missing', () => {
+    test('validateBaseTransaction - should throw error when amount is missing', () => {
         const state = {
             transactions: [],
             accounts: [],
@@ -143,12 +143,12 @@ describe('validateRwaBaseTransaction', () => {
         };
         const input = { id: 'trans1', asset: 'asset1', entryTime: new Date() };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Transaction must have an amount',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when entryTime is missing', () => {
+    test('validateBaseTransaction - should throw error when entryTime is missing', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -156,12 +156,12 @@ describe('validateRwaBaseTransaction', () => {
         };
         const input = { id: 'trans1', asset: 'asset1', amount: 100 };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Transaction must have an entry time',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when entryTime is not a valid date', () => {
+    test('validateBaseTransaction - should throw error when entryTime is not a valid date', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -174,12 +174,12 @@ describe('validateRwaBaseTransaction', () => {
             entryTime: 'invalid date',
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Entry time must be a valid date',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when tradeTime is not a valid date', () => {
+    test('validateBaseTransaction - should throw error when tradeTime is not a valid date', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -193,12 +193,12 @@ describe('validateRwaBaseTransaction', () => {
             tradeTime: 'invalid date',
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Trade time must be a valid date',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when settlementTime is not a valid date', () => {
+    test('validateBaseTransaction - should throw error when settlementTime is not a valid date', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -212,12 +212,12 @@ describe('validateRwaBaseTransaction', () => {
             settlementTime: 'invalid date',
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             'Settlement time must be a valid date',
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when account does not exist', () => {
+    test('validateBaseTransaction - should throw error when account does not exist', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -231,12 +231,12 @@ describe('validateRwaBaseTransaction', () => {
             account: 'account1',
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             `Account with id ${input.account} does not exist!`,
         );
     });
 
-    test('validateRwaBaseTransaction - should throw error when counterParty does not exist', () => {
+    test('validateBaseTransaction - should throw error when counterParty does not exist', () => {
         const state = {
             transactions: [],
             portfolio: [{ id: 'asset1' }],
@@ -250,7 +250,7 @@ describe('validateRwaBaseTransaction', () => {
             counterParty: 'counterParty1',
         };
         // @ts-expect-error mock
-        expect(() => validateRwaBaseTransaction(state, input)).toThrow(
+        expect(() => validateBaseTransaction(state, input)).toThrow(
             `Counter party account with id ${input.counterParty} does not exist!`,
         );
     });
@@ -458,7 +458,7 @@ describe('validateFixedIncomeTransaction', () => {
             ],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = { asset: '1' };
+        const transaction: BaseTransaction = { asset: '1' };
 
         expect(() =>
             validateFixedIncomeTransaction(state, transaction),
@@ -475,7 +475,7 @@ describe('validateFixedIncomeTransaction', () => {
             ],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = { asset: '1' };
+        const transaction: BaseTransaction = { asset: '1' };
 
         expect(() =>
             validateFixedIncomeTransaction(state, transaction),
@@ -493,7 +493,7 @@ describe('validateCashTransaction', () => {
             ],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'counterParty1',
         };
@@ -510,7 +510,7 @@ describe('validateCashTransaction', () => {
             portfolio: [{ id: '1', type: 'equity' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'principalLender1',
         };
@@ -527,7 +527,7 @@ describe('validateCashTransaction', () => {
             portfolio: [{ id: '1', spv: 'cash' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'principalLender1',
         };
@@ -547,7 +547,7 @@ describe('validateInterestTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'serviceProvider1',
             amount: 100,
@@ -566,7 +566,7 @@ describe('validateInterestTransaction', () => {
             feeTypes: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = { asset: '1', amount: 100 };
+        const transaction: BaseTransaction = { asset: '1', amount: 100 };
 
         expect(() => validateInterestTransaction(state, transaction)).toThrow(
             'Interest transaction must have a counter party account',
@@ -581,7 +581,7 @@ describe('validateInterestTransaction', () => {
             feeTypes: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'unknownServiceProvider',
             amount: 100,
@@ -602,7 +602,7 @@ describe('validateInterestTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'serviceProvider1',
             amount: -100,
@@ -623,7 +623,7 @@ describe('validateInterestTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'serviceProvider1',
             amount: 100,
@@ -646,7 +646,7 @@ describe('validateFeeTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'serviceProvider1',
             amount: -100,
@@ -665,7 +665,7 @@ describe('validateFeeTransaction', () => {
             feeTypes: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = { asset: '1', amount: -100 };
+        const transaction: BaseTransaction = { asset: '1', amount: -100 };
 
         expect(() => validateFeeTransaction(state, transaction)).toThrow(
             'Fee transaction must have a counter party account',
@@ -682,7 +682,7 @@ describe('validateFeeTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'unknownServiceProvider',
             amount: -100,
@@ -703,7 +703,7 @@ describe('validateFeeTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'serviceProvider1',
             amount: 100,
@@ -724,7 +724,7 @@ describe('validateFeeTransaction', () => {
             accounts: [{ id: 'serviceProvider1' }],
         };
         // @ts-expect-error mock
-        const transaction: RwaBaseTransaction = {
+        const transaction: BaseTransaction = {
             asset: '1',
             counterParty: 'serviceProvider1',
             amount: -100,

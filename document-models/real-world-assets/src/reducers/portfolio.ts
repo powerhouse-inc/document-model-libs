@@ -5,22 +5,22 @@
  */
 
 import { z } from 'zod';
-import { RwaAsset } from '../..';
+import { Asset } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
 
 export const reducer: RealWorldAssetsPortfolioOperations = {
-    createRwaFixedIncomeAssetOperation(state, action, dispatch) {
+    createFixedIncomeAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
-            throw new Error(`RWA fixed income asset must have an id`);
+            throw new Error(`Fixed income asset must have an id`);
         }
         if (!action.input.type) {
-            throw new Error(`RWA fixed income asset must have a type`);
+            throw new Error(`Fixed income asset must have a type`);
         }
         if (!action.input.name) {
-            throw new Error(`RWA fixed income asset must have a name`);
+            throw new Error(`Fixed income asset must have a name`);
         }
         if (!action.input.maturity) {
-            throw new Error(`RWA fixed income asset must have a maturity`);
+            throw new Error(`Fixed income asset must have a maturity`);
         }
         if (state.portfolio.find(asset => asset.id === action.input.id)) {
             throw new Error(`Asset with id ${action.input.id} already exists!`);
@@ -34,17 +34,17 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!dateSchema.safeParse(action.input.maturity).success) {
             throw new Error(`Maturity must be a valid date`);
         }
-        state.portfolio.push(action.input as RwaAsset);
+        state.portfolio.push(action.input as Asset);
     },
-    createRwaCashAssetOperation(state, action, dispatch) {
+    createCashAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
-            throw new Error(`RWA cash asset must have an id`);
+            throw new Error(`Cash asset must have an id`);
         }
         if (!action.input.spv) {
-            throw new Error(`RWA cash asset must have a spv`);
+            throw new Error(`Cash asset must have a spv`);
         }
         if (!action.input.currency) {
-            throw new Error(`RWA cash asset must have a currency`);
+            throw new Error(`Cash asset must have a currency`);
         }
         if (!state.spvs.find(spv => spv.id === action.input.spv)) {
             throw new Error(`SPV with id ${action.input.id} does not exist!`);
@@ -56,11 +56,11 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (state.portfolio.find(asset => asset.id === action.input.id)) {
             throw new Error(`Asset with id ${action.input.id} already exists!`);
         }
-        state.portfolio.push(action.input as RwaAsset);
+        state.portfolio.push(action.input as Asset);
     },
-    editRwaFixedIncomeAssetOperation(state, action, dispatch) {
+    editFixedIncomeAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
-            throw new Error(`RWA fixed income asset must have an id`);
+            throw new Error(`Fixed income asset must have an id`);
         }
         const asset = state.portfolio.find(
             asset => asset.id === action.input.id,
@@ -87,13 +87,13 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
                 ? ({
                       ...asset,
                       ...action.input,
-                  } as RwaAsset)
+                  } as Asset)
                 : asset,
         );
     },
-    editRwaCashAssetOperation(state, action, dispatch) {
+    editCashAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
-            throw new Error(`RWA cash asset must have an id`);
+            throw new Error(`Cash asset must have an id`);
         }
         const asset = state.portfolio.find(
             asset => asset.id === action.input.id,
@@ -116,13 +116,13 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
                 ? ({
                       ...asset,
                       ...action.input,
-                  } as RwaAsset)
+                  } as Asset)
                 : asset,
         );
     },
-    deleteRwaFixedIncomeAssetOperation(state, action, dispatch) {
+    deleteFixedIncomeAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
-            throw new Error(`RWA fixed income asset must have an id`);
+            throw new Error(`Fixed income asset must have an id`);
         }
         const asset = state.portfolio.find(
             asset => asset.id === action.input.id,
@@ -134,9 +134,9 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             asset => asset.id !== action.input.id,
         );
     },
-    deleteRwaCashAssetOperation(state, action, dispatch) {
+    deleteCashAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
-            throw new Error(`RWA fixed income asset must have an id`);
+            throw new Error(`Fixed income asset must have an id`);
         }
         const asset = state.portfolio.find(
             asset => asset.id === action.input.id,

@@ -5,15 +5,15 @@
 
 import utils, { initialGlobalState, initialLocalState } from '../../gen/utils';
 
-describe('Rwa Portfolio Document Model', () => {
-    it('should create a new Rwa Portfolio document', () => {
+describe(' Portfolio Document Model', () => {
+    it('should create a new  Portfolio document', () => {
         const document = utils.createDocument();
 
         expect(document).toBeDefined();
         expect(document.documentType).toBe('');
     });
 
-    it('should create a new Rwa Portfolio document with a valid initial state', () => {
+    it('should create a new  Portfolio document with a valid initial state', () => {
         const document = utils.createDocument();
         expect(document.state.global).toStrictEqual(initialGlobalState);
         expect(document.state.local).toStrictEqual(initialLocalState);

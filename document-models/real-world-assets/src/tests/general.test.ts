@@ -74,7 +74,7 @@ describe('General Operations', () => {
     });
     it('should handle createServiceProvider operation', () => {
         const input = generateMock(z.CreateServiceProviderInputSchema());
-        const existingAccount = generateMock(z.CreateRwaAccountInputSchema());
+        const existingAccount = generateMock(z.CreateAccountInputSchema());
         existingAccount.id = input.accountId;
         const document = utils.createDocument({
             state: {
@@ -101,7 +101,7 @@ describe('General Operations', () => {
         const initialInput = generateMock(z.CreateServiceProviderInputSchema());
         const newInput = generateMock(z.EditServiceProviderInputSchema());
         newInput.id = initialInput.id;
-        const existingAccount = generateMock(z.CreateRwaAccountInputSchema());
+        const existingAccount = generateMock(z.CreateAccountInputSchema());
         // @ts-expect-error mock
         existingAccount.id = newInput.accountId;
         const document = utils.createDocument({
@@ -154,23 +154,23 @@ describe('General Operations', () => {
         );
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle createRwaAccount operation', () => {
-        const input = generateMock(z.CreateRwaAccountInputSchema());
+    it('should handle createAccount operation', () => {
+        const input = generateMock(z.CreateAccountInputSchema());
         const updatedDocument = reducer(
             document,
-            creators.createRwaAccount(input),
+            creators.createAccount(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_RWA_ACCOUNT',
+            'CREATE_ACCOUNT',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle editRwaAccount operation', () => {
-        const initialInput = generateMock(z.CreateRwaAccountInputSchema());
-        const newInput = generateMock(z.EditRwaAccountInputSchema());
+    it('should handle editAccount operation', () => {
+        const initialInput = generateMock(z.CreateAccountInputSchema());
+        const newInput = generateMock(z.EditAccountInputSchema());
         newInput.id = initialInput.id;
         const document = utils.createDocument({
             state: {
@@ -183,21 +183,19 @@ describe('General Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.editRwaAccount(newInput),
+            creators.editAccount(newInput),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'EDIT_RWA_ACCOUNT',
-        );
+        expect(updatedDocument.operations.global[0].type).toBe('EDIT_ACCOUNT');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(
             newInput,
         );
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle deleteRwaAccount operation', () => {
-        const initialInput = generateMock(z.CreateRwaAccountInputSchema());
-        const deleteInput = generateMock(z.DeleteRwaAccountInputSchema());
+    it('should handle deleteAccount operation', () => {
+        const initialInput = generateMock(z.CreateAccountInputSchema());
+        const deleteInput = generateMock(z.DeleteAccountInputSchema());
         deleteInput.id = initialInput.id;
         const document = utils.createDocument({
             state: {
@@ -210,12 +208,12 @@ describe('General Operations', () => {
         });
         const updatedDocument = reducer(
             document,
-            creators.deleteRwaAccount(deleteInput),
+            creators.deleteAccount(deleteInput),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'DELETE_RWA_ACCOUNT',
+            'DELETE_ACCOUNT',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(
             deleteInput,

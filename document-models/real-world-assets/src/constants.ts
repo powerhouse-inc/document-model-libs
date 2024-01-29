@@ -1,4 +1,4 @@
-import { RwaGroupTransactionType } from '..';
+import { GroupTransactionType } from '..';
 
 export const PrincipalDraw = 'PrincipalDraw' as const;
 export const PrincipalReturn = 'PrincipalReturn' as const;
@@ -23,7 +23,7 @@ export type AllowedTransaction =
     (typeof allPossibleAllowedTransactions)[number];
 
 export const groupTransactionTypesToAllowedTransactions: Record<
-    RwaGroupTransactionType,
+    GroupTransactionType,
     AllowedTransaction
 > = {
     PrincipalDraw: cashTransaction,

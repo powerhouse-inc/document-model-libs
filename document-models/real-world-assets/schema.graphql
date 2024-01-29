@@ -1,22 +1,22 @@
 type RealWorldAssetsState {
-    accounts: [RwaAccount!]!
-    principalLender: ID! # RwaAccount.id (That relates to the Maker account)
-    spvs: [RwaSpv!]!
-    feeTypes: [RwaServiceProvider!]!
-    fixedIncomeTypes: [RwaFixedIncomeType!]!
-    portfolio: [RwaAsset!]!
-    transactions: [RwaGroupTransaction!]!
+    accounts: [Account!]!
+    principalLender: ID! # Account.id (That relates to the Maker account)
+    spvs: [Spv!]!
+    feeTypes: [ServiceProvider!]!
+    fixedIncomeTypes: [FixedIncomeType!]!
+    portfolio: [Asset!]!
+    transactions: [GroupTransaction!]!
 }
 
-union RwaAsset = RwaFixedIncome | RwaCash
+union Asset = FixedIncome | Cash
 
-type RwaFixedIncome {
+type FixedIncome {
     id: ID!
-    type: ID! # RwaFixedIncomeType.id
+    type: ID! # FixedIncomeType.id
     name: String!
     ISIN: String
     CUSIP: String
-    spv: ID! # RwaSpv.id
+    spv: ID! # Spv.id
     coupon: Float
     maturity: DateTime!
     purchaseDate: DateTime! # Weighted average of underlying transactions
@@ -32,41 +32,41 @@ type RwaFixedIncome {
     totalSurplus: Float!
 }
 
-type RwaCash {
+type Cash {
     id: ID!
-    spv: ID! # RwaSpv.id
+    spv: ID! # Spv.id
     currency: String! # Will always be "USD" for version 1
 }
 
-type RwaFixedIncomeType {
+type FixedIncomeType {
     id: ID!
     name: String!
 }
 
-type RwaSpv {
+type Spv {
     id: ID!
     name: String!
 }
 
-type RwaBaseTransaction {
+type BaseTransaction {
     id: ID!
-    asset: ID! # RwaAsset.id
+    asset: ID! # Asset.id
     amount: Float!
     entryTime: DateTime!
     tradeTime: DateTime
     settlementTime: DateTime
     txRef: String
-    account: ID # RwaAccount.id
-    counterParty: ID # RwaAccount.id
+    account: ID # Account.id
+    counterParty: ID # Account.id
 }
 
-type RwaAccount {
+type Account {
     id: ID!
     reference: String! # e.g. bank account number or ETH address
     label: String
 }
 
-union RwaGroupTransaction =
+union GroupTransaction =
     | PrincipalDrawGroupTransaction
     | PrincipalReturnGroupTransaction
     | AssetPurchaseGroupTransaction
@@ -77,44 +77,44 @@ union RwaGroupTransaction =
 
 type PrincipalDrawGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    cashTransaction: RwaBaseTransaction
+    type: GroupTransactionType!
+    cashTransaction: BaseTransaction
 }
 
 type PrincipalReturnGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    cashTransaction: RwaBaseTransaction
+    type: GroupTransactionType!
+    cashTransaction: BaseTransaction
 }
 
 type AssetPurchaseGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    fixedIncomeTransaction: RwaBaseTransaction
+    type: GroupTransactionType!
+    fixedIncomeTransaction: BaseTransaction
 }
 
 type AssetSaleGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    fixedIncomeTransaction: RwaBaseTransaction
+    type: GroupTransactionType!
+    fixedIncomeTransaction: BaseTransaction
 }
 
 type InterestDrawGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    interestTransaction: RwaBaseTransaction
+    type: GroupTransactionType!
+    interestTransaction: BaseTransaction
 }
 
 type InterestReturnGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    interestTransaction: RwaBaseTransaction
+    type: GroupTransactionType!
+    interestTransaction: BaseTransaction
 }
 
 type FeesPaymentGroupTransaction {
     id: ID!
-    type: RwaGroupTransactionType!
-    feeTransactions: [RwaBaseTransaction]
+    type: GroupTransactionType!
+    feeTransactions: [BaseTransaction]
 }
 
 enum CashGroupTransactionType {
@@ -130,18 +130,18 @@ enum FixedIncomeGroupTransactionType {
     FeesPayment
 }
 
-union RwaGroupTransactionType =
+union GroupTransactionType =
     | CashGroupTransactionType
     | FixedIncomeGroupTransactionType
 
-type RwaServiceProvider {
+type ServiceProvider {
     id: ID!
     name: String!
     feeType: String!
-    accountId: ID! # RwaAccount.id
+    accountId: ID! # Account.id
 }
 
-type RwaTransactionFee {
+type TransactionFee {
     serviceProviderId: ID!
     amount: Float!
 }
@@ -184,9 +184,9 @@ input DeleteServiceProviderInput {
 
 # portfolio
 
-input CreateRwaFixedIncomeAssetInput {
+input CreateFixedIncomeAssetInput {
     id: ID!
-    type: ID! # RwaFixedIncomeType.id
+    type: ID! # FixedIncomeType.id
     name: String!
     ISIN: String
     CUSIP: String
@@ -194,21 +194,21 @@ input CreateRwaFixedIncomeAssetInput {
     maturity: DateTime!
 }
 
-input CreateRwaCashAssetInput {
+input CreateCashAssetInput {
     id: ID!
-    spv: ID! # RwaSpv.id
+    spv: ID! # Spv.id
     currency: String! # Will always be "USD" for version 1
 }
 
-input EditRwaCashAssetInput {
+input EditCashAssetInput {
     id: ID!
-    spv: ID # RwaSpv.id
+    spv: ID # Spv.id
     currency: String # Will always be "USD" for version 1
 }
 
-input EditRwaFixedIncomeAssetInput {
+input EditFixedIncomeAssetInput {
     id: ID!
-    type: ID # RwaFixedIncomeType.id
+    type: ID # FixedIncomeType.id
     name: String
     ISIN: String
     CUSIP: String
@@ -216,27 +216,27 @@ input EditRwaFixedIncomeAssetInput {
     maturity: DateTime
 }
 
-input DeleteRwaFixedIncomeAssetInput {
+input DeleteFixedIncomeAssetInput {
     id: ID!
 }
 
-input DeleteRwaCashAssetInput {
+input DeleteCashAssetInput {
     id: ID!
 }
 
-input CreateRwaAccountInput {
+input CreateAccountInput {
     id: ID!
     reference: String! # e.g. bank account number or ETH address
     label: String
 }
 
-input EditRwaAccountInput {
+input EditAccountInput {
     id: ID!
     reference: String # e.g. bank account number or ETH address
     label: String
 }
 
-input DeleteRwaAccountInput {
+input DeleteAccountInput {
     id: ID!
 }
 
@@ -244,93 +244,93 @@ input DeleteRwaAccountInput {
 
 input CreatePrincipalDrawGroupTransactionInput {
     id: ID!
-    cashTransaction: RwaBaseTransaction
+    cashTransaction: BaseTransaction
 }
 
 input CreatePrincipalReturnGroupTransactionInput {
     id: ID!
-    cashTransaction: RwaBaseTransaction
+    cashTransaction: BaseTransaction
 }
 
 input CreateAssetPurchaseGroupTransactionInput {
     id: ID!
-    fixedIncomeTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: BaseTransaction
 }
 
 input CreateAssetSaleGroupTransactionInput {
     id: ID!
-    fixedIncomeTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: BaseTransaction
 }
 
 input CreateInterestDrawGroupTransactionInput {
     id: ID!
-    interestTransaction: RwaBaseTransaction
+    interestTransaction: BaseTransaction
 }
 
 input CreateInterestReturnGroupTransactionInput {
     id: ID!
-    interestTransaction: RwaBaseTransaction
+    interestTransaction: BaseTransaction
 }
 
 input CreateFeesPaymentGroupTransactionInput {
     id: ID!
-    feeTransactions: [RwaBaseTransaction]
+    feeTransactions: [BaseTransaction]
 }
 
 # when the type is changed, the transactions associated are deleted
 input EditGroupTransactionTypeInput {
     id: ID!
-    type: RwaGroupTransactionType!
+    type: GroupTransactionType!
 }
 
 input EditPrincipalDrawGroupTransactionInput {
     id: ID!
-    cashTransaction: RwaBaseTransaction
+    cashTransaction: BaseTransaction
 }
 
 input EditPrincipalReturnGroupTransactionInput {
     id: ID!
-    cashTransaction: RwaBaseTransaction
+    cashTransaction: BaseTransaction
 }
 
 input EditAssetPurchaseGroupTransactionInput {
     id: ID!
-    fixedIncomeTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: BaseTransaction
 }
 
 input EditAssetSaleGroupTransactionInput {
     id: ID!
-    fixedIncomeTransaction: RwaBaseTransaction
+    fixedIncomeTransaction: BaseTransaction
 }
 
 input EditInterestDrawGroupTransactionInput {
     id: ID!
-    interestTransaction: RwaBaseTransaction
+    interestTransaction: BaseTransaction
 }
 
 input EditInterestReturnGroupTransactionInput {
     id: ID!
-    interestTransaction: RwaBaseTransaction
+    interestTransaction: BaseTransaction
 }
 
 # add a fee transaction to a fees payment group transaction's list of fee payments
 input AddFeeTransactionsToFeesPaymentGroupTransactionInput {
     id: ID!
-    feeTransactions: [RwaBaseTransaction]
+    feeTransactions: [BaseTransaction]
 }
 
 # edit a specific fee transaction in a fees payment group transaction's list of fee payments
 input EditFeeTransactionInput {
     feeTransactionId: ID!
     id: ID!
-    asset: ID! # RwaAsset.id
+    asset: ID! # Asset.id
     amount: Float!
     entryTime: DateTime!
     tradeTime: DateTime
     settlementTime: DateTime
     txRef: String
-    account: ID # RwaAccount.id
-    counterParty: ID # RwaAccount.id
+    account: ID # Account.id
+    counterParty: ID # Account.id
 }
 
 # remove a fee transaction from a fees payment group transaction's list of fee payments
