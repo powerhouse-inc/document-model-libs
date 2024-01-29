@@ -66,7 +66,8 @@ type RwaAccount {
     label: String
 }
 
-union RwaGroupTransaction = PrincipalDrawGroupTransaction
+union RwaGroupTransaction =
+    | PrincipalDrawGroupTransaction
     | PrincipalReturnGroupTransaction
     | AssetPurchaseGroupTransaction
     | AssetSaleGroupTransaction
@@ -76,36 +77,43 @@ union RwaGroupTransaction = PrincipalDrawGroupTransaction
 
 type PrincipalDrawGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     cashTransaction: RwaBaseTransaction
 }
 
 type PrincipalReturnGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     cashTransaction: RwaBaseTransaction
 }
 
 type AssetPurchaseGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     fixedIncomeTransaction: RwaBaseTransaction
 }
 
 type AssetSaleGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     fixedIncomeTransaction: RwaBaseTransaction
 }
 
 type InterestDrawGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     interestTransaction: RwaBaseTransaction
 }
 
 type InterestReturnGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     interestTransaction: RwaBaseTransaction
 }
 
 type FeesPaymentGroupTransaction {
     id: ID!
+    type: RwaGroupTransactionType!
     feeTransactions: [RwaBaseTransaction]
 }
 
@@ -122,7 +130,7 @@ enum FixedIncomeGroupTransactionType {
     FeesPayment
 }
 
-union GroupTransactionType =
+union RwaGroupTransactionType =
     | CashGroupTransactionType
     | FixedIncomeGroupTransactionType
 
@@ -270,8 +278,9 @@ input CreateFeesPaymentGroupTransactionInput {
 }
 
 # when the type is changed, the transactions associated are deleted
-input EditGroupTransactionType {
+input EditGroupTransactionTypeInput {
     id: ID!
+    type: RwaGroupTransactionType!
 }
 
 input EditPrincipalDrawGroupTransactionInput {
@@ -312,15 +321,16 @@ input AddFeeTransactionsToFeesPaymentGroupTransactionInput {
 
 # edit a specific fee transaction in a fees payment group transaction's list of fee payments
 input EditFeeTransactionInput {
-    id: ID!
     feeTransactionId: ID!
-    amount: Float
-    entryTime: DateTime
+    id: ID!
+    asset: ID! # RwaAsset.id
+    amount: Float!
+    entryTime: DateTime!
     tradeTime: DateTime
     settlementTime: DateTime
     txRef: String
-    account: ID
-    counterParty: ID
+    account: ID # RwaAccount.id
+    counterParty: ID # RwaAccount.id
 }
 
 # remove a fee transaction from a fees payment group transaction's list of fee payments

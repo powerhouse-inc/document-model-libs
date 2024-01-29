@@ -4,63 +4,69 @@
  * - delete the file and run the code generator again to have it reset
  */
 
+import { noCase } from 'change-case';
+import { InputMaybe } from 'document-model/document-model';
 import { z } from 'zod';
 import {
-    CashGroupTransactionType,
-    FixedIncomeGroupTransactionType,
-    GroupTransactionType,
-    InputMaybe,
+    FeesPaymentGroupTransaction,
     RwaAsset,
     RwaBaseTransaction,
     RwaCash,
     RwaFixedIncome,
     RwaGroupTransaction,
+    RwaGroupTransactionType,
     RwaPortfolioState,
 } from '../..';
-import {
-    CashGroupTransactionTypeSchema,
-    FixedIncomeGroupTransactionTypeSchema,
-    GroupTransactionTypeSchema,
-} from '../../gen/schema/zod';
 import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
+import {
+    AssetPurchase,
+    AssetSale,
+    FeesPayment,
+    InterestDraw,
+    InterestReturn,
+    PrincipalDraw,
+    PrincipalReturn,
+    allPossibleAllowedTransactions,
+    groupTransactionTypesToAllowedTransactions,
+} from '../constants';
 
 const numberValidator = z.number();
 
 const dateValidator = z.coerce.date();
 
-export function isFixedIncomeAsset(asset: RwaAsset): asset is RwaFixedIncome {
+export function validateHasCorrectTransactions(
+    groupTransactionType: RwaGroupTransactionType,
+    transactionsInput: {
+        cashTransaction?: InputMaybe<RwaBaseTransaction>;
+        fixedIncomeTransaction?: InputMaybe<RwaBaseTransaction>;
+        interestTransaction?: InputMaybe<RwaBaseTransaction>;
+        feeTransactions?: InputMaybe<InputMaybe<RwaBaseTransaction>[]>;
+    },
+) {
+    const allowedTransaction =
+        groupTransactionTypesToAllowedTransactions[groupTransactionType];
+    const notAllowedTransactions = allPossibleAllowedTransactions.filter(
+        tx => tx !== allowedTransaction,
+    );
+    notAllowedTransactions.forEach(tx => {
+        if (transactionsInput[tx]) {
+            throw new Error(
+                `Group transaction of type ${groupTransactionType} cannot have a ${noCase(tx)} transaction`,
+            );
+        }
+    });
+}
+
+export function isFixedIncomeAsset(
+    asset: RwaAsset | undefined,
+): asset is RwaFixedIncome {
+    if (!asset) return false;
     return 'type' in asset;
 }
 
-export function isCashAsset(asset: RwaAsset): asset is RwaCash {
+export function isCashAsset(asset: RwaAsset | undefined): asset is RwaCash {
+    if (!asset) return false;
     return 'spv' in asset;
-}
-
-export function isCashAssetGroupTransactionType(
-    transactionType: RwaGroupTransaction['type'],
-): transactionType is CashGroupTransactionType {
-    return CashGroupTransactionTypeSchema.safeParse(transactionType).success;
-}
-
-export function isFixedIncomeAssetGroupTransactionType(
-    transactionType: RwaGroupTransaction['type'],
-): transactionType is FixedIncomeGroupTransactionType {
-    return FixedIncomeGroupTransactionTypeSchema.safeParse(transactionType)
-        .success;
-}
-
-export function hasCashAssetTransaction(transaction: RwaGroupTransaction) {
-    return Boolean(transaction.cashTransaction);
-}
-
-export function hasFixedIncomeAssetTransaction(
-    transaction: RwaGroupTransaction,
-) {
-    return Boolean(
-        transaction.fixedIncomeTransaction ||
-            transaction.interestTransaction ||
-            transaction.feeTransactions?.length,
-    );
 }
 
 export function validateRwaBaseTransaction(
@@ -111,43 +117,13 @@ export function validateRwaBaseTransaction(
     }
 }
 
-export function validateInputTransactions(
-    state: RwaPortfolioState,
-    input: {
-        fixedIncomeTransaction?: InputMaybe<RwaBaseTransaction>;
-        cashTransaction?: InputMaybe<RwaBaseTransaction>;
-        interestTransaction?: InputMaybe<RwaBaseTransaction>;
-        feeTransactions?: InputMaybe<InputMaybe<RwaBaseTransaction>[]>;
-    },
-) {
-    if (input.fixedIncomeTransaction) {
-        validateRwaBaseTransaction(state, input.fixedIncomeTransaction);
-        validateFixedIncomeTransaction(state, input.fixedIncomeTransaction);
-    }
-    if (input.cashTransaction) {
-        validateRwaBaseTransaction(state, input.cashTransaction);
-        validateCashTransaction(state, input.cashTransaction);
-    }
-    if (input.interestTransaction) {
-        validateRwaBaseTransaction(state, input.interestTransaction);
-        validateInterestTransaction(state, input.interestTransaction);
-    }
-    if (input.feeTransactions?.length) {
-        input.feeTransactions.forEach(feeTransaction => {
-            if (!feeTransaction) return;
-            validateRwaBaseTransaction(state, feeTransaction);
-            validateFeeTransaction(state, feeTransaction);
-        });
-    }
-}
-
 export function validateFixedIncomeTransaction(
     state: RwaPortfolioState,
     transaction: RwaBaseTransaction,
 ) {
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.asset)!,
+            state.portfolio.find(a => a.id === transaction.asset),
         )
     ) {
         throw new Error(
@@ -160,12 +136,13 @@ export function validateCashTransaction(
     state: RwaPortfolioState,
     transaction: RwaBaseTransaction,
 ) {
+    if (transaction === null) return;
     if (transaction.counterParty !== state.principalLender) {
         throw new Error(
             `Cash transaction must have Maker principal lender as the counter party`,
         );
     }
-    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset))) {
         throw new Error(`Cash transaction must have a cash asset as the asset`);
     }
 }
@@ -176,7 +153,7 @@ export function validateInterestTransaction(
 ) {
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.asset)!,
+            state.portfolio.find(a => a.id === transaction.asset),
         )
     ) {
         throw new Error(
@@ -202,7 +179,7 @@ export function validateFeeTransaction(
     state: RwaPortfolioState,
     transaction: RwaBaseTransaction,
 ) {
-    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset)!)) {
+    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset))) {
         throw new Error(`Fee transaction must have a cash asset as the asset`);
     }
     if (!transaction.counterParty) {
@@ -219,44 +196,181 @@ export function validateFeeTransaction(
 }
 
 export const reducer: RwaPortfolioTransactionsOperations = {
-    createGroupTransactionOperation(state, action, dispatch) {
+    createPrincipalDrawGroupTransactionOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (
-            state.transactions.find(
-                transaction => transaction.id === action.input.id,
-            )
-        ) {
-            throw new Error(
-                `Group transaction with id ${action.input.id} already exists!`,
-            );
+
+        const type = PrincipalDraw;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+            if (cashTransaction.amount < 0) {
+                throw new Error(
+                    'Principal draw cash transaction amount must be positive',
+                );
+            }
         }
-        if (
-            !GroupTransactionTypeSchema().safeParse(action.input.type).success
-        ) {
-            throw new Error(`Invalid group transaction type`);
-        }
-        if (
-            isCashAssetGroupTransactionType(action.input.type) &&
-            hasFixedIncomeAssetTransaction(action.input as RwaGroupTransaction)
-        ) {
-            throw new Error(
-                `Cash group transaction cannot have a fixed income asset transaction`,
-            );
-        }
-        if (
-            isFixedIncomeAssetGroupTransactionType(action.input.type) &&
-            hasCashAssetTransaction(action.input as RwaGroupTransaction)
-        ) {
-            throw new Error(
-                `Fixed income group transaction cannot have a cash asset transaction`,
-            );
-        }
-        validateInputTransactions(state, action.input);
-        state.transactions.push(action.input as RwaGroupTransaction);
+
+        const newGroupTransaction = {
+            ...action.input,
+            cashTransaction,
+            type,
+        };
+        state.transactions.push(newGroupTransaction);
     },
-    editGroupTransactionOperation(state, action, dispatch) {
+    createPrincipalReturnGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        const type = PrincipalReturn;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+            if (cashTransaction.amount > 0) {
+                throw new Error(
+                    'Principal return cash transaction amount must be negative',
+                );
+            }
+        }
+        const newGroupTransaction = {
+            ...action.input,
+            cashTransaction,
+            type,
+        };
+        state.transactions.push(newGroupTransaction);
+    },
+    createAssetPurchaseGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        const type = AssetPurchase;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        const fixedIncomeTransaction =
+            action.input.fixedIncomeTransaction ?? null;
+
+        if (fixedIncomeTransaction) {
+            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            fixedIncomeTransaction,
+            type,
+        };
+
+        state.transactions.push(newGroupTransaction);
+    },
+    createAssetSaleGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        const type = AssetSale;
+
+        const fixedIncomeTransaction =
+            action.input.fixedIncomeTransaction ?? null;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        if (fixedIncomeTransaction) {
+            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            fixedIncomeTransaction,
+            type,
+        };
+
+        state.transactions.push(newGroupTransaction);
+    },
+    createInterestDrawGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        const type = InterestDraw;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        const interestTransaction = action.input.interestTransaction ?? null;
+
+        if (interestTransaction) {
+            validateInterestTransaction(state, interestTransaction);
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            interestTransaction,
+            type,
+        };
+
+        state.transactions.push(newGroupTransaction);
+    },
+    createInterestReturnGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        const type = InterestReturn;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        const interestTransaction = action.input.interestTransaction ?? null;
+
+        if (interestTransaction) {
+            validateInterestTransaction(state, interestTransaction);
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            interestTransaction,
+            type,
+        };
+
+        state.transactions.push(newGroupTransaction);
+    },
+    createFeesPaymentGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+
+        const type = FeesPayment;
+
+        validateHasCorrectTransactions(type, action.input);
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            feeTransactions,
+            type,
+        };
+
+        state.transactions.push(newGroupTransaction);
+    },
+    editGroupTransactionTypeOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
@@ -268,20 +382,207 @@ export const reducer: RwaPortfolioTransactionsOperations = {
                 `Group transaction with id ${action.input.id} does not exist!`,
             );
         }
-        if (action.input.type) {
-            if (
-                !GroupTransactionTypeSchema().safeParse(action.input.type)
-                    .success
-            ) {
-                throw new Error(`Invalid group transaction type`);
+        if (action.input.type === transaction.type) {
+            return;
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? {
+                      ...t,
+                      type: action.input.type,
+                      cashTransaction: null,
+                      fixedIncomeTransaction: null,
+                      interestTransaction: null,
+                      feeTransactions: [],
+                  }
+                : t,
+        );
+    },
+    editPrincipalDrawGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.cashTransaction) {
+            validateCashTransaction(state, action.input.cashTransaction);
+            if (action.input.cashTransaction.amount < 0) {
+                throw new Error(
+                    'Principal draw cash transaction amount must be positive',
+                );
             }
         }
-        validateInputTransactions(state, action.input);
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
                 ? ({
                       ...t,
-                      ...action.input,
+                      cashTransaction: action.input.cashTransaction,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    editPrincipalReturnGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.cashTransaction) {
+            validateCashTransaction(state, action.input.cashTransaction);
+            if (action.input.cashTransaction.amount > 0) {
+                throw new Error(
+                    'Principal return cash transaction amount must be negative',
+                );
+            }
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      cashTransaction: action.input.cashTransaction,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    editAssetPurchaseGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.fixedIncomeTransaction) {
+            validateFixedIncomeTransaction(
+                state,
+                action.input.fixedIncomeTransaction,
+            );
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      fixedIncomeTransaction:
+                          action.input.fixedIncomeTransaction,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    editAssetSaleGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.fixedIncomeTransaction) {
+            validateFixedIncomeTransaction(
+                state,
+                action.input.fixedIncomeTransaction,
+            );
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      fixedIncomeTransaction:
+                          action.input.fixedIncomeTransaction,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    editInterestDrawGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.interestTransaction) {
+            validateInterestTransaction(
+                state,
+                action.input.interestTransaction,
+            );
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      interestTransaction: action.input.interestTransaction,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    editInterestReturnGroupTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.interestTransaction) {
+            validateInterestTransaction(
+                state,
+                action.input.interestTransaction,
+            );
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      interestTransaction: action.input.interestTransaction,
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    addFeeTransactionsToFeesPaymentGroupTransactionOperation(state, action) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (action.input.feeTransactions?.length) {
+            action.input.feeTransactions.forEach(feeTransaction => {
+                if (!feeTransaction) return;
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      feeTransactions: [
+                          ...((t as FeesPaymentGroupTransaction)
+                              .feeTransactions || []),
+                          ...(action.input.feeTransactions || []),
+                      ],
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    editFeeTransactionOperation(state, action, dispatch) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (!action.input.feeTransactionId) {
+            throw new Error('Fee transaction must have an id');
+        }
+        validateFeeTransaction(state, action.input as RwaBaseTransaction);
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      feeTransactions: (
+                          (t as FeesPaymentGroupTransaction).feeTransactions ||
+                          []
+                      ).map(f =>
+                          f?.id === action.input.feeTransactionId
+                              ? action.input
+                              : f,
+                      ),
+                  } as RwaGroupTransaction)
+                : t,
+        );
+    },
+    removeFeeTransactionFromFeesPaymentGroupTransactionOperation(
+        state,
+        action,
+    ) {
+        if (!action.input.id) {
+            throw new Error('Group transaction must have an id');
+        }
+        if (!action.input.feeTransactionId) {
+            throw new Error('Fee transaction must have an id');
+        }
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id
+                ? ({
+                      ...t,
+                      feeTransactions: (
+                          (t as FeesPaymentGroupTransaction).feeTransactions ||
+                          []
+                      ).filter(f => f?.id !== action.input.feeTransactionId),
                   } as RwaGroupTransaction)
                 : t,
         );
