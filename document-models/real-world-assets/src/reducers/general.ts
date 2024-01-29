@@ -5,9 +5,9 @@
  */
 
 import { RwaAccount, RwaServiceProvider, RwaSpv } from '../..';
-import { RwaPortfolioGeneralOperations } from '../../gen/general/operations';
+import { RealWorldAssetsGeneralOperations } from '../../gen/general/operations';
 
-export const reducer: RwaPortfolioGeneralOperations = {
+export const reducer: RealWorldAssetsGeneralOperations = {
     createSpvOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`SPV must have an id`);

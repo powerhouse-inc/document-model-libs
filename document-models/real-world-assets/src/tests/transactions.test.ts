@@ -6,9 +6,9 @@
 import { generateMock } from '@powerhousedao/codegen';
 import { reducer } from '../../gen/reducer';
 import {
+    RealWorldAssetsState,
     RwaBaseTransaction,
     RwaGroupTransactionType,
-    RwaPortfolioState,
     z,
 } from '../../gen/schema';
 import * as creators from '../../gen/transactions/creators';
@@ -451,7 +451,7 @@ describe('validateHasCorrectTransactions', () => {
 
 describe('validateFixedIncomeTransaction', () => {
     it('should throw an error when the asset is not a fixed income asset', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             portfolio: [
                 // @ts-expect-error mock
                 { id: '1', spv: 'equity' },
@@ -468,7 +468,7 @@ describe('validateFixedIncomeTransaction', () => {
     });
 
     it('should not throw an error when the asset is a fixed income asset', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             portfolio: [
                 // @ts-expect-error mock
                 { id: '1', type: 'fixed_income' },
@@ -485,7 +485,7 @@ describe('validateFixedIncomeTransaction', () => {
 
 describe('validateCashTransaction', () => {
     it('should throw an error when the counterParty is not the principalLender', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             principalLender: 'principalLender1',
             portfolio: [
                 // @ts-expect-error mock
@@ -504,7 +504,7 @@ describe('validateCashTransaction', () => {
     });
 
     it('should throw an error when the asset is not a cash asset', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             principalLender: 'principalLender1',
             // @ts-expect-error mock
             portfolio: [{ id: '1', type: 'equity' }],
@@ -521,7 +521,7 @@ describe('validateCashTransaction', () => {
     });
 
     it('should not throw an error when the counterParty is the principalLender and the asset is a cash asset', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             principalLender: 'principalLender1',
             // @ts-expect-error mock
             portfolio: [{ id: '1', spv: 'cash' }],
@@ -538,7 +538,7 @@ describe('validateCashTransaction', () => {
 
 describe('validateInterestTransaction', () => {
     it('should throw an error when the asset is a cash asset', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', spv: 'cash' }],
             // @ts-expect-error mock
@@ -559,7 +559,7 @@ describe('validateInterestTransaction', () => {
     });
 
     it('should throw an error when the counterParty is not provided', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', type: 'fixed_income' }],
             // @ts-expect-error mock
@@ -574,7 +574,7 @@ describe('validateInterestTransaction', () => {
     });
 
     it('should throw an error when the counterParty is not a known service provider', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', type: 'fixed_income' }],
             // @ts-expect-error mock
@@ -593,7 +593,7 @@ describe('validateInterestTransaction', () => {
     });
 
     it('should throw an error when the amount is not positive', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', type: 'fixed_income' }],
             // @ts-expect-error mock
@@ -614,7 +614,7 @@ describe('validateInterestTransaction', () => {
     });
 
     it('should not throw an error when the asset is not a cash asset, the counterParty is provided and is a known service provider, and the amount is positive', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', type: 'fixed_income' }],
             // @ts-expect-error mock
@@ -637,7 +637,7 @@ describe('validateInterestTransaction', () => {
 
 describe('validateFeeTransaction', () => {
     it('should throw an error when the asset is not a cash asset', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', type: 'equity' }],
             // @ts-expect-error mock
@@ -658,7 +658,7 @@ describe('validateFeeTransaction', () => {
     });
 
     it('should throw an error when the counterParty is not provided', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', spv: 'cash' }],
             // @ts-expect-error mock
@@ -673,7 +673,7 @@ describe('validateFeeTransaction', () => {
     });
 
     it('should throw an error when the counterParty is not a known service provider', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', spv: 'cash' }],
             // @ts-expect-error mock
@@ -694,7 +694,7 @@ describe('validateFeeTransaction', () => {
     });
 
     it('should throw an error when the amount is not negative', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', spv: 'cash' }],
             // @ts-expect-error mock
@@ -715,7 +715,7 @@ describe('validateFeeTransaction', () => {
     });
 
     it('should not throw an error when the asset is a cash asset, the counterParty is provided and is a known service provider, and the amount is negative', () => {
-        const state: RwaPortfolioState = {
+        const state: RealWorldAssetsState = {
             // @ts-expect-error mock
             portfolio: [{ id: '1', spv: 'cash' }],
             // @ts-expect-error mock

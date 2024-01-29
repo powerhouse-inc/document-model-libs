@@ -6,9 +6,9 @@
 
 import { z } from 'zod';
 import { RwaAsset } from '../..';
-import { RwaPortfolioPortfolioOperations } from '../../gen/portfolio/operations';
+import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
 
-export const reducer: RwaPortfolioPortfolioOperations = {
+export const reducer: RealWorldAssetsPortfolioOperations = {
     createRwaFixedIncomeAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`RWA fixed income asset must have an id`);

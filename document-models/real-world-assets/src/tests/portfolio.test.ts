@@ -8,11 +8,11 @@ import { generateMock } from '@powerhousedao/codegen';
 import * as creators from '../../gen/portfolio/creators';
 import { reducer } from '../../gen/reducer';
 import { RwaAsset, z } from '../../gen/schema';
-import { RwaPortfolioDocument } from '../../gen/types';
+import { RealWorldAssetsDocument } from '../../gen/types';
 import utils from '../../gen/utils';
 
 describe('Portfolio Operations', () => {
-    let document: RwaPortfolioDocument;
+    let document: RealWorldAssetsDocument;
 
     beforeEach(() => {
         document = utils.createDocument();

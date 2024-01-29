@@ -1,4 +1,4 @@
-type RwaPortfolioState {
+type RealWorldAssetsState {
     accounts: [RwaAccount!]!
     principalLender: ID! # RwaAccount.id (That relates to the Maker account)
     spvs: [RwaSpv!]!

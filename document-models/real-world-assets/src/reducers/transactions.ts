@@ -9,15 +9,15 @@ import { InputMaybe } from 'document-model/document-model';
 import { z } from 'zod';
 import {
     FeesPaymentGroupTransaction,
+    RealWorldAssetsState,
     RwaAsset,
     RwaBaseTransaction,
     RwaCash,
     RwaFixedIncome,
     RwaGroupTransaction,
     RwaGroupTransactionType,
-    RwaPortfolioState,
 } from '../..';
-import { RwaPortfolioTransactionsOperations } from '../../gen/transactions/operations';
+import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
 import {
     AssetPurchase,
     AssetSale,
@@ -70,7 +70,7 @@ export function isCashAsset(asset: RwaAsset | undefined): asset is RwaCash {
 }
 
 export function validateRwaBaseTransaction(
-    state: RwaPortfolioState,
+    state: RealWorldAssetsState,
     input: InputMaybe<RwaBaseTransaction>,
 ) {
     if (!input?.id) {
@@ -118,7 +118,7 @@ export function validateRwaBaseTransaction(
 }
 
 export function validateFixedIncomeTransaction(
-    state: RwaPortfolioState,
+    state: RealWorldAssetsState,
     transaction: RwaBaseTransaction,
 ) {
     if (
@@ -133,7 +133,7 @@ export function validateFixedIncomeTransaction(
 }
 
 export function validateCashTransaction(
-    state: RwaPortfolioState,
+    state: RealWorldAssetsState,
     transaction: RwaBaseTransaction,
 ) {
     if (transaction === null) return;
@@ -148,7 +148,7 @@ export function validateCashTransaction(
 }
 
 export function validateInterestTransaction(
-    state: RwaPortfolioState,
+    state: RealWorldAssetsState,
     transaction: RwaBaseTransaction,
 ) {
     if (
@@ -176,7 +176,7 @@ export function validateInterestTransaction(
 }
 
 export function validateFeeTransaction(
-    state: RwaPortfolioState,
+    state: RealWorldAssetsState,
     transaction: RwaBaseTransaction,
 ) {
     if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset))) {
@@ -195,7 +195,7 @@ export function validateFeeTransaction(
     }
 }
 
-export const reducer: RwaPortfolioTransactionsOperations = {
+export const reducer: RealWorldAssetsTransactionsOperations = {
     createPrincipalDrawGroupTransactionOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');

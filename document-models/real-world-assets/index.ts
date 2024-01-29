@@ -4,25 +4,25 @@
  */
 
 import { actions as BaseActions, DocumentModel } from 'document-model/document';
-import { actions as RwaPortfolioActions, RwaPortfolio } from './gen';
+import { actions as RealWorldAssetsActions, RealWorldAssets } from './gen';
 import { reducer } from './gen/reducer';
 import { documentModel } from './gen/document-model';
 import genUtils from './gen/utils';
 import * as customUtils from './src/utils';
 import {
-    RwaPortfolioState,
-    RwaPortfolioAction,
-    RwaPortfolioLocalState,
+    RealWorldAssetsState,
+    RealWorldAssetsAction,
+    RealWorldAssetsLocalState,
 } from './gen/types';
 
-const Document = RwaPortfolio;
+const Document = RealWorldAssets;
 const utils = { ...genUtils, ...customUtils };
-const actions = { ...BaseActions, ...RwaPortfolioActions };
+const actions = { ...BaseActions, ...RealWorldAssetsActions };
 
 export const module: DocumentModel<
-    RwaPortfolioState,
-    RwaPortfolioAction,
-    RwaPortfolioLocalState
+    RealWorldAssetsState,
+    RealWorldAssetsAction,
+    RealWorldAssetsLocalState
 > = {
     Document,
     reducer,
@@ -31,7 +31,7 @@ export const module: DocumentModel<
     documentModel,
 };
 
-export { RwaPortfolio, Document, reducer, actions, utils, documentModel };
+export { RealWorldAssets, Document, reducer, actions, utils, documentModel };
 
 export * from './gen/types';
 export * from './src/utils';
