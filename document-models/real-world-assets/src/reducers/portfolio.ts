@@ -13,7 +13,7 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!action.input.id) {
             throw new Error(`Fixed income asset must have an id`);
         }
-        if (!action.input.type) {
+        if (!action.input.fixedIncomeTypeId) {
             throw new Error(`Fixed income asset must have a type`);
         }
         if (!action.input.name) {
@@ -25,7 +25,12 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (state.portfolio.find(asset => asset.id === action.input.id)) {
             throw new Error(`Asset with id ${action.input.id} already exists!`);
         }
-        if (!state.fixedIncomeTypes.find(fia => fia.id === action.input.type)) {
+        if (
+            !state.fixedIncomeTypes.find(
+                fixedIncomeType =>
+                    fixedIncomeType.id === action.input.fixedIncomeTypeId,
+            )
+        ) {
             throw new Error(
                 `Fixed income type with id ${action.input.id} does not exist!`,
             );
@@ -40,13 +45,13 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!action.input.id) {
             throw new Error(`Cash asset must have an id`);
         }
-        if (!action.input.spv) {
+        if (!action.input.spvId) {
             throw new Error(`Cash asset must have a spv`);
         }
         if (!action.input.currency) {
             throw new Error(`Cash asset must have a currency`);
         }
-        if (!state.spvs.find(spv => spv.id === action.input.spv)) {
+        if (!state.spvs.find(spv => spv.id === action.input.spvId)) {
             throw new Error(`SPV with id ${action.input.id} does not exist!`);
         }
         if (action.input.currency !== 'USD') {
@@ -69,8 +74,10 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             throw new Error(`Asset with id ${action.input.id} does not exist!`);
         }
         if (
-            action.input.type &&
-            !state.fixedIncomeTypes.find(fia => fia.id === action.input.type)
+            action.input.fixedIncomeTypeId &&
+            !state.fixedIncomeTypes.find(
+                fia => fia.id === action.input.fixedIncomeTypeId,
+            )
         ) {
             throw new Error(
                 `Fixed income type with id ${action.input.id} does not exist!`,
@@ -102,8 +109,8 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             throw new Error(`Asset with id ${action.input.id} does not exist!`);
         }
         if (
-            action.input.spv &&
-            !state.spvs.find(spv => spv.id === action.input.spv)
+            action.input.spvId &&
+            !state.spvs.find(spv => spv.id === action.input.spvId)
         ) {
             throw new Error(`SPV with id ${action.input.id} does not exist!`);
         }

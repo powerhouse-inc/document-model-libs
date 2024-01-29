@@ -1,6 +1,6 @@
 type RealWorldAssetsState {
     accounts: [Account!]!
-    principalLender: ID! # Account.id (That relates to the Maker account)
+    principalLenderAccountId: ID! # Account.id (That relates to the Maker account)
     spvs: [Spv!]!
     feeTypes: [ServiceProvider!]!
     fixedIncomeTypes: [FixedIncomeType!]!
@@ -12,11 +12,11 @@ union Asset = FixedIncome | Cash
 
 type FixedIncome {
     id: ID!
-    type: ID! # FixedIncomeType.id
+    fixedIncomeTypeId: ID! # FixedIncomeType.id
     name: String!
     ISIN: String
     CUSIP: String
-    spv: ID! # Spv.id
+    spvId: ID! # Spv.id
     coupon: Float
     maturity: DateTime!
     purchaseDate: DateTime! # Weighted average of underlying transactions
@@ -25,7 +25,6 @@ type FixedIncome {
     purchasePrice: Float! # purchaseProceeds / notional
     totalDiscount: Float! # notional - purchaseProceeds
     marketValue: Float!
-
     currentValue(when: DateTime): Float # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds
     annualizedYield: Float! # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
     realizedSurplus: Float!
@@ -34,7 +33,7 @@ type FixedIncome {
 
 type Cash {
     id: ID!
-    spv: ID! # Spv.id
+    spvId: ID! # Spv.id
     currency: String! # Will always be "USD" for version 1
 }
 
@@ -50,14 +49,14 @@ type Spv {
 
 type BaseTransaction {
     id: ID!
-    asset: ID! # Asset.id
+    assetId: ID! # Asset.id
     amount: Float!
     entryTime: DateTime!
     tradeTime: DateTime
     settlementTime: DateTime
     txRef: String
-    account: ID # Account.id
-    counterParty: ID # Account.id
+    accountId: ID # Account.id
+    counterPartyAccountId: ID # Account.id
 }
 
 type Account {
@@ -186,7 +185,7 @@ input DeleteServiceProviderInput {
 
 input CreateFixedIncomeAssetInput {
     id: ID!
-    type: ID! # FixedIncomeType.id
+    fixedIncomeTypeId: ID! # FixedIncomeType.id
     name: String!
     ISIN: String
     CUSIP: String
@@ -196,19 +195,19 @@ input CreateFixedIncomeAssetInput {
 
 input CreateCashAssetInput {
     id: ID!
-    spv: ID! # Spv.id
+    spvId: ID! # Spv.id
     currency: String! # Will always be "USD" for version 1
 }
 
 input EditCashAssetInput {
     id: ID!
-    spv: ID # Spv.id
+    spvId: ID # Spv.id
     currency: String # Will always be "USD" for version 1
 }
 
 input EditFixedIncomeAssetInput {
     id: ID!
-    type: ID # FixedIncomeType.id
+    fixedIncomeTypeId: ID # FixedIncomeType.id
     name: String
     ISIN: String
     CUSIP: String
@@ -323,14 +322,14 @@ input AddFeeTransactionsToFeesPaymentGroupTransactionInput {
 input EditFeeTransactionInput {
     feeTransactionId: ID!
     id: ID!
-    asset: ID! # Asset.id
+    assetId: ID! # Asset.id
     amount: Float!
     entryTime: DateTime!
     tradeTime: DateTime
     settlementTime: DateTime
     txRef: String
-    account: ID # Account.id
-    counterParty: ID # Account.id
+    accountId: ID # Account.id
+    counterPartyAccountId: ID # Account.id
 }
 
 # remove a fee transaction from a fees payment group transaction's list of fee payments

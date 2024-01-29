@@ -8,20 +8,13 @@ import { generateMock } from '@powerhousedao/codegen';
 import * as creators from '../../gen/portfolio/creators';
 import { reducer } from '../../gen/reducer';
 import { Asset, z } from '../../gen/schema';
-import { RealWorldAssetsDocument } from '../../gen/types';
 import utils from '../../gen/utils';
 
 describe('Portfolio Operations', () => {
-    let document: RealWorldAssetsDocument;
-
-    beforeEach(() => {
-        document = utils.createDocument();
-    });
-
     it('should handle createFixedIncomeAsset operation', () => {
         const input = generateMock(z.CreateFixedIncomeAssetInputSchema());
         const existingFixedIncomeType = generateMock(z.FixedIncomeTypeSchema());
-        existingFixedIncomeType.id = input.type;
+        existingFixedIncomeType.id = input.fixedIncomeTypeId;
         const document = utils.createDocument({
             state: {
                 global: {
@@ -46,7 +39,7 @@ describe('Portfolio Operations', () => {
         const input = generateMock(z.CreateCashAssetInputSchema());
         input.currency = 'USD';
         const existingSpv = generateMock(z.SpvSchema());
-        existingSpv.id = input.spv;
+        existingSpv.id = input.spvId;
         const document = utils.createDocument({
             state: {
                 global: {
@@ -75,7 +68,7 @@ describe('Portfolio Operations', () => {
         const existingFixedIncomeType = generateMock(z.FixedIncomeTypeSchema());
         existingAsset.id = input.id;
         // @ts-expect-error mock
-        existingFixedIncomeType.id = input.type;
+        existingFixedIncomeType.id = input.fixedIncomeTypeId;
         const document = utils.createDocument({
             state: {
                 global: {
@@ -102,7 +95,7 @@ describe('Portfolio Operations', () => {
         input.currency = 'USD';
         const existingSpv = generateMock(z.SpvSchema());
         // @ts-expect-error mock
-        existingSpv.id = input.spv;
+        existingSpv.id = input.spvId;
         const existingAsset = generateMock(z.CreateCashAssetInputSchema());
         existingAsset.id = input.id;
         const document = utils.createDocument({

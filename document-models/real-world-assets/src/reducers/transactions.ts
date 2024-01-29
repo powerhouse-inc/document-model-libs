@@ -8,14 +8,14 @@ import { noCase } from 'change-case';
 import { InputMaybe } from 'document-model/document-model';
 import { z } from 'zod';
 import {
-    FeesPaymentGroupTransaction,
-    RealWorldAssetsState,
     Asset,
     BaseTransaction,
     Cash,
+    FeesPaymentGroupTransaction,
     FixedIncome,
     GroupTransaction,
     GroupTransactionType,
+    RealWorldAssetsState,
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
 import {
@@ -61,12 +61,12 @@ export function isFixedIncomeAsset(
     asset: Asset | undefined,
 ): asset is FixedIncome {
     if (!asset) return false;
-    return 'type' in asset;
+    return 'fixedIncomeTypeId' in asset;
 }
 
 export function isCashAsset(asset: Asset | undefined): asset is Cash {
     if (!asset) return false;
-    return 'spv' in asset;
+    return 'currency' in asset;
 }
 
 export function validateBaseTransaction(
@@ -79,11 +79,11 @@ export function validateBaseTransaction(
     if (state.transactions.find(transaction => transaction.id === input.id)) {
         throw new Error(`Transaction with id ${input.id} already exists!`);
     }
-    if (!input.asset) {
+    if (!input.assetId) {
         throw new Error(`Transaction must have an asset`);
     }
-    if (!state.portfolio.find(asset => asset.id === input.asset)) {
-        throw new Error(`Asset with id ${input.asset} does not exist!`);
+    if (!state.portfolio.find(asset => asset.id === input.assetId)) {
+        throw new Error(`Asset with id ${input.assetId} does not exist!`);
     }
     if (!input.amount) {
         throw new Error(`Transaction must have an amount`);
@@ -104,26 +104,30 @@ export function validateBaseTransaction(
     ) {
         throw new Error(`Settlement time must be a valid date`);
     }
-    if (input.account && !state.accounts.find(a => a.id === input.account)) {
-        throw new Error(`Account with id ${input.account} does not exist!`);
+    if (
+        input.accountId &&
+        !state.accounts.find(a => a.id === input.accountId)
+    ) {
+        throw new Error(`Account with id ${input.accountId} does not exist!`);
     }
     if (
-        input.counterParty &&
-        !state.accounts.find(a => a.id === input.counterParty)
+        input.counterPartyAccountId &&
+        !state.accounts.find(a => a.id === input.counterPartyAccountId)
     ) {
         throw new Error(
-            `Counter party account with id ${input.counterParty} does not exist!`,
+            `Counter party account with id ${input.counterPartyAccountId} does not exist!`,
         );
     }
 }
 
 export function validateFixedIncomeTransaction(
     state: RealWorldAssetsState,
-    transaction: BaseTransaction,
+    transaction: InputMaybe<BaseTransaction>,
 ) {
+    if (!transaction) return;
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.asset),
+            state.portfolio.find(a => a.id === transaction.assetId),
         )
     ) {
         throw new Error(
@@ -134,40 +138,45 @@ export function validateFixedIncomeTransaction(
 
 export function validateCashTransaction(
     state: RealWorldAssetsState,
-    transaction: BaseTransaction,
+    transaction: InputMaybe<BaseTransaction>,
 ) {
-    if (transaction === null) return;
-    if (transaction.counterParty !== state.principalLender) {
+    if (!transaction) return;
+    if (transaction.counterPartyAccountId !== state.principalLenderAccountId) {
         throw new Error(
             `Cash transaction must have Maker principal lender as the counter party`,
         );
     }
-    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset))) {
+    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.assetId))) {
         throw new Error(`Cash transaction must have a cash asset as the asset`);
     }
 }
 
 export function validateInterestTransaction(
     state: RealWorldAssetsState,
-    transaction: BaseTransaction,
+    transaction: InputMaybe<BaseTransaction>,
 ) {
+    if (!transaction) return;
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.asset),
+            state.portfolio.find(a => a.id === transaction.assetId),
         )
     ) {
         throw new Error(
             `Interest transaction must have a fixed income asset as the asset`,
         );
     }
-    if (!transaction.counterParty) {
+    if (!transaction.counterPartyAccountId) {
         throw new Error(
             `Interest transaction must have a counter party account`,
         );
     }
-    if (!state.feeTypes.find(a => a.accountId === transaction.counterParty)) {
+    if (
+        !state.feeTypes.find(
+            a => a.accountId === transaction.counterPartyAccountId,
+        )
+    ) {
         throw new Error(
-            `Counter party with id ${transaction.counterParty} must be a known service provider`,
+            `Counter party with id ${transaction.counterPartyAccountId} must be a known service provider`,
         );
     }
     if (!numberValidator.positive().safeParse(transaction.amount).success) {
@@ -177,17 +186,22 @@ export function validateInterestTransaction(
 
 export function validateFeeTransaction(
     state: RealWorldAssetsState,
-    transaction: BaseTransaction,
+    transaction: InputMaybe<BaseTransaction>,
 ) {
-    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.asset))) {
+    if (!transaction) return;
+    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.assetId))) {
         throw new Error(`Fee transaction must have a cash asset as the asset`);
     }
-    if (!transaction.counterParty) {
+    if (!transaction.counterPartyAccountId) {
         throw new Error(`Fee transaction must have a counter party account`);
     }
-    if (!state.feeTypes.find(a => a.accountId === transaction.counterParty)) {
+    if (
+        !state.feeTypes.find(
+            a => a.accountId === transaction.counterPartyAccountId,
+        )
+    ) {
         throw new Error(
-            `Counter party with id ${transaction.counterParty} must be a known service provider`,
+            `Counter party with id ${transaction.counterPartyAccountId} must be a known service provider`,
         );
     }
     if (!numberValidator.negative().safeParse(transaction.amount).success) {
