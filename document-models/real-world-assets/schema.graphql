@@ -28,7 +28,7 @@ type FixedIncome {
     ISIN: String
     CUSIP: String
     coupon: Float
-    currentValue(when: DateTime): Float # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds
+    currentValue: Float # (Current Date - Purchase Date) / ((Maturity Date - Current Date) * Total Discount + Purchase Proceeds
 }
 
 type Cash {
@@ -201,6 +201,7 @@ input CreateFixedIncomeAssetInput {
     ISIN: String
     CUSIP: String
     coupon: Float
+    currentValue: Float
 }
 
 input CreateCashAssetInput {
@@ -233,6 +234,7 @@ input EditFixedIncomeAssetInput {
     ISIN: String
     CUSIP: String
     coupon: Float
+    currentValue: Float
 }
 
 input DeleteFixedIncomeAssetInput {

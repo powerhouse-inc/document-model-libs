@@ -6,16 +6,20 @@
 
 import { InputMaybe } from 'document-model/document-model';
 import { z } from 'zod';
-import { Asset, FixedIncome, RealWorldAssetsState } from '../..';
+import { Asset, RealWorldAssetsState } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
+import { isFixedIncomeAsset } from './transactions';
 const dateSchema = z.coerce.date();
 
 export function validateFixedIncomeAsset(
     state: RealWorldAssetsState,
-    asset: InputMaybe<FixedIncome>,
+    asset: InputMaybe<Asset>,
 ) {
+    if (!isFixedIncomeAsset(asset)) {
+        throw new Error(`Asset with id ${asset?.id} does not exist!`);
+    }
     if (
-        asset?.fixedIncomeTypeId &&
+        asset.fixedIncomeTypeId &&
         !state.fixedIncomeTypes.find(
             fixedIncomeType => fixedIncomeType.id === asset.fixedIncomeTypeId,
         )
@@ -25,14 +29,14 @@ export function validateFixedIncomeAsset(
         );
     }
     // todo: add validation for `name` field
-    if (asset?.spvId && !state.spvs.find(spv => spv.id === asset.spvId)) {
+    if (asset.spvId && !state.spvs.find(spv => spv.id === asset.spvId)) {
         throw new Error(`SPV with id ${asset.id} does not exist!`);
     }
-    if (asset?.maturity && !dateSchema.safeParse(asset.maturity).success) {
+    if (asset.maturity && !dateSchema.safeParse(asset.maturity).success) {
         throw new Error(`Maturity must be a valid date`);
     }
     if (
-        asset?.purchaseDate &&
+        asset.purchaseDate &&
         !dateSchema.safeParse(asset.purchaseDate).success
     ) {
         throw new Error(`Purchase date must be a valid date`);
@@ -68,7 +72,7 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!action.input.purchaseProceeds) {
             throw new Error(`Fixed income asset must have purchase proceeds`);
         }
-        validateFixedIncomeAsset(state, action.input);
+        validateFixedIncomeAsset(state, action.input as Asset);
         const purchasePrice =
             action.input.purchaseProceeds / action.input.notional;
         const totalDiscount =
@@ -134,10 +138,10 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         const asset = state.portfolio.find(
             asset => asset.id === action.input.id,
         );
-        if (!asset) {
+        if (!isFixedIncomeAsset(asset)) {
             throw new Error(`Asset with id ${action.input.id} does not exist!`);
         }
-        validateFixedIncomeAsset(state, action.input);
+        validateFixedIncomeAsset(state, action.input as Asset);
         state.portfolio = state.portfolio.map(asset =>
             asset.id === action.input.id
                 ? ({

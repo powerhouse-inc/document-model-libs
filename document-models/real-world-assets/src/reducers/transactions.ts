@@ -58,13 +58,13 @@ export function validateHasCorrectTransactions(
 }
 
 export function isFixedIncomeAsset(
-    asset: Asset | undefined,
+    asset: Asset | undefined | null,
 ): asset is FixedIncome {
     if (!asset) return false;
     return 'fixedIncomeTypeId' in asset;
 }
 
-export function isCashAsset(asset: Asset | undefined): asset is Cash {
+export function isCashAsset(asset: Asset | undefined | null): asset is Cash {
     if (!asset) return false;
     return 'currency' in asset;
 }

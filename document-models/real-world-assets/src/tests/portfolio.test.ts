@@ -14,11 +14,14 @@ describe('Portfolio Operations', () => {
     it('should handle createFixedIncomeAsset operation', () => {
         const input = generateMock(z.CreateFixedIncomeAssetInputSchema());
         const existingFixedIncomeType = generateMock(z.FixedIncomeTypeSchema());
-        existingFixedIncomeType.id = input.fixedIncomeTypeId;
+        input.fixedIncomeTypeId = existingFixedIncomeType.id;
+        const existingSpv = generateMock(z.SpvSchema());
+        input.spvId = existingSpv.id;
         const document = utils.createDocument({
             state: {
                 global: {
                     fixedIncomeTypes: [existingFixedIncomeType],
+                    spvs: [existingSpv],
                 },
                 local: {},
             },
@@ -67,13 +70,15 @@ describe('Portfolio Operations', () => {
         const input = generateMock(z.EditFixedIncomeAssetInputSchema());
         const existingFixedIncomeType = generateMock(z.FixedIncomeTypeSchema());
         existingAsset.id = input.id;
-        // @ts-expect-error mock
-        existingFixedIncomeType.id = input.fixedIncomeTypeId;
+        input.fixedIncomeTypeId = existingFixedIncomeType.id;
+        const existingSpv = generateMock(z.SpvSchema());
+        input.spvId = existingSpv.id;
         const document = utils.createDocument({
             state: {
                 global: {
                     portfolio: [existingAsset],
                     fixedIncomeTypes: [existingFixedIncomeType],
+                    spvs: [existingSpv],
                 },
                 local: {},
             },
