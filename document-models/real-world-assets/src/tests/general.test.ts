@@ -74,12 +74,11 @@ describe('General Operations', () => {
     });
     it('should handle createServiceProvider operation', () => {
         const input = generateMock(z.CreateServiceProviderInputSchema());
-        const existingAccount = generateMock(z.CreateAccountInputSchema());
-        existingAccount.id = input.accountId;
+        const existingAccount = generateMock(z.AccountSchema());
+        input.accountId = existingAccount.id;
         const document = utils.createDocument({
             state: {
                 global: {
-                    // @ts-expect-error mock
                     accounts: [existingAccount],
                 },
                 local: {},
@@ -98,17 +97,15 @@ describe('General Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle editServiceProvider operation', () => {
-        const initialInput = generateMock(z.CreateServiceProviderInputSchema());
+        const initialInput = generateMock(z.ServiceProviderSchema());
         const newInput = generateMock(z.EditServiceProviderInputSchema());
         newInput.id = initialInput.id;
-        const existingAccount = generateMock(z.CreateAccountInputSchema());
-        // @ts-expect-error mock
-        existingAccount.id = newInput.accountId;
+        const existingAccount = generateMock(z.AccountSchema());
+        newInput.accountId = existingAccount.id;
         const document = utils.createDocument({
             state: {
                 global: {
                     feeTypes: [initialInput],
-                    // @ts-expect-error mock
                     accounts: [existingAccount],
                 },
                 local: {},
@@ -169,13 +166,12 @@ describe('General Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle editAccount operation', () => {
-        const initialInput = generateMock(z.CreateAccountInputSchema());
+        const initialInput = generateMock(z.AccountSchema());
         const newInput = generateMock(z.EditAccountInputSchema());
         newInput.id = initialInput.id;
         const document = utils.createDocument({
             state: {
                 global: {
-                    // @ts-expect-error mock
                     accounts: [initialInput],
                 },
                 local: {},
@@ -194,13 +190,12 @@ describe('General Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle deleteAccount operation', () => {
-        const initialInput = generateMock(z.CreateAccountInputSchema());
+        const initialInput = generateMock(z.AccountSchema());
         const deleteInput = generateMock(z.DeleteAccountInputSchema());
         deleteInput.id = initialInput.id;
         const document = utils.createDocument({
             state: {
                 global: {
-                    // @ts-expect-error mock
                     accounts: [initialInput],
                 },
                 local: {},

@@ -83,7 +83,7 @@ export const reducer: RealWorldAssetsGeneralOperations = {
             throw new Error(`Service provider must have an id`);
         }
         const serviceProvider = state.feeTypes.find(
-            rsp => rsp.id === action.input.id,
+            feeType => feeType.id === action.input.id,
         );
         if (!serviceProvider) {
             throw new Error(
