@@ -4,44 +4,8 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { InputMaybe } from 'document-model/document-model';
-import { z } from 'zod';
-import { Asset, RealWorldAssetsState } from '../..';
+import { Asset, isFixedIncomeAsset, validateFixedIncomeAsset } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
-import { isFixedIncomeAsset } from './transactions';
-const dateSchema = z.coerce.date();
-
-export function validateFixedIncomeAsset(
-    state: RealWorldAssetsState,
-    asset: InputMaybe<Asset>,
-) {
-    if (!isFixedIncomeAsset(asset)) {
-        throw new Error(`Asset with id ${asset?.id} does not exist!`);
-    }
-    if (
-        asset.fixedIncomeTypeId &&
-        !state.fixedIncomeTypes.find(
-            fixedIncomeType => fixedIncomeType.id === asset.fixedIncomeTypeId,
-        )
-    ) {
-        throw new Error(
-            `Fixed income type with id ${asset.id} does not exist!`,
-        );
-    }
-    // todo: add validation for `name` field
-    if (asset.spvId && !state.spvs.find(spv => spv.id === asset.spvId)) {
-        throw new Error(`SPV with id ${asset.id} does not exist!`);
-    }
-    if (asset.maturity && !dateSchema.safeParse(asset.maturity).success) {
-        throw new Error(`Maturity must be a valid date`);
-    }
-    if (
-        asset.purchaseDate &&
-        !dateSchema.safeParse(asset.purchaseDate).success
-    ) {
-        throw new Error(`Purchase date must be a valid date`);
-    }
-}
 
 export const reducer: RealWorldAssetsPortfolioOperations = {
     createFixedIncomeAssetOperation(state, action, dispatch) {

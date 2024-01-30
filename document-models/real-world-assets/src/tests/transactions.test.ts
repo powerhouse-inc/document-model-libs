@@ -41,7 +41,7 @@ import {
     validateFixedIncomeTransaction,
     validateHasCorrectTransactions,
     validateInterestTransaction,
-} from '../reducers/transactions';
+} from '../utils';
 const principalLenderAccount = generateMock(z.AccountSchema());
 const mockCounterParty = generateMock(z.AccountSchema());
 const mockCashAsset = generateMock(z.CashSchema());
