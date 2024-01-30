@@ -189,7 +189,7 @@ input CreateFixedIncomeAssetInput {
     name: String!
     spvId: ID! # Spv.id
     maturity: DateTime!
-    purchaseDate: DateTime! # Weighted average of underlying transactions
+    purchaseDate: DateTime!
     notional: Float! # Face value
     purchasePrice: Float! # purchaseProceeds / notional
     purchaseProceeds: Float! # Total cash outflow spent on purchases

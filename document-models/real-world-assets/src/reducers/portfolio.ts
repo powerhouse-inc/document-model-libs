@@ -6,13 +6,38 @@
 
 import { InputMaybe } from 'document-model/document-model';
 import { z } from 'zod';
-import { Asset, FixedIncome } from '../..';
+import { Asset, FixedIncome, RealWorldAssetsState } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
 const dateSchema = z.coerce.date();
 
 export function validateFixedIncomeAsset(
-    fixedIncomeAsset: InputMaybe<FixedIncome>,
-) {}
+    state: RealWorldAssetsState,
+    asset: InputMaybe<FixedIncome>,
+) {
+    if (
+        asset?.fixedIncomeTypeId &&
+        !state.fixedIncomeTypes.find(
+            fixedIncomeType => fixedIncomeType.id === asset.fixedIncomeTypeId,
+        )
+    ) {
+        throw new Error(
+            `Fixed income type with id ${asset.id} does not exist!`,
+        );
+    }
+    // todo: add validation for `name` field
+    if (asset?.spvId && !state.spvs.find(spv => spv.id === asset.spvId)) {
+        throw new Error(`SPV with id ${asset.id} does not exist!`);
+    }
+    if (asset?.maturity && !dateSchema.safeParse(asset.maturity).success) {
+        throw new Error(`Maturity must be a valid date`);
+    }
+    if (
+        asset?.purchaseDate &&
+        !dateSchema.safeParse(asset.purchaseDate).success
+    ) {
+        throw new Error(`Purchase date must be a valid date`);
+    }
+}
 
 export const reducer: RealWorldAssetsPortfolioOperations = {
     createFixedIncomeAssetOperation(state, action, dispatch) {
@@ -25,26 +50,60 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!action.input.fixedIncomeTypeId) {
             throw new Error(`Fixed income asset must have a type`);
         }
-        if (
-            !state.fixedIncomeTypes.find(
-                fixedIncomeType =>
-                    fixedIncomeType.id === action.input.fixedIncomeTypeId,
-            )
-        ) {
-            throw new Error(
-                `Fixed income type with id ${action.input.id} does not exist!`,
-            );
-        }
         if (!action.input.name) {
             throw new Error(`Fixed income asset must have a name`);
+        }
+        if (!action.input.spvId) {
+            throw new Error(`Fixed income asset must have an SPV`);
         }
         if (!action.input.maturity) {
             throw new Error(`Fixed income asset must have a maturity`);
         }
-        if (!dateSchema.safeParse(action.input.maturity).success) {
-            throw new Error(`Maturity must be a valid date`);
+        if (!action.input.purchaseDate) {
+            throw new Error(`Fixed income asset must have a purchase date`);
         }
-        state.portfolio.push(action.input as Asset);
+        if (!action.input.notional) {
+            throw new Error(`Fixed income asset must have a notional`);
+        }
+        if (!action.input.purchaseProceeds) {
+            throw new Error(`Fixed income asset must have purchase proceeds`);
+        }
+        validateFixedIncomeAsset(state, action.input);
+        const purchasePrice =
+            action.input.purchaseProceeds / action.input.notional;
+        const totalDiscount =
+            action.input.notional - action.input.purchaseProceeds;
+        if (!action.input.marketValue) {
+            throw new Error(`Fixed income asset must have market value`);
+        }
+        const daysToMaturity =
+            new Date().getTime() - new Date(action.input.maturity).getTime();
+        const annualizedYield =
+            (purchasePrice / (action.input.notional - purchasePrice)) *
+            (365 / daysToMaturity) *
+            100;
+        if (!action.input.realizedSurplus) {
+            throw new Error(`Fixed income asset must have realized surplus`);
+        }
+        if (!action.input.totalSurplus) {
+            throw new Error(`Fixed income asset must have total surplus`);
+        }
+        const currentValue =
+            new Date().getTime() -
+            new Date(action.input.purchaseDate).getTime() /
+                (new Date(action.input.maturity).getTime() -
+                    new Date().getTime());
+        const asset = {
+            ...action.input,
+            purchasePrice,
+            totalDiscount,
+            annualizedYield,
+            currentValue,
+            ISIN: action.input.ISIN ?? null,
+            CUSIP: action.input.CUSIP ?? null,
+            coupon: action.input.coupon ?? null,
+        };
+        state.portfolio.push(asset);
     },
     createCashAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
@@ -78,22 +137,7 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!asset) {
             throw new Error(`Asset with id ${action.input.id} does not exist!`);
         }
-        if (
-            action.input.fixedIncomeTypeId &&
-            !state.fixedIncomeTypes.find(
-                fia => fia.id === action.input.fixedIncomeTypeId,
-            )
-        ) {
-            throw new Error(
-                `Fixed income type with id ${action.input.id} does not exist!`,
-            );
-        }
-        if (action.input.maturity) {
-            const dateSchema = z.coerce.date();
-            if (!dateSchema.safeParse(action.input.maturity).success) {
-                throw new Error(`Maturity must be a valid date`);
-            }
-        }
+        validateFixedIncomeAsset(state, action.input);
         state.portfolio = state.portfolio.map(asset =>
             asset.id === action.input.id
                 ? ({
