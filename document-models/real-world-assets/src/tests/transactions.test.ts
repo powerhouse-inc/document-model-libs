@@ -658,10 +658,10 @@ describe('validateInterestTransaction', () => {
 });
 
 describe('validateFeeTransaction', () => {
-    it('should throw an error when the asset is not a cash asset', () => {
+    it('should throw an error when the asset is not a fixed income asset', () => {
         const state = {
             ...mockEmptyInitialState,
-            portfolio: [{ id: '1', fixedIncomeTypeId: 'equity' }] as Asset[],
+            portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
             feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
             accounts: [{ id: 'serviceProvider1' }] as Account[],
         };
@@ -673,14 +673,14 @@ describe('validateFeeTransaction', () => {
         };
 
         expect(() => validateFeeTransaction(state, transaction)).toThrow(
-            'Fee transaction must have a cash asset as the asset',
+            'Fee transaction must have a fixed income asset as the asset',
         );
     });
 
     it('should throw an error when the counterParty is not provided', () => {
         const state = {
             ...mockEmptyInitialState,
-            portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
+            portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
             feeTypes: [{ id: 'serviceProvider1' }] as ServiceProvider[],
         };
         const transaction = {
@@ -697,7 +697,7 @@ describe('validateFeeTransaction', () => {
     it('should throw an error when the counterParty is not a known service provider', () => {
         const state = {
             ...mockEmptyInitialState,
-            portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
+            portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
             feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
             accounts: [{ id: 'serviceProvider1' }] as Account[],
         };
@@ -716,7 +716,7 @@ describe('validateFeeTransaction', () => {
     it('should throw an error when the amount is not negative', () => {
         const state = {
             ...mockEmptyInitialState,
-            portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
+            portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
             feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
             accounts: [{ id: 'serviceProvider1' }] as Account[],
         };
@@ -735,7 +735,7 @@ describe('validateFeeTransaction', () => {
     it('should not throw an error when the asset is a cash asset, the counterParty is provided and is a known service provider, and the amount is negative', () => {
         const state = {
             ...mockEmptyInitialState,
-            portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
+            portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
             feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
             accounts: [{ id: 'serviceProvider1' }] as Account[],
         };

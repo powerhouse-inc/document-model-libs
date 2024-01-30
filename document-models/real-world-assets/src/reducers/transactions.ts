@@ -189,8 +189,14 @@ export function validateFeeTransaction(
     transaction: InputMaybe<BaseTransaction>,
 ) {
     if (!transaction) return;
-    if (!isCashAsset(state.portfolio.find(a => a.id === transaction.assetId))) {
-        throw new Error(`Fee transaction must have a cash asset as the asset`);
+    if (
+        !isFixedIncomeAsset(
+            state.portfolio.find(a => a.id === transaction.assetId),
+        )
+    ) {
+        throw new Error(
+            `Fee transaction must have a fixed income asset as the asset`,
+        );
     }
     if (!transaction.counterPartyAccountId) {
         throw new Error(`Fee transaction must have a counter party account`);
