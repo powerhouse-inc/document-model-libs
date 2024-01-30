@@ -99,8 +99,7 @@ describe('Portfolio Operations', () => {
         const input = generateMock(z.EditCashAssetInputSchema());
         input.currency = 'USD';
         const existingSpv = generateMock(z.SpvSchema());
-        // @ts-expect-error mock
-        existingSpv.id = input.spvId;
+        input.spvId = existingSpv.id;
         const existingAsset = generateMock(z.CreateCashAssetInputSchema());
         existingAsset.id = input.id;
         const document = utils.createDocument({
@@ -126,14 +125,11 @@ describe('Portfolio Operations', () => {
     });
     it('should handle deleteFixedIncomeAsset operation', () => {
         const input = generateMock(z.DeleteFixedIncomeAssetInputSchema());
-        const existingAsset = generateMock(
-            z.CreateFixedIncomeAssetInputSchema(),
-        );
-        existingAsset.id = input.id;
+        const existingAsset = generateMock(z.FixedIncomeSchema());
+        input.id = existingAsset.id;
         const document = utils.createDocument({
             state: {
                 global: {
-                    // @ts-expect-error mock
                     portfolio: [existingAsset],
                 },
                 local: {},
@@ -154,7 +150,7 @@ describe('Portfolio Operations', () => {
     it('should handle deleteCashAsset operation', () => {
         const input = generateMock(z.DeleteCashAssetInputSchema());
         const existingAsset = generateMock(z.CreateCashAssetInputSchema());
-        existingAsset.id = input.id;
+        input.id = existingAsset.id;
         const document = utils.createDocument({
             state: {
                 global: {

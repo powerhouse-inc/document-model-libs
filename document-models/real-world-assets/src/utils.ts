@@ -209,12 +209,12 @@ export function validateFixedIncomeAsset(
         )
     ) {
         throw new Error(
-            `Fixed income type with id ${asset.id} does not exist!`,
+            `Fixed income type with id ${asset.fixedIncomeTypeId} does not exist!`,
         );
     }
     // todo: add validation for `name` field
     if (asset.spvId && !state.spvs.find(spv => spv.id === asset.spvId)) {
-        throw new Error(`SPV with id ${asset.id} does not exist!`);
+        throw new Error(`SPV with id ${asset.spvId} does not exist!`);
     }
     if (asset.maturity && !dateValidator.safeParse(asset.maturity).success) {
         throw new Error(`Maturity must be a valid date`);
