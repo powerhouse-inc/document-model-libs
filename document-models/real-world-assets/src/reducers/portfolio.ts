@@ -4,26 +4,26 @@
  * - delete the file and run the code generator again to have it reset
  */
 
+import { InputMaybe } from 'document-model/document-model';
 import { z } from 'zod';
-import { Asset } from '../..';
+import { Asset, FixedIncome } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
+const dateSchema = z.coerce.date();
+
+export function validateFixedIncomeAsset(
+    fixedIncomeAsset: InputMaybe<FixedIncome>,
+) {}
 
 export const reducer: RealWorldAssetsPortfolioOperations = {
     createFixedIncomeAssetOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Fixed income asset must have an id`);
         }
-        if (!action.input.fixedIncomeTypeId) {
-            throw new Error(`Fixed income asset must have a type`);
-        }
-        if (!action.input.name) {
-            throw new Error(`Fixed income asset must have a name`);
-        }
-        if (!action.input.maturity) {
-            throw new Error(`Fixed income asset must have a maturity`);
-        }
         if (state.portfolio.find(asset => asset.id === action.input.id)) {
             throw new Error(`Asset with id ${action.input.id} already exists!`);
+        }
+        if (!action.input.fixedIncomeTypeId) {
+            throw new Error(`Fixed income asset must have a type`);
         }
         if (
             !state.fixedIncomeTypes.find(
@@ -35,7 +35,12 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
                 `Fixed income type with id ${action.input.id} does not exist!`,
             );
         }
-        const dateSchema = z.coerce.date();
+        if (!action.input.name) {
+            throw new Error(`Fixed income asset must have a name`);
+        }
+        if (!action.input.maturity) {
+            throw new Error(`Fixed income asset must have a maturity`);
+        }
         if (!dateSchema.safeParse(action.input.maturity).success) {
             throw new Error(`Maturity must be a valid date`);
         }
