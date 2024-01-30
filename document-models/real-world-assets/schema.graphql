@@ -167,14 +167,14 @@ input CreateServiceProviderInput {
     id: ID!
     name: String!
     feeType: String!
-    accountId: String!
+    accountId: ID!
 }
 
 input EditServiceProviderInput {
     id: ID!
     name: String
     feeType: String
-    accountId: String
+    accountId: ID
 }
 
 input DeleteServiceProviderInput {
