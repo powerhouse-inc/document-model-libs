@@ -124,10 +124,9 @@ export function validateFixedIncomeTransaction(
     state: RealWorldAssetsState,
     transaction: InputMaybe<BaseTransaction>,
 ) {
-    if (!transaction) return;
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.assetId),
+            state.portfolio.find(a => a.id === transaction?.assetId),
         )
     ) {
         throw new Error(
@@ -140,8 +139,7 @@ export function validateCashTransaction(
     state: RealWorldAssetsState,
     transaction: InputMaybe<BaseTransaction>,
 ) {
-    if (!transaction) return;
-    if (transaction.counterPartyAccountId !== state.principalLenderAccountId) {
+    if (transaction?.counterPartyAccountId !== state.principalLenderAccountId) {
         throw new Error(
             `Cash transaction must have Maker principal lender as the counter party`,
         );
@@ -155,17 +153,16 @@ export function validateInterestTransaction(
     state: RealWorldAssetsState,
     transaction: InputMaybe<BaseTransaction>,
 ) {
-    if (!transaction) return;
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.assetId),
+            state.portfolio.find(a => a.id === transaction?.assetId),
         )
     ) {
         throw new Error(
             `Interest transaction must have a fixed income asset as the asset`,
         );
     }
-    if (!transaction.counterPartyAccountId) {
+    if (!transaction?.counterPartyAccountId) {
         throw new Error(
             `Interest transaction must have a counter party account`,
         );
@@ -188,17 +185,16 @@ export function validateFeeTransaction(
     state: RealWorldAssetsState,
     transaction: InputMaybe<BaseTransaction>,
 ) {
-    if (!transaction) return;
     if (
         !isFixedIncomeAsset(
-            state.portfolio.find(a => a.id === transaction.assetId),
+            state.portfolio.find(a => a.id === transaction?.assetId),
         )
     ) {
         throw new Error(
             `Fee transaction must have a fixed income asset as the asset`,
         );
     }
-    if (!transaction.counterPartyAccountId) {
+    if (!transaction?.counterPartyAccountId) {
         throw new Error(`Fee transaction must have a counter party account`);
     }
     if (
