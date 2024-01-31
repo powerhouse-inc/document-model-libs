@@ -17,11 +17,11 @@ type FixedIncome {
     spvId: ID! # Spv.id
     maturity: DateTime!
     purchaseDate: DateTime! # Weighted average of underlying transactions
-    notional: Float! # Face value
+    notional: Float! # Face value sum of the underlying transactions
     purchasePrice: Float! # purchaseProceeds / notional
     purchaseProceeds: Float! # Total cash outflow spent on purchases
     totalDiscount: Float! # notional - purchaseProceeds
-    marketValue: Float!
+    marketValue: Float! #
     annualizedYield: Float! # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
     realizedSurplus: Float!
     totalSurplus: Float!
@@ -185,23 +185,13 @@ input DeleteServiceProviderInput {
 
 input CreateFixedIncomeAssetInput {
     id: ID!
-    fixedIncomeTypeId: ID! # FixedIncomeType.id
-    name: String!
+    fixedIncomeTypeId: ID! # RwaFixedIncomeType.id
     spvId: ID! # Spv.id
+    name: String!
     maturity: DateTime!
-    purchaseDate: DateTime!
-    notional: Float! # Face value
-    purchasePrice: Float! # purchaseProceeds / notional
-    purchaseProceeds: Float! # Total cash outflow spent on purchases
-    totalDiscount: Float! # notional - purchaseProceeds
-    marketValue: Float!
-    annualizedYield: Float! # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
-    realizedSurplus: Float!
-    totalSurplus: Float!
     ISIN: String
     CUSIP: String
     coupon: Float
-    currentValue: Float
 }
 
 input CreateCashAssetInput {
@@ -218,23 +208,13 @@ input EditCashAssetInput {
 
 input EditFixedIncomeAssetInput {
     id: ID!
-    fixedIncomeTypeId: ID # FixedIncomeType.id
-    name: String
+    fixedIncomeTypeId: ID # RwaFixedIncomeType.id
     spvId: ID # Spv.id
-    maturity: DateTime
-    purchaseDate: DateTime # Weighted average of underlying transactions
-    notional: Float # Face value
-    purchasePrice: Float # purchaseProceeds / notional
-    purchaseProceeds: Float # Total cash outflow spent on purchases
-    totalDiscount: Float # notional - purchaseProceeds
-    marketValue: Float
-    annualizedYield: Float # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
-    realizedSurplus: Float
-    totalSurplus: Float
+    name: String
     ISIN: String
     CUSIP: String
     coupon: Float
-    currentValue: Float
+    maturity: DateTime
 }
 
 input DeleteFixedIncomeAssetInput {

@@ -27,49 +27,23 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
         if (!action.input.maturity) {
             throw new Error(`Fixed income asset must have a maturity`);
         }
-        if (!action.input.purchaseDate) {
-            throw new Error(`Fixed income asset must have a purchase date`);
-        }
-        if (!action.input.notional) {
-            throw new Error(`Fixed income asset must have a notional`);
-        }
-        if (!action.input.purchaseProceeds) {
-            throw new Error(`Fixed income asset must have purchase proceeds`);
-        }
         validateFixedIncomeAsset(state, action.input as Asset);
-        const purchasePrice =
-            action.input.purchaseProceeds / action.input.notional;
-        const totalDiscount =
-            action.input.notional - action.input.purchaseProceeds;
-        if (!action.input.marketValue) {
-            throw new Error(`Fixed income asset must have market value`);
-        }
-        const daysToMaturity =
-            new Date().getTime() - new Date(action.input.maturity).getTime();
-        const annualizedYield =
-            (purchasePrice / (action.input.notional - purchasePrice)) *
-            (365 / daysToMaturity) *
-            100;
-        if (!action.input.realizedSurplus) {
-            throw new Error(`Fixed income asset must have realized surplus`);
-        }
-        if (!action.input.totalSurplus) {
-            throw new Error(`Fixed income asset must have total surplus`);
-        }
-        const currentValue =
-            new Date().getTime() -
-            new Date(action.input.purchaseDate).getTime() /
-                (new Date(action.input.maturity).getTime() -
-                    new Date().getTime());
         const asset = {
             ...action.input,
-            purchasePrice,
-            totalDiscount,
-            annualizedYield,
-            currentValue,
             ISIN: action.input.ISIN ?? null,
             CUSIP: action.input.CUSIP ?? null,
             coupon: action.input.coupon ?? null,
+            // todo: implement reducers that return curried functions and accept the date and underlying transactions as arguments
+            purchasePrice: 0,
+            totalDiscount: 0,
+            annualizedYield: 0,
+            currentValue: 0,
+            marketValue: 0,
+            notional: 0,
+            purchaseDate: '',
+            purchaseProceeds: 0,
+            realizedSurplus: 0,
+            totalSurplus: 0,
         };
         state.portfolio.push(asset);
     },

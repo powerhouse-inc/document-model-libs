@@ -774,18 +774,4 @@ describe('validateFixedIncomeAsset', () => {
             'Maturity must be a valid date',
         );
     });
-
-    test('should throw error when purchase date is not a valid date', () => {
-        const state = {
-            ...mockEmptyInitialState,
-        };
-        const asset = {
-            ...mockFixedIncome,
-            id: 'asset1',
-            purchaseDate: 'invalid date',
-        };
-        expect(() => validateFixedIncomeAsset(state, asset)).toThrow(
-            'Purchase date must be a valid date',
-        );
-    });
 });

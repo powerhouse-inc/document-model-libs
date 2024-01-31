@@ -219,10 +219,4 @@ export function validateFixedIncomeAsset(
     if (asset.maturity && !dateValidator.safeParse(asset.maturity).success) {
         throw new Error(`Maturity must be a valid date`);
     }
-    if (
-        asset.purchaseDate &&
-        !dateValidator.safeParse(asset.purchaseDate).success
-    ) {
-        throw new Error(`Purchase date must be a valid date`);
-    }
 }
