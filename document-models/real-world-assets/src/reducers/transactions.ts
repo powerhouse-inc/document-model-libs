@@ -39,6 +39,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (cashTransaction) {
             validateCashTransaction(state, cashTransaction);
+
             if (cashTransaction.amount < 0) {
                 throw new Error(
                     'Principal draw cash transaction amount must be positive',

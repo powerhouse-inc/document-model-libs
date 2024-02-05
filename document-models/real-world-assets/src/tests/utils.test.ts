@@ -14,6 +14,7 @@ import {
     ServiceProvider,
 } from '../..';
 import {
+    calculateNotional,
     computeWeightedAveragePurchaseDate,
     validateBaseTransaction,
     validateCashTransaction,
@@ -827,5 +828,48 @@ describe('computeWeightedAveragePurchaseDate', () => {
         const expectedDate = new Date('2023-01-18');
 
         expect(result).toEqual(expectedDate);
+    });
+});
+
+describe('calculateNotional', () => {
+    it('should correctly calculate the notional for multiple transactions', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2022-01-01', amount: 10 },
+            // @ts-expect-error mock
+            { entryTime: '2022-02-01', amount: 20 },
+            // @ts-expect-error mock
+            { entryTime: '2022-03-01', amount: 30 },
+        ];
+
+        const result = calculateNotional(transactions);
+        const expectedNotional = 60;
+
+        expect(result).toEqual(expectedNotional);
+    });
+
+    it('should return zero when there are no transactions', () => {
+        const transactions: BaseTransaction[] = [];
+
+        const result = calculateNotional(transactions);
+        const expectedNotional = 0;
+
+        expect(result).toEqual(expectedNotional);
+    });
+
+    it('should handle transactions with negative amounts', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2022-01-01', amount: 10 },
+            // @ts-expect-error mock
+            { entryTime: '2022-02-01', amount: -20 },
+            // @ts-expect-error mock
+            { entryTime: '2022-03-01', amount: 30 },
+        ];
+
+        const result = calculateNotional(transactions);
+        const expectedNotional = 20;
+
+        expect(result).toEqual(expectedNotional);
     });
 });

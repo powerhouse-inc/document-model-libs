@@ -312,3 +312,10 @@ export function computeWeightedAveragePurchaseDate(
     // Round to the nearest day
     return roundToNearestDay(averageDate);
 }
+
+export function calculateNotional(transactions: BaseTransaction[]): number {
+    return transactions.reduce(
+        (sum, transaction) => sum + transaction.amount,
+        0,
+    );
+}
