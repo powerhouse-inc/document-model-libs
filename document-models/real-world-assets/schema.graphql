@@ -78,24 +78,30 @@ type PrincipalDrawGroupTransaction {
     id: ID!
     type: GroupTransactionType!
     cashTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 type PrincipalReturnGroupTransaction {
     id: ID!
     type: GroupTransactionType!
     cashTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 type AssetPurchaseGroupTransaction {
     id: ID!
     type: GroupTransactionType!
+    cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 type AssetSaleGroupTransaction {
     id: ID!
     type: GroupTransactionType!
+    cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 type InterestDrawGroupTransaction {
@@ -246,21 +252,27 @@ input DeleteAccountInput {
 input CreatePrincipalDrawGroupTransactionInput {
     id: ID!
     cashTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input CreatePrincipalReturnGroupTransactionInput {
     id: ID!
     cashTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input CreateAssetPurchaseGroupTransactionInput {
     id: ID!
+    cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input CreateAssetSaleGroupTransactionInput {
     id: ID!
+    cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input CreateInterestDrawGroupTransactionInput {
@@ -287,21 +299,27 @@ input EditGroupTransactionTypeInput {
 input EditPrincipalDrawGroupTransactionInput {
     id: ID!
     cashTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input EditPrincipalReturnGroupTransactionInput {
     id: ID!
     cashTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input EditAssetPurchaseGroupTransactionInput {
     id: ID!
+    cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input EditAssetSaleGroupTransactionInput {
     id: ID!
+    cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
+    feeTransactions: [BaseTransaction]
 }
 
 input EditInterestDrawGroupTransactionInput {
