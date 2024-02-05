@@ -13,8 +13,11 @@ import {
     ASSET_PURCHASE,
     ASSET_SALE,
     FEES_PAYMENT,
+    FEE_TRANSACTIONS,
+    FIXED_INCOME_TRANSACTION,
     INTEREST_DRAW,
     INTEREST_RETURN,
+    INTEREST_TRANSACTION,
     PRINCIPAL_DRAW,
     PRINCIPAL_RETURN,
     allPossibleAllowedTransactions,
@@ -290,6 +293,40 @@ function roundToNearestDay(date: Date) {
     }
 
     return roundedDate;
+}
+
+export function getBaseTransactionsForAsset(
+    state: RealWorldAssetsState,
+    assetId: string,
+) {
+    const baseTransactions: BaseTransaction[] = [];
+
+    for (const transaction of state.transactions) {
+        if (
+            FIXED_INCOME_TRANSACTION in transaction &&
+            transaction[FIXED_INCOME_TRANSACTION]?.assetId === assetId
+        ) {
+            baseTransactions.push(transaction[FIXED_INCOME_TRANSACTION]);
+        }
+
+        if (
+            INTEREST_TRANSACTION in transaction &&
+            transaction[INTEREST_TRANSACTION]?.assetId === assetId
+        ) {
+            baseTransactions.push(transaction[INTEREST_TRANSACTION]);
+        }
+
+        if (
+            FEE_TRANSACTIONS in transaction &&
+            Array.isArray(transaction[FEE_TRANSACTIONS])
+        ) {
+            for (const feeTransaction of transaction[FEE_TRANSACTIONS]) {
+                if (feeTransaction?.assetId === assetId) {
+                    baseTransactions.push(feeTransaction);
+                }
+            }
+        }
+    }
 }
 
 export function computeWeightedAveragePurchaseDate(
