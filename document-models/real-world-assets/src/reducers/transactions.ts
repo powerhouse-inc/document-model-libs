@@ -5,6 +5,7 @@
  */
 
 import {
+    makeEmptyGroupTransactionByType,
     validateCashTransaction,
     validateFeeTransaction,
     validateFixedIncomeTransaction,
@@ -274,17 +275,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (action.input.type === transaction.type) {
             return;
         }
+        const newGroupTransaction = makeEmptyGroupTransactionByType(
+            action.input.type,
+            action.input.id,
+        );
         state.transactions = state.transactions.map(t =>
-            t.id === action.input.id
-                ? {
-                      ...t,
-                      type: action.input.type,
-                      cashTransaction: null,
-                      fixedIncomeTransaction: null,
-                      interestTransaction: null,
-                      feeTransactions: [],
-                  }
-                : t,
+            t.id === action.input.id ? newGroupTransaction : t,
         );
     },
     editPrincipalDrawGroupTransactionOperation(state, action, dispatch) {

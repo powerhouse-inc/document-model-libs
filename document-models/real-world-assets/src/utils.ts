@@ -10,6 +10,13 @@ import {
     RealWorldAssetsState,
 } from '..';
 import {
+    ASSET_PURCHASE,
+    ASSET_SALE,
+    FEES_PAYMENT,
+    INTEREST_DRAW,
+    INTEREST_RETURN,
+    PRINCIPAL_DRAW,
+    PRINCIPAL_RETURN,
     allPossibleAllowedTransactions,
     groupTransactionTypesToAllowedTransactions,
 } from './constants';
@@ -218,5 +225,51 @@ export function validateFixedIncomeAsset(
     }
     if (asset.maturity && !dateValidator.safeParse(asset.maturity).success) {
         throw new Error(`Maturity must be a valid date`);
+    }
+}
+
+export function makeEmptyGroupTransactionByType(
+    type: GroupTransactionType,
+    id: string,
+) {
+    const cashTransaction = null;
+    const fixedIncomeTransaction = null;
+    const interestTransaction = null;
+    const feeTransactions = [] as BaseTransaction[];
+    const base = {
+        type,
+        id,
+    };
+    switch (type) {
+        case PRINCIPAL_DRAW:
+        case PRINCIPAL_RETURN: {
+            return {
+                ...base,
+                cashTransaction,
+                feeTransactions,
+            };
+        }
+        case ASSET_PURCHASE:
+        case ASSET_SALE: {
+            return {
+                ...base,
+                cashTransaction,
+                fixedIncomeTransaction,
+                feeTransactions,
+            };
+        }
+        case INTEREST_DRAW:
+        case INTEREST_RETURN: {
+            return {
+                ...base,
+                interestTransaction,
+            };
+        }
+        case FEES_PAYMENT: {
+            return {
+                ...base,
+                feeTransactions,
+            };
+        }
     }
 }
