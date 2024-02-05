@@ -259,9 +259,10 @@ describe('validateBaseTransaction', () => {
 
 describe('validateHasCorrectTransactions', () => {
     // Test cases for PrincipalDraw
-    it('should allow cashTransaction for PrincipalDraw', () => {
+    it('should allow cashTransaction and feeTransactions for PrincipalDraw', () => {
         const input = {
             cashTransaction: {},
+            feeTransactions: [{}],
         } as PrincipalDrawGroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('PrincipalDraw', input),
@@ -272,7 +273,6 @@ describe('validateHasCorrectTransactions', () => {
         const transactionTypes = [
             'fixedIncomeTransaction',
             'interestTransaction',
-            'feeTransactions',
         ];
         transactionTypes.forEach(tx => {
             const input = {
@@ -285,9 +285,10 @@ describe('validateHasCorrectTransactions', () => {
     });
 
     // Test cases for PrincipalReturn
-    it('should allow cashTransaction for PrincipalReturn', () => {
+    it('should allow cashTransaction and feeTransactions for PrincipalReturn', () => {
         const input = {
             cashTransaction: {},
+            feeTransactions: [{}],
         } as PrincipalReturnGroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('PrincipalReturn', input),
@@ -298,7 +299,6 @@ describe('validateHasCorrectTransactions', () => {
         const transactionTypes = [
             'fixedIncomeTransaction',
             'interestTransaction',
-            'feeTransactions',
         ];
         transactionTypes.forEach(tx => {
             const input = {
@@ -311,9 +311,11 @@ describe('validateHasCorrectTransactions', () => {
     });
 
     // Test cases for AssetPurchase
-    it('should allow fixedIncomeTransaction for AssetPurchase', () => {
+    it('should allow fixedIncomeTransaction, cashTransaction and feeTransactions for AssetPurchase', () => {
         const input = {
             fixedIncomeTransaction: {},
+            cashTransaction: {},
+            feeTransactions: [{}],
         } as AssetPurchaseGroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('AssetPurchase', input),
@@ -321,11 +323,7 @@ describe('validateHasCorrectTransactions', () => {
     });
 
     it('should not allow other transactions for AssetPurchase', () => {
-        const transactionTypes = [
-            'cashTransaction',
-            'interestTransaction',
-            'feeTransactions',
-        ];
+        const transactionTypes = ['interestTransaction'];
         transactionTypes.forEach(tx => {
             const input = {
                 [tx]: {},
@@ -337,9 +335,11 @@ describe('validateHasCorrectTransactions', () => {
     });
 
     // Test cases for AssetSale
-    it('should allow fixedIncomeTransaction for AssetSale', () => {
+    it('should allow fixedIncomeTransaction, cashTransaction and feeTransactions for AssetSale', () => {
         const input = {
             fixedIncomeTransaction: {},
+            cashTransaction: {},
+            feeTransactions: [{}],
         } as AssetSaleGroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('AssetSale', input),
@@ -347,11 +347,7 @@ describe('validateHasCorrectTransactions', () => {
     });
 
     it('should not allow other transactions for AssetSale', () => {
-        const transactionTypes = [
-            'cashTransaction',
-            'interestTransaction',
-            'feeTransactions',
-        ];
+        const transactionTypes = ['interestTransaction'];
         transactionTypes.forEach(tx => {
             const input = {
                 [tx]: {},

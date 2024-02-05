@@ -27,10 +27,10 @@ export function validateHasCorrectTransactions(
         feeTransactions?: InputMaybe<InputMaybe<BaseTransaction>[]>;
     },
 ) {
-    const allowedTransaction =
+    const allowedTransactions =
         groupTransactionTypesToAllowedTransactions[groupTransactionType];
     const notAllowedTransactions = allPossibleAllowedTransactions.filter(
-        tx => tx !== allowedTransaction,
+        tx => !allowedTransactions.includes(tx),
     );
     notAllowedTransactions.forEach(tx => {
         if (transactionsInput[tx]) {

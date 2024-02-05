@@ -9,7 +9,7 @@ import { GroupTransactionType, z } from '../../gen/schema';
 import * as creators from '../../gen/transactions/creators';
 import utils from '../../gen/utils';
 import {
-    AllowedTransaction,
+    AllowedTransactions,
     AssetPurchase,
     AssetSale,
     InterestDraw,
@@ -49,7 +49,8 @@ function makeBlankGroupTransactionInput(
     const transactionsType =
         groupTransactionTypesToAllowedTransactions[groupTransactionType];
     input.type = groupTransactionType;
-    allPossibleAllowedTransactions.forEach((tx: AllowedTransaction) => {
+    // @ts-expect-error mock
+    allPossibleAllowedTransactions.forEach((tx: AllowedTransactions) => {
         if (tx !== transactionsType) {
             // @ts-expect-error mock
             input[tx] = null;

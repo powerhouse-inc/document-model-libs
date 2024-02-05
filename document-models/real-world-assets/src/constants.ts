@@ -19,18 +19,18 @@ export const allPossibleAllowedTransactions = [
     feeTransactions,
 ] as const;
 
-export type AllowedTransaction =
-    (typeof allPossibleAllowedTransactions)[number];
+export type AllowedTransactions =
+    (typeof allPossibleAllowedTransactions)[number][];
 
 export const groupTransactionTypesToAllowedTransactions: Record<
     GroupTransactionType,
-    AllowedTransaction
+    AllowedTransactions
 > = {
-    PrincipalDraw: cashTransaction,
-    PrincipalReturn: cashTransaction,
-    AssetPurchase: fixedIncomeTransaction,
-    AssetSale: fixedIncomeTransaction,
-    InterestDraw: interestTransaction,
-    InterestReturn: interestTransaction,
-    FeesPayment: feeTransactions,
+    PrincipalDraw: [cashTransaction, feeTransactions],
+    PrincipalReturn: [cashTransaction, feeTransactions],
+    AssetPurchase: [fixedIncomeTransaction, cashTransaction, feeTransactions],
+    AssetSale: [fixedIncomeTransaction, cashTransaction, feeTransactions],
+    InterestDraw: [interestTransaction],
+    InterestReturn: [interestTransaction],
+    FeesPayment: [feeTransactions],
 } as const;
