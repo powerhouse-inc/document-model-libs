@@ -364,9 +364,9 @@
                         },
                         {
                             "id": "bR8EulBSPuKO8tkYHKoEwfkSgeA=",
-                            "name": "ADD_FEE_TRANSACTIONS_TO_FEES_PAYMENT_GROUP_TRANSACTION",
+                            "name": "ADD_FEE_TRANSACTIONS_TO_GROUP_TRANSACTION",
                             "description": "",
-                            "schema": "inputAddFeeTransactionsToFeesPaymentGroupTransactionInput{id:ID!feeTransactions:[BaseTransaction]}",
+                            "schema": "inputAddFeeTransactionsToGroupTransactionInput{id:ID!feeTransactions:[BaseTransaction]}",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -386,9 +386,9 @@
                         },
                         {
                             "id": "NINQNICB1l4z33WB2ONypP63OQE=",
-                            "name": "REMOVE_FEE_TRANSACTION_FROM_FEES_PAYMENT_GROUP_TRANSACTION",
+                            "name": "REMOVE_FEE_TRANSACTION_FROM_GROUP_TRANSACTION",
                             "description": "",
-                            "schema": "inputRemoveFeeTransactionFromFeesPaymentGroupTransactionInput{id:ID!feeTransactionId:ID!}",
+                            "schema": "input RemoveFeeTransactionFromGroupTransactionInput{id:ID!feeTransactionId:ID!}",
                             "template": "",
                             "reducer": "",
                             "errors": [],

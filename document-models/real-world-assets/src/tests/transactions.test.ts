@@ -9,13 +9,13 @@ import { GroupTransactionType, z } from '../../gen/schema';
 import * as creators from '../../gen/transactions/creators';
 import utils from '../../gen/utils';
 import {
+    ASSET_PURCHASE,
+    ASSET_SALE,
     AllowedTransactions,
-    AssetPurchase,
-    AssetSale,
-    InterestDraw,
-    InterestReturn,
-    PrincipalDraw,
-    PrincipalReturn,
+    INTEREST_DRAW,
+    INTEREST_RETURN,
+    PRINCIPAL_DRAW,
+    PRINCIPAL_RETURN,
     allPossibleAllowedTransactions,
     groupTransactionTypesToAllowedTransactions,
 } from '../constants';
@@ -76,7 +76,7 @@ describe('Transactions Operations', () => {
         },
     });
     test('createPrincipalDrawGroupTransactionOperation', () => {
-        const input = makeBlankGroupTransactionInput(PrincipalDraw);
+        const input = makeBlankGroupTransactionInput(PRINCIPAL_DRAW);
         // @ts-expect-error mock
         input.cashTransaction = positiveMockCashTransaction;
         const updatedDocument = reducer(
@@ -91,7 +91,7 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     test('createPrincipalReturnGroupTransactionOperation', () => {
-        const input = makeBlankGroupTransactionInput(PrincipalReturn);
+        const input = makeBlankGroupTransactionInput(PRINCIPAL_RETURN);
         // @ts-expect-error mock
         input.cashTransaction = negativeMockCashTransaction;
         const updatedDocument = reducer(
@@ -106,7 +106,7 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     test('createAssetSaleGroupTransactionOperation', () => {
-        const input = makeBlankGroupTransactionInput(AssetSale);
+        const input = makeBlankGroupTransactionInput(ASSET_SALE);
         // @ts-expect-error mock
         input.fixedIncomeTransaction = mockFixedIncomeTransaction;
         const updatedDocument = reducer(
@@ -121,7 +121,7 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     test('createAssetPurchaseGroupTransactionOperation', () => {
-        const input = makeBlankGroupTransactionInput(AssetPurchase);
+        const input = makeBlankGroupTransactionInput(ASSET_PURCHASE);
         // @ts-expect-error mock
         input.fixedIncomeTransaction = mockFixedIncomeTransaction;
         const updatedDocument = reducer(
@@ -136,7 +136,7 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     test('createInterestDrawGroupTransactionOperation', () => {
-        const input = makeBlankGroupTransactionInput(InterestDraw);
+        const input = makeBlankGroupTransactionInput(INTEREST_DRAW);
         // @ts-expect-error mock
         input.interestTransaction = mockInterestTransaction;
         const updatedDocument = reducer(
@@ -151,7 +151,7 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     test('createInterestReturnGroupTransactionOperation', () => {
-        const input = makeBlankGroupTransactionInput(InterestReturn);
+        const input = makeBlankGroupTransactionInput(INTEREST_RETURN);
         // @ts-expect-error mock
         input.interestTransaction = mockInterestTransaction;
         const updatedDocument = reducer(
@@ -167,8 +167,8 @@ describe('Transactions Operations', () => {
     });
     it('should handle deleteGroupTransaction operation', () => {
         const existingGroupTransaction =
-            makeBlankGroupTransactionInput(PrincipalDraw);
-        const input = makeBlankGroupTransactionInput(PrincipalDraw);
+            makeBlankGroupTransactionInput(PRINCIPAL_DRAW);
+        const input = makeBlankGroupTransactionInput(PRINCIPAL_DRAW);
         input.id = existingGroupTransaction.id;
         const initialDocument = utils.createDocument({
             ...document,

@@ -16,13 +16,13 @@ import {
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
 import {
-    AssetPurchase,
-    AssetSale,
-    FeesPayment,
-    InterestDraw,
-    InterestReturn,
-    PrincipalDraw,
-    PrincipalReturn,
+    ASSET_PURCHASE,
+    ASSET_SALE,
+    FEES_PAYMENT,
+    INTEREST_DRAW,
+    INTEREST_RETURN,
+    PRINCIPAL_DRAW,
+    PRINCIPAL_RETURN,
 } from '../constants';
 
 export const reducer: RealWorldAssetsTransactionsOperations = {
@@ -31,7 +31,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = PrincipalDraw;
+        const type = PRINCIPAL_DRAW;
 
         validateHasCorrectTransactions(type, action.input);
 
@@ -46,19 +46,31 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             }
         }
 
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
         const newGroupTransaction = {
             ...action.input,
             cashTransaction,
+            feeTransactions,
             type,
         };
         state.transactions.push(newGroupTransaction);
     },
     createPrincipalReturnGroupTransactionOperation(state, action, dispatch) {
-        if (!action.input.id) {
+        const id = action.input.id;
+
+        if (!id) {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = PrincipalReturn;
+        const type = PRINCIPAL_RETURN;
 
         validateHasCorrectTransactions(type, action.input);
 
@@ -72,9 +84,21 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 );
             }
         }
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
         const newGroupTransaction = {
-            ...action.input,
+            id,
             cashTransaction,
+            feeTransactions,
             type,
         };
         state.transactions.push(newGroupTransaction);
@@ -84,7 +108,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = AssetPurchase;
+        const type = ASSET_PURCHASE;
 
         validateHasCorrectTransactions(type, action.input);
 
@@ -95,9 +119,27 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
 
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+        }
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
         const newGroupTransaction = {
             ...action.input,
             fixedIncomeTransaction,
+            cashTransaction,
+            feeTransactions,
             type,
         };
 
@@ -108,7 +150,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = AssetSale;
+        const type = ASSET_SALE;
 
         const fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
@@ -119,9 +161,27 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
 
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+        }
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
         const newGroupTransaction = {
             ...action.input,
             fixedIncomeTransaction,
+            cashTransaction,
+            feeTransactions,
             type,
         };
 
@@ -132,7 +192,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = InterestDraw;
+        const type = INTEREST_DRAW;
 
         validateHasCorrectTransactions(type, action.input);
 
@@ -155,7 +215,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = InterestReturn;
+        const type = INTEREST_RETURN;
 
         validateHasCorrectTransactions(type, action.input);
 
@@ -178,7 +238,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = FeesPayment;
+        const type = FEES_PAYMENT;
 
         validateHasCorrectTransactions(type, action.input);
 
@@ -232,20 +292,36 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (action.input.cashTransaction) {
-            validateCashTransaction(state, action.input.cashTransaction);
-            if (action.input.cashTransaction.amount < 0) {
+        const cashTransaction = action.input.cashTransaction ?? null;
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+            if (cashTransaction.amount < 0) {
                 throw new Error(
                     'Principal draw cash transaction amount must be positive',
                 );
             }
         }
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            cashTransaction,
+            feeTransactions,
+        };
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
-                ? ({
+                ? {
                       ...t,
-                      cashTransaction: action.input.cashTransaction,
-                  } as GroupTransaction)
+                      ...newGroupTransaction,
+                  }
                 : t,
         );
     },
@@ -253,20 +329,40 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (action.input.cashTransaction) {
-            validateCashTransaction(state, action.input.cashTransaction);
-            if (action.input.cashTransaction.amount > 0) {
+
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+            if (cashTransaction.amount > 0) {
                 throw new Error(
                     'Principal return cash transaction amount must be negative',
                 );
             }
         }
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            cashTransaction,
+            feeTransactions,
+        };
+
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
-                ? ({
+                ? {
                       ...t,
-                      cashTransaction: action.input.cashTransaction,
-                  } as GroupTransaction)
+                      ...newGroupTransaction,
+                  }
                 : t,
         );
     },
@@ -274,19 +370,42 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (action.input.fixedIncomeTransaction) {
-            validateFixedIncomeTransaction(
-                state,
-                action.input.fixedIncomeTransaction,
-            );
+
+        const fixedIncomeTransaction =
+            action.input.fixedIncomeTransaction ?? null;
+
+        if (fixedIncomeTransaction) {
+            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
+
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+        }
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            cashTransaction,
+            feeTransactions,
+        };
+
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
-                ? ({
+                ? {
                       ...t,
-                      fixedIncomeTransaction:
-                          action.input.fixedIncomeTransaction,
-                  } as GroupTransaction)
+                      ...newGroupTransaction,
+                  }
                 : t,
         );
     },
@@ -294,19 +413,41 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (action.input.fixedIncomeTransaction) {
-            validateFixedIncomeTransaction(
-                state,
-                action.input.fixedIncomeTransaction,
-            );
+        const fixedIncomeTransaction =
+            action.input.fixedIncomeTransaction ?? null;
+
+        if (fixedIncomeTransaction) {
+            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
+
+        const cashTransaction = action.input.cashTransaction ?? null;
+
+        if (cashTransaction) {
+            validateCashTransaction(state, cashTransaction);
+        }
+
+        const feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+            : null;
+
+        if (feeTransactions?.length) {
+            feeTransactions.forEach(feeTransaction => {
+                validateFeeTransaction(state, feeTransaction);
+            });
+        }
+
+        const newGroupTransaction = {
+            ...action.input,
+            cashTransaction,
+            feeTransactions,
+        };
+
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
-                ? ({
+                ? {
                       ...t,
-                      fixedIncomeTransaction:
-                          action.input.fixedIncomeTransaction,
-                  } as GroupTransaction)
+                      ...newGroupTransaction,
+                  }
                 : t,
         );
     },
@@ -314,18 +455,23 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (action.input.interestTransaction) {
-            validateInterestTransaction(
-                state,
-                action.input.interestTransaction,
-            );
+        const interestTransaction = action.input.interestTransaction ?? null;
+
+        if (interestTransaction) {
+            validateInterestTransaction(state, interestTransaction);
         }
+
+        const newGroupTransaction = {
+            ...action.input,
+            interestTransaction,
+        };
+
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
-                ? ({
+                ? {
                       ...t,
-                      interestTransaction: action.input.interestTransaction,
-                  } as GroupTransaction)
+                      ...newGroupTransaction,
+                  }
                 : t,
         );
     },
@@ -333,22 +479,26 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
-        if (action.input.interestTransaction) {
-            validateInterestTransaction(
-                state,
-                action.input.interestTransaction,
-            );
+        const interestTransaction = action.input.interestTransaction ?? null;
+        if (interestTransaction) {
+            validateInterestTransaction(state, interestTransaction);
         }
+
+        const newGroupTransaction = {
+            ...action.input,
+            interestTransaction,
+        };
+
         state.transactions = state.transactions.map(t =>
             t.id === action.input.id
-                ? ({
+                ? {
                       ...t,
-                      interestTransaction: action.input.interestTransaction,
-                  } as GroupTransaction)
+                      ...newGroupTransaction,
+                  }
                 : t,
         );
     },
-    addFeeTransactionsToFeesPaymentGroupTransactionOperation(state, action) {
+    addFeeTransactionsToGroupTransactionOperation(state, action) {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }
@@ -395,10 +545,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 : t,
         );
     },
-    removeFeeTransactionFromFeesPaymentGroupTransactionOperation(
-        state,
-        action,
-    ) {
+    removeFeeTransactionFromGroupTransactionOperation(state, action) {
         if (!action.input.id) {
             throw new Error('Group transaction must have an id');
         }

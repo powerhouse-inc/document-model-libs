@@ -332,8 +332,8 @@ input EditInterestReturnGroupTransactionInput {
     interestTransaction: BaseTransaction
 }
 
-# add a fee transaction to a fees payment group transaction's list of fee payments
-input AddFeeTransactionsToFeesPaymentGroupTransactionInput {
+# add a fee transaction to a group transaction's list of fee payments
+input AddFeeTransactionsToGroupTransactionInput {
     id: ID!
     feeTransactions: [BaseTransaction]
 }
@@ -353,7 +353,7 @@ input EditFeeTransactionInput {
 }
 
 # remove a fee transaction from a fees payment group transaction's list of fee payments
-input RemoveFeeTransactionFromFeesPaymentGroupTransactionInput {
+input RemoveFeeTransactionFromGroupTransactionInput {
     id: ID!
     feeTransactionId: ID!
 }
