@@ -14,9 +14,11 @@ import {
     ServiceProvider,
 } from '../..';
 import {
+    calculateAnnualizedYield,
     calculateNotional,
     calculatePurchasePrice,
     calculatePurchaseProceeds,
+    calculateTotalDiscount,
     computeWeightedAveragePurchaseDate,
     validateBaseTransaction,
     validateCashTransaction,
@@ -958,5 +960,102 @@ describe('calculatePurchasePrice', () => {
         const expectedPrice = -5;
 
         expect(result).toEqual(expectedPrice);
+    });
+});
+
+describe('calculateTotalDiscount', () => {
+    it('should correctly calculate the total discount for non-zero notional and purchase proceeds', () => {
+        const notional = 100;
+        const purchaseProceeds = 80;
+
+        const result = calculateTotalDiscount(notional, purchaseProceeds);
+        const expectedDiscount = 20;
+
+        expect(result).toEqual(expectedDiscount);
+    });
+
+    it('should return notional when purchase proceeds is zero', () => {
+        const notional = 100;
+        const purchaseProceeds = 0;
+
+        const result = calculateTotalDiscount(notional, purchaseProceeds);
+        const expectedDiscount = 100;
+
+        expect(result).toEqual(expectedDiscount);
+    });
+
+    it('should return zero when notional and purchase proceeds are equal', () => {
+        const notional = 100;
+        const purchaseProceeds = 100;
+
+        const result = calculateTotalDiscount(notional, purchaseProceeds);
+        const expectedDiscount = 0;
+
+        expect(result).toEqual(expectedDiscount);
+    });
+
+    it('should handle negative notional and purchase proceeds', () => {
+        const notional = -100;
+        const purchaseProceeds = -80;
+
+        const result = calculateTotalDiscount(notional, purchaseProceeds);
+        const expectedDiscount = -20;
+
+        expect(result).toEqual(expectedDiscount);
+    });
+});
+
+describe('calculateAnnualizedYield', () => {
+    it('should correctly calculate the annualized yield for valid inputs', () => {
+        const purchasePrice = 100;
+        const notional = 200;
+        const maturity = new Date();
+        maturity.setFullYear(maturity.getFullYear() + 1);
+
+        const result = calculateAnnualizedYield(
+            purchasePrice,
+            notional,
+            maturity,
+        );
+        const expectedYield = 100; // Expected yield is 100%
+
+        expect(Math.round(result)).toEqual(expectedYield);
+    });
+
+    it('should throw an error when maturity date is in the past', () => {
+        const purchasePrice = 100;
+        const notional = 200;
+        const maturity = new Date();
+        maturity.setDate(maturity.getDate() - 1); // 1 day in the past
+
+        expect(() =>
+            calculateAnnualizedYield(purchasePrice, notional, maturity),
+        ).toThrow('Maturity date must be in the future.');
+    });
+
+    it('should throw an error when notional is equal to purchase price', () => {
+        const purchasePrice = 100;
+        const notional = 100;
+        const maturity = new Date();
+        maturity.setDate(maturity.getDate() + 365); // 1 year from now
+
+        expect(() =>
+            calculateAnnualizedYield(purchasePrice, notional, maturity),
+        ).toThrow('Notional must be greater than purchase price.');
+    });
+
+    it('should handle edge case where maturity date is today', () => {
+        const purchasePrice = 100;
+        const notional = 200;
+        const maturity = new Date(); // Today
+
+        const result = calculateAnnualizedYield(
+            purchasePrice,
+            notional,
+            maturity,
+        );
+        const expectedYield = 0; // Expected yield is 0%
+
+        expect(result).toBeCloseTo(expectedYield, 2); // 2 decimal places
     });
 });

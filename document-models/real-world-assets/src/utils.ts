@@ -334,3 +334,60 @@ export function calculatePurchasePrice(
     if (notional === 0) return 0;
     return purchaseProceeds / notional;
 }
+
+export function calculateTotalDiscount(
+    notional: number,
+    purchaseProceeds: number,
+) {
+    return notional - purchaseProceeds;
+}
+
+export function calculateAnnualizedYield(
+    purchasePrice: number,
+    notional: number,
+    maturity: Date,
+) {
+    const daysUntilMaturity = daysUntil(maturity);
+
+    if (daysUntilMaturity === 0) {
+        return 0;
+    }
+
+    if (daysUntilMaturity < 0) {
+        throw new Error('Maturity date must be in the future.');
+    }
+
+    const denominator = notional - purchasePrice;
+
+    if (denominator === 0) {
+        throw new Error('Notional must be greater than purchase price.');
+    }
+
+    const annualizedYield =
+        (purchasePrice / denominator) * (365 / daysUntilMaturity) * 100;
+
+    return annualizedYield;
+}
+
+export function daysUntilWithTime(date: Date) {
+    const now = new Date();
+    const targetDate = new Date(date);
+
+    const diffInTime = targetDate.getTime() - now.getTime();
+    const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+
+    return diffInDays;
+}
+
+export function daysUntil(date: Date) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Ignore time part of the current date
+
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0); // Ignore time part of the target date
+
+    const diffInTime = targetDate.getTime() - now.getTime();
+    const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+
+    return diffInDays;
+}
