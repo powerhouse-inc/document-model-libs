@@ -319,3 +319,18 @@ export function calculateNotional(transactions: BaseTransaction[]): number {
         0,
     );
 }
+
+export function calculatePurchaseProceeds(
+    transactions: BaseTransaction[],
+): number {
+    // Sum of all transactions, where purchase amounts are positive and sales are negative
+    return transactions.reduce((sum, { amount }) => sum + amount, 0);
+}
+
+export function calculatePurchasePrice(
+    purchaseProceeds: number,
+    notional: number,
+) {
+    if (notional === 0) return 0;
+    return purchaseProceeds / notional;
+}

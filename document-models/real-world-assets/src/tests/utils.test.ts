@@ -15,6 +15,8 @@ import {
 } from '../..';
 import {
     calculateNotional,
+    calculatePurchasePrice,
+    calculatePurchaseProceeds,
     computeWeightedAveragePurchaseDate,
     validateBaseTransaction,
     validateCashTransaction,
@@ -871,5 +873,90 @@ describe('calculateNotional', () => {
         const expectedNotional = 20;
 
         expect(result).toEqual(expectedNotional);
+    });
+});
+
+describe('calculatePurchaseProceeds', () => {
+    it('should correctly calculate the purchase proceeds for multiple transactions', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2022-01-01', amount: 10 },
+            // @ts-expect-error mock
+            { entryTime: '2022-02-01', amount: 20 },
+            // @ts-expect-error mock
+            { entryTime: '2022-03-01', amount: 30 },
+        ];
+
+        const result = calculatePurchaseProceeds(transactions);
+        const expectedProceeds = 60;
+
+        expect(result).toEqual(expectedProceeds);
+    });
+
+    it('should return zero when there are no transactions', () => {
+        const transactions: BaseTransaction[] = [];
+
+        const result = calculatePurchaseProceeds(transactions);
+        const expectedProceeds = 0;
+
+        expect(result).toEqual(expectedProceeds);
+    });
+
+    it('should handle transactions with negative amounts', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2022-01-01', amount: 10 },
+            // @ts-expect-error mock
+            { entryTime: '2022-02-01', amount: -20 },
+            // @ts-expect-error mock
+            { entryTime: '2022-03-01', amount: 30 },
+        ];
+
+        const result = calculatePurchaseProceeds(transactions);
+        const expectedProceeds = 20;
+
+        expect(result).toEqual(expectedProceeds);
+    });
+});
+
+describe('calculatePurchasePrice', () => {
+    it('should correctly calculate the purchase price for non-zero notional', () => {
+        const purchaseProceeds = 100;
+        const notional = 20;
+
+        const result = calculatePurchasePrice(purchaseProceeds, notional);
+        const expectedPrice = 5;
+
+        expect(result).toEqual(expectedPrice);
+    });
+
+    it('should return zero when notional is zero', () => {
+        const purchaseProceeds = 100;
+        const notional = 0;
+
+        const result = calculatePurchasePrice(purchaseProceeds, notional);
+        const expectedPrice = 0;
+
+        expect(result).toEqual(expectedPrice);
+    });
+
+    it('should handle negative purchase proceeds', () => {
+        const purchaseProceeds = -100;
+        const notional = 20;
+
+        const result = calculatePurchasePrice(purchaseProceeds, notional);
+        const expectedPrice = -5;
+
+        expect(result).toEqual(expectedPrice);
+    });
+
+    it('should handle negative notional', () => {
+        const purchaseProceeds = 100;
+        const notional = -20;
+
+        const result = calculatePurchasePrice(purchaseProceeds, notional);
+        const expectedPrice = -5;
+
+        expect(result).toEqual(expectedPrice);
     });
 });
