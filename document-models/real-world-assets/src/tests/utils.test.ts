@@ -14,6 +14,7 @@ import {
     ServiceProvider,
 } from '../..';
 import {
+    computeWeightedAveragePurchaseDate,
     validateBaseTransaction,
     validateCashTransaction,
     validateFeeTransaction,
@@ -769,5 +770,62 @@ describe('validateFixedIncomeAsset', () => {
         expect(() => validateFixedIncomeAsset(state, asset)).toThrow(
             'Maturity must be a valid date',
         );
+    });
+});
+
+describe('computeWeightedAveragePurchaseDate', () => {
+    it('should correctly compute the weighted average purchase date', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { amount: 49133118.05, entryTime: '2023-07-10' },
+            // @ts-expect-error mock
+            { amount: 24590375, entryTime: '2023-07-14' },
+        ];
+
+        const result = computeWeightedAveragePurchaseDate(transactions);
+        const expectedDate = new Date('2023-07-11');
+
+        expect(result).toEqual(expectedDate);
+    });
+
+    it('should return the same date when there is only one transaction', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2022-01-01', amount: 10 },
+        ];
+
+        const result = computeWeightedAveragePurchaseDate(transactions);
+        const expectedDate = new Date('2022-01-01');
+
+        expect(result).toEqual(expectedDate);
+    });
+
+    it('should throw an error when the sum of quantity is zero', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2022-01-01', amount: 0 },
+            // @ts-expect-error mock
+            { entryTime: '2022-02-01', amount: 0 },
+        ];
+
+        expect(() => computeWeightedAveragePurchaseDate(transactions)).toThrow(
+            'Sum of amount cannot be zero.',
+        );
+    });
+
+    it('should handle transactions with negative amounts', () => {
+        const transactions: BaseTransaction[] = [
+            // @ts-expect-error mock
+            { entryTime: '2023-01-01', amount: 20000 },
+            // @ts-expect-error mock
+            { entryTime: '2023-02-15', amount: 30000 },
+            // @ts-expect-error mock
+            { entryTime: '2023-03-10', amount: -10000 },
+        ];
+
+        const result = computeWeightedAveragePurchaseDate(transactions);
+        const expectedDate = new Date('2023-01-18');
+
+        expect(result).toEqual(expectedDate);
     });
 });

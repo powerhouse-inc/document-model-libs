@@ -273,3 +273,42 @@ export function makeEmptyGroupTransactionByType(
         }
     }
 }
+
+function roundToNearestDay(date: Date) {
+    // Convert to UTC date components
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+    const day = date.getUTCDate();
+    const hours = date.getUTCHours();
+
+    // Create a new date at the start of the current day in UTC
+    let roundedDate = new Date(Date.UTC(year, month, day));
+
+    // If the original time was past midday (12 hours), advance the roundedDate by one day
+    if (hours >= 12) {
+        roundedDate = new Date(roundedDate.getTime() + 24 * 60 * 60 * 1000); // Add one day in milliseconds
+    }
+
+    return roundedDate;
+}
+
+export function computeWeightedAveragePurchaseDate(
+    transactions: BaseTransaction[],
+) {
+    let sumWeightedTime = 0;
+    let sumAmount = 0;
+
+    transactions.forEach(({ entryTime, amount }) => {
+        const time = new Date(entryTime).getTime(); // Convert to milliseconds since the epoch
+        sumWeightedTime += time * amount; // Weight by the amount
+        sumAmount += amount;
+    });
+
+    if (sumAmount === 0) throw new Error('Sum of amount cannot be zero.');
+
+    const averageTimeInMs = sumWeightedTime / sumAmount; // Calculate the weighted average in milliseconds
+    const averageDate = new Date(averageTimeInMs); // Convert back to a Date object
+
+    // Round to the nearest day
+    return roundToNearestDay(averageDate);
+}
