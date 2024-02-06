@@ -173,6 +173,18 @@ export function validateInterestTransaction(
     }
 }
 
+export function validateFeeTransactions(
+    state: RealWorldAssetsState,
+    transactions: InputMaybe<InputMaybe<BaseTransaction>[]>,
+) {
+    if (!Array.isArray(transactions)) {
+        throw new Error(`Fee transactions must be an array`);
+    }
+    transactions.forEach(transaction => {
+        validateFeeTransaction(state, transaction);
+    });
+}
+
 export function validateFeeTransaction(
     state: RealWorldAssetsState,
     transaction: InputMaybe<BaseTransaction>,
