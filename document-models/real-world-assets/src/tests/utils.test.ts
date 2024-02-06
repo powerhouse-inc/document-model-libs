@@ -790,7 +790,7 @@ describe('computeWeightedAveragePurchaseDate', () => {
         const result = computeWeightedAveragePurchaseDate(transactions);
         const expectedDate = new Date('2023-07-11');
 
-        expect(result).toEqual(expectedDate);
+        expect(result).toEqual(expectedDate.toISOString());
     });
 
     it('should return the same date when there is only one transaction', () => {
@@ -802,7 +802,7 @@ describe('computeWeightedAveragePurchaseDate', () => {
         const result = computeWeightedAveragePurchaseDate(transactions);
         const expectedDate = new Date('2022-01-01');
 
-        expect(result).toEqual(expectedDate);
+        expect(result).toEqual(expectedDate.toISOString());
     });
 
     it('should throw an error when the sum of quantity is zero', () => {
@@ -831,7 +831,7 @@ describe('computeWeightedAveragePurchaseDate', () => {
         const result = computeWeightedAveragePurchaseDate(transactions);
         const expectedDate = new Date('2023-01-18');
 
-        expect(result).toEqual(expectedDate);
+        expect(result).toEqual(expectedDate.toISOString());
     });
 });
 
@@ -1009,9 +1009,9 @@ describe('calculateAnnualizedYield', () => {
     it('should correctly calculate the annualized yield for valid inputs', () => {
         const purchasePrice = 100;
         const notional = 200;
-        const maturity = new Date();
-        maturity.setFullYear(maturity.getFullYear() + 1);
-
+        const maturity = new Date(
+            new Date().getTime() + 1000 * 60 * 60 * 24 * 365,
+        ).toISOString();
         const result = calculateAnnualizedYield(
             purchasePrice,
             notional,
@@ -1025,8 +1025,9 @@ describe('calculateAnnualizedYield', () => {
     it('should throw an error when maturity date is in the past', () => {
         const purchasePrice = 100;
         const notional = 200;
-        const maturity = new Date();
-        maturity.setDate(maturity.getDate() - 1); // 1 day in the past
+        const maturity = new Date(
+            new Date().getTime() - 1000 * 60 * 60 * 24 * 365,
+        ).toISOString();
 
         expect(() =>
             calculateAnnualizedYield(purchasePrice, notional, maturity),
@@ -1036,8 +1037,9 @@ describe('calculateAnnualizedYield', () => {
     it('should throw an error when notional is equal to purchase price', () => {
         const purchasePrice = 100;
         const notional = 100;
-        const maturity = new Date();
-        maturity.setDate(maturity.getDate() + 365); // 1 year from now
+        const maturity = new Date(
+            new Date().getTime() + 1000 * 60 * 60 * 24 * 365,
+        ).toISOString();
 
         expect(() =>
             calculateAnnualizedYield(purchasePrice, notional, maturity),
@@ -1047,7 +1049,7 @@ describe('calculateAnnualizedYield', () => {
     it('should handle edge case where maturity date is today', () => {
         const purchasePrice = 100;
         const notional = 200;
-        const maturity = new Date(); // Today
+        const maturity = new Date().toISOString();
 
         const result = calculateAnnualizedYield(
             purchasePrice,

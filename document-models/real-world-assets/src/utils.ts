@@ -226,6 +226,43 @@ export function validateFixedIncomeAsset(
     if (asset.maturity && !dateValidator.safeParse(asset.maturity).success) {
         throw new Error(`Maturity must be a valid date`);
     }
+}
+
+export function computeFixedIncomeAssetDerivedFields(
+    transactions: BaseTransaction[],
+) {
+    const notional = calculateNotional(transactions);
+    const purchaseProceeds = calculatePurchaseProceeds(transactions);
+    const purchasePrice = calculatePurchasePrice(notional, purchaseProceeds);
+    const totalDiscount = calculateTotalDiscount(notional, purchaseProceeds);
+    const purchaseDate = computeWeightedAveragePurchaseDate(transactions);
+    const annualizedYield = calculateAnnualizedYield(
+        purchasePrice,
+        notional,
+        purchaseDate,
+    );
+    const currentValue = 0;
+    const marketValue = 0;
+    const realizedSurplus = 0;
+    const totalSurplus = 0;
+
+    return {
+        notional,
+        purchaseProceeds,
+        purchasePrice,
+        totalDiscount,
+        purchaseDate,
+        annualizedYield,
+        currentValue,
+        marketValue,
+        realizedSurplus,
+        totalSurplus,
+    };
+}
+
+export function validateFixedIncomeAssetDerivedFields(
+    asset: Partial<FixedIncome>,
+) {
     if (
         asset.purchaseDate &&
         !dateValidator.safeParse(asset.purchaseDate).success
@@ -388,6 +425,7 @@ export function getBaseTransactionsForAsset(
 export function computeWeightedAveragePurchaseDate(
     transactions: BaseTransaction[],
 ) {
+    if (!transactions.length) return new Date().toISOString();
     let sumWeightedTime = 0;
     let sumAmount = 0;
 
@@ -403,7 +441,7 @@ export function computeWeightedAveragePurchaseDate(
     const averageDate = new Date(averageTimeInMs); // Convert back to a Date object
 
     // Round to the nearest day
-    return roundToNearestDay(averageDate);
+    return roundToNearestDay(averageDate).toISOString();
 }
 
 export function calculateNotional(transactions: BaseTransaction[]): number {
@@ -438,9 +476,10 @@ export function calculateTotalDiscount(
 export function calculateAnnualizedYield(
     purchasePrice: number,
     notional: number,
-    maturity: Date,
+    maturity: string,
 ) {
-    const daysUntilMaturity = daysUntil(maturity);
+    const maturityDate = new Date(maturity);
+    const daysUntilMaturity = daysUntil(maturityDate);
 
     if (daysUntilMaturity === 0) {
         return 0;

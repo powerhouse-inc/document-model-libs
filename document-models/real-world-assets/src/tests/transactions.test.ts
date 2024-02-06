@@ -21,6 +21,9 @@ const principalLenderAccount = generateMock(z.AccountSchema());
 const mockCounterParty = generateMock(z.AccountSchema());
 const mockCashAsset = generateMock(z.CashSchema());
 const mockFixedIncomeAsset = generateMock(z.FixedIncomeSchema());
+mockFixedIncomeAsset.maturity = new Date(
+    new Date().getTime() + 1000 * 60 * 60 * 24 * 365,
+).toISOString();
 const mockServiceProvider = generateMock(z.ServiceProviderSchema());
 mockServiceProvider.accountId = mockCounterParty.id;
 const mockCashTransaction = generateMock(z.BaseTransactionSchema());
@@ -36,6 +39,7 @@ const negativeMockCashTransaction = {
 };
 const mockFixedIncomeTransaction = generateMock(z.BaseTransactionSchema());
 mockFixedIncomeTransaction.assetId = mockFixedIncomeAsset.id;
+mockFixedIncomeTransaction;
 const mockInterestTransaction = generateMock(z.BaseTransactionSchema());
 mockInterestTransaction.assetId = mockFixedIncomeAsset.id;
 mockInterestTransaction.counterPartyAccountId = mockServiceProvider.accountId;
