@@ -244,7 +244,7 @@ export function makeFixedIncomeAssetWithDerivedFields(
     state: RealWorldAssetsState,
     assetId: string,
 ) {
-    const baseTransactions = getBaseTransactionsForAsset(state, assetId);
+    const baseTransactions = getFixedIncomeTransactionsForAsset(state, assetId);
     const asset = state.portfolio.find(a => a.id === assetId);
     if (!asset) {
         throw new Error(`Asset with id ${assetId} does not exist!`);
@@ -418,7 +418,7 @@ function roundToNearestDay(date: Date) {
     return roundedDate;
 }
 
-export function getBaseTransactionsForAsset(
+export function getFixedIncomeTransactionsForAsset(
     state: RealWorldAssetsState,
     assetId: string,
 ) {
