@@ -221,6 +221,18 @@ input EditFixedIncomeAssetInput {
     CUSIP: String
     coupon: Float
     maturity: DateTime
+    purchaseDate: DateTime # Weighted average of underlying transactions
+    notional: Float # Face value sum of the underlying transactions
+    purchasePrice: Float # purchaseProceeds / notional
+    purchaseProceeds: Float # Total cash outflow spent on purchases
+    totalDiscount: Float # notional - purchaseProceeds
+    marketValue: Float #
+    annualizedYield: Float # (Purchase Price / ( Notional - Purchase Price)) x (365 / Days to Maturity ) * 100
+    realizedSurplus: Float
+    totalSurplus: Float
+    ISIN: String
+    CUSIP: String
+    coupon: Float
 }
 
 input DeleteFixedIncomeAssetInput {

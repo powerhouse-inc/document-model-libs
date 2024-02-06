@@ -5,6 +5,7 @@
  */
 
 import {
+    getBaseTransactionsForAsset,
     makeEmptyGroupTransactionByType,
     validateCashTransaction,
     validateFeeTransaction,
@@ -118,6 +119,11 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (fixedIncomeTransaction) {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+            const assetId = fixedIncomeTransaction.assetId;
+            const baseTransactions = getBaseTransactionsForAsset(
+                state,
+                assetId,
+            );
         }
 
         const cashTransaction = action.input.cashTransaction ?? null;

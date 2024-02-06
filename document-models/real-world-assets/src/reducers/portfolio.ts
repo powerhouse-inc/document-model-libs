@@ -33,7 +33,6 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             ISIN: action.input.ISIN ?? null,
             CUSIP: action.input.CUSIP ?? null,
             coupon: action.input.coupon ?? null,
-            // todo: implement reducers that return curried functions and accept the date and underlying transactions as arguments
             purchasePrice: 0,
             totalDiscount: 0,
             annualizedYield: 0,

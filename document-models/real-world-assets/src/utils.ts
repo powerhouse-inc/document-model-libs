@@ -13,11 +13,9 @@ import {
     ASSET_PURCHASE,
     ASSET_SALE,
     FEES_PAYMENT,
-    FEE_TRANSACTIONS,
     FIXED_INCOME_TRANSACTION,
     INTEREST_DRAW,
     INTEREST_RETURN,
-    INTEREST_TRANSACTION,
     PRINCIPAL_DRAW,
     PRINCIPAL_RETURN,
     allPossibleAllowedTransactions,
@@ -222,12 +220,68 @@ export function validateFixedIncomeAsset(
             `Fixed income type with id ${asset.fixedIncomeTypeId} does not exist!`,
         );
     }
-    // todo: add validation for `name` field
     if (asset.spvId && !state.spvs.find(spv => spv.id === asset.spvId)) {
         throw new Error(`SPV with id ${asset.spvId} does not exist!`);
     }
     if (asset.maturity && !dateValidator.safeParse(asset.maturity).success) {
         throw new Error(`Maturity must be a valid date`);
+    }
+    if (
+        asset.purchaseDate &&
+        !dateValidator.safeParse(asset.purchaseDate).success
+    ) {
+        throw new Error(`Purchase date must be a valid date`);
+    }
+    if (asset.notional && !numberValidator.safeParse(asset.notional).success) {
+        throw new Error(`Notional must be a number`);
+    }
+    if (
+        asset.purchaseProceeds &&
+        !numberValidator.safeParse(asset.purchaseProceeds).success
+    ) {
+        throw new Error(`Purchase proceeds must be a number`);
+    }
+    if (
+        asset.purchasePrice &&
+        !numberValidator.safeParse(asset.purchasePrice).success
+    ) {
+        throw new Error(`Purchase price must be a number`);
+    }
+    if (
+        asset.totalDiscount &&
+        !numberValidator.safeParse(asset.totalDiscount).success
+    ) {
+        throw new Error(`Total discount must be a number`);
+    }
+    if (
+        asset.annualizedYield &&
+        !numberValidator.safeParse(asset.annualizedYield).success
+    ) {
+        throw new Error(`Annualized yield must be a number`);
+    }
+    if (
+        asset.currentValue &&
+        !numberValidator.safeParse(asset.currentValue).success
+    ) {
+        throw new Error(`Current value must be a number`);
+    }
+    if (
+        asset.marketValue &&
+        !numberValidator.safeParse(asset.marketValue).success
+    ) {
+        throw new Error(`Market value must be a number`);
+    }
+    if (
+        asset.realizedSurplus &&
+        !numberValidator.safeParse(asset.realizedSurplus).success
+    ) {
+        throw new Error(`Realized surplus must be a number`);
+    }
+    if (
+        asset.totalSurplus &&
+        !numberValidator.safeParse(asset.totalSurplus).success
+    ) {
+        throw new Error(`Total surplus must be a number`);
     }
 }
 
@@ -309,24 +363,26 @@ export function getBaseTransactionsForAsset(
             baseTransactions.push(transaction[FIXED_INCOME_TRANSACTION]);
         }
 
-        if (
-            INTEREST_TRANSACTION in transaction &&
-            transaction[INTEREST_TRANSACTION]?.assetId === assetId
-        ) {
-            baseTransactions.push(transaction[INTEREST_TRANSACTION]);
-        }
+        // if (
+        //     INTEREST_TRANSACTION in transaction &&
+        //     transaction[INTEREST_TRANSACTION]?.assetId === assetId
+        // ) {
+        //     baseTransactions.push(transaction[INTEREST_TRANSACTION]);
+        // }
 
-        if (
-            FEE_TRANSACTIONS in transaction &&
-            Array.isArray(transaction[FEE_TRANSACTIONS])
-        ) {
-            for (const feeTransaction of transaction[FEE_TRANSACTIONS]) {
-                if (feeTransaction?.assetId === assetId) {
-                    baseTransactions.push(feeTransaction);
-                }
-            }
-        }
+        // if (
+        //     FEE_TRANSACTIONS in transaction &&
+        //     Array.isArray(transaction[FEE_TRANSACTIONS])
+        // ) {
+        //     for (const feeTransaction of transaction[FEE_TRANSACTIONS]) {
+        //         if (feeTransaction?.assetId === assetId) {
+        //             baseTransactions.push(feeTransaction);
+        //         }
+        //     }
+        // }
     }
+
+    return baseTransactions;
 }
 
 export function computeWeightedAveragePurchaseDate(
