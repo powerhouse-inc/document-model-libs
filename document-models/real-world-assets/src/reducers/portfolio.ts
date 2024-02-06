@@ -33,6 +33,8 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             ISIN: action.input.ISIN ?? null,
             CUSIP: action.input.CUSIP ?? null,
             coupon: action.input.coupon ?? null,
+            // the following values are all derived from underlying fixed income transactions
+            // and are set to 0 by default
             purchasePrice: 0,
             totalDiscount: 0,
             annualizedYield: 0,
