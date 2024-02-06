@@ -5,12 +5,10 @@
  */
 
 import {
-    computeFixedIncomeAssetDerivedFields,
-    getBaseTransactionsForAsset,
     makeEmptyGroupTransactionByType,
+    makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
     validateFeeTransaction,
-    validateFixedIncomeAssetDerivedFields,
     validateFixedIncomeTransaction,
     validateHasCorrectTransactions,
     validateInterestTransaction,
@@ -122,21 +120,10 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (fixedIncomeTransaction) {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
             const assetId = fixedIncomeTransaction.assetId;
-            const baseTransactions = getBaseTransactionsForAsset(
+            const newAsset = makeFixedIncomeAssetWithDerivedFields(
                 state,
                 assetId,
             );
-            const asset = state.portfolio.find(a => a.id === assetId);
-            if (!asset) {
-                throw new Error(`Asset with id ${assetId} does not exist!`);
-            }
-            const derivedFields =
-                computeFixedIncomeAssetDerivedFields(baseTransactions);
-            validateFixedIncomeAssetDerivedFields(derivedFields);
-            const newAsset = {
-                ...asset,
-                ...derivedFields,
-            };
             state.portfolio = state.portfolio.map(a =>
                 a.id === assetId ? newAsset : a,
             );
@@ -182,6 +169,15 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (fixedIncomeTransaction) {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+
+            const assetId = fixedIncomeTransaction.assetId;
+            const newAsset = makeFixedIncomeAssetWithDerivedFields(
+                state,
+                assetId,
+            );
+            state.portfolio = state.portfolio.map(a =>
+                a.id === assetId ? newAsset : a,
+            );
         }
 
         const cashTransaction = action.input.cashTransaction ?? null;
@@ -394,6 +390,15 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (fixedIncomeTransaction) {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+
+            const assetId = fixedIncomeTransaction.assetId;
+            const newAsset = makeFixedIncomeAssetWithDerivedFields(
+                state,
+                assetId,
+            );
+            state.portfolio = state.portfolio.map(a =>
+                a.id === assetId ? newAsset : a,
+            );
         }
 
         const cashTransaction = action.input.cashTransaction ?? null;
@@ -436,6 +441,15 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (fixedIncomeTransaction) {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+
+            const assetId = fixedIncomeTransaction.assetId;
+            const newAsset = makeFixedIncomeAssetWithDerivedFields(
+                state,
+                assetId,
+            );
+            state.portfolio = state.portfolio.map(a =>
+                a.id === assetId ? newAsset : a,
+            );
         }
 
         const cashTransaction = action.input.cashTransaction ?? null;

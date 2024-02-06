@@ -228,6 +228,26 @@ export function validateFixedIncomeAsset(
     }
 }
 
+export function makeFixedIncomeAssetWithDerivedFields(
+    state: RealWorldAssetsState,
+    assetId: string,
+) {
+    const baseTransactions = getBaseTransactionsForAsset(state, assetId);
+    const asset = state.portfolio.find(a => a.id === assetId);
+    if (!asset) {
+        throw new Error(`Asset with id ${assetId} does not exist!`);
+    }
+    const derivedFields =
+        computeFixedIncomeAssetDerivedFields(baseTransactions);
+    validateFixedIncomeAssetDerivedFields(derivedFields);
+    const newAsset = {
+        ...asset,
+        ...derivedFields,
+    };
+
+    return newAsset;
+}
+
 export function computeFixedIncomeAssetDerivedFields(
     transactions: BaseTransaction[],
 ) {
