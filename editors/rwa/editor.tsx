@@ -8,6 +8,9 @@ import {
 } from '../../document-models/real-world-assets';
 import { TabPanel } from 'react-aria-components';
 import { RWATabs } from '@powerhousedao/design-system';
+import { Portfolio } from './portfolio';
+import { Transactions } from './transactions';
+import { Attachments } from './attachments';
 
 export type IProps = EditorProps<
     RealWorldAssetsState,
@@ -24,16 +27,25 @@ function Editor(props: IProps) {
         <RWATabs
             selectedKey={activeTab}
             onSelectionChange={key => setActiveTab(key)}
+            disabledKeys={['attachments']}
             tabs={[
                 { id: 'portfolio', label: 'Portfolio' },
                 { id: 'transactions', label: 'Transactions' },
                 { id: 'attachments', label: 'Attachments' },
             ]}
         >
-            <div className="mt-4 flex h-[200px] items-center justify-center rounded-lg bg-gray-100">
-                <TabPanel id="portfolio">Portfolio Content</TabPanel>
-                <TabPanel id="transactions">Transactions Content</TabPanel>
-                <TabPanel id="attachments">Attachments Content</TabPanel>
+            <div className="flex justify-center mt-3">
+                <div className="w-full rounded-md bg-slate-50 py-6 px-10">
+                    <TabPanel id="portfolio">
+                        <Portfolio />
+                    </TabPanel>
+                    <TabPanel id="transactions">
+                        <Transactions />
+                    </TabPanel>
+                    <TabPanel id="attachments">
+                        <Attachments />
+                    </TabPanel>
+                </div>
             </div>
         </RWATabs>
     );
