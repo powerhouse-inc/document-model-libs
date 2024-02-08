@@ -101,8 +101,10 @@
         "prettier": "^3.2.4",
         "prettier-plugin-organize-imports": "^3.2.4",
         "react": "^18.2.0",
+        "react-aria-components": "1.0.1",
         "react-dom": "^18.2.0",
         "storybook": "^7.6.10",
+        "tailwind-merge": "^2.2.1",
         "tailwindcss": "^3.4.1",
         "typescript": "^5.3.3",
         "vite": "^5.0.12",
@@ -115,8 +117,5 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },
-    "dependencies": {
-        "react-aria-components": "1.0.1",
-        "tailwind-merge": "^2.2.1"
-    }
+    "dependencies": {}
 }
