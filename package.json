@@ -56,7 +56,7 @@
         "build-storybook": "powerhouse generate && storybook build",
         "test": "powerhouse generate && vitest run",
         "test:watch": "powerhouse generate && vitest",
-        "prepare": "npm run prepare:scripts",
+        "prepublishOnly": "npm run prepare:scripts",
         "prepare:scripts": "node scripts/index.js"
     },
     "devDependencies": {
@@ -113,7 +113,7 @@
     },
     "dependencies": {
         "@internationalized/date": "^3.5.1",
-        "@powerhousedao/design-system": "1.0.0-alpha.50",
+        "@powerhousedao/design-system": "file:.yalc/@powerhousedao/design-system",
         "autoprefixer": "10.4.16",
         "postcss": "8.4.33",
         "react-aria-components": "1.0.1",
