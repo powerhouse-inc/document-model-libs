@@ -35,7 +35,7 @@ function Editor(props: IProps) {
             ]}
         >
             <div className="flex justify-center mt-3">
-                <div className="w-full rounded-md bg-slate-50 py-6 px-10">
+                <div className="w-full rounded-md bg-slate-50 p-8">
                     <TabPanel id="portfolio">
                         <Portfolio />
                     </TabPanel>
