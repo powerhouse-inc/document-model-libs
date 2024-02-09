@@ -1,67 +1,82 @@
 import {
-    RWAFixedIncomeAssetsTable,
+    FixedIncomeAsset,
     FixedIncomeAssetsTableProps,
     Icon,
     RWAAssetDetails,
+    RWAFixedIncomeAssetsTable,
 } from '@powerhousedao/design-system';
-import { useState } from 'react';
-import { mockFixedIncomeAssetsData } from './assets-mock-data';
+import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { CalendarDate } from '@internationalized/date';
+import {
+    mockFixedIncomeAssetsData,
+    mockFixedIncomeTypes,
+    mockSpvs,
+} from './assets-mock-data';
 
-// TODO: replace with real data
-const assetTypeOptions = [
-    { id: '91279GF8', label: 'T-Bill 91279GF8' },
-    { id: '91279GF9', label: 'T-Bill 91279GF9' },
-];
+const fieldsPriority: (keyof FixedIncomeAsset)[] = [
+    'id',
+    'name',
+    'maturity',
+    'notional',
+    'coupon',
+    'purchasePrice',
+    'purchaseDate',
+    'totalDiscount',
+    'purchaseProceeds',
+] as const;
 
-// TODO: replace with real data
-const maturityOptions = [
-    { id: 'purchase', label: 'Purchase' },
-    { id: 'mature', label: 'Mature' },
-];
+export const columnCountByTableWidth = {
+    1520: 12,
+    1394: 11,
+    1239: 10,
+    1112: 9,
+    984: 8,
+} as const;
 
 export const Portfolio = () => {
     const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
-    const [editRowId, setEditRowId] = useState<string | null>(null);
+    const [selectedAssetToEdit, setSelectedAssetToEdit] =
+        useState<FixedIncomeAsset | null>(null);
     const [showNewAssetForm, setShowNewAssetForm] = useState(false);
 
+    const toggleExpandedRow = useCallback(
+        (id: string) => {
+            setExpandedRowId(id === expandedRowId ? null : id);
+        },
+        [expandedRowId],
+    );
+
     const onClickDetails: FixedIncomeAssetsTableProps['onClickDetails'] =
+        useCallback(
+            item => {
+                setExpandedRowId(
+                    item.id === expandedRowId ? null : item.id || null,
+                );
+            },
+            [expandedRowId],
+        );
+
+    const onEditItem: FixedIncomeAssetsTableProps['onEditItem'] = useCallback(
         item => {
-            setExpandedRowId(
-                item.id === expandedRowId ? null : item.id || null,
-            );
-        };
+            setSelectedAssetToEdit(item);
+        },
+        [],
+    );
 
-    const onEditItem: FixedIncomeAssetsTableProps['onEditItem'] = item =>
-        setEditRowId(item.id || null);
+    const onCancelEdit: FixedIncomeAssetsTableProps['onCancelEdit'] =
+        useCallback(() => {
+            setSelectedAssetToEdit(null);
+        }, []);
 
-    const onCancelEdit: FixedIncomeAssetsTableProps['onCancelEdit'] = reset => {
-        reset();
-        setEditRowId(null);
-    };
+    const onSubmitEdit: FixedIncomeAssetsTableProps['onSubmitEdit'] =
+        useCallback(() => {
+            setSelectedAssetToEdit(null);
+        }, []);
 
-    const onSubmitEdit: FixedIncomeAssetsTableProps['onSubmitEdit'] = (
-        data,
-        reset,
-    ) => {
-        // TODO: dispatch edit asset action
-        console.log('onSubmitEdit', data);
-        console.log('reset', reset);
-        setEditRowId(null);
-    };
-
-    const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitEdit'] = (
-        data,
-        reset,
-    ) => {
-        // TODO: dispatch create asset action
-        console.log('onSubmitCreate', data);
-        console.log('reset', reset);
-        setShowNewAssetForm(false);
-    };
-
-    const today = new Date();
+    const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitEdit'] =
+        useCallback(() => {
+            setShowNewAssetForm(false);
+        }, []);
 
     return (
         <div>
@@ -77,14 +92,17 @@ export const Portfolio = () => {
                         expandedRowId && 'max-h-[680px]',
                     )}
                     items={mockFixedIncomeAssetsData}
+                    fixedIncomeTypes={mockFixedIncomeTypes}
+                    spvs={mockSpvs}
+                    fieldsPriority={fieldsPriority}
+                    columnCountByTableWidth={columnCountByTableWidth}
                     expandedRowId={expandedRowId}
-                    editRowId={editRowId}
+                    selectedAssetToEdit={selectedAssetToEdit}
+                    toggleExpandedRow={toggleExpandedRow}
                     onClickDetails={onClickDetails}
                     onEditItem={onEditItem}
                     onCancelEdit={onCancelEdit}
                     onSubmitEdit={onSubmitEdit}
-                    assetTypeOptions={assetTypeOptions}
-                    maturityOptions={maturityOptions}
                     footer={
                         <button
                             onClick={() => setShowNewAssetForm(true)}
@@ -99,35 +117,29 @@ export const Portfolio = () => {
             {showNewAssetForm && (
                 <div className="bg-white mt-4 rounded-md border border-gray-300">
                     <RWAAssetDetails
+                        asset={{
+                            id: '',
+                            name: '',
+                            fixedIncomeTypeId: mockFixedIncomeTypes[0].id,
+                            spvId: mockSpvs[0].id,
+                            maturity: new Date().toISOString().split('T')[0],
+                            notional: 0,
+                            coupon: 0,
+                            purchasePrice: 0,
+                            purchaseDate: '',
+                            totalDiscount: 0,
+                            purchaseProceeds: 0,
+                            annualizedYield: 0,
+                        }}
                         mode="edit"
                         operation="create"
+                        fixedIncomeTypes={mockFixedIncomeTypes}
+                        spvs={mockSpvs}
                         onClose={() => setShowNewAssetForm(false)}
                         onCancel={() => setShowNewAssetForm(false)}
                         onEdit={() => {}}
                         onSubmitForm={onSubmitCreate}
-                        assetTypeOptions={assetTypeOptions}
-                        maturityOptions={maturityOptions}
                         hideNonEditableFields
-                        asset={{
-                            assetName: '',
-                            assetTypeId: '',
-                            currentValue: '',
-                            cusip: '',
-                            id: 'temp-id',
-                            isin: '',
-                            maturityDate: '',
-                            notional: '',
-                            purchaseProceeds: '',
-                            purchaseTimestamp: new CalendarDate(
-                                today.getFullYear(),
-                                today.getMonth() + 1,
-                                today.getDate(),
-                            ),
-                            realisedSurplus: '',
-                            totalDiscount: '',
-                            totalSurplus: '',
-                            unitPrice: '0',
-                        }}
                     />
                 </div>
             )}
