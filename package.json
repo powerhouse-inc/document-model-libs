@@ -1,6 +1,6 @@
 {
     "name": "document-model-libs",
-    "version": "1.1.40",
+    "version": "1.1.43",
     "license": "AGPL-3.0-only",
     "types": "dist/index.d.ts",
     "main": "dist/index.cjs",
@@ -56,7 +56,7 @@
         "build-storybook": "powerhouse generate && storybook build",
         "test": "powerhouse generate && vitest run",
         "test:watch": "powerhouse generate && vitest",
-        "prepublishOnly": "npm run prepare:scripts",
+        "prepare": "npm run prepare:scripts",
         "prepare:scripts": "node scripts/index.js"
     },
     "devDependencies": {
@@ -101,8 +101,10 @@
         "prettier": "^3.2.4",
         "prettier-plugin-organize-imports": "^3.2.4",
         "react": "^18.2.0",
+        "react-aria-components": "1.0.1",
         "react-dom": "^18.2.0",
         "storybook": "^7.6.10",
+        "tailwind-merge": "^2.2.1",
         "tailwindcss": "^3.4.1",
         "typescript": "^5.3.3",
         "vite": "^5.0.12",
