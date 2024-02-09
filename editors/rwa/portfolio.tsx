@@ -11,6 +11,7 @@ import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import {
+    FixedIncome,
     actions,
     isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
@@ -57,9 +58,13 @@ export const Portfolio = (props: IProps) => {
 
     const fixedIncomeTypes = document.state.global.fixedIncomeTypes;
 
-    const portfolio = document.state.global.portfolio.filter(asset =>
-        isFixedIncomeAsset(asset),
-    ) as FixedIncomeAsset[];
+    const portfolio = document.state.global.portfolio
+        .filter((asset): asset is FixedIncome => isFixedIncomeAsset(asset))
+        .map(item => ({
+            ...item,
+            maturity: item.maturity.split('T')[0],
+            purchaseDate: item.purchaseDate.split('T')[0],
+        })) as FixedIncomeAsset[];
 
     const toggleExpandedRow = useCallback(
         (id: string) => {
