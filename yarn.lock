@@ -2778,16 +2778,15 @@
     hygen "^6.2.11"
     typescript "^5.3.3"
 
-"@powerhousedao/design-system@1.0.0-alpha.53":
-  version "1.0.0-alpha.53"
-  resolved "https://registry.yarnpkg.com/@powerhousedao/design-system/-/design-system-1.0.0-alpha.53.tgz#8dfe53c5d562655c25f64418197814396417b39f"
-  integrity sha512-F2UIvgrtF3VJcTy0zB+AagoJ/ife7u3hkYOyCfb9DuqZJixzLuT+KDW8xlJK8aaQR+YLQ88LF4ZUoK8dLMWGJw==
+"@powerhousedao/design-system@file:.yalc/@powerhousedao/design-system":
+  version "1.0.0-alpha.55"
   dependencies:
     "@internationalized/date" "^3.5.1"
     "@radix-ui/react-dialog" "^1.0.5"
     "@react-input/number-format" "^1.0.20"
     change-case "^5.4.2"
     currency.js "^2.0.4"
+    date-fns "^3.3.1"
     react-hook-form "^7.49.3"
 
 "@radix-ui/number@1.0.1":
@@ -4389,7 +4388,7 @@
     polished "^4.2.2"
     ts-dedent "^2.2.0"
 
-"@storybook/addon-links@^7.6.10":
+"@storybook/addon-links@^7.6.13":
   version "7.6.13"
   resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-7.6.13.tgz#d336da5d555e4eb0a123bd8088de23ac72da4fd9"
   integrity sha512-hQVaJcp9i53Y+ukuRz5Y32Do+eR1nC6vpfoRnuUgPgVYYv+7D8XHydR/wml5GEQKy6MsGHLzFVLy1SmmQHeASg==

@@ -67,10 +67,10 @@
         "@monaco-editor/react": "^4.6.0",
         "@mui/material": "^5.15.5",
         "@powerhousedao/codegen": "0.0.12",
-        "@powerhousedao/design-system": "1.0.0-alpha.53",
+        "@powerhousedao/design-system": "file:.yalc/@powerhousedao/design-system",
         "@storybook/addon-essentials": "^7.6.10",
         "@storybook/addon-interactions": "^7.6.10",
-        "@storybook/addon-links": "^7.6.10",
+        "@storybook/addon-links": "^7.6.13",
         "@storybook/blocks": "^7.6.10",
         "@storybook/react": "^7.6.10",
         "@storybook/react-vite": "^7.6.10",
@@ -118,6 +118,7 @@
         "react-dom": "^18.2.0"
     },
     "dependencies": {
+        "@internationalized/date": "^3.5.1",
         "date-fns": "^3.3.1",
         "react-aria-components": "1.0.1",
         "tailwind-merge": "^2.2.1"

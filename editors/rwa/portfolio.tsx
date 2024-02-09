@@ -1,3 +1,4 @@
+import { getLocalTimeZone } from '@internationalized/date';
 import {
     FixedIncomeAsset,
     FixedIncomeAssetsTableProps,
@@ -38,14 +39,11 @@ export const columnCountByTableWidth = {
 } as const;
 
 function createAssetFromFormInputs(data: RWAAssetDetailInputs) {
-    const id = utils.hashKey();
     const spvId = data.spv.id;
     const fixedIncomeTypeId = data.fixedIncomeType.id;
-    const maturity = data.maturity.toString();
-
+    const maturity = data.maturity.toDate(getLocalTimeZone()).toISOString();
     return {
         ...data,
-        id,
         spvId,
         fixedIncomeTypeId,
         maturity,
@@ -59,6 +57,8 @@ export const Portfolio = (props: IProps) => {
     const [showNewAssetForm, setShowNewAssetForm] = useState(false);
 
     const { dispatch } = props;
+
+    console.log({ dispatch });
 
     const toggleExpandedRow = useCallback(
         (id: string) => {
@@ -87,18 +87,29 @@ export const Portfolio = (props: IProps) => {
     const onSubmitEdit: FixedIncomeAssetsTableProps['onSubmitForm'] =
         useCallback(
             data => {
+                if (!selectedAssetToEdit) return;
                 const asset = createAssetFromFormInputs(data);
-                dispatch(actions.editFixedIncomeAsset(asset));
+                dispatch(
+                    actions.editFixedIncomeAsset({
+                        ...asset,
+                        id: selectedAssetToEdit.id,
+                    }),
+                );
                 setSelectedAssetToEdit(undefined);
             },
-            [dispatch],
+            [dispatch, selectedAssetToEdit],
         );
 
     const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitForm'] =
         useCallback(
             data => {
                 const asset = createAssetFromFormInputs(data);
-                dispatch(actions.createFixedIncomeAsset(asset));
+                dispatch(
+                    actions.createFixedIncomeAsset({
+                        ...asset,
+                        id: utils.hashKey(),
+                    }),
+                );
                 setShowNewAssetForm(false);
             },
             [dispatch],
