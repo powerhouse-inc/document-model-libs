@@ -10,12 +10,11 @@ import { RWAAssetDetailInputs } from '@powerhousedao/design-system/dist/rwa/comp
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { actions } from '../../document-models/real-world-assets';
 import {
-    mockFixedIncomeAssetsData,
-    mockFixedIncomeTypes,
-    mockSpvs,
-} from './assets-mock-data';
+    actions,
+    isFixedIncomeAsset,
+} from '../../document-models/real-world-assets';
+import { mockFixedIncomeTypes, mockSpvs } from './assets-mock-data';
 import { IProps } from './editor';
 
 const fieldsPriority: (keyof FixedIncomeAsset)[] = [
@@ -56,9 +55,15 @@ export const Portfolio = (props: IProps) => {
         useState<FixedIncomeAsset>();
     const [showNewAssetForm, setShowNewAssetForm] = useState(false);
 
-    const { dispatch } = props;
+    const { dispatch, document } = props;
 
-    console.log({ dispatch });
+    const spvs = document.state.global.spvs;
+
+    const fixedIncomeTypes = document.state.global.fixedIncomeTypes;
+
+    const portfolio = document.state.global.portfolio.filter(asset =>
+        isFixedIncomeAsset(asset),
+    ) as FixedIncomeAsset[];
 
     const toggleExpandedRow = useCallback(
         (id: string) => {
@@ -128,9 +133,9 @@ export const Portfolio = (props: IProps) => {
                         'bg-white',
                         expandedRowId && 'max-h-[680px]',
                     )}
-                    items={mockFixedIncomeAssetsData}
-                    fixedIncomeTypes={mockFixedIncomeTypes}
-                    spvs={mockSpvs}
+                    items={portfolio}
+                    fixedIncomeTypes={fixedIncomeTypes}
+                    spvs={spvs}
                     fieldsPriority={fieldsPriority}
                     columnCountByTableWidth={columnCountByTableWidth}
                     expandedRowId={expandedRowId}
@@ -157,8 +162,8 @@ export const Portfolio = (props: IProps) => {
                         asset={{
                             id: '',
                             name: '',
-                            fixedIncomeTypeId: mockFixedIncomeTypes[0].id,
-                            spvId: mockSpvs[0].id,
+                            fixedIncomeTypeId: fixedIncomeTypes[0].id,
+                            spvId: spvs[0].id,
                             maturity: new Date().toISOString().split('T')[0],
                             notional: 0,
                             coupon: 0,
