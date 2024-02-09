@@ -1,4 +1,3 @@
-import { getLocalTimeZone } from '@internationalized/date';
 import {
     FixedIncomeAsset,
     FixedIncomeAssetsTableProps,
@@ -7,6 +6,7 @@ import {
     RWAFixedIncomeAssetsTable,
 } from '@powerhousedao/design-system';
 import { RWAAssetDetailInputs } from '@powerhousedao/design-system/dist/rwa/components/asset-details/form';
+import { addDays } from 'date-fns';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -38,13 +38,9 @@ export const columnCountByTableWidth = {
 } as const;
 
 function createAssetFromFormInputs(data: RWAAssetDetailInputs) {
-    const spvId = data.spv.id;
-    const fixedIncomeTypeId = data.fixedIncomeType.id;
-    const maturity = data.maturity.toDate(getLocalTimeZone()).toISOString();
+    const maturity = data.maturity.toString() + 'T00:00:00.000Z';
     return {
         ...data,
-        spvId,
-        fixedIncomeTypeId,
         maturity,
     };
 }
@@ -108,6 +104,7 @@ export const Portfolio = (props: IProps) => {
     const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitForm'] =
         useCallback(
             data => {
+                console.log({ data });
                 const asset = createAssetFromFormInputs(data);
                 dispatch(
                     actions.createFixedIncomeAsset({
@@ -164,7 +161,9 @@ export const Portfolio = (props: IProps) => {
                             name: '',
                             fixedIncomeTypeId: fixedIncomeTypes[0].id,
                             spvId: spvs[0].id,
-                            maturity: new Date().toISOString().split('T')[0],
+                            maturity: addDays(new Date(), 30)
+                                .toISOString()
+                                .split('T')[0],
                             notional: 0,
                             coupon: 0,
                             purchasePrice: 0,
