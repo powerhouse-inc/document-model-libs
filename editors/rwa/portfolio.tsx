@@ -5,13 +5,17 @@ import {
     RWAAssetDetails,
     RWAFixedIncomeAssetsTable,
 } from '@powerhousedao/design-system';
+import { RWAAssetDetailInputs } from '@powerhousedao/design-system/dist/rwa/components/asset-details/form';
+import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { actions } from '../../document-models/real-world-assets';
 import {
     mockFixedIncomeAssetsData,
     mockFixedIncomeTypes,
     mockSpvs,
 } from './assets-mock-data';
+import { IProps } from './editor';
 
 const fieldsPriority: (keyof FixedIncomeAsset)[] = [
     'id',
@@ -33,15 +37,32 @@ export const columnCountByTableWidth = {
     984: 8,
 } as const;
 
-export const Portfolio = () => {
-    const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+function createAssetFromFormInputs(data: RWAAssetDetailInputs) {
+    const id = utils.hashKey();
+    const spvId = data.spv.id;
+    const fixedIncomeTypeId = data.fixedIncomeType.id;
+    const maturity = data.maturity.toString();
+
+    return {
+        ...data,
+        id,
+        spvId,
+        fixedIncomeTypeId,
+        maturity,
+    };
+}
+
+export const Portfolio = (props: IProps) => {
+    const [expandedRowId, setExpandedRowId] = useState<string>();
     const [selectedAssetToEdit, setSelectedAssetToEdit] =
-        useState<FixedIncomeAsset | null>(null);
+        useState<FixedIncomeAsset>();
     const [showNewAssetForm, setShowNewAssetForm] = useState(false);
+
+    const { dispatch } = props;
 
     const toggleExpandedRow = useCallback(
         (id: string) => {
-            setExpandedRowId(id === expandedRowId ? null : id);
+            setExpandedRowId(id === expandedRowId ? undefined : id);
         },
         [expandedRowId],
     );
@@ -50,33 +71,38 @@ export const Portfolio = () => {
         useCallback(
             item => {
                 setExpandedRowId(
-                    item.id === expandedRowId ? null : item.id || null,
+                    item.id === expandedRowId
+                        ? undefined
+                        : item.id || undefined,
                 );
             },
             [expandedRowId],
         );
 
-    const onEditItem: FixedIncomeAssetsTableProps['onEditItem'] = useCallback(
-        item => {
-            setSelectedAssetToEdit(item);
-        },
-        [],
-    );
-
     const onCancelEdit: FixedIncomeAssetsTableProps['onCancelEdit'] =
         useCallback(() => {
-            setSelectedAssetToEdit(null);
+            setSelectedAssetToEdit(undefined);
         }, []);
 
-    const onSubmitEdit: FixedIncomeAssetsTableProps['onSubmitEdit'] =
-        useCallback(() => {
-            setSelectedAssetToEdit(null);
-        }, []);
+    const onSubmitEdit: FixedIncomeAssetsTableProps['onSubmitForm'] =
+        useCallback(
+            data => {
+                const asset = createAssetFromFormInputs(data);
+                dispatch(actions.editFixedIncomeAsset(asset));
+                setSelectedAssetToEdit(undefined);
+            },
+            [dispatch],
+        );
 
-    const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitEdit'] =
-        useCallback(() => {
-            setShowNewAssetForm(false);
-        }, []);
+    const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitForm'] =
+        useCallback(
+            data => {
+                const asset = createAssetFromFormInputs(data);
+                dispatch(actions.createFixedIncomeAsset(asset));
+                setShowNewAssetForm(false);
+            },
+            [dispatch],
+        );
 
     return (
         <div>
@@ -100,9 +126,9 @@ export const Portfolio = () => {
                     selectedAssetToEdit={selectedAssetToEdit}
                     toggleExpandedRow={toggleExpandedRow}
                     onClickDetails={onClickDetails}
-                    onEditItem={onEditItem}
+                    setSelectedAssetToEdit={setSelectedAssetToEdit}
                     onCancelEdit={onCancelEdit}
-                    onSubmitEdit={onSubmitEdit}
+                    onSubmitForm={onSubmitEdit}
                     footer={
                         <button
                             onClick={() => setShowNewAssetForm(true)}
@@ -137,7 +163,6 @@ export const Portfolio = () => {
                         spvs={mockSpvs}
                         onClose={() => setShowNewAssetForm(false)}
                         onCancel={() => setShowNewAssetForm(false)}
-                        onEdit={() => {}}
                         onSubmitForm={onSubmitCreate}
                         hideNonEditableFields
                     />
