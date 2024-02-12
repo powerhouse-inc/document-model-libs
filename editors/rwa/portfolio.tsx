@@ -66,24 +66,12 @@ export const Portfolio = (props: IProps) => {
             purchaseDate: item.purchaseDate.split('T')[0],
         })) as FixedIncomeAsset[];
 
-    const toggleExpandedRow = useCallback(
-        (id: string) => {
-            setExpandedRowId(id === expandedRowId ? undefined : id);
-        },
-        [expandedRowId],
-    );
+    const toggleExpandedRow = useCallback((id: string) => {
+        setExpandedRowId(curr => (id === curr ? undefined : id));
+    }, []);
 
     const onClickDetails: FixedIncomeAssetsTableProps['onClickDetails'] =
-        useCallback(
-            item => {
-                setExpandedRowId(
-                    item.id === expandedRowId
-                        ? undefined
-                        : item.id || undefined,
-                );
-            },
-            [expandedRowId],
-        );
+        useCallback(item => {}, []);
 
     const onCancelEdit: FixedIncomeAssetsTableProps['onCancelEdit'] =
         useCallback(() => {
@@ -109,7 +97,6 @@ export const Portfolio = (props: IProps) => {
     const onSubmitCreate: FixedIncomeAssetsTableProps['onSubmitForm'] =
         useCallback(
             data => {
-                console.log({ data });
                 const asset = createAssetFromFormInputs(data);
                 dispatch(
                     actions.createFixedIncomeAsset({
