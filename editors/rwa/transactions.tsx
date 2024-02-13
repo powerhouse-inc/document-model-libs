@@ -67,6 +67,26 @@ function getCreateActionForGroupTransactionType(type: GroupTransactionType) {
     }
 }
 
+function getEditActionForGroupTransactionType(type: GroupTransactionType) {
+    switch (type) {
+        case ASSET_PURCHASE:
+            return actions.editAssetPurchaseGroupTransaction;
+        case ASSET_SALE:
+            return actions.editAssetSaleGroupTransaction;
+        case INTEREST_DRAW:
+            return actions.editInterestDrawGroupTransaction;
+        case INTEREST_RETURN:
+            return actions.editInterestReturnGroupTransaction;
+        case PRINCIPAL_DRAW:
+            return actions.editPrincipalDrawGroupTransaction;
+        case PRINCIPAL_RETURN:
+            return actions.editPrincipalReturnGroupTransaction;
+        case FEES_PAYMENT:
+            // todo: implement edit reducers for fees
+            return actions.editPrincipalDrawGroupTransaction;
+    }
+}
+
 export const Transactions = (props: IProps) => {
     const { dispatch, document } = props;
 
@@ -112,7 +132,7 @@ export const Transactions = (props: IProps) => {
             }
             const cashTransaction = {
                 assetId: data.cashAssetId,
-                amount: data.cashAmount,
+                amount: Number(data.cashAmount),
                 entryTime: data.cashEntryTime.toString() + 'T00:00:00.000Z',
                 counterPartyAccountId: principalLenderAccountId,
                 tradeTime: null,
@@ -122,7 +142,7 @@ export const Transactions = (props: IProps) => {
             };
             const fixedIncomeTransaction = {
                 assetId: data.fixedIncomeAssetId,
-                amount: data.fixedIncomeAssetAmount,
+                amount: Number(data.fixedIncomeAssetAmount),
                 entryTime:
                     data.fixedIncomeAssetEntryTime.toString() +
                     'T00:00:00.000Z',
@@ -157,10 +177,38 @@ export const Transactions = (props: IProps) => {
         }, []);
 
     const onSubmitEdit: GroupTransactionsTableProps['onSubmitForm'] =
-        useCallback(data => {
-            console.log('edit', { data });
-            setSelectedGroupTransactionToEdit(undefined);
-        }, []);
+        useCallback(
+            data => {
+                if (!selectedGroupTransactionToEdit) return;
+
+                const transaction = createGroupTransactionFromFormInputs(data);
+                const action = getEditActionForGroupTransactionType(
+                    data.type as GroupTransactionType,
+                );
+                dispatch(
+                    action({
+                        ...transaction,
+                        id: selectedGroupTransactionToEdit.id,
+                        cashTransaction: {
+                            ...transaction.cashTransaction,
+                            id: selectedGroupTransactionToEdit.cashTransaction
+                                .id,
+                        },
+                        fixedIncomeTransaction: {
+                            ...transaction.fixedIncomeTransaction,
+                            id: selectedGroupTransactionToEdit
+                                .fixedIncomeTransaction.id,
+                        },
+                    }),
+                );
+                setSelectedGroupTransactionToEdit(undefined);
+            },
+            [
+                createGroupTransactionFromFormInputs,
+                dispatch,
+                selectedGroupTransactionToEdit,
+            ],
+        );
 
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitForm'] =
         useCallback(
@@ -205,8 +253,11 @@ export const Transactions = (props: IProps) => {
                 toggleExpandedRow={toggleExpandedRow}
                 onClickDetails={onClickDetails}
                 selectedGroupTransactionToEdit={selectedGroupTransactionToEdit}
+                setSelectedGroupTransactionToEdit={
+                    setSelectedGroupTransactionToEdit
+                }
                 onCancelEdit={onCancelEdit}
-                onSubmitEdit={onSubmitEdit}
+                onSubmitForm={onSubmitEdit}
                 onSubmitCreate={onSubmitCreate}
                 showNewGroupTransactionForm={showNewGroupTransactionForm}
                 setShowNewGroupTransactionForm={setShowNewGroupTransactionForm}
