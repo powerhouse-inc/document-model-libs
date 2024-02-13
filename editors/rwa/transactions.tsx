@@ -14,10 +14,20 @@ import { useCallback, useState } from 'react';
 import {
     Cash,
     FixedIncome,
+    GroupTransactionType,
     actions,
     isCashAsset,
     isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
+import {
+    ASSET_PURCHASE,
+    ASSET_SALE,
+    FEES_PAYMENT,
+    INTEREST_DRAW,
+    INTEREST_RETURN,
+    PRINCIPAL_DRAW,
+    PRINCIPAL_RETURN,
+} from '../../document-models/real-world-assets/src/constants';
 import { IProps } from './editor';
 
 const columnCountByTableWidth = {
@@ -37,6 +47,25 @@ const fieldsPriority: (keyof Fields)[] = [
     'Fixed amount',
     'Fixed entry time',
 ];
+
+function getCreateActionForGroupTransactionType(type: GroupTransactionType) {
+    switch (type) {
+        case ASSET_PURCHASE:
+            return actions.createAssetPurchaseGroupTransaction;
+        case ASSET_SALE:
+            return actions.createAssetSaleGroupTransaction;
+        case INTEREST_DRAW:
+            return actions.createInterestDrawGroupTransaction;
+        case INTEREST_RETURN:
+            return actions.createInterestReturnGroupTransaction;
+        case PRINCIPAL_DRAW:
+            return actions.createPrincipalDrawGroupTransaction;
+        case PRINCIPAL_RETURN:
+            return actions.createPrincipalReturnGroupTransaction;
+        case FEES_PAYMENT:
+            return actions.createFeesPaymentGroupTransaction;
+    }
+}
 
 export const Transactions = (props: IProps) => {
     const { dispatch, document } = props;
@@ -66,6 +95,21 @@ export const Transactions = (props: IProps) => {
 
     const createGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionDetailInputs) => {
+            if (!data.type) {
+                throw new Error('Transaction type is required');
+            }
+            if (!data.cashAssetId) {
+                throw new Error('Cash asset is required');
+            }
+            if (!data.fixedIncomeAssetId) {
+                throw new Error('Fixed income asset is required');
+            }
+            if (!data.cashAmount) {
+                throw new Error('Cash amount is required');
+            }
+            if (!data.fixedIncomeAssetAmount) {
+                throw new Error('Fixed income asset amount is required');
+            }
             const cashTransaction = {
                 assetId: data.cashAssetId,
                 amount: data.cashAmount,
@@ -89,9 +133,11 @@ export const Transactions = (props: IProps) => {
                 accountId: null,
             };
             const groupTransaction = {
-                type: 'AssetPurchaseGroupTransaction',
+                type: data.type,
                 cashTransaction,
                 fixedIncomeTransaction,
+                interestTransaction: null,
+                feeTransactions: null,
             };
             return groupTransaction;
         },
@@ -121,8 +167,11 @@ export const Transactions = (props: IProps) => {
             data => {
                 console.log('create', { data });
                 const transaction = createGroupTransactionFromFormInputs(data);
+                const action = getCreateActionForGroupTransactionType(
+                    data.type as GroupTransactionType,
+                );
                 dispatch(
-                    actions.createAssetPurchaseGroupTransaction({
+                    action({
                         ...transaction,
                         id: utils.hashKey(),
                         cashTransaction: {
@@ -176,7 +225,7 @@ export const Transactions = (props: IProps) => {
                     <GroupTransactionDetails
                         transaction={{
                             id: '',
-                            type: 'AssetPurchaseGroupTransaction',
+                            type: 'AssetPurchase',
                             cashTransaction: {
                                 id: '',
                                 assetId: cashAssets[0].id,
