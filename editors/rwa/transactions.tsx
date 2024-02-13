@@ -1,64 +1,144 @@
-import { useState } from 'react';
 import {
-    RWATable,
-    USDFormat,
-    RWATableCell,
-    RWATXDetail,
-    RWATXDetailProps,
-    useSortTableItems,
+    CashAsset,
+    Fields,
+    FixedIncomeAsset,
+    GroupTransaction,
+    GroupTransactionDetailInputs,
+    GroupTransactionDetails,
+    GroupTransactionsTable,
+    GroupTransactionsTableProps,
+    Icon,
 } from '@powerhousedao/design-system';
-import { txMockData, TXMock } from './tx-mock-data';
-import { twMerge } from 'tailwind-merge';
-import { parseDate } from '@internationalized/date';
+import { utils } from 'document-model/document';
+import { useCallback, useState } from 'react';
+import {
+    Cash,
+    FixedIncome,
+    actions,
+    isCashAsset,
+    isFixedIncomeAsset,
+} from '../../document-models/real-world-assets';
+import { IProps } from './editor';
 
-type SortableTXMockColumns = Pick<
-    TXMock,
-    | 'id'
-    | 'timestamp'
-    | 'assetTypeId'
-    | 'quantity'
-    | 'amount'
-    | 'cashBalanceChange'
->;
+const columnCountByTableWidth = {
+    1520: 12,
+    1394: 11,
+    1239: 10,
+    1112: 9,
+    984: 8,
+};
 
-const headerTable = [
-    { id: 'id', label: '#', allowSorting: true },
-    { id: 'timestamp', label: 'Timestamp', allowSorting: true },
-    { id: 'assetTypeId', label: 'Asset', allowSorting: true },
-    { id: 'quantity', label: 'Quantity', allowSorting: true },
-    { id: 'amount', label: '$USD Amount', allowSorting: true },
-    {
-        id: 'cashBalanceChange',
-        label: 'Cash Balance Change',
-        allowSorting: true,
-    },
+const fieldsPriority: (keyof Fields)[] = [
+    'Transaction type',
+    'Cash currency',
+    'Cash amount',
+    'Cash entry time',
+    'Fixed name',
+    'Fixed amount',
+    'Fixed entry time',
 ];
 
-// TODO: replace with real data
-const assetTypeOptions = [
-    { id: '91279GF8', label: 'T-Bill 91279GF8' },
-    { id: '91279GF9', label: 'T-Bill 91279GF9' },
-    { id: '912796YJ2', label: 'T-Bill 912796YJ2' },
-];
+export const Transactions = (props: IProps) => {
+    const { dispatch, document } = props;
 
-// TODO: replace with real data
-const cusipIsinAssetNameOptions = [
-    { id: 'purchase', label: 'Purchase' },
-    { id: 'mature', label: 'Mature' },
-];
+    const transactions = document.state.global.transactions;
 
-export const Transactions = () => {
-    const [selectedTxId, setSelectedTxId] = useState<string | null>(null);
-    const [editMode, setEditMode] = useState(false);
-    const { sortedItems, sortHandler } =
-        useSortTableItems<SortableTXMockColumns>(txMockData);
+    const fixedIncomeAssets = document.state.global.portfolio
+        .filter((asset): asset is FixedIncome => isFixedIncomeAsset(asset))
+        .map(item => ({
+            ...item,
+            maturity: item.maturity.split('T')[0],
+            purchaseDate: item.purchaseDate.split('T')[0],
+        })) as FixedIncomeAsset[];
 
-    const selectedTx = txMockData.find(tx => tx.id === selectedTxId);
+    const cashAssets = document.state.global.portfolio.filter(
+        (asset): asset is Cash => isCashAsset(asset),
+    ) as CashAsset[];
 
-    const onSubmitEditTx: RWATXDetailProps['onSubmit'] = data => {
-        // TODO: dispatch edit tx action
-        console.log('onSubmitEditTx', data);
-    };
+    const principalLenderAccountId =
+        document.state.global.principalLenderAccountId;
+
+    const [expandedRowId, setExpandedRowId] = useState<string>();
+    const [selectedGroupTransactionToEdit, setSelectedGroupTransactionToEdit] =
+        useState<GroupTransaction>();
+    const [showNewGroupTransactionForm, setShowNewGroupTransactionForm] =
+        useState(false);
+
+    const createGroupTransactionFromFormInputs = useCallback(
+        (data: GroupTransactionDetailInputs) => {
+            const cashTransaction = {
+                assetId: data.cashAssetId,
+                amount: data.cashAmount,
+                entryTime: data.cashEntryTime.toString() + 'T00:00:00.000Z',
+                counterPartyAccountId: principalLenderAccountId,
+                tradeTime: null,
+                settlementTime: null,
+                txRef: null,
+                accountId: null,
+            };
+            const fixedIncomeTransaction = {
+                assetId: data.fixedIncomeAssetId,
+                amount: data.fixedIncomeAssetAmount,
+                entryTime:
+                    data.fixedIncomeAssetEntryTime.toString() +
+                    'T00:00:00.000Z',
+                counterPartyAccountId: null,
+                tradeTime: null,
+                settlementTime: null,
+                txRef: null,
+                accountId: null,
+            };
+            const groupTransaction = {
+                type: 'AssetPurchaseGroupTransaction',
+                cashTransaction,
+                fixedIncomeTransaction,
+            };
+            return groupTransaction;
+        },
+        [principalLenderAccountId],
+    );
+
+    const toggleExpandedRow = useCallback((id: string) => {
+        setExpandedRowId(curr => (id === curr ? undefined : id));
+    }, []);
+
+    const onClickDetails: GroupTransactionsTableProps['onClickDetails'] =
+        useCallback(() => {}, []);
+
+    const onCancelEdit: GroupTransactionsTableProps['onCancelEdit'] =
+        useCallback(() => {
+            setSelectedGroupTransactionToEdit(undefined);
+        }, []);
+
+    const onSubmitEdit: GroupTransactionsTableProps['onSubmitForm'] =
+        useCallback(data => {
+            console.log('edit', { data });
+            setSelectedGroupTransactionToEdit(undefined);
+        }, []);
+
+    const onSubmitCreate: GroupTransactionsTableProps['onSubmitForm'] =
+        useCallback(
+            data => {
+                console.log('create', { data });
+                const transaction = createGroupTransactionFromFormInputs(data);
+                dispatch(
+                    actions.createAssetPurchaseGroupTransaction({
+                        ...transaction,
+                        id: utils.hashKey(),
+                        cashTransaction: {
+                            ...transaction.cashTransaction,
+                            id: utils.hashKey(),
+                        },
+                        fixedIncomeTransaction: {
+                            ...transaction.fixedIncomeTransaction,
+                            id: utils.hashKey(),
+                        },
+                    }),
+                );
+                setShowNewGroupTransactionForm(false);
+            },
+            [createGroupTransactionFromFormInputs, dispatch],
+        );
 
     return (
         <div>
@@ -66,62 +146,58 @@ export const Transactions = () => {
             <p className="text-xs text-gray-600 mb-4">
                 Details of this portfolios transactions
             </p>
-            <div>
-                <RWATable
-                    onClickSort={sortHandler}
-                    className="bg-white"
-                    header={headerTable}
-                    items={sortedItems}
-                    renderRow={(item, index) => (
-                        <tr
-                            key={item.id}
-                            className={twMerge(
-                                '[&>td:not(:first-child)]:border-l [&>td:not(:first-child)]:border-gray-300',
-                                index % 2 !== 0 && 'bg-gray-50',
-                            )}
-                        >
-                            <RWATableCell
-                                className="hover:underline cursor-pointer"
-                                onClick={() => setSelectedTxId(item.id)}
-                            >
-                                {item.id}
-                            </RWATableCell>
-                            <RWATableCell>{item.timestamp}</RWATableCell>
-                            <RWATableCell>{item.assetTypeId}</RWATableCell>
-                            <RWATableCell>{item.quantity}</RWATableCell>
-                            <RWATableCell>
-                                {USDFormat(item.amount)}
-                            </RWATableCell>
-                            <RWATableCell>
-                                {USDFormat(item.cashBalanceChange)}
-                            </RWATableCell>
-                        </tr>
-                    )}
-                />
-            </div>
-            {selectedTx && (
-                <div className="bg-white mt-4">
-                    <RWATXDetail
-                        mode={editMode ? 'edit' : 'view'}
-                        assetTypeOptions={assetTypeOptions}
-                        cusipIsinAssetNameOptions={cusipIsinAssetNameOptions}
-                        onSubmit={onSubmitEditTx}
-                        onEdit={() => setEditMode(true)}
-                        onCancel={() => {
-                            setEditMode(false);
+            <GroupTransactionsTable
+                columnCountByTableWidth={columnCountByTableWidth}
+                fieldsPriority={fieldsPriority}
+                fixedIncomeAssets={fixedIncomeAssets}
+                cashAssets={cashAssets}
+                items={transactions}
+                expandedRowId={expandedRowId}
+                toggleExpandedRow={toggleExpandedRow}
+                onClickDetails={onClickDetails}
+                selectedGroupTransactionToEdit={selectedGroupTransactionToEdit}
+                onCancelEdit={onCancelEdit}
+                onSubmitEdit={onSubmitEdit}
+                onSubmitCreate={onSubmitCreate}
+                showNewGroupTransactionForm={showNewGroupTransactionForm}
+                setShowNewGroupTransactionForm={setShowNewGroupTransactionForm}
+                createNewButton={
+                    <button
+                        onClick={() => setShowNewGroupTransactionForm(true)}
+                        className="flex p-2 text-gray-900 text-sm font-semibold justify-center items-center w-full bg-white gap-x-2 rounded-lg"
+                    >
+                        <span>Create Group Transaction</span>
+                        <Icon name="plus" size={14} />
+                    </button>
+                }
+            />
+            {showNewGroupTransactionForm && (
+                <div className="mt-4 rounded-md border border-gray-300 bg-white">
+                    <GroupTransactionDetails
+                        transaction={{
+                            id: '',
+                            type: 'AssetPurchaseGroupTransaction',
+                            cashTransaction: {
+                                id: '',
+                                assetId: cashAssets[0].id,
+                                amount: 1000,
+                                entryTime: '2024-01-01',
+                                counterPartyAccountId: principalLenderAccountId,
+                            },
+                            fixedIncomeTransaction: {
+                                id: '',
+                                assetId: fixedIncomeAssets[0].id,
+                                amount: 1000,
+                                entryTime: '2024-01-01',
+                            },
                         }}
-                        tx={{
-                            ...selectedTx,
-                            cusipIsinAssetNameId: selectedTx.assetTypeId,
-                            timestamp: parseDate(selectedTx.timestamp),
-                            assetProceedsUSD: USDFormat(
-                                selectedTx.assetProceedsUSD,
-                            ),
-                            unitPrice: `${selectedTx.unitPrice} %`,
-                            cashBalanceChange: USDFormat(
-                                selectedTx.cashBalanceChange,
-                            ),
-                        }}
+                        fixedIncomeAssets={fixedIncomeAssets}
+                        cashAssets={cashAssets}
+                        principalLenderId={principalLenderAccountId}
+                        operation="create"
+                        onCancel={() => setShowNewGroupTransactionForm(false)}
+                        onSubmitForm={onSubmitCreate}
+                        hideNonEditableFields
                     />
                 </div>
             )}

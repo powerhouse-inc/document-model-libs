@@ -133,10 +133,10 @@ export const Portfolio = (props: IProps) => {
                     setSelectedAssetToEdit={setSelectedAssetToEdit}
                     onCancelEdit={onCancelEdit}
                     onSubmitForm={onSubmitEdit}
-                    footer={
+                    createNewButton={
                         <button
                             onClick={() => setShowNewAssetForm(true)}
-                            className="flex h-[42px] text-gray-900 text-sm font-semibold justify-center items-center w-full bg-white gap-x-2"
+                            className="flex p-2 text-gray-900 text-sm font-semibold justify-center items-center w-full bg-white gap-x-2 rounded-lg"
                         >
                             <span>Create Asset</span>
                             <Icon name="plus" size={14} />

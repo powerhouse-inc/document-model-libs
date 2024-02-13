@@ -463,12 +463,8 @@ export function calculateAnnualizedYield(
     const maturityDate = new Date(maturity);
     const daysUntilMaturity = daysUntil(maturityDate);
 
-    if (daysUntilMaturity === 0) {
+    if (daysUntilMaturity <= 0) {
         return 0;
-    }
-
-    if (daysUntilMaturity < 0) {
-        throw new Error('Maturity date must be in the future.');
     }
 
     const denominator = notional - purchasePrice;
