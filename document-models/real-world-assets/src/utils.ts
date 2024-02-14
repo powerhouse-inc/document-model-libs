@@ -217,11 +217,10 @@ export function validateFeeTransaction(
 
 export function validateFixedIncomeAsset(
     state: RealWorldAssetsState,
-    asset: InputMaybe<Asset>,
+    asset: InputMaybe<FixedIncome>,
 ) {
-    if (!isFixedIncomeAsset(asset)) {
-        throw new Error(`Asset with id ${asset?.id} does not exist!`);
-    }
+    if (!asset) return;
+
     if (
         asset.fixedIncomeTypeId &&
         !state.fixedIncomeTypes.find(
@@ -504,4 +503,46 @@ export function daysUntil(date: Date) {
     const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
 
     return diffInDays;
+}
+
+export function getDifferences<T>(
+    obj1: T,
+    obj2: Partial<T>,
+): Partial<T> | undefined {
+    const compareValues = (value1: any, value2: any): any => {
+        if (Object(value1) === value1 && Object(value2) === value2) {
+            // Both are objects or arrays
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            if (value1.constructor !== value2.constructor) {
+                return value2;
+            }
+            if (Array.isArray(value1) && Array.isArray(value2)) {
+                if (value1.length !== value2.length) return value2;
+                const differences = value2
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                    .map((item, index) => compareValues(value1[index], item))
+                    .filter(item => item !== undefined);
+                return differences.length ? differences : undefined;
+            } else {
+                const objDifferences: any = {};
+                let hasDifference = false;
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                Object.keys({ ...value1, ...value2 }).forEach(key => {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                    const difference = compareValues(value1[key], value2[key]);
+                    if (difference !== undefined) {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                        objDifferences[key] = difference;
+                        hasDifference = true;
+                    }
+                });
+                return hasDifference ? objDifferences : undefined;
+            }
+        } else {
+            return value1 !== value2 ? value2 : undefined;
+        }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return compareValues(obj1, obj2);
 }
