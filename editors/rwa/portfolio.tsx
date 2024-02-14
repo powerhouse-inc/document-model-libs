@@ -84,7 +84,10 @@ export const Portfolio = (props: IProps) => {
                     asset,
                 );
 
-                if (changedFields === undefined) return;
+                if (Object.values(changedFields).filter(Boolean).length === 0) {
+                    setSelectedAssetToEdit(undefined);
+                    return;
+                }
 
                 dispatch(
                     actions.editFixedIncomeAsset({

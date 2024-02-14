@@ -505,44 +505,62 @@ export function daysUntil(date: Date) {
     return diffInDays;
 }
 
-export function getDifferences<T>(
+export function getDifferences<T extends object>(
     obj1: T,
     obj2: Partial<T>,
-): Partial<T> | undefined {
-    const compareValues = (value1: any, value2: any): any => {
-        if (Object(value1) === value1 && Object(value2) === value2) {
-            // Both are objects or arrays
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            if (value1.constructor !== value2.constructor) {
-                return value2;
+): Partial<T> {
+    const differences: Partial<T> = {};
+
+    function isObject(value: any): value is object {
+        return !!value && typeof value === 'object' && !Array.isArray(value);
+    }
+
+    const compare = (value1: any, value2: any): boolean => {
+        if (isObject(value1) && isObject(value2)) {
+            // Convert both objects to JSON strings to compare them as a whole.
+            const keys1 = Object.keys(value1).sort();
+            const keys2 = Object.keys(value2).sort();
+            if (
+                JSON.stringify(keys1) !== JSON.stringify(keys2) ||
+                keys1.some(key =>
+                    compare(
+                        value1[key as keyof typeof value1],
+                        value2[key as keyof typeof value1],
+                    ),
+                )
+            ) {
+                return true; // Any difference in object structure or value means they're different.
             }
-            if (Array.isArray(value1) && Array.isArray(value2)) {
-                if (value1.length !== value2.length) return value2;
-                const differences = value2
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                    .map((item, index) => compareValues(value1[index], item))
-                    .filter(item => item !== undefined);
-                return differences.length ? differences : undefined;
-            } else {
-                const objDifferences: any = {};
-                let hasDifference = false;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                Object.keys({ ...value1, ...value2 }).forEach(key => {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                    const difference = compareValues(value1[key], value2[key]);
-                    if (difference !== undefined) {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                        objDifferences[key] = difference;
-                        hasDifference = true;
-                    }
-                });
-                return hasDifference ? objDifferences : undefined;
-            }
+            return false;
+        } else if (Array.isArray(value1) && Array.isArray(value2)) {
+            // For arrays, compare their serialized forms.
+            return JSON.stringify(value1) !== JSON.stringify(value2);
         } else {
-            return value1 !== value2 ? value2 : undefined;
+            // For primitives, compare directly.
+            return value1 !== value2;
         }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return compareValues(obj1, obj2);
+    for (const key of new Set([...Object.keys(obj1), ...Object.keys(obj2)])) {
+        if (
+            compare(
+                obj1[key as keyof typeof obj1],
+                obj2[key as keyof typeof obj2],
+            )
+        ) {
+            differences[key as keyof typeof differences] =
+                obj2[key as keyof typeof obj2];
+        }
+    }
+
+    return Object.entries(differences).reduce<Partial<T>>(
+        (acc, [key, value]) => {
+            if (value !== undefined) {
+                // @ts-expect-error generic cannot be inferred
+                acc[key] = value;
+            }
+            return acc;
+        },
+        {} as Partial<T>,
+    );
 }
