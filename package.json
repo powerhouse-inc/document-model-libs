@@ -46,11 +46,11 @@
         }
     },
     "scripts": {
-        "generate": "powerhouse generate && npm run eslint . --fix",
+        "generate": "powerhouse generate && eslint . --fix",
         "check-types": "tsc",
-        "lint": "powerhouse generate && npm run eslint . && npm run check-types",
-        "lint:fix": "powerhouse generate && npm run eslint . --fix",
-        "lint:quiet": "powerhouse generate && npm run eslint . --quiet",
+        "lint": "powerhouse generate && eslint . && npm run check-types",
+        "lint:fix": "powerhouse generate && eslint . --fix",
+        "lint:quiet": "powerhouse generate && eslint . --quiet",
         "build": "powerhouse generate && vite build",
         "storybook": "powerhouse generate && storybook dev -p 6006",
         "build-storybook": "powerhouse generate && storybook build",
