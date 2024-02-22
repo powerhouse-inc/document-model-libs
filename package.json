@@ -1,6 +1,6 @@
 {
     "name": "document-model-libs",
-    "version": "1.1.47",
+    "version": "1.1.52",
     "license": "AGPL-3.0-only",
     "types": "dist/index.d.ts",
     "main": "dist/index.cjs",
@@ -67,7 +67,7 @@
         "@monaco-editor/react": "^4.6.0",
         "@mui/material": "^5.15.5",
         "@powerhousedao/codegen": "0.0.13",
-        "@powerhousedao/design-system": "1.0.0-alpha.56",
+        "@powerhousedao/design-system": "1.0.0-alpha.66",
         "@storybook/addon-essentials": "^7.6.10",
         "@storybook/addon-interactions": "^7.6.10",
         "@storybook/addon-links": "^7.6.10",

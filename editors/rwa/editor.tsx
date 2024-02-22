@@ -1,5 +1,5 @@
-import { RWATabs } from '@powerhousedao/design-system';
-import { EditorProps } from 'document-model/document';
+import { RWATabs, RWATabsProps } from '@powerhousedao/design-system';
+import { EditorProps, actions } from 'document-model/document';
 import { useState } from 'react';
 import { Key, TabPanel } from 'react-aria-components';
 import {
@@ -11,18 +11,40 @@ import { Attachments } from './attachments';
 import { Portfolio } from './portfolio';
 import { Transactions } from './transactions';
 
+export type CustomEditorProps = Pick<
+    RWATabsProps,
+    'onClose' | 'onExport' | 'onSwitchboardLinkClick'
+>;
+
 export type IProps = EditorProps<
     RealWorldAssetsState,
     RealWorldAssetsAction,
     RealWorldAssetsLocalState
->;
+> &
+    CustomEditorProps;
 
 function Editor(props: IProps) {
+    const { document, dispatch, onClose, onExport, onSwitchboardLinkClick } =
+        props;
+
     const [activeTab, setActiveTab] = useState<Key>('portfolio');
+
+    const undo = () => dispatch(actions.undo());
+    const redo = () => dispatch(actions.redo());
+
+    const canUndo = document.revision.global > 0 || document.revision.local > 0;
+    const canRedo = document.clipboard.length > 0;
 
     return (
         <RWATabs
+            onClose={onClose}
+            onExport={onExport}
+            onUndo={undo}
+            onRedo={redo}
+            canUndo={canUndo}
+            canRedo={canRedo}
             selectedKey={activeTab}
+            onSwitchboardLinkClick={onSwitchboardLinkClick}
             onSelectionChange={key => setActiveTab(key)}
             disabledKeys={['attachments']}
             tabs={[
