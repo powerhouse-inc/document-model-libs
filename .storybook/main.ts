@@ -1,6 +1,7 @@
 import { getConfig } from '@powerhousedao/codegen';
 import type { StorybookConfig } from '@storybook/react-vite';
 import { InlineConfig, mergeConfig } from 'vite';
+
 const { editorsDir } = getConfig();
 
 const config: StorybookConfig = {
@@ -20,9 +21,11 @@ const config: StorybookConfig = {
     },
     async viteFinal(config) {
         return mergeConfig(config, {
-            build: {
-                rollupOptions: {
-                    external: [/(?:.*\/)?@graphql-codegen(?:\/|$)/],
+            resolve: {
+                alias: {
+                    module: './create-require.js',
+                    path: 'path-browserify',
+                    crypto: 'crypto-browserify',
                 },
             },
         } as InlineConfig);

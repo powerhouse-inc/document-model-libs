@@ -21,12 +21,7 @@ readdirSync(documentModelsDir, { withFileTypes: true })
     });
 
 export default defineConfig(({ mode }) => {
-    const external = [
-        'react',
-        'react/jsx-runtime',
-        'react-dom',
-        /(?:.*\/)?@graphql-codegen(?:\/|$)/,
-    ];
+    const external = ['react', 'react/jsx-runtime', 'react-dom'];
 
     const test: InlineConfig = {
         globals: true,
@@ -37,6 +32,13 @@ export default defineConfig(({ mode }) => {
 
     return {
         test,
+        resolve: {
+            alias: {
+                module: './create-require.js',
+                path: 'path-browserify',
+                crypto: 'crypto-browserify',
+            },
+        },
         build: {
             outDir: `dist`,
             emptyOutDir: true,
