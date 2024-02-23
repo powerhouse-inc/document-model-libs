@@ -1,6 +1,6 @@
-import type { StorybookConfig } from '@storybook/react-vite';
 import { getConfig } from '@powerhousedao/codegen';
-
+import type { StorybookConfig } from '@storybook/react-vite';
+import { InlineConfig, mergeConfig } from 'vite';
 const { editorsDir } = getConfig();
 
 const config: StorybookConfig = {
@@ -17,6 +17,15 @@ const config: StorybookConfig = {
     },
     docs: {
         autodocs: 'tag',
+    },
+    async viteFinal(config) {
+        return mergeConfig(config, {
+            build: {
+                rollupOptions: {
+                    external: [/(?:.*\/)?@graphql-codegen(?:\/|$)/],
+                },
+            },
+        } as InlineConfig);
     },
 };
 export default config;

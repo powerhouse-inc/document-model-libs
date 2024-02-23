@@ -21,7 +21,12 @@ readdirSync(documentModelsDir, { withFileTypes: true })
     });
 
 export default defineConfig(({ mode }) => {
-    const external = ['react', 'react/jsx-runtime', 'react-dom'];
+    const external = [
+        'react',
+        'react/jsx-runtime',
+        'react-dom',
+        /(?:.*\/)?@graphql-codegen(?:\/|$)/,
+    ];
 
     const test: InlineConfig = {
         globals: true,
@@ -43,16 +48,7 @@ export default defineConfig(({ mode }) => {
             },
             rollupOptions: {
                 external,
-                output: {
-                    exports: 'named',
-                },
             },
-            commonjsOptions: {
-                include: [],
-            },
-        },
-        optimizeDeps: {
-            disabled: false,
         },
         plugins: [
             dts({ insertTypesEntry: true, exclude: ['**/*.stories.tsx'] }),
