@@ -269,6 +269,7 @@ input CreatePrincipalReturnGroupTransactionInput {
 
 input CreateAssetPurchaseGroupTransactionInput {
     id: ID!
+    entryTime: DateTime!
     cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
     feeTransactions: [BaseTransaction]
@@ -276,6 +277,7 @@ input CreateAssetPurchaseGroupTransactionInput {
 
 input CreateAssetSaleGroupTransactionInput {
     id: ID!
+    entryTime: DateTime!
     cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
     feeTransactions: [BaseTransaction]

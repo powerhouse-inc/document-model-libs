@@ -4,10 +4,8 @@ import {
     FixedIncomeAsset,
     GroupTransaction,
     GroupTransactionDetailInputs,
-    GroupTransactionDetails,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
-    Icon,
 } from '@powerhousedao/design-system';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
@@ -118,22 +116,10 @@ export const Transactions = (props: IProps) => {
             if (!data.type) {
                 throw new Error('Transaction type is required');
             }
-            if (!data.cashAssetId) {
-                throw new Error('Cash asset is required');
-            }
-            if (!data.fixedIncomeAssetId) {
-                throw new Error('Fixed income asset is required');
-            }
-            if (!data.cashAmount) {
-                throw new Error('Cash amount is required');
-            }
-            if (!data.fixedIncomeAssetAmount) {
-                throw new Error('Fixed income asset amount is required');
-            }
             const cashTransaction = {
                 assetId: data.cashAssetId,
                 amount: Number(data.cashAmount),
-                entryTime: data.cashEntryTime.toString() + 'T00:00:00.000Z',
+                entryTime: data.entryTime,
                 counterPartyAccountId: principalLenderAccountId,
                 tradeTime: null,
                 settlementTime: null,
@@ -143,9 +129,7 @@ export const Transactions = (props: IProps) => {
             const fixedIncomeTransaction = {
                 assetId: data.fixedIncomeAssetId,
                 amount: Number(data.fixedIncomeAssetAmount),
-                entryTime:
-                    data.fixedIncomeAssetEntryTime.toString() +
-                    'T00:00:00.000Z',
+                entryTime: data.entryTime,
                 counterPartyAccountId: null,
                 tradeTime: null,
                 settlementTime: null,
@@ -176,15 +160,13 @@ export const Transactions = (props: IProps) => {
             setSelectedGroupTransactionToEdit(undefined);
         }, []);
 
-    const onSubmitEdit: GroupTransactionsTableProps['onSubmitForm'] =
+    const onSubmitEdit: GroupTransactionsTableProps['onSubmitEdit'] =
         useCallback(
             data => {
                 if (!selectedGroupTransactionToEdit) return;
 
                 const transaction = createGroupTransactionFromFormInputs(data);
-                const action = getEditActionForGroupTransactionType(
-                    data.type as GroupTransactionType,
-                );
+                const action = getEditActionForGroupTransactionType(data.type!);
                 dispatch(
                     action({
                         ...transaction,
@@ -210,13 +192,13 @@ export const Transactions = (props: IProps) => {
             ],
         );
 
-    const onSubmitCreate: GroupTransactionsTableProps['onSubmitForm'] =
+    const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
         useCallback(
             data => {
                 console.log('create', { data });
                 const transaction = createGroupTransactionFromFormInputs(data);
                 const action = getCreateActionForGroupTransactionType(
-                    data.type as GroupTransactionType,
+                    data.type!,
                 );
                 dispatch(
                     action({
@@ -261,46 +243,7 @@ export const Transactions = (props: IProps) => {
                 onSubmitCreate={onSubmitCreate}
                 showNewGroupTransactionForm={showNewGroupTransactionForm}
                 setShowNewGroupTransactionForm={setShowNewGroupTransactionForm}
-                createNewButton={
-                    <button
-                        onClick={() => setShowNewGroupTransactionForm(true)}
-                        className="flex p-2 text-gray-900 text-sm font-semibold justify-center items-center w-full bg-white gap-x-2 rounded-lg"
-                    >
-                        <span>Create Group Transaction</span>
-                        <Icon name="plus" size={14} />
-                    </button>
-                }
             />
-            {showNewGroupTransactionForm && (
-                <div className="mt-4 rounded-md border border-gray-300 bg-white">
-                    <GroupTransactionDetails
-                        transaction={{
-                            id: '',
-                            type: 'AssetPurchase',
-                            cashTransaction: {
-                                id: '',
-                                assetId: cashAssets[0].id,
-                                amount: 1000,
-                                entryTime: '2024-01-01',
-                                counterPartyAccountId: principalLenderAccountId,
-                            },
-                            fixedIncomeTransaction: {
-                                id: '',
-                                assetId: fixedIncomeAssets[0].id,
-                                amount: 1000,
-                                entryTime: '2024-01-01',
-                            },
-                        }}
-                        fixedIncomeAssets={fixedIncomeAssets}
-                        cashAssets={cashAssets}
-                        principalLenderId={principalLenderAccountId}
-                        operation="create"
-                        onCancel={() => setShowNewGroupTransactionForm(false)}
-                        onSubmitForm={onSubmitCreate}
-                        hideNonEditableFields
-                    />
-                </div>
-            )}
         </div>
     );
 };
