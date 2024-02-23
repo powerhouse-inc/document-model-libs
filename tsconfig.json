@@ -21,6 +21,7 @@
         "**/*.tsx",
         "*.config.js",
         "*.config.ts",
+        "postcss.config.cjs"
     ],
     "exclude": ["dist/", "node_modules"]
 }
