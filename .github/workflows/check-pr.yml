@@ -14,7 +14,6 @@ jobs:
 
         steps:
             - uses: actions/checkout@v3
-
             - uses: pnpm/action-setup@v3
               with:
                   version: latest-8
@@ -32,7 +31,6 @@ jobs:
 
         steps:
             - uses: actions/checkout@v3
-
             - uses: pnpm/action-setup@v3
               with:
                   version: latest-8
@@ -48,7 +46,6 @@ jobs:
         needs: [lint, test]
         steps:
             - uses: actions/checkout@v3
-              with:
             - uses: pnpm/action-setup@v3
               with:
                   version: latest-8
