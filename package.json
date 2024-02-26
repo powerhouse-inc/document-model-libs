@@ -9,21 +9,42 @@
   "files": [
     "/dist"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./editors": {
-      "import": "./dist/editors.js",
-      "require": "./dist/editors.cjs",
-      "types": "./dist/editors.d.ts"
-    },
-    "./document-models": {
-      "import": "./dist/document-models.js",
-      "require": "./dist/document-models.cjs",
-      "types": "./dist/document-models.d.ts"
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs",
+            "types": "./dist/index.d.ts"
+        },
+        "./editors": {
+            "import": "./dist/editors.js",
+            "require": "./dist/editors.cjs",
+            "types": "./dist/editors.d.ts"
+        },
+        "./document-models": {
+            "import": "./dist/document-models.js",
+            "require": "./dist/document-models.cjs",
+            "types": "./dist/document-models.d.ts"
+        },
+        "./budget-statement": {
+            "import": "./dist/budget-statement.js",
+            "require": "./dist/budget-statement.cjs",
+            "types": "./dist/budget-statement.d.ts"
+        },
+        "./scope-framework": {
+            "import": "./dist/scope-framework.js",
+            "require": "./dist/scope-framework.cjs",
+            "types": "./dist/scope-framework.d.ts"
+        },
+        "./account-snapshot": {
+            "import": "./dist/account-snapshot.js",
+            "require": "./dist/account-snapshot.cjs",
+            "types": "./dist/account-snapshot.d.ts"
+        },
+        "./document-drive": {
+            "import": "./dist/document-drive.js",
+            "require": "./dist/document-drive.cjs",
+            "types": "./dist/document-drive.d.ts"
+        }
     },
     "./budget-statement": {
       "import": "./dist/budget-statement.js",
@@ -44,8 +65,7 @@
       "import": "./dist/document-drive.js",
       "require": "./dist/document-drive.cjs",
       "types": "./dist/document-drive.d.ts"
-    }
-  },
+    },
   "scripts": {
     "generate": "powerhouse generate && eslint . --fix",
     "check-types": "tsc",
