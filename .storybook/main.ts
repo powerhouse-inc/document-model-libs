@@ -1,11 +1,12 @@
 import { getConfig } from '@powerhousedao/codegen';
+import { withoutVitePlugins } from '@storybook/builder-vite';
 import type { StorybookConfig } from '@storybook/react-vite';
 import { InlineConfig, mergeConfig } from 'vite';
 
 const { editorsDir } = getConfig();
 
 const config: StorybookConfig = {
-    stories: [`../${editorsDir}/**/*.stories.@(js|jsx|mjs|ts|tsx)`],
+    stories: [`../${editorsDir}/**/*.stories.tsx`],
     addons: [
         '@storybook/addon-links',
         '@storybook/addon-essentials',
@@ -18,17 +19,6 @@ const config: StorybookConfig = {
     },
     docs: {
         autodocs: 'tag',
-    },
-    async viteFinal(config) {
-        return mergeConfig(config, {
-            resolve: {
-                alias: {
-                    module: './create-require.js',
-                    path: 'path-browserify',
-                    crypto: 'crypto-browserify',
-                },
-            },
-        } as InlineConfig);
     },
 };
 export default config;
