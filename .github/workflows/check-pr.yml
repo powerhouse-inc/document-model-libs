@@ -56,3 +56,6 @@ jobs:
 
             - name: Build
               run: pnpm run build
+            
+            - name: Chromatic
+              run: pnpm run chromatic
