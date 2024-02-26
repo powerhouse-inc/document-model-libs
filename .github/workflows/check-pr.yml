@@ -48,7 +48,8 @@ jobs:
         needs: [lint, test]
         steps:
             - uses: actions/checkout@v3
-
+              with:
+                  fetch-depth: 0
             - uses: pnpm/action-setup@v3
               with:
                   version: latest-8
@@ -56,6 +57,6 @@ jobs:
 
             - name: Build
               run: pnpm run build
-            
+
             - name: Chromatic
               run: pnpm run chromatic
