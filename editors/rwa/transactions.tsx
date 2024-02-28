@@ -2,30 +2,26 @@ import {
     CashAsset,
     Fields,
     FixedIncomeAsset,
-    GroupTransaction,
     GroupTransactionDetailInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
 } from '@powerhousedao/design-system';
+import { diff } from 'deep-object-diff';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import {
+    BaseTransaction,
     Cash,
     FixedIncome,
-    GroupTransactionType,
-    actions,
+    GroupTransaction,
+    InputMaybe,
     isCashAsset,
     isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
 import {
-    ASSET_PURCHASE,
-    ASSET_SALE,
-    FEES_PAYMENT,
-    INTEREST_DRAW,
-    INTEREST_RETURN,
-    PRINCIPAL_DRAW,
-    PRINCIPAL_RETURN,
-} from '../../document-models/real-world-assets/src/constants';
+    createGroupTransaction,
+    editGroupTransaction,
+} from '../../document-models/real-world-assets/gen/creators';
 import { IProps } from './editor';
 
 const columnCountByTableWidth = {
@@ -38,52 +34,12 @@ const columnCountByTableWidth = {
 
 const fieldsPriority: (keyof Fields)[] = [
     'Transaction type',
+    'Entry time',
     'Cash currency',
     'Cash amount',
-    'Cash entry time',
     'Fixed name',
     'Fixed amount',
-    'Fixed entry time',
 ];
-
-function getCreateActionForGroupTransactionType(type: GroupTransactionType) {
-    switch (type) {
-        case ASSET_PURCHASE:
-            return actions.createAssetPurchaseGroupTransaction;
-        case ASSET_SALE:
-            return actions.createAssetSaleGroupTransaction;
-        case INTEREST_DRAW:
-            return actions.createInterestDrawGroupTransaction;
-        case INTEREST_RETURN:
-            return actions.createInterestReturnGroupTransaction;
-        case PRINCIPAL_DRAW:
-            return actions.createPrincipalDrawGroupTransaction;
-        case PRINCIPAL_RETURN:
-            return actions.createPrincipalReturnGroupTransaction;
-        case FEES_PAYMENT:
-            return actions.createFeesPaymentGroupTransaction;
-    }
-}
-
-function getEditActionForGroupTransactionType(type: GroupTransactionType) {
-    switch (type) {
-        case ASSET_PURCHASE:
-            return actions.editAssetPurchaseGroupTransaction;
-        case ASSET_SALE:
-            return actions.editAssetSaleGroupTransaction;
-        case INTEREST_DRAW:
-            return actions.editInterestDrawGroupTransaction;
-        case INTEREST_RETURN:
-            return actions.editInterestReturnGroupTransaction;
-        case PRINCIPAL_DRAW:
-            return actions.editPrincipalDrawGroupTransaction;
-        case PRINCIPAL_RETURN:
-            return actions.editPrincipalReturnGroupTransaction;
-        case FEES_PAYMENT:
-            // todo: implement edit reducers for fees
-            return actions.editPrincipalDrawGroupTransaction;
-    }
-}
 
 export const Transactions = (props: IProps) => {
     const { dispatch, document } = props;
@@ -113,32 +69,68 @@ export const Transactions = (props: IProps) => {
 
     const createGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionDetailInputs) => {
-            if (!data.type) {
-                throw new Error('Transaction type is required');
+            const {
+                cashAssetId,
+                cashAmount,
+                fixedIncomeAssetId,
+                fixedIncomeAssetAmount,
+                type,
+            } = data;
+
+            if (!type) throw new Error('Type is required');
+
+            const entryTime = data.entryTime
+                ? new Date(data.entryTime).toISOString()
+                : new Date().toISOString();
+
+            const cashTransaction =
+                cashAssetId || cashAmount
+                    ? {
+                          assetId: '',
+                          amount: 0,
+                          entryTime,
+                          counterPartyAccountId: principalLenderAccountId,
+                          tradeTime: null,
+                          settlementTime: null,
+                          txRef: null,
+                          accountId: null,
+                      }
+                    : null;
+
+            if (cashTransaction && cashAssetId) {
+                cashTransaction.assetId = cashAssetId;
             }
-            const cashTransaction = {
-                assetId: data.cashAssetId,
-                amount: Number(data.cashAmount),
-                entryTime: data.entryTime,
-                counterPartyAccountId: principalLenderAccountId,
-                tradeTime: null,
-                settlementTime: null,
-                txRef: null,
-                accountId: null,
-            };
-            const fixedIncomeTransaction = {
-                assetId: data.fixedIncomeAssetId,
-                amount: Number(data.fixedIncomeAssetAmount),
-                entryTime: data.entryTime,
-                counterPartyAccountId: null,
-                tradeTime: null,
-                settlementTime: null,
-                txRef: null,
-                accountId: null,
-            };
+
+            if (cashTransaction && cashAmount) {
+                cashTransaction.amount = Number(cashAmount);
+            }
+
+            const fixedIncomeTransaction =
+                fixedIncomeAssetId || fixedIncomeAssetAmount
+                    ? {
+                          assetId: '',
+                          amount: 0,
+                          entryTime,
+                          counterPartyAccountId: null,
+                          tradeTime: null,
+                          settlementTime: null,
+                          txRef: null,
+                          accountId: null,
+                      }
+                    : null;
+
+            if (fixedIncomeTransaction && fixedIncomeAssetId) {
+                fixedIncomeTransaction.assetId = fixedIncomeAssetId;
+            }
+
+            if (fixedIncomeTransaction && fixedIncomeAssetAmount) {
+                fixedIncomeTransaction.amount = Number(fixedIncomeAssetAmount);
+            }
+
             const groupTransaction = {
-                type: data.type,
+                type,
                 cashTransaction,
+                entryTime,
                 fixedIncomeTransaction,
                 interestTransaction: null,
                 feeTransactions: null,
@@ -165,24 +157,39 @@ export const Transactions = (props: IProps) => {
             data => {
                 if (!selectedGroupTransactionToEdit) return;
 
-                const transaction = createGroupTransactionFromFormInputs(data);
-                const action = getEditActionForGroupTransactionType(data.type!);
-                dispatch(
-                    action({
-                        ...transaction,
-                        id: selectedGroupTransactionToEdit.id,
-                        cashTransaction: {
-                            ...transaction.cashTransaction,
-                            id: selectedGroupTransactionToEdit.cashTransaction
-                                .id,
-                        },
-                        fixedIncomeTransaction: {
-                            ...transaction.fixedIncomeTransaction,
-                            id: selectedGroupTransactionToEdit
-                                .fixedIncomeTransaction.id,
-                        },
-                    }),
+                const groupTransactionFromInputs =
+                    createGroupTransactionFromFormInputs(data);
+                const action = editGroupTransaction;
+                function maybeMakeUpdatedBaseTransaction(
+                    existingTransaction: BaseTransaction | undefined | null,
+                    fieldsToUpdate:
+                        | Omit<InputMaybe<BaseTransaction>, 'id'>
+                        | undefined
+                        | null,
+                ): InputMaybe<BaseTransaction> {
+                    if (!existingTransaction || !fieldsToUpdate) return;
+                    return {
+                        ...existingTransaction,
+                        ...fieldsToUpdate,
+                    };
+                }
+                const cashTransaction = maybeMakeUpdatedBaseTransaction(
+                    selectedGroupTransactionToEdit.cashTransaction,
+                    groupTransactionFromInputs.cashTransaction,
                 );
+                const fixedIncomeTransaction = maybeMakeUpdatedBaseTransaction(
+                    selectedGroupTransactionToEdit.fixedIncomeTransaction,
+                    groupTransactionFromInputs.fixedIncomeTransaction,
+                );
+                const id = selectedGroupTransactionToEdit.id;
+                const changedFields = diff(selectedGroupTransactionToEdit, {
+                    ...groupTransactionFromInputs,
+                    id,
+                    cashTransaction,
+                    fixedIncomeTransaction,
+                });
+                console.log('changedFields', changedFields);
+                dispatch(action(changedFields as GroupTransaction));
                 setSelectedGroupTransactionToEdit(undefined);
             },
             [
@@ -195,23 +202,25 @@ export const Transactions = (props: IProps) => {
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
         useCallback(
             data => {
-                console.log('create', { data });
                 const transaction = createGroupTransactionFromFormInputs(data);
-                const action = getCreateActionForGroupTransactionType(
-                    data.type!,
-                );
+                const action = createGroupTransaction;
                 dispatch(
                     action({
                         ...transaction,
                         id: utils.hashKey(),
-                        cashTransaction: {
-                            ...transaction.cashTransaction,
-                            id: utils.hashKey(),
-                        },
-                        fixedIncomeTransaction: {
-                            ...transaction.fixedIncomeTransaction,
-                            id: utils.hashKey(),
-                        },
+                        cashTransaction: transaction.cashTransaction
+                            ? {
+                                  ...transaction.cashTransaction,
+                                  id: utils.hashKey(),
+                              }
+                            : null,
+                        fixedIncomeTransaction:
+                            transaction.fixedIncomeTransaction
+                                ? {
+                                      ...transaction.fixedIncomeTransaction,
+                                      id: utils.hashKey(),
+                                  }
+                                : null,
                     }),
                 );
                 setShowNewGroupTransactionForm(false);
@@ -239,7 +248,7 @@ export const Transactions = (props: IProps) => {
                     setSelectedGroupTransactionToEdit
                 }
                 onCancelEdit={onCancelEdit}
-                onSubmitForm={onSubmitEdit}
+                onSubmitEdit={onSubmitEdit}
                 onSubmitCreate={onSubmitCreate}
                 showNewGroupTransactionForm={showNewGroupTransactionForm}
                 setShowNewGroupTransactionForm={setShowNewGroupTransactionForm}

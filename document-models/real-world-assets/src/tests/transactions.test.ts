@@ -67,11 +67,11 @@ describe('Transactions Operations', () => {
         input.cashTransaction = positiveMockCashTransaction;
         const updatedDocument = reducer(
             document,
-            creators.createPrincipalDrawGroupTransaction(input),
+            creators.createGroupTransaction(input),
         );
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_PRINCIPAL_DRAW_GROUP_TRANSACTION',
+            'CREATE_GROUP_TRANSACTION',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
@@ -85,11 +85,11 @@ describe('Transactions Operations', () => {
         input.cashTransaction = negativeMockCashTransaction;
         const updatedDocument = reducer(
             document,
-            creators.createPrincipalReturnGroupTransaction(input),
+            creators.createGroupTransaction(input),
         );
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_PRINCIPAL_RETURN_GROUP_TRANSACTION',
+            'CREATE_GROUP_TRANSACTION',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
@@ -100,11 +100,11 @@ describe('Transactions Operations', () => {
         input.fixedIncomeTransaction = mockFixedIncomeTransaction;
         const updatedDocument = reducer(
             document,
-            creators.createAssetSaleGroupTransaction(input),
+            creators.createGroupTransaction(input),
         );
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_ASSET_SALE_GROUP_TRANSACTION',
+            'CREATE_GROUP_TRANSACTION',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
@@ -118,11 +118,11 @@ describe('Transactions Operations', () => {
         input.fixedIncomeTransaction = mockFixedIncomeTransaction;
         const updatedDocument = reducer(
             document,
-            creators.createAssetPurchaseGroupTransaction(input),
+            creators.createGroupTransaction(input),
         );
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_ASSET_PURCHASE_GROUP_TRANSACTION',
+            'CREATE_GROUP_TRANSACTION',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
@@ -136,11 +136,11 @@ describe('Transactions Operations', () => {
         input.interestTransaction = mockInterestTransaction;
         const updatedDocument = reducer(
             document,
-            creators.createInterestDrawGroupTransaction(input),
+            creators.createGroupTransaction(input),
         );
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_INTEREST_DRAW_GROUP_TRANSACTION',
+            'CREATE_GROUP_TRANSACTION',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
@@ -154,11 +154,11 @@ describe('Transactions Operations', () => {
         input.interestTransaction = mockInterestTransaction;
         const updatedDocument = reducer(
             document,
-            creators.createInterestReturnGroupTransaction(input),
+            creators.createGroupTransaction(input),
         );
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_INTEREST_RETURN_GROUP_TRANSACTION',
+            'CREATE_GROUP_TRANSACTION',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);

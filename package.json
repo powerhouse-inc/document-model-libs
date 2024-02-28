@@ -156,6 +156,7 @@
         "@graphql-codegen/typescript": "^4.0.6",
         "@internationalized/date": "^3.5.1",
         "date-fns": "^3.3.1",
+        "deep-object-diff": "^1.1.9",
         "document-model": "^1.0.30",
         "jsonc-parser": "^3.2.1",
         "jszip": "^3.10.1",

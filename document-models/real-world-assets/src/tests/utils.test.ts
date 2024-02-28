@@ -1,15 +1,9 @@
 import {
     Account,
     Asset,
-    AssetPurchaseGroupTransaction,
-    AssetSaleGroupTransaction,
     BaseTransaction,
-    FeesPaymentGroupTransaction,
     FixedIncome,
     GroupTransaction,
-    InterestReturnGroupTransaction,
-    PrincipalDrawGroupTransaction,
-    PrincipalReturnGroupTransaction,
     RealWorldAssetsState,
     ServiceProvider,
 } from '../..';
@@ -266,7 +260,7 @@ describe('validateHasCorrectTransactions', () => {
         const input = {
             cashTransaction: {},
             feeTransactions: [{}],
-        } as PrincipalDrawGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('PrincipalDraw', input),
         ).not.toThrow();
@@ -282,6 +276,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('PrincipalDraw', input),
             ).toThrow();
         });
@@ -292,7 +287,7 @@ describe('validateHasCorrectTransactions', () => {
         const input = {
             cashTransaction: {},
             feeTransactions: [{}],
-        } as PrincipalReturnGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('PrincipalReturn', input),
         ).not.toThrow();
@@ -308,6 +303,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('PrincipalReturn', input),
             ).toThrow();
         });
@@ -319,7 +315,7 @@ describe('validateHasCorrectTransactions', () => {
             fixedIncomeTransaction: {},
             cashTransaction: {},
             feeTransactions: [{}],
-        } as AssetPurchaseGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('AssetPurchase', input),
         ).not.toThrow();
@@ -332,6 +328,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('AssetPurchase', input),
             ).toThrow();
         });
@@ -343,7 +340,7 @@ describe('validateHasCorrectTransactions', () => {
             fixedIncomeTransaction: {},
             cashTransaction: {},
             feeTransactions: [{}],
-        } as AssetSaleGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('AssetSale', input),
         ).not.toThrow();
@@ -356,6 +353,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('AssetSale', input),
             ).toThrow();
         });
@@ -365,7 +363,7 @@ describe('validateHasCorrectTransactions', () => {
     it('should allow interestTransaction for InterestDraw', () => {
         const input = {
             interestTransaction: {},
-        } as InterestReturnGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('InterestDraw', input),
         ).not.toThrow();
@@ -382,6 +380,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('InterestDraw', input),
             ).toThrow();
         });
@@ -391,7 +390,7 @@ describe('validateHasCorrectTransactions', () => {
     it('should allow interestTransaction for InterestReturn', () => {
         const input = {
             interestTransaction: {},
-        } as InterestReturnGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('InterestReturn', input),
         ).not.toThrow();
@@ -408,6 +407,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('InterestReturn', input),
             ).toThrow();
         });
@@ -417,7 +417,7 @@ describe('validateHasCorrectTransactions', () => {
     it('should allow feeTransactions for FeesPayment', () => {
         const input = {
             feeTransactions: [{}],
-        } as FeesPaymentGroupTransaction;
+        } as GroupTransaction;
         expect(() =>
             validateHasCorrectTransactions('FeesPayment', input),
         ).not.toThrow();
@@ -434,6 +434,7 @@ describe('validateHasCorrectTransactions', () => {
                 [tx]: {},
             };
             expect(() =>
+                // @ts-expect-error mock
                 validateHasCorrectTransactions('FeesPayment', input),
             ).toThrow();
         });
