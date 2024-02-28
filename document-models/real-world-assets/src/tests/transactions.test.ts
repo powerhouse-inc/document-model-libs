@@ -19,6 +19,7 @@ import {
 } from '../constants';
 import { makeEmptyGroupTransactionByType } from '../utils';
 const principalLenderAccount = generateMock(z.AccountSchema());
+const mockAccount = generateMock(z.AccountSchema());
 const mockCounterParty = generateMock(z.AccountSchema());
 const mockCashAsset = generateMock(z.CashSchema());
 const mockFixedIncomeAsset = generateMock(z.FixedIncomeSchema());
@@ -30,24 +31,30 @@ mockCashTransaction.counterPartyAccountId = principalLenderAccount.id;
 mockCashTransaction.assetId = mockCashAsset.id;
 const positiveMockCashTransaction = {
     ...mockCashTransaction,
+    accountId: mockAccount.id,
     amount: 100,
 };
 const negativeMockCashTransaction = {
     ...mockCashTransaction,
+    accountId: mockAccount.id,
     amount: -100,
 };
 const mockFixedIncomeTransaction = generateMock(z.BaseTransactionSchema());
 mockFixedIncomeTransaction.assetId = mockFixedIncomeAsset.id;
-mockFixedIncomeTransaction;
 const mockInterestTransaction = generateMock(z.BaseTransactionSchema());
 mockInterestTransaction.assetId = mockFixedIncomeAsset.id;
 mockInterestTransaction.counterPartyAccountId = mockServiceProvider.accountId;
+mockInterestTransaction.accountId = mockAccount.id;
 
 describe('Transactions Operations', () => {
     const document = utils.createDocument({
         state: {
             global: {
-                accounts: [principalLenderAccount, mockCounterParty],
+                accounts: [
+                    principalLenderAccount,
+                    mockCounterParty,
+                    mockAccount,
+                ],
                 principalLenderAccountId: principalLenderAccount.id,
                 spvs: [],
                 feeTypes: [mockServiceProvider],

@@ -70,7 +70,7 @@
         "generate": "powerhouse generate && eslint . --fix",
         "check-types": "tsc",
         "lint": "powerhouse generate && eslint . && npm run check-types",
-        "prelint": "powerhouse generate",
+        "lint-staged": "lint-staged",
         "lint:fix": "powerhouse generate && eslint . --fix",
         "lint:quiet": "powerhouse generate && eslint . --quiet",
         "build": "powerhouse generate && vite build",

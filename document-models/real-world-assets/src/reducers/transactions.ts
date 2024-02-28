@@ -11,7 +11,6 @@ import {
     validateFeeTransaction,
     validateFeeTransactions,
     validateFixedIncomeTransaction,
-    validateHasCorrectTransactions,
     validateInterestTransaction,
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
@@ -31,37 +30,45 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         const type = PRINCIPAL_DRAW;
 
-        validateHasCorrectTransactions(type, action.input);
-
         const entryTime = action.input.entryTime;
 
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const fixedIncomeTransaction =
+        let cashTransaction = action.input.cashTransaction ?? null;
+        let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
-        const interestTransaction = action.input.interestTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
+        let interestTransaction = action.input.interestTransaction ?? null;
+        let feeTransactions = action.input.feeTransactions
             ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
             : null;
 
         if (cashTransaction) {
-            cashTransaction.entryTime = entryTime;
+            cashTransaction = {
+                ...cashTransaction,
+                entryTime,
+            };
             validateCashTransaction(state, cashTransaction);
         }
 
         if (fixedIncomeTransaction) {
-            fixedIncomeTransaction.entryTime = entryTime;
+            fixedIncomeTransaction = {
+                ...fixedIncomeTransaction,
+                entryTime,
+            };
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
 
         if (interestTransaction) {
-            interestTransaction.entryTime = entryTime;
+            interestTransaction = {
+                ...interestTransaction,
+                entryTime,
+            };
             validateInterestTransaction(state, interestTransaction);
         }
 
         if (feeTransactions) {
-            feeTransactions.forEach(ft => {
-                ft.entryTime = entryTime;
-            });
+            feeTransactions = feeTransactions.map(ft => ({
+                ...ft,
+                entryTime,
+            }));
             validateFeeTransactions(state, feeTransactions);
         }
 
@@ -125,8 +132,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         }
 
         const type = PRINCIPAL_DRAW;
-
-        validateHasCorrectTransactions(type, action.input);
 
         const transaction = state.transactions.find(
             transaction => transaction.id === action.input.id,

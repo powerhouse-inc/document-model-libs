@@ -5,16 +5,16 @@ import {
     GroupTransactionDetailInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
+    GroupTransaction as UiGroupTransaction,
 } from '@powerhousedao/design-system';
 import { diff } from 'deep-object-diff';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import {
-    BaseTransaction,
     Cash,
+    EditBaseTransactionInput,
     FixedIncome,
     GroupTransaction,
-    InputMaybe,
     isCashAsset,
     isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
@@ -63,7 +63,7 @@ export const Transactions = (props: IProps) => {
 
     const [expandedRowId, setExpandedRowId] = useState<string>();
     const [selectedGroupTransactionToEdit, setSelectedGroupTransactionToEdit] =
-        useState<GroupTransaction>();
+        useState<UiGroupTransaction>();
     const [showNewGroupTransactionForm, setShowNewGroupTransactionForm] =
         useState(false);
 
@@ -161,13 +161,9 @@ export const Transactions = (props: IProps) => {
                     createGroupTransactionFromFormInputs(data);
                 const action = editGroupTransaction;
                 function maybeMakeUpdatedBaseTransaction(
-                    existingTransaction: BaseTransaction | undefined | null,
-                    fieldsToUpdate:
-                        | Omit<InputMaybe<BaseTransaction>, 'id'>
-                        | undefined
-                        | null,
-                ): InputMaybe<BaseTransaction> {
-                    if (!existingTransaction || !fieldsToUpdate) return;
+                    existingTransaction: EditBaseTransactionInput | null,
+                    fieldsToUpdate: EditBaseTransactionInput | null,
+                ) {
                     return {
                         ...existingTransaction,
                         ...fieldsToUpdate,
@@ -244,6 +240,7 @@ export const Transactions = (props: IProps) => {
                 toggleExpandedRow={toggleExpandedRow}
                 onClickDetails={onClickDetails}
                 selectedGroupTransactionToEdit={selectedGroupTransactionToEdit}
+                principalLenderAccountId={principalLenderAccountId}
                 setSelectedGroupTransactionToEdit={
                     setSelectedGroupTransactionToEdit
                 }

@@ -20,31 +20,11 @@ import {
     INTEREST_RETURN,
     PRINCIPAL_DRAW,
     PRINCIPAL_RETURN,
-    allPossibleAllowedTransactions,
-    groupTransactionTypesToAllowedTransactions,
 } from './constants';
 
 export const dateValidator = z.coerce.date();
 
 const numberValidator = z.number();
-
-export function validateHasCorrectTransactions(
-    groupTransactionType: GroupTransactionType,
-    transactionsInput: EditGroupTransactionInput,
-) {
-    const allowedTransactions =
-        groupTransactionTypesToAllowedTransactions[groupTransactionType];
-    const notAllowedTransactions = allPossibleAllowedTransactions.filter(
-        tx => !allowedTransactions.includes(tx),
-    );
-    notAllowedTransactions.forEach(tx => {
-        if (transactionsInput[tx]) {
-            throw new Error(
-                `Group transaction of type ${groupTransactionType} cannot have a ${noCase(tx)} transaction`,
-            );
-        }
-    });
-}
 
 export function isFixedIncomeAsset(
     asset: Asset | undefined | null,
