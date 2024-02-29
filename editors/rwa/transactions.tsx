@@ -33,12 +33,11 @@ const columnCountByTableWidth = {
 };
 
 const fieldsPriority: (keyof Fields)[] = [
-    'Transaction type',
     'Entry time',
-    'Cash currency',
-    'Cash amount',
-    'Fixed name',
-    'Fixed amount',
+    'Asset',
+    'Quantity',
+    'USD Amount',
+    'Cash Balance Change',
 ];
 
 export const Transactions = (props: IProps) => {

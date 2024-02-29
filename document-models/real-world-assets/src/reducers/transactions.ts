@@ -5,6 +5,7 @@
  */
 
 import {
+    Cash,
     makeEmptyGroupTransactionByType,
     makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
@@ -39,6 +40,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         let feeTransactions = action.input.feeTransactions
             ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
             : null;
+        let cashBalanceChange = 0;
 
         if (cashTransaction) {
             cashTransaction = {
@@ -46,6 +48,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 entryTime,
             };
             validateCashTransaction(state, cashTransaction);
+            cashBalanceChange = cashTransaction.amount;
         }
 
         if (fixedIncomeTransaction) {
@@ -70,12 +73,16 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 entryTime,
             }));
             validateFeeTransactions(state, feeTransactions);
+            feeTransactions.forEach(ft => {
+                cashBalanceChange -= ft.amount;
+            });
         }
 
         const newGroupTransaction = {
             id,
             type,
             entryTime,
+            cashBalanceChange,
             cashTransaction,
             feeTransactions,
             fixedIncomeTransaction,
@@ -84,14 +91,32 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         state.transactions.push(newGroupTransaction);
 
-        const assetId = fixedIncomeTransaction?.assetId;
+        const fixedIncomeAssetId = fixedIncomeTransaction?.assetId;
 
-        if (!assetId) return;
+        if (!fixedIncomeAssetId) return;
 
-        const newAsset = makeFixedIncomeAssetWithDerivedFields(state, assetId);
+        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
+            state,
+            fixedIncomeAssetId,
+        );
 
         state.portfolio = state.portfolio.map(a =>
-            a.id === assetId ? newAsset : a,
+            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
+        );
+
+        const cashAssetId = cashTransaction?.assetId;
+
+        const cashAsset = state.portfolio.find(
+            a => a.id === cashAssetId,
+        ) as Cash;
+
+        const updatedCashAsset = {
+            ...cashAsset,
+            balance: cashAsset.balance + cashBalanceChange,
+        };
+
+        state.portfolio = state.portfolio.map(a =>
+            a.id === cashAssetId ? updatedCashAsset : a,
         );
     },
     editGroupTransactionTypeOperation(state, action, dispatch) {
@@ -152,6 +177,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         let feeTransactions = action.input.feeTransactions
             ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
             : null;
+        let cashBalanceChange = 0;
 
         if (cashTransaction) {
             cashTransaction = {
@@ -159,6 +185,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 entryTime,
             };
             validateCashTransaction(state, cashTransaction);
+            cashBalanceChange = cashTransaction.amount;
         }
 
         if (fixedIncomeTransaction) {
@@ -183,19 +210,50 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 entryTime,
             }));
             validateFeeTransactions(state, feeTransactions);
+            feeTransactions.forEach(ft => {
+                cashBalanceChange -= ft.amount;
+            });
         }
 
         const newGroupTransaction = {
             id,
             type,
             entryTime,
+            cashBalanceChange,
             cashTransaction,
             feeTransactions,
-            interestTransaction,
             fixedIncomeTransaction,
+            interestTransaction,
         };
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
+
+        state.transactions.push(newGroupTransaction);
+
+        const fixedIncomeAssetId = fixedIncomeTransaction?.assetId;
+
+        if (!fixedIncomeAssetId) return;
+
+        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
+            state,
+            fixedIncomeAssetId,
+        );
+
+        state.portfolio = state.portfolio.map(a =>
+            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
+        );
+
+        const cashAssetId = cashTransaction?.assetId;
+
+        const cashAsset = state.portfolio.find(
+            a => a.id === cashAssetId,
+        ) as Cash;
+
+        const updatedCashAsset = {
+            ...cashAsset,
+            balance: cashAsset.balance + cashBalanceChange,
+        };
+
+        state.portfolio = state.portfolio.map(a =>
+            a.id === cashAssetId ? updatedCashAsset : a,
         );
     },
     addFeeTransactionsToGroupTransactionOperation(state, action) {

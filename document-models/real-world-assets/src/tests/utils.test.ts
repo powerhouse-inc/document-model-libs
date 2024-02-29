@@ -3,7 +3,6 @@ import {
     Asset,
     BaseTransaction,
     FixedIncome,
-    GroupTransaction,
     RealWorldAssetsState,
     ServiceProvider,
 } from '../..';
@@ -59,6 +58,7 @@ const mockFixedIncome: FixedIncome = {
     ISIN: '',
     CUSIP: '',
     coupon: 0,
+    realizedSurplus: 0,
 };
 
 describe('validateBaseTransaction', () => {

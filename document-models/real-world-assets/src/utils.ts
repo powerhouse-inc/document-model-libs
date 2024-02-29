@@ -305,6 +305,7 @@ export function makeEmptyGroupTransactionByType(
     id: string,
     entryTime: string = new Date().toISOString(),
 ) {
+    const cashBalanceChange = 0;
     const cashTransaction = null;
     const fixedIncomeTransaction = null;
     const interestTransaction = null;
@@ -313,6 +314,7 @@ export function makeEmptyGroupTransactionByType(
         type,
         id,
         entryTime,
+        cashBalanceChange,
     };
     switch (type) {
         case PRINCIPAL_DRAW:
