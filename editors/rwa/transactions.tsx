@@ -7,14 +7,13 @@ import {
     GroupTransactionsTableProps,
     GroupTransaction as UiGroupTransaction,
 } from '@powerhousedao/design-system';
-import { diff } from 'deep-object-diff';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import {
+    BaseTransaction,
     Cash,
-    EditBaseTransactionInput,
     FixedIncome,
-    GroupTransaction,
+    getDifferences,
     isCashAsset,
     isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
@@ -57,8 +56,13 @@ export const Transactions = (props: IProps) => {
         (asset): asset is Cash => isCashAsset(asset),
     ) as CashAsset[];
 
+    // there is only one cash asset for v1
+    const cashAsset = cashAssets[0];
+
     const principalLenderAccountId =
         document.state.global.principalLenderAccountId;
+
+    const feeTypes = document.state.global.feeTypes;
 
     const [expandedRowId, setExpandedRowId] = useState<string>();
     const [selectedGroupTransactionToEdit, setSelectedGroupTransactionToEdit] =
@@ -66,10 +70,9 @@ export const Transactions = (props: IProps) => {
     const [showNewGroupTransactionForm, setShowNewGroupTransactionForm] =
         useState(false);
 
-    const createGroupTransactionFromFormInputs = useCallback(
+    const createNewGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionDetailInputs) => {
             const {
-                cashAssetId,
                 cashAmount,
                 fixedIncomeAssetId,
                 fixedIncomeAssetAmount,
@@ -77,59 +80,55 @@ export const Transactions = (props: IProps) => {
             } = data;
 
             if (!type) throw new Error('Type is required');
+            if (!data.entryTime) throw new Error('Entry time is required');
 
-            const entryTime = data.entryTime
-                ? new Date(data.entryTime).toISOString()
-                : new Date().toISOString();
+            const entryTime = new Date(data.entryTime).toISOString();
 
-            const cashTransaction =
-                cashAssetId || cashAmount
-                    ? {
-                          assetId: '',
-                          amount: 0,
-                          entryTime,
-                          counterPartyAccountId: principalLenderAccountId,
-                          tradeTime: null,
-                          settlementTime: null,
-                          txRef: null,
-                          accountId: null,
-                      }
-                    : null;
+            const fees =
+                data.fees?.map(fee => ({
+                    ...fee,
+                    amount: Number(fee.amount),
+                })) ?? null;
 
-            if (cashTransaction && cashAssetId) {
-                cashTransaction.assetId = cashAssetId;
+            const cashTransaction = cashAmount
+                ? {
+                      id: utils.hashKey(),
+                      assetId: cashAsset.id,
+                      entryTime,
+                      counterPartyAccountId: principalLenderAccountId,
+                      amount: Number(cashAmount),
+                      settlementTime: null,
+                      tradeTime: null,
+                      txRef: null,
+                  }
+                : null;
+
+            if (fixedIncomeAssetId && !fixedIncomeAssetAmount) {
+                throw new Error('Fixed income asset amount is required');
             }
-
-            if (cashTransaction && cashAmount) {
-                cashTransaction.amount = Number(cashAmount);
+            if (fixedIncomeAssetAmount && !fixedIncomeAssetId) {
+                throw new Error('Fixed income asset ID is required');
             }
-
             const fixedIncomeTransaction =
-                fixedIncomeAssetId || fixedIncomeAssetAmount
+                fixedIncomeAssetId && fixedIncomeAssetAmount
                     ? {
-                          assetId: '',
-                          amount: 0,
+                          id: utils.hashKey(),
+                          assetId: fixedIncomeAssetId,
+                          amount: Number(fixedIncomeAssetAmount),
                           entryTime,
                           counterPartyAccountId: null,
-                          tradeTime: null,
                           settlementTime: null,
+                          tradeTime: null,
                           txRef: null,
-                          accountId: null,
                       }
                     : null;
 
-            if (fixedIncomeTransaction && fixedIncomeAssetId) {
-                fixedIncomeTransaction.assetId = fixedIncomeAssetId;
-            }
-
-            if (fixedIncomeTransaction && fixedIncomeAssetAmount) {
-                fixedIncomeTransaction.amount = Number(fixedIncomeAssetAmount);
-            }
-
             const groupTransaction = {
+                id: utils.hashKey(),
                 type,
                 cashTransaction,
                 entryTime,
+                fees,
                 fixedIncomeTransaction,
                 interestTransaction: null,
                 feeTransactions: null,
@@ -156,71 +155,155 @@ export const Transactions = (props: IProps) => {
             data => {
                 if (!selectedGroupTransactionToEdit) return;
 
-                const groupTransactionFromInputs =
-                    createGroupTransactionFromFormInputs(data);
-                const action = editGroupTransaction;
-                function maybeMakeUpdatedBaseTransaction(
-                    existingTransaction: EditBaseTransactionInput | null,
-                    fieldsToUpdate: EditBaseTransactionInput | null,
+                const newEntryTime = data.entryTime
+                    ? new Date(data.entryTime).toISOString()
+                    : undefined;
+                const newType = data.type;
+                const newFixedIncomeAssetId = data.fixedIncomeAssetId;
+                const newFixedIncomeAssetAmount = data.fixedIncomeAssetAmount
+                    ? Number(data.fixedIncomeAssetAmount)
+                    : undefined;
+                const newCashAmount = data.cashAmount
+                    ? Number(data.cashAmount)
+                    : undefined;
+                const newFees = data.fees
+                    ? data.fees.map(fee => ({
+                          ...fee,
+                          amount: Number(fee.amount),
+                      }))
+                    : undefined;
+
+                const existingCashTransaction =
+                    selectedGroupTransactionToEdit.cashTransaction;
+
+                const existingFixedIncomeTransaction =
+                    selectedGroupTransactionToEdit.fixedIncomeTransaction;
+
+                if (
+                    !existingCashTransaction ||
+                    !existingFixedIncomeTransaction
                 ) {
-                    return {
-                        ...existingTransaction,
-                        ...fieldsToUpdate,
+                    throw new Error(
+                        'This group transaction was misconfigured, fixed income or cash transaction is missing',
+                    );
+                }
+
+                let update = {
+                    ...selectedGroupTransactionToEdit,
+                };
+
+                if (newType) {
+                    update = {
+                        ...update,
+                        type: newType,
                     };
                 }
-                const cashTransaction = maybeMakeUpdatedBaseTransaction(
-                    selectedGroupTransactionToEdit.cashTransaction,
-                    groupTransactionFromInputs.cashTransaction,
+
+                if (newEntryTime) {
+                    update = {
+                        ...update,
+                        entryTime: newEntryTime,
+                    };
+                }
+
+                // use direct comparison to avoid false positives on zero
+                if (newCashAmount !== undefined) {
+                    update = {
+                        ...update,
+                        cashTransaction: {
+                            ...existingCashTransaction,
+                            amount: newCashAmount,
+                        },
+                    };
+                }
+
+                if (newFixedIncomeAssetId) {
+                    update = {
+                        ...update,
+                        fixedIncomeTransaction: {
+                            ...existingFixedIncomeTransaction,
+                            assetId: newFixedIncomeAssetId,
+                        },
+                    };
+                }
+
+                // use direct comparison to avoid false positives on zero
+                if (newFixedIncomeAssetAmount !== undefined) {
+                    update = {
+                        ...update,
+                        fixedIncomeTransaction: {
+                            ...existingFixedIncomeTransaction,
+                            amount: newFixedIncomeAssetAmount,
+                        },
+                    };
+                }
+
+                if (newFees) {
+                    update = {
+                        ...update,
+                        fees: newFees,
+                    };
+                }
+
+                let changedFields = getDifferences(
+                    selectedGroupTransactionToEdit,
+                    update,
                 );
-                const fixedIncomeTransaction = maybeMakeUpdatedBaseTransaction(
-                    selectedGroupTransactionToEdit.fixedIncomeTransaction,
-                    groupTransactionFromInputs.fixedIncomeTransaction,
+
+                if ('fixedIncomeTransaction' in changedFields) {
+                    const fixedIncomeTransactionChangedFields = getDifferences(
+                        existingFixedIncomeTransaction,
+                        update.fixedIncomeTransaction,
+                    ) as BaseTransaction;
+
+                    changedFields = {
+                        ...changedFields,
+                        fixedIncomeTransaction: {
+                            ...fixedIncomeTransactionChangedFields,
+                            id: existingFixedIncomeTransaction.id,
+                        },
+                    };
+                }
+
+                if ('cashTransaction' in changedFields) {
+                    const cashTransactionChangedFields = getDifferences(
+                        existingCashTransaction,
+                        update.cashTransaction,
+                    ) as BaseTransaction;
+
+                    changedFields = {
+                        ...changedFields,
+                        cashTransaction: {
+                            ...cashTransactionChangedFields,
+                            id: existingCashTransaction.id,
+                        },
+                    };
+                }
+
+                if (Object.keys(changedFields).length === 0) return;
+
+                dispatch(
+                    editGroupTransaction({
+                        ...changedFields,
+                        id: selectedGroupTransactionToEdit.id,
+                    }),
                 );
-                const id = selectedGroupTransactionToEdit.id;
-                const changedFields = diff(selectedGroupTransactionToEdit, {
-                    ...groupTransactionFromInputs,
-                    id,
-                    cashTransaction,
-                    fixedIncomeTransaction,
-                });
-                console.log('changedFields', changedFields);
-                dispatch(action(changedFields as GroupTransaction));
+
                 setSelectedGroupTransactionToEdit(undefined);
             },
-            [
-                createGroupTransactionFromFormInputs,
-                dispatch,
-                selectedGroupTransactionToEdit,
-            ],
+            [dispatch, selectedGroupTransactionToEdit],
         );
 
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
         useCallback(
             data => {
-                const transaction = createGroupTransactionFromFormInputs(data);
-                const action = createGroupTransaction;
-                dispatch(
-                    action({
-                        ...transaction,
-                        id: utils.hashKey(),
-                        cashTransaction: transaction.cashTransaction
-                            ? {
-                                  ...transaction.cashTransaction,
-                                  id: utils.hashKey(),
-                              }
-                            : null,
-                        fixedIncomeTransaction:
-                            transaction.fixedIncomeTransaction
-                                ? {
-                                      ...transaction.fixedIncomeTransaction,
-                                      id: utils.hashKey(),
-                                  }
-                                : null,
-                    }),
-                );
+                const transaction =
+                    createNewGroupTransactionFromFormInputs(data);
+
+                dispatch(createGroupTransaction(transaction));
                 setShowNewGroupTransactionForm(false);
             },
-            [createGroupTransactionFromFormInputs, dispatch],
+            [createNewGroupTransactionFromFormInputs, dispatch],
         );
 
     return (
@@ -235,6 +318,7 @@ export const Transactions = (props: IProps) => {
                 fixedIncomeAssets={fixedIncomeAssets}
                 cashAssets={cashAssets}
                 items={transactions}
+                feeTypes={feeTypes}
                 expandedRowId={expandedRowId}
                 toggleExpandedRow={toggleExpandedRow}
                 onClickDetails={onClickDetails}

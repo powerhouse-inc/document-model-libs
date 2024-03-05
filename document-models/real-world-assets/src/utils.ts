@@ -1,15 +1,15 @@
-import { noCase } from 'change-case';
 import { z } from 'zod';
 import {
     Asset,
     BaseTransaction,
     Cash,
     EditBaseTransactionInput,
-    EditGroupTransactionInput,
     FixedIncome,
     GroupTransactionType,
     InputMaybe,
     RealWorldAssetsState,
+    TransactionFee,
+    TransactionFeeInput,
 } from '..';
 import {
     ASSET_PURCHASE,
@@ -36,6 +36,44 @@ export function isFixedIncomeAsset(
 export function isCashAsset(asset: Asset | undefined | null): asset is Cash {
     if (!asset) return false;
     return 'currency' in asset;
+}
+
+export function validateTransactionFee(
+    state: RealWorldAssetsState,
+    fee: TransactionFeeInput,
+): asserts fee is TransactionFee {
+    if (!fee.serviceProviderId) {
+        throw new Error(`Transaction fee must have a service provider`);
+    }
+    if (!fee.amount) {
+        throw new Error(`Transaction fee must have an amount`);
+    }
+
+    if (
+        fee.serviceProviderId &&
+        !state.feeTypes.find(
+            serviceProvider => serviceProvider.id === fee.serviceProviderId,
+        )
+    ) {
+        throw new Error(
+            `Service provider with account id ${fee.serviceProviderId} does not exist!`,
+        );
+    }
+    if (!numberValidator.safeParse(fee.amount).success) {
+        throw new Error(`Fee amount must be a number`);
+    }
+}
+
+export function validateTransactionFees(
+    state: RealWorldAssetsState,
+    fees: TransactionFeeInput[],
+): asserts fees is TransactionFee[] {
+    if (!Array.isArray(fees)) {
+        throw new Error(`Transaction fees must be an array`);
+    }
+    fees.forEach(fee => {
+        validateTransactionFee(state, fee);
+    });
 }
 
 export function validateBaseTransaction(
@@ -306,15 +344,17 @@ export function makeEmptyGroupTransactionByType(
     entryTime: string = new Date().toISOString(),
 ) {
     const cashBalanceChange = 0;
+    const fees = null;
     const cashTransaction = null;
     const fixedIncomeTransaction = null;
     const interestTransaction = null;
-    const feeTransactions = [] as BaseTransaction[];
+    const feeTransactions = null;
     const base = {
         type,
         id,
         entryTime,
         cashBalanceChange,
+        fees,
     };
     switch (type) {
         case PRINCIPAL_DRAW:
@@ -494,9 +534,11 @@ export function daysUntil(date: Date) {
 }
 
 export function getDifferences<T extends object>(
-    obj1: T,
-    obj2: Partial<T>,
+    obj1: T | null,
+    obj2: Partial<T> | null,
 ): Partial<T> {
+    if (!obj1 || !obj2) return {};
+
     const differences: Partial<T> = {};
 
     function isObject(value: any): value is object {

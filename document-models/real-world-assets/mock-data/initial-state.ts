@@ -7,6 +7,21 @@ export const initialState: RealWorldAssetsState = {
             reference: 'MakerPrincipal',
             label: 'Principal',
         },
+        {
+            id: 'account-2',
+            label: 'Account 2',
+            reference: '0x456',
+        },
+        {
+            id: 'account-3',
+            label: 'Account 3',
+            reference: '0x789',
+        },
+        {
+            id: 'account-4',
+            label: 'Account 4',
+            reference: '0xabc',
+        },
     ],
     principalLenderAccountId: 'maker-principal-account-id',
     spvs: [
@@ -20,6 +35,24 @@ export const initialState: RealWorldAssetsState = {
             name: 'Maker Principal',
             feeType: 'Principal',
             accountId: 'maker-principal-account-id',
+        },
+        {
+            id: '1',
+            feeType: 'Fee 1',
+            name: 'Service Provider 1',
+            accountId: 'account-2',
+        },
+        {
+            id: '2',
+            feeType: 'Fee 2',
+            name: 'Service Provider 2',
+            accountId: 'account-3',
+        },
+        {
+            id: '3',
+            feeType: 'Fee 3',
+            name: 'Service Provider 2',
+            accountId: 'account-4',
         },
     ],
     fixedIncomeTypes: [

@@ -63,14 +63,20 @@ type Account {
     label: String
 }
 
+type TransactionFee {
+    serviceProviderId: ID!
+    amount: Float!
+}
+
 type GroupTransaction {
     id: ID!
     type: GroupTransactionType!
     entryTime: DateTime!
     cashBalanceChange: Float!
+    fees: [TransactionFee!]
     cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
-    feeTransactions: [BaseTransaction]
+    feeTransactions: [BaseTransaction!]
     interestTransaction: BaseTransaction
 }
 
@@ -96,11 +102,6 @@ type ServiceProvider {
     name: String!
     feeType: String!
     accountId: ID! # Account.id
-}
-
-type TransactionFee {
-    serviceProviderId: ID!
-    amount: Float!
 }
 
 scalar DateTime
@@ -225,6 +226,7 @@ input CreateBaseTransactionInput {
 }
 
 input EditBaseTransactionInput {
+    id: ID!
     assetId: ID # Asset.id
     amount: Float
     entryTime: DateTime
@@ -235,13 +237,19 @@ input EditBaseTransactionInput {
     counterPartyAccountId: ID # Account.id
 }
 
+input TransactionFeeInput {
+    serviceProviderId: ID
+    amount: Float
+}
+
 input CreateGroupTransactionInput {
     id: ID!
     type: GroupTransactionType!
     entryTime: DateTime!
+    fees: [TransactionFeeInput!]
     cashTransaction: CreateBaseTransactionInput
     fixedIncomeTransaction: CreateBaseTransactionInput
-    feeTransactions: [CreateBaseTransactionInput]
+    feeTransactions: [CreateBaseTransactionInput!]
     interestTransaction: CreateBaseTransactionInput
 }
 
@@ -249,43 +257,11 @@ input EditGroupTransactionInput {
     id: ID!
     type: GroupTransactionType
     entryTime: DateTime
+    fees: [TransactionFeeInput!]
     cashTransaction: EditBaseTransactionInput
     fixedIncomeTransaction: EditBaseTransactionInput
-    feeTransactions: [EditBaseTransactionInput]
+    feeTransactions: [EditBaseTransactionInput!]
     interestTransaction: EditBaseTransactionInput
-}
-
-# when the type is changed, the transactions associated are deleted
-input EditGroupTransactionTypeInput {
-    id: ID!
-    type: GroupTransactionType!
-    entryTime: DateTime!
-}
-
-# add a fee transaction to a group transaction's list of fee payments
-input AddFeeTransactionsToGroupTransactionInput {
-    id: ID!
-    feeTransactions: [CreateBaseTransactionInput]
-}
-
-# edit a specific fee transaction in a fees payment group transaction's list of fee payments
-input EditFeeTransactionInput {
-    feeTransactionId: ID!
-    id: ID!
-    assetId: ID # Asset.id
-    amount: Float
-    entryTime: DateTime
-    tradeTime: DateTime
-    settlementTime: DateTime
-    txRef: String
-    accountId: ID # Account.id
-    counterPartyAccountId: ID # Account.id
-}
-
-# remove a fee transaction from a fees payment group transaction's list of fee payments
-input RemoveFeeTransactionFromGroupTransactionInput {
-    id: ID!
-    feeTransactionId: ID!
 }
 
 input DeleteGroupTransactionInput {
