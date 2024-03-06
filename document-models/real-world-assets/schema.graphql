@@ -2,7 +2,7 @@ type RealWorldAssetsState {
     accounts: [Account!]!
     principalLenderAccountId: ID! # Account.id (That relates to the Maker account)
     spvs: [Spv!]!
-    feeTypes: [ServiceProvider!]!
+    feeTypes: [ServiceProviderFeeType!]!
     fixedIncomeTypes: [FixedIncomeType!]!
     portfolio: [Asset!]!
     transactions: [GroupTransaction!]!
@@ -64,7 +64,8 @@ type Account {
 }
 
 type TransactionFee {
-    serviceProviderId: ID!
+    id: ID!
+    serviceProviderFeeTypeId: ID!
     amount: Float!
 }
 
@@ -97,7 +98,7 @@ union GroupTransactionType =
     | CashGroupTransactionType
     | FixedIncomeGroupTransactionType
 
-type ServiceProvider {
+type ServiceProviderFeeType {
     id: ID!
     name: String!
     feeType: String!
@@ -122,21 +123,21 @@ input DeleteSpvInput {
     id: ID!
 }
 
-input CreateServiceProviderInput {
+input CreateServiceProviderFeeTypeInput {
     id: ID!
     name: String!
     feeType: String!
-    accountId: ID!
+    accountId: ID! # Account.id
 }
 
-input EditServiceProviderInput {
+input EditServiceProviderFeeTypeInput {
     id: ID!
     name: String
     feeType: String
     accountId: ID
 }
 
-input DeleteServiceProviderInput {
+input DeleteServiceProviderFeeTypeInput {
     id: ID!
 }
 
@@ -154,7 +155,7 @@ input EditFixedIncomeTypeInput {
 
 input CreateFixedIncomeAssetInput {
     id: ID!
-    fixedIncomeTypeId: ID! # RwaFixedIncomeType.id
+    fixedIncomeTypeId: ID! # FixedIncomeType.id
     spvId: ID! # Spv.id
     name: String!
     maturity: DateTime!
@@ -238,7 +239,8 @@ input EditBaseTransactionInput {
 }
 
 input TransactionFeeInput {
-    serviceProviderId: ID
+    id: ID
+    serviceProviderFeeTypeId: ID
     amount: Float
 }
 

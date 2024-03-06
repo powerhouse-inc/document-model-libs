@@ -4,7 +4,7 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { Account, ServiceProvider, Spv } from '../..';
+import { Account, ServiceProviderFeeType, Spv } from '../..';
 import { RealWorldAssetsGeneralOperations } from '../../gen/general/operations';
 
 export const reducer: RealWorldAssetsGeneralOperations = {
@@ -47,7 +47,7 @@ export const reducer: RealWorldAssetsGeneralOperations = {
         }
         state.spvs = state.spvs.filter(spv => spv.id !== action.input.id);
     },
-    createServiceProviderOperation(state, action, dispatch) {
+    createServiceProviderFeeTypeOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }
@@ -78,14 +78,14 @@ export const reducer: RealWorldAssetsGeneralOperations = {
         }
         state.feeTypes.push(action.input);
     },
-    editServiceProviderOperation(state, action, dispatch) {
+    editServiceProviderFeeTypeOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }
-        const serviceProvider = state.feeTypes.find(
+        const serviceProviderFeeType = state.feeTypes.find(
             feeType => feeType.id === action.input.id,
         );
-        if (!serviceProvider) {
+        if (!serviceProviderFeeType) {
             throw new Error(
                 `Service provider with id ${action.input.id} does not exist!`,
             );
@@ -106,11 +106,11 @@ export const reducer: RealWorldAssetsGeneralOperations = {
                 ? ({
                       ...rsp,
                       ...action.input,
-                  } as ServiceProvider)
+                  } as ServiceProviderFeeType)
                 : rsp,
         );
     },
-    deleteServiceProviderOperation(state, action, dispatch) {
+    deleteServiceProviderFeeTypeOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }

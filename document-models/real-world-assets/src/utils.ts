@@ -42,7 +42,7 @@ export function validateTransactionFee(
     state: RealWorldAssetsState,
     fee: TransactionFeeInput,
 ): asserts fee is TransactionFee {
-    if (!fee.serviceProviderId) {
+    if (!fee.serviceProviderFeeTypeId) {
         throw new Error(`Transaction fee must have a service provider`);
     }
     if (!fee.amount) {
@@ -50,13 +50,14 @@ export function validateTransactionFee(
     }
 
     if (
-        fee.serviceProviderId &&
+        fee.serviceProviderFeeTypeId &&
         !state.feeTypes.find(
-            serviceProvider => serviceProvider.id === fee.serviceProviderId,
+            serviceProvider =>
+                serviceProvider.id === fee.serviceProviderFeeTypeId,
         )
     ) {
         throw new Error(
-            `Service provider with account id ${fee.serviceProviderId} does not exist!`,
+            `Service provider with account id ${fee.serviceProviderFeeTypeId} does not exist!`,
         );
     }
     if (!numberValidator.safeParse(fee.amount).success) {

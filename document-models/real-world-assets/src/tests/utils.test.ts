@@ -4,7 +4,7 @@ import {
     BaseTransaction,
     FixedIncome,
     RealWorldAssetsState,
-    ServiceProvider,
+    ServiceProviderFeeType,
 } from '../..';
 import {
     calculateAnnualizedYield,
@@ -260,7 +260,7 @@ describe('validateCashTransaction', () => {
             principalLender: 'principalLender1',
             portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
             accounts: [{ id: 'somethingElse' }] as Account[],
-            feeTypes: [{ id: 'somethingElse' }] as ServiceProvider[],
+            feeTypes: [{ id: 'somethingElse' }] as ServiceProviderFeeType[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
@@ -281,7 +281,7 @@ describe('validateCashTransaction', () => {
             principalLenderAccountId: 'principalLender1',
             portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
             accounts: [{ id: 'principalLender1' }] as Account[],
-            feeTypes: [{ id: 'principalLender1' }] as ServiceProvider[],
+            feeTypes: [{ id: 'principalLender1' }] as ServiceProviderFeeType[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
@@ -301,7 +301,7 @@ describe('validateCashTransaction', () => {
             principalLenderAccountId: 'principalLender1',
             portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
             accounts: [{ id: 'principalLender1' }] as Account[],
-            feeTypes: [{ id: 'principalLender1' }] as ServiceProvider[],
+            feeTypes: [{ id: 'principalLender1' }] as ServiceProviderFeeType[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
@@ -318,14 +318,18 @@ describe('validateInterestTransaction', () => {
     it('should throw an error when the asset is a cash asset', () => {
         const state = {
             ...mockEmptyInitialState,
-            portfolio: [{ id: '1', spvId: 'serviceProvider1' }] as Asset[],
-            feeTypes: [{ id: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            portfolio: [
+                { id: '1', spvId: 'serviceProviderFeeType1' },
+            ] as Asset[],
+            feeTypes: [
+                { id: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'serviceProvider1',
+            counterPartyAccountId: 'serviceProviderFeeType1',
             amount: 100,
         };
 
@@ -340,7 +344,9 @@ describe('validateInterestTransaction', () => {
             portfolio: [
                 { id: '1', fixedIncomeTypeId: 'fixedIncome' },
             ] as Asset[],
-            feeTypes: [{ id: 'serviceProvider1' }] as ServiceProvider[],
+            feeTypes: [
+                { id: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
@@ -359,17 +365,19 @@ describe('validateInterestTransaction', () => {
             portfolio: [
                 { id: '1', fixedIncomeTypeId: 'fixed_income' },
             ] as Asset[],
-            feeTypes: [{ id: 'serviceProvider1' }] as ServiceProvider[],
+            feeTypes: [
+                { id: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'unknownServiceProvider',
+            counterPartyAccountId: 'unknownServiceProviderFeeType',
             amount: 100,
         };
 
         expect(() => validateInterestTransaction(state, transaction)).toThrow(
-            'Counter party account with id unknownServiceProvider does not exist!',
+            'Counter party account with id unknownServiceProviderFeeType does not exist!',
         );
     });
 
@@ -379,13 +387,15 @@ describe('validateInterestTransaction', () => {
             portfolio: [
                 { id: '1', fixedIncomeTypeId: 'fixed_income' },
             ] as Asset[],
-            feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            feeTypes: [
+                { accountId: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'serviceProvider1',
+            counterPartyAccountId: 'serviceProviderFeeType1',
             amount: -100,
         };
 
@@ -400,13 +410,15 @@ describe('validateInterestTransaction', () => {
             portfolio: [
                 { id: '1', fixedIncomeTypeId: 'fixed_income' },
             ] as Asset[],
-            feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            feeTypes: [
+                { accountId: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'serviceProvider1',
+            counterPartyAccountId: 'serviceProviderFeeType1',
             amount: 100,
         };
 
@@ -421,13 +433,15 @@ describe('validateFeeTransaction', () => {
         const state = {
             ...mockEmptyInitialState,
             portfolio: [{ id: '1', currency: 'USD' }] as Asset[],
-            feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            feeTypes: [
+                { accountId: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'serviceProvider1',
+            counterPartyAccountId: 'serviceProviderFeeType1',
             amount: -100,
         };
 
@@ -440,7 +454,9 @@ describe('validateFeeTransaction', () => {
         const state = {
             ...mockEmptyInitialState,
             portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
-            feeTypes: [{ id: 'serviceProvider1' }] as ServiceProvider[],
+            feeTypes: [
+                { id: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
@@ -457,18 +473,20 @@ describe('validateFeeTransaction', () => {
         const state = {
             ...mockEmptyInitialState,
             portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
-            feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            feeTypes: [
+                { accountId: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'unknownServiceProvider',
+            counterPartyAccountId: 'unknownServiceProviderFeeType',
             amount: -100,
         };
 
         expect(() => validateFeeTransaction(state, transaction)).toThrow(
-            'Counter party with id unknownServiceProvider must be a known service provider',
+            'Counter party with id unknownServiceProviderFeeType must be a known service provider',
         );
     });
 
@@ -476,13 +494,15 @@ describe('validateFeeTransaction', () => {
         const state = {
             ...mockEmptyInitialState,
             portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
-            feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            feeTypes: [
+                { accountId: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'serviceProvider1',
+            counterPartyAccountId: 'serviceProviderFeeType1',
             amount: 100,
         };
 
@@ -495,13 +515,15 @@ describe('validateFeeTransaction', () => {
         const state = {
             ...mockEmptyInitialState,
             portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
-            feeTypes: [{ accountId: 'serviceProvider1' }] as ServiceProvider[],
-            accounts: [{ id: 'serviceProvider1' }] as Account[],
+            feeTypes: [
+                { accountId: 'serviceProviderFeeType1' },
+            ] as ServiceProviderFeeType[],
+            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
         };
         const transaction = {
             ...mockEmptyBaseTransaction,
             assetId: '1',
-            counterPartyAccountId: 'serviceProvider1',
+            counterPartyAccountId: 'serviceProviderFeeType1',
             amount: -100,
         };
 

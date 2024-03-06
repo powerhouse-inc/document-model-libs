@@ -1,10 +1,10 @@
 import {
     CashAsset,
     Fields,
-    FixedIncomeAsset,
     GroupTransactionDetailInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
+    FixedIncome as UiFixedIncome,
     GroupTransaction as UiGroupTransaction,
 } from '@powerhousedao/design-system';
 import { utils } from 'document-model/document';
@@ -50,7 +50,7 @@ export const Transactions = (props: IProps) => {
             ...item,
             maturity: item.maturity.split('T')[0],
             purchaseDate: item.purchaseDate.split('T')[0],
-        })) as FixedIncomeAsset[];
+        })) as FixedIncome[];
 
     const cashAssets = document.state.global.portfolio.filter(
         (asset): asset is Cash => isCashAsset(asset),
@@ -72,12 +72,7 @@ export const Transactions = (props: IProps) => {
 
     const createNewGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionDetailInputs) => {
-            const {
-                cashAmount,
-                fixedIncomeAssetId,
-                fixedIncomeAssetAmount,
-                type,
-            } = data;
+            const { cashAmount, fixedIncomeId, fixedIncomeAmount, type } = data;
 
             if (!type) throw new Error('Type is required');
             if (!data.entryTime) throw new Error('Entry time is required');
@@ -103,18 +98,18 @@ export const Transactions = (props: IProps) => {
                   }
                 : null;
 
-            if (fixedIncomeAssetId && !fixedIncomeAssetAmount) {
-                throw new Error('Fixed income asset amount is required');
+            if (fixedIncomeId && !fixedIncomeAmount) {
+                throw new Error('Fixed income  amount is required');
             }
-            if (fixedIncomeAssetAmount && !fixedIncomeAssetId) {
-                throw new Error('Fixed income asset ID is required');
+            if (fixedIncomeAmount && !fixedIncomeId) {
+                throw new Error('Fixed income  ID is required');
             }
             const fixedIncomeTransaction =
-                fixedIncomeAssetId && fixedIncomeAssetAmount
+                fixedIncomeId && fixedIncomeAmount
                     ? {
                           id: utils.hashKey(),
-                          assetId: fixedIncomeAssetId,
-                          amount: Number(fixedIncomeAssetAmount),
+                          assetId: fixedIncomeId,
+                          amount: Number(fixedIncomeAmount),
                           entryTime,
                           counterPartyAccountId: null,
                           settlementTime: null,
@@ -159,9 +154,9 @@ export const Transactions = (props: IProps) => {
                     ? new Date(data.entryTime).toISOString()
                     : undefined;
                 const newType = data.type;
-                const newFixedIncomeAssetId = data.fixedIncomeAssetId;
-                const newFixedIncomeAssetAmount = data.fixedIncomeAssetAmount
-                    ? Number(data.fixedIncomeAssetAmount)
+                const newFixedIncomeAssetId = data.fixedIncomeId;
+                const newFixedIncomeAssetAmount = data.fixedIncomeAmount
+                    ? Number(data.fixedIncomeAmount)
                     : undefined;
                 const newCashAmount = data.cashAmount
                     ? Number(data.cashAmount)
@@ -315,7 +310,7 @@ export const Transactions = (props: IProps) => {
             <GroupTransactionsTable
                 columnCountByTableWidth={columnCountByTableWidth}
                 fieldsPriority={fieldsPriority}
-                fixedIncomeAssets={fixedIncomeAssets}
+                fixedIncomes={fixedIncomeAssets as UiFixedIncome[]}
                 cashAssets={cashAssets}
                 items={transactions}
                 feeTypes={feeTypes}
