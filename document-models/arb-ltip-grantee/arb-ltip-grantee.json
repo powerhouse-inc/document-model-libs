@@ -1,0 +1,29 @@
+{
+    "author": {
+        "name": "thegoldenmule",
+        "website": "https://thegoldenmule.com/"
+    },
+    "description": "ARBLTIPGranteeReporting",
+    "extension": "grants",
+    "id": "arbitrum/grantee",
+    "name": "ArbLtipGrantee",
+    "specifications": [
+        {
+            "changeLog": [],
+            "modules": [],
+            "state": {
+                "global": {
+                    "examples": [],
+                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"grantSize\":\"\",\"matchingGrantSize\":\"\",\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":\"\",\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"actuals\":[],\"planned\":[],\"stats\":[]}",
+                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: FundingType\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tactuals: [GranteeActuals]\n\tplanned: [GranteePlanned]\n\tstats: [GranteeStats]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\n\ntype GranteeActuals {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: DistributionMechanism\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n\n\n# input\n\ninput InitGrantee {\n\tid: ID!\n}\n\ninput InitGranteeName {\n\tgranteeName: String!\n}\n\ninput InitGranteeGrantSize {\n\tgrantSize: Float!\n\tmatchingGrantSize: Float!\n}\n\ninput InitGranteeSummary {\n\tgrantSummary: String!\n\tfundingAddress: String!\n\tfundingType: FundingType!\n\tdisbursementContractAddress: String!\n}\n\ninput InitGranteeMetrics {\n\tmetricsDashboardLink: String!\n}\n\ninput Actuals {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ninput Planned {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: DistributionMechanism\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ninput Stats {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}"
+                },
+                "local": {
+                    "examples": [],
+                    "initialValue": "{}",
+                    "schema": "type ArbLtipGranteeLocalState"
+                }
+            },
+            "version": 1
+        }
+    ]
+}
