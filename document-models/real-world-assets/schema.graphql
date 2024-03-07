@@ -2,7 +2,7 @@ type RealWorldAssetsState {
     accounts: [Account!]!
     principalLenderAccountId: ID! # Account.id (That relates to the Maker account)
     spvs: [Spv!]!
-    feeTypes: [ServiceProviderFeeType!]!
+    serviceProviderFeeTypes: [ServiceProviderFeeType!]!
     fixedIncomeTypes: [FixedIncomeType!]!
     portfolio: [Asset!]!
     transactions: [GroupTransaction!]!
@@ -259,13 +259,26 @@ input EditGroupTransactionInput {
     id: ID!
     type: GroupTransactionType
     entryTime: DateTime
-    fees: [TransactionFeeInput!]
     cashTransaction: EditBaseTransactionInput
     fixedIncomeTransaction: EditBaseTransactionInput
-    feeTransactions: [EditBaseTransactionInput!]
     interestTransaction: EditBaseTransactionInput
 }
 
 input DeleteGroupTransactionInput {
     id: ID!
+}
+
+input AddFeesToGroupTransactionInput {
+    id: ID!
+    fees: [TransactionFeeInput!]
+}
+
+input EditGroupTransactionFeesInput {
+    id: ID!
+    fees: [TransactionFeeInput!]
+}
+
+input RemoveFeesFromGroupTransactionInput {
+    id: ID!
+    feeIds: [ID!]
 }

@@ -140,7 +140,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         }
 
         const entryTime = action.input.entryTime ?? transaction.entryTime;
-        const fees = action.input.fees ?? transaction.fees ?? null;
         const type = action.input.type ?? transaction.type;
 
         function maybeMakeUpdatedBaseTransaction(
@@ -166,8 +165,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             action.input.interestTransaction,
             transaction.interestTransaction,
         );
-        let feeTransactions =
-            action.input.feeTransactions ?? transaction.feeTransactions ?? null;
         let cashBalanceChange = 0;
 
         if (cashTransaction) {
@@ -195,29 +192,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             validateInterestTransaction(state, interestTransaction);
         }
 
-        if (feeTransactions) {
-            feeTransactions = feeTransactions.map(ft => ({
-                ...ft,
-                entryTime,
-            }));
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        if (fees) {
-            validateTransactionFees(state, fees);
-            fees.forEach(fee => {
-                cashBalanceChange -= fee.amount;
-            });
-        }
-
         const newGroupTransaction = {
-            id,
+            ...transaction,
             type,
             entryTime,
             cashBalanceChange,
-            fees,
             cashTransaction,
-            feeTransactions,
             fixedIncomeTransaction,
             interestTransaction,
         };
@@ -261,6 +241,98 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         state.transactions = state.transactions.filter(
             transaction => transaction.id !== action.input.id,
+        );
+    },
+    addFeesToGroupTransactionOperation(state, action, dispatch) {
+        const id = action.input.id;
+
+        const transaction = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transaction) {
+            throw new Error(`Group transaction with id ${id} does not exist!`);
+        }
+
+        const feesToAdd = action.input.fees;
+
+        validateTransactionFees(state, feesToAdd);
+
+        const newFees = transaction.fees ?? [];
+
+        newFees.push(...feesToAdd);
+
+        const newTransaction = {
+            ...transaction,
+            fees: newFees,
+        };
+
+        state.transactions = state.transactions.map(transaction =>
+            transaction.id === id ? newTransaction : transaction,
+        );
+    },
+    removeFeesFromGroupTransactionOperation(state, action, dispatch) {
+        const id = action.input.id;
+        const feeIdsToRemove = action.input.feeIds;
+
+        const transaction = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transaction) {
+            throw new Error('Transaction does not exist');
+        }
+
+        const fees = transaction.fees;
+
+        if (!fees) {
+            throw new Error('This transaction has no fees to remove');
+        }
+
+        const newFees = fees.filter(fee => !feeIdsToRemove?.includes(fee.id));
+
+        const newTransaction = {
+            ...transaction,
+            fees: newFees,
+        };
+
+        state.transactions = state.transactions.map(transaction =>
+            transaction.id === id ? newTransaction : transaction,
+        );
+    },
+    editGroupTransactionFeesOperation(state, action, dispatch) {
+        const id = action.input.id;
+
+        const transaction = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transaction) {
+            throw new Error('Transaction does not exist');
+        }
+
+        const feesToUpdate = action.input.fees;
+
+        validateTransactionFees(state, feesToUpdate);
+
+        const fees = transaction.fees;
+
+        if (!fees) {
+            throw new Error('This transaction has no fees to update');
+        }
+
+        const newFees = fees.map(fee => {
+            const feeToUpdate = feesToUpdate.find(f => f.id === fee.id);
+            return feeToUpdate ? { ...fee, ...feeToUpdate } : fee;
+        });
+
+        const newTransaction = {
+            ...transaction,
+            fees: newFees,
+        };
+
+        state.transactions = state.transactions.map(transaction =>
+            transaction.id === id ? newTransaction : transaction,
         );
     },
 };

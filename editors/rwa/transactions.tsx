@@ -4,22 +4,28 @@ import {
     GroupTransactionDetailInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
+    TransactionFee,
     FixedIncome as UiFixedIncome,
     GroupTransaction as UiGroupTransaction,
 } from '@powerhousedao/design-system';
-import { utils } from 'document-model/document';
+import { Maybe, utils } from 'document-model/document';
+import diff from 'microdiff';
 import { useCallback, useState } from 'react';
 import {
     BaseTransaction,
     Cash,
     FixedIncome,
+    TransactionFeeInput,
     getDifferences,
     isCashAsset,
     isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
 import {
+    addFeesToGroupTransaction,
     createGroupTransaction,
     editGroupTransaction,
+    editGroupTransactionFees,
+    removeFeesFromGroupTransaction,
 } from '../../document-models/real-world-assets/gen/creators';
 import { IProps } from './editor';
 
@@ -62,7 +68,8 @@ export const Transactions = (props: IProps) => {
     const principalLenderAccountId =
         document.state.global.principalLenderAccountId;
 
-    const feeTypes = document.state.global.feeTypes;
+    const serviceProviderFeeTypes =
+        document.state.global.serviceProviderFeeTypes;
 
     const [expandedRowId, setExpandedRowId] = useState<string>();
     const [selectedGroupTransactionToEdit, setSelectedGroupTransactionToEdit] =
@@ -82,6 +89,7 @@ export const Transactions = (props: IProps) => {
             const fees =
                 data.fees?.map(fee => ({
                     ...fee,
+                    id: utils.hashKey(),
                     amount: Number(fee.amount),
                 })) ?? null;
 
@@ -130,7 +138,7 @@ export const Transactions = (props: IProps) => {
             };
             return groupTransaction;
         },
-        [principalLenderAccountId],
+        [principalLenderAccountId, cashAsset.id],
     );
 
     const toggleExpandedRow = useCallback((id: string) => {
@@ -160,12 +168,6 @@ export const Transactions = (props: IProps) => {
                     : undefined;
                 const newCashAmount = data.cashAmount
                     ? Number(data.cashAmount)
-                    : undefined;
-                const newFees = data.fees
-                    ? data.fees.map(fee => ({
-                          ...fee,
-                          amount: Number(fee.amount),
-                      }))
                     : undefined;
 
                 const existingCashTransaction =
@@ -233,13 +235,6 @@ export const Transactions = (props: IProps) => {
                     };
                 }
 
-                if (newFees) {
-                    update = {
-                        ...update,
-                        fees: newFees,
-                    };
-                }
-
                 let changedFields = getDifferences(
                     selectedGroupTransactionToEdit,
                     update,
@@ -275,6 +270,8 @@ export const Transactions = (props: IProps) => {
                     };
                 }
 
+                handleFeeUpdates(data.fees, selectedGroupTransactionToEdit);
+
                 if (Object.keys(changedFields).length === 0) return;
 
                 dispatch(
@@ -301,6 +298,83 @@ export const Transactions = (props: IProps) => {
             [createNewGroupTransactionFromFormInputs, dispatch],
         );
 
+    function handleFeeUpdates(
+        feeInputs: Maybe<TransactionFee[]> | undefined,
+        selectedTransactionToEdit: UiGroupTransaction,
+    ) {
+        if (!feeInputs || !selectedGroupTransactionToEdit) {
+            return;
+        }
+
+        const feeUpdates = feeInputs.map(fee => ({
+            ...fee,
+            id: fee.id ?? utils.hashKey(),
+            amount: Number(fee.amount),
+        }));
+
+        const existingFees = selectedTransactionToEdit.fees;
+
+        if (!existingFees?.length) {
+            dispatch(
+                addFeesToGroupTransaction({
+                    id: selectedGroupTransactionToEdit.id,
+                    fees: feeUpdates,
+                }),
+            );
+            return;
+        }
+        const feeDifferences = diff(existingFees, feeInputs);
+
+        const newFeesToCreate: TransactionFeeInput[] = [];
+        const feesToUpdate: TransactionFeeInput[] = [];
+        const feeIdsToRemove: string[] = [];
+
+        feeDifferences.forEach(difference => {
+            if (
+                difference.type === 'CREATE' &&
+                !existingFees.find(
+                    fee =>
+                        fee.id === feeUpdates[difference.path[0] as number].id,
+                )
+            ) {
+                newFeesToCreate.push(feeUpdates[difference.path[0] as number]);
+            }
+            if (difference.type === 'REMOVE') {
+                feeIdsToRemove.push(
+                    existingFees[difference.path[0] as number].id!,
+                );
+            }
+            if (difference.type === 'CHANGE') {
+                feesToUpdate.push(feeUpdates[difference.path[0] as number]);
+            }
+        });
+
+        if (newFeesToCreate.length) {
+            dispatch(
+                addFeesToGroupTransaction({
+                    id: selectedGroupTransactionToEdit.id,
+                    fees: newFeesToCreate,
+                }),
+            );
+        }
+        if (feesToUpdate.length) {
+            dispatch(
+                editGroupTransactionFees({
+                    id: selectedGroupTransactionToEdit.id,
+                    fees: feesToUpdate,
+                }),
+            );
+        }
+        if (feeIdsToRemove.length) {
+            dispatch(
+                removeFeesFromGroupTransaction({
+                    id: selectedGroupTransactionToEdit.id,
+                    feeIds: feeIdsToRemove,
+                }),
+            );
+        }
+    }
+
     return (
         <div>
             <h1 className="text-lg font-bold mb-2">Transactions</h1>
@@ -313,7 +387,7 @@ export const Transactions = (props: IProps) => {
                 fixedIncomes={fixedIncomeAssets as UiFixedIncome[]}
                 cashAssets={cashAssets}
                 items={transactions}
-                feeTypes={feeTypes}
+                serviceProviderFeeTypes={serviceProviderFeeTypes}
                 expandedRowId={expandedRowId}
                 toggleExpandedRow={toggleExpandedRow}
                 onClickDetails={onClickDetails}

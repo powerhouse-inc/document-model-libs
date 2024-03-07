@@ -107,7 +107,7 @@ describe('General Operations', () => {
         const document = utils.createDocument({
             state: {
                 global: {
-                    feeTypes: [initialInput],
+                    serviceProviderFeeTypes: [initialInput],
                     accounts: [existingAccount],
                 },
                 local: {},
@@ -138,7 +138,7 @@ describe('General Operations', () => {
         const document = utils.createDocument({
             state: {
                 global: {
-                    feeTypes: [initialInput],
+                    serviceProviderFeeTypes: [initialInput],
                 },
                 local: {},
             },

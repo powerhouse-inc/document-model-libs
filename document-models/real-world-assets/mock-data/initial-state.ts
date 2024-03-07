@@ -29,7 +29,7 @@ export const initialState: RealWorldAssetsState = {
         { id: '2', name: 'SPV 2' },
         { id: '3', name: 'SPV 3' },
     ],
-    feeTypes: [
+    serviceProviderFeeTypes: [
         {
             id: 'maker-principal-fee-type-id',
             name: 'Maker Principal',

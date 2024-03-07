@@ -26,7 +26,7 @@ const mockEmptyInitialState = {
     accounts: [],
     principalLenderAccountId: '',
     spvs: [],
-    feeTypes: [],
+    serviceProviderFeeTypes: [],
     fixedIncomeTypes: [],
     portfolio: [],
     transactions: [],
@@ -380,52 +380,6 @@ describe('validateInterestTransaction', () => {
             'Counter party account with id unknownServiceProviderFeeType does not exist!',
         );
     });
-
-    it('should throw an error when the amount is not positive', () => {
-        const state = {
-            ...mockEmptyInitialState,
-            portfolio: [
-                { id: '1', fixedIncomeTypeId: 'fixed_income' },
-            ] as Asset[],
-            feeTypes: [
-                { accountId: 'serviceProviderFeeType1' },
-            ] as ServiceProviderFeeType[],
-            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
-        };
-        const transaction = {
-            ...mockEmptyBaseTransaction,
-            assetId: '1',
-            counterPartyAccountId: 'serviceProviderFeeType1',
-            amount: -100,
-        };
-
-        expect(() => validateInterestTransaction(state, transaction)).toThrow(
-            'Interest transaction amount must be positive',
-        );
-    });
-
-    it('should not throw an error when the asset is not a cash asset, the counterParty is provided and is a known service provider, and the amount is positive', () => {
-        const state = {
-            ...mockEmptyInitialState,
-            portfolio: [
-                { id: '1', fixedIncomeTypeId: 'fixed_income' },
-            ] as Asset[],
-            feeTypes: [
-                { accountId: 'serviceProviderFeeType1' },
-            ] as ServiceProviderFeeType[],
-            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
-        };
-        const transaction = {
-            ...mockEmptyBaseTransaction,
-            assetId: '1',
-            counterPartyAccountId: 'serviceProviderFeeType1',
-            amount: 100,
-        };
-
-        expect(() =>
-            validateInterestTransaction(state, transaction),
-        ).not.toThrow();
-    });
 });
 
 describe('validateFeeTransaction', () => {
@@ -488,46 +442,6 @@ describe('validateFeeTransaction', () => {
         expect(() => validateFeeTransaction(state, transaction)).toThrow(
             'Counter party with id unknownServiceProviderFeeType must be a known service provider',
         );
-    });
-
-    it('should throw an error when the amount is not negative', () => {
-        const state = {
-            ...mockEmptyInitialState,
-            portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
-            feeTypes: [
-                { accountId: 'serviceProviderFeeType1' },
-            ] as ServiceProviderFeeType[],
-            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
-        };
-        const transaction = {
-            ...mockEmptyBaseTransaction,
-            assetId: '1',
-            counterPartyAccountId: 'serviceProviderFeeType1',
-            amount: 100,
-        };
-
-        expect(() => validateFeeTransaction(state, transaction)).toThrow(
-            'Fee transaction amount must be negative',
-        );
-    });
-
-    it('should not throw an error when the asset is a cash asset, the counterParty is provided and is a known service provider, and the amount is negative', () => {
-        const state = {
-            ...mockEmptyInitialState,
-            portfolio: [{ id: '1', fixedIncomeTypeId: '1' }] as Asset[],
-            feeTypes: [
-                { accountId: 'serviceProviderFeeType1' },
-            ] as ServiceProviderFeeType[],
-            accounts: [{ id: 'serviceProviderFeeType1' }] as Account[],
-        };
-        const transaction = {
-            ...mockEmptyBaseTransaction,
-            assetId: '1',
-            counterPartyAccountId: 'serviceProviderFeeType1',
-            amount: -100,
-        };
-
-        expect(() => validateFeeTransaction(state, transaction)).not.toThrow();
     });
 });
 describe('validateFixedIncomeAsset', () => {

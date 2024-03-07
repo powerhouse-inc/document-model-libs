@@ -40,8 +40,11 @@ export function isCashAsset(asset: Asset | undefined | null): asset is Cash {
 
 export function validateTransactionFee(
     state: RealWorldAssetsState,
-    fee: TransactionFeeInput,
+    fee: InputMaybe<TransactionFeeInput>,
 ): asserts fee is TransactionFee {
+    if (!fee) {
+        throw new Error('Fee does not exist');
+    }
     if (!fee.serviceProviderFeeTypeId) {
         throw new Error(`Transaction fee must have a service provider`);
     }
@@ -51,7 +54,7 @@ export function validateTransactionFee(
 
     if (
         fee.serviceProviderFeeTypeId &&
-        !state.feeTypes.find(
+        !state.serviceProviderFeeTypes.find(
             serviceProvider =>
                 serviceProvider.id === fee.serviceProviderFeeTypeId,
         )
@@ -67,7 +70,7 @@ export function validateTransactionFee(
 
 export function validateTransactionFees(
     state: RealWorldAssetsState,
-    fees: TransactionFeeInput[],
+    fees: InputMaybe<TransactionFeeInput[]>,
 ): asserts fees is TransactionFee[] {
     if (!Array.isArray(fees)) {
         throw new Error(`Transaction fees must be an array`);
@@ -178,7 +181,7 @@ export function validateInterestTransaction(
         );
     }
     if (
-        !state.feeTypes.find(
+        !state.serviceProviderFeeTypes.find(
             a => a.accountId === transaction.counterPartyAccountId,
         )
     ) {
@@ -220,7 +223,7 @@ export function validateFeeTransaction(
         throw new Error(`Fee transaction must have a counter party account`);
     }
     if (
-        !state.feeTypes.find(
+        !state.serviceProviderFeeTypes.find(
             a => a.accountId === transaction.counterPartyAccountId,
         )
     ) {

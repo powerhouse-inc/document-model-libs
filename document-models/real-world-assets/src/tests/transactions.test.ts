@@ -57,7 +57,7 @@ describe('Transactions Operations', () => {
                 ],
                 principalLenderAccountId: principalLenderAccount.id,
                 spvs: [],
-                feeTypes: [mockServiceProvider],
+                serviceProviderFeeTypes: [mockServiceProvider],
                 fixedIncomeTypes: [],
                 portfolio: [mockCashAsset, mockFixedIncomeAsset],
                 transactions: [],

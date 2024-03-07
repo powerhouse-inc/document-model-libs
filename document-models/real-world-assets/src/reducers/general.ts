@@ -71,18 +71,22 @@ export const reducer: RealWorldAssetsGeneralOperations = {
                 `Account with id ${action.input.accountId} does not exist!`,
             );
         }
-        if (state.feeTypes.find(spv => spv.id === action.input.id)) {
+        if (
+            state.serviceProviderFeeTypes.find(
+                spft => spft.id === action.input.id,
+            )
+        ) {
             throw new Error(
                 `Service provider with id ${action.input.id} already exists!`,
             );
         }
-        state.feeTypes.push(action.input);
+        state.serviceProviderFeeTypes.push(action.input);
     },
     editServiceProviderFeeTypeOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }
-        const serviceProviderFeeType = state.feeTypes.find(
+        const serviceProviderFeeType = state.serviceProviderFeeTypes.find(
             feeType => feeType.id === action.input.id,
         );
         if (!serviceProviderFeeType) {
@@ -101,26 +105,29 @@ export const reducer: RealWorldAssetsGeneralOperations = {
                 );
             }
         }
-        state.feeTypes = state.feeTypes.map(rsp =>
-            rsp.id === action.input.id
-                ? ({
-                      ...rsp,
-                      ...action.input,
-                  } as ServiceProviderFeeType)
-                : rsp,
+        state.serviceProviderFeeTypes = state.serviceProviderFeeTypes.map(
+            rsp =>
+                rsp.id === action.input.id
+                    ? ({
+                          ...rsp,
+                          ...action.input,
+                      } as ServiceProviderFeeType)
+                    : rsp,
         );
     },
     deleteServiceProviderFeeTypeOperation(state, action, dispatch) {
         if (!action.input.id) {
             throw new Error(`Service provider must have an id`);
         }
-        const rsp = state.feeTypes.find(rsp => rsp.id === action.input.id);
+        const rsp = state.serviceProviderFeeTypes.find(
+            rsp => rsp.id === action.input.id,
+        );
         if (!rsp) {
             throw new Error(
                 `Service provider with id ${action.input.id} does not exist!`,
             );
         }
-        state.feeTypes = state.feeTypes.filter(
+        state.serviceProviderFeeTypes = state.serviceProviderFeeTypes.filter(
             rsp => rsp.id !== action.input.id,
         );
     },
