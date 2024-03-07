@@ -76,6 +76,11 @@
         "require": "./dist/real-world-assets.cjs",
         "types": "./dist/real-world-assets.d.ts"
     },
+    "./arb-ltip-grantee": {
+        "import": "./dist/arb-ltip-grantee.js",
+        "require": "./dist/arb-ltip-grantee.cjs",
+        "types": "./dist/arb-ltip-grantee.d.ts"
+    },
     "scripts": {
         "generate": "powerhouse generate && eslint . --fix",
         "check-types": "tsc",

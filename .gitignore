@@ -10,3 +10,8 @@ yalc.lock
 
 public/icons.svg
 build-storybook.log
+
+.pnp.cjs
+.pnp.loader.mjs
+.yarn
+yarn.lock

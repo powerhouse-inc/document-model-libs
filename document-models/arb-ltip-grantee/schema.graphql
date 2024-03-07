@@ -1,0 +1,126 @@
+scalar DateTime
+
+type ArbLtipGranteeState {
+	id: ID!
+	granteeName: String
+	grantSize: Float
+	matchingGrantSize: Float
+	grantSummary: String
+	fundingAddress: String
+	fundingType: FundingType
+	disbursementContractAddress: String
+	metricsDashboardLink: String
+	actuals: [GranteeActuals]
+	planned: [GranteePlanned]
+	stats: [GranteeStats]
+}
+
+enum FundingType {
+	EOA
+	Multisig
+	TwoofThreeMultisig
+	ThreeofFiveMultisig
+}
+
+
+type GranteeActuals {
+	startDate: DateTime!
+	endDate: DateTime!
+	arbReceived: Float
+	arbUtilized: Float
+	arbRemaining: Float
+	contractsIncentivized: [Contract]
+	summary: String
+	disclosures: String
+}
+
+type GranteePlanned {
+	startDate: DateTime!
+	endDate: DateTime!
+	arbToBeDistributed: Float
+	contractsIncentivized: [Contract]
+	distributionMechanism: DistributionMechanism
+	summary: String
+	summaryOfChanges: String
+}
+
+type GranteeStats {
+	startDate: DateTime!
+	endDate: DateTime!
+	avgDailyTVL: Float
+	avgDailyTXNS: Float
+	avgDailyVolume: Float
+	uniqueAddressesCount: Float
+	transactionFees: Float
+}
+
+type Contract {
+	contractId: ID!
+	contractLabel: String
+	contractAddress: String
+}
+
+enum DistributionMechanism {
+	LPIncentives
+	Airdrop
+}
+
+
+# input
+
+input InitGrantee {
+	id: ID!
+}
+
+input InitGranteeName {
+	granteeName: String!
+}
+
+input InitGranteeGrantSize {
+	grantSize: Float!
+	matchingGrantSize: Float!
+}
+
+input InitGranteeSummary {
+	grantSummary: String!
+	fundingAddress: String!
+	fundingType: FundingType!
+	disbursementContractAddress: String!
+}
+
+input InitGranteeMetrics {
+	metricsDashboardLink: String!
+}
+
+input Actuals {
+	startDate: DateTime!
+	endDate: DateTime!
+	arbReceived: Float
+	arbUtilized: Float
+	arbRemaining: Float
+	contractsIncentivized: [Contract]
+	summary: String
+	disclosures: String
+}
+
+input Planned {
+	startDate: DateTime!
+	endDate: DateTime!
+	arbToBeDistributed: Float
+	contractsIncentivized: [Contract]
+	distributionMechanism: DistributionMechanism
+	summary: String
+	summaryOfChanges: String
+}
+
+input Stats {
+	startDate: DateTime!
+	endDate: DateTime!
+	avgDailyTVL: Float
+	avgDailyTXNS: Float
+	avgDailyVolume: Float
+	uniqueAddressesCount: Float
+	transactionFees: Float
+}
+
+type ArbLtipGranteeLocalState
