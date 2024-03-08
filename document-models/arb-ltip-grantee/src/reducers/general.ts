@@ -17,6 +17,26 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
         state.grantSize = action.input.grantSize;
     },
     setGranteeSummaryOperation(state, action, dispatch) {
+        if (!action.input.disbursementContractAddress) {
+            throw new Error('disbursementContractAddress is required');
+        }
+
+        if (!action.input.fundingAddress) {
+            throw new Error('fundingAddress is required');
+        }
+
+        if (!action.input.fundingType) {
+            throw new Error('fundingType is required');
+        }
+
+        if (!action.input.grantSummary) {
+            throw new Error('grantSummary is required');
+        }
+
+        state.disbursementContractAddress =
+            action.input.disbursementContractAddress;
+        state.fundingAddress = action.input.fundingAddress;
+        state.fundingType = action.input.fundingType;
         state.grantSummary = action.input.grantSummary;
     },
     setGranteeMetricsOperation(state, action, dispatch) {
