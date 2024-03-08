@@ -17,8 +17,23 @@ type IProps = EditorProps<
     ArbLtipGranteeLocalState
 >;
 
+type GranteeFormProps = Pick<
+    ArbLtipGranteeState,
+    'id' | 'granteeName' | 'grantSize' | 'grantSummary' | 'metricsDashboardLink'
+>;
+
+const GranteeForm = (props: GranteeFormProps) => {
+    return <div>Hello.</div>;
+};
+
 const Editor = (props: IProps) => {
-    return <p>Hello world.</p>;
+    const { document, editorContext, dispatch } = props;
+
+    return (
+        <div>
+            <GranteeForm {...document.state.global} />
+        </div>
+    );
 };
 
 export default Editor;
