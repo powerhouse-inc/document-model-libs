@@ -7,7 +7,7 @@ type ArbLtipGranteeState {
 	matchingGrantSize: Float
 	grantSummary: String
 	fundingAddress: String
-	fundingType: FundingType
+	fundingType: [FundingType]
 	disbursementContractAddress: String
 	metricsDashboardLink: String
 	actuals: [GranteeActuals]
@@ -39,7 +39,7 @@ type GranteePlanned {
 	endDate: DateTime!
 	arbToBeDistributed: Float
 	contractsIncentivized: [Contract]
-	distributionMechanism: DistributionMechanism
+	distributionMechanism: [DistributionMechanism]
 	summary: String
 	summaryOfChanges: String
 }
@@ -66,33 +66,49 @@ enum DistributionMechanism {
 }
 
 
-# input
 
-input InitGrantee {
-	id: ID!
+
+# General
+
+input SetGranteeInput {
+    id: ID!
 }
 
-input InitGranteeName {
+
+input SetGranteeNameInput {
 	granteeName: String!
 }
 
-input InitGranteeGrantSize {
+
+input SetGranteeGrantSizeInput {
 	grantSize: Float!
 	matchingGrantSize: Float!
 }
 
-input InitGranteeSummary {
+
+input SetGranteeSummaryInput {
 	grantSummary: String!
 	fundingAddress: String!
-	fundingType: FundingType!
+	fundingType: [FundingType!]!
 	disbursementContractAddress: String!
 }
 
-input InitGranteeMetrics {
+enum FundingType {
+	EOA
+	Multisig
+	TwoofThreeMultisig
+	ThreeofFiveMultisig
+}
+
+
+input SetGranteeMetricsInput {
 	metricsDashboardLink: String!
 }
 
-input Actuals {
+
+# Metrics
+
+input AddActualsInput {
 	startDate: DateTime!
 	endDate: DateTime!
 	arbReceived: Float
@@ -103,17 +119,41 @@ input Actuals {
 	disclosures: String
 }
 
-input Planned {
+scalar DateTime
+
+type Contract {
+	contractId: ID!
+	contractLabel: String
+	contractAddress: String
+}
+
+
+input AddPlannedInput {
 	startDate: DateTime!
 	endDate: DateTime!
 	arbToBeDistributed: Float
 	contractsIncentivized: [Contract]
-	distributionMechanism: DistributionMechanism
+	distributionMechanism: [DistributionMechanism!]!
 	summary: String
 	summaryOfChanges: String
 }
 
-input Stats {
+scalar DateTime
+
+type Contract {
+	contractId: ID!
+	contractLabel: String
+	contractAddress: String
+}
+
+
+enum DistributionMechanism {
+	LPIncentives
+	Airdrop
+}
+
+
+input AddStatsInput {
 	startDate: DateTime!
 	endDate: DateTime!
 	avgDailyTVL: Float
@@ -123,4 +163,5 @@ input Stats {
 	transactionFees: Float
 }
 
-type ArbLtipGranteeLocalState
+scalar DateTime
+

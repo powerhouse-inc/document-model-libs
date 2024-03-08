@@ -1,26 +1,129 @@
 {
     "author": {
-        "name": "thegoldenmule",
-        "website": "https://thegoldenmule.com/"
+        "name": "GoldenMule",
+        "website": "https://thegoldenmule.com"
     },
-    "description": "ARBLTIPGranteeReporting",
-    "extension": "grants",
-    "id": "arbitrum/grantee",
+    "description": "ARB LTIP Grantee",
+    "extension": "grantee",
+    "id": "ARBLTIPGrantee",
     "name": "ArbLtipGrantee",
     "specifications": [
         {
             "changeLog": [],
-            "modules": [],
+            "modules": [
+                {
+                    "id": "qbXG/pypV+yoYdCjfTVWhq7vVSs=",
+                    "name": "General",
+                    "description": "General",
+                    "operations": [
+                        {
+                            "id": "jcyII5IYWGnyRzBvIPginX947L4=",
+                            "name": "setGrantee",
+                            "description": "",
+                            "schema": "input SetGranteeInput {\n    id: ID!\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "UUFQ8o068cEU3qGt5oFrvs3lv0s=",
+                            "name": "setGranteeName",
+                            "description": "",
+                            "schema": "input SetGranteeNameInput {\n\tgranteeName: String!\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "D0a+Qv6ufp2rp1wt/AMBK2m0VY0=",
+                            "name": "setGranteeGrantSize",
+                            "description": "",
+                            "schema": "input SetGranteeGrantSizeInput {\n\tgrantSize: Float!\n\tmatchingGrantSize: Float!\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "e2UI8QLnDAY0uW71fZ8mzsP7pSc=",
+                            "name": "setGranteeSummary",
+                            "description": "",
+                            "schema": "input SetGranteeSummaryInput {\n\tgrantSummary: String!\n\tfundingAddress: String!\n\tfundingType: [FundingType!]!\n\tdisbursementContractAddress: String!\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "+3BVN+B6FwkhWtZ4AKWDbKDwk1Q=",
+                            "name": "setGranteeMetrics",
+                            "description": "",
+                            "schema": "input SetGranteeMetricsInput {\n\tmetricsDashboardLink: String!\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                },
+                {
+                    "id": "BrtCSCJQjZUqvg6MZxzgXeSTZyQ=",
+                    "name": "Metrics",
+                    "description": "Actual Planned Stats",
+                    "operations": [
+                        {
+                            "id": "yy5ZdE7zOGyyOHOLp7dl9tnbR9U=",
+                            "name": "addActuals",
+                            "description": "",
+                            "schema": "input AddActualsInput {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\nscalar DateTime\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "7Tj/29aPVwU87B8V2OE9IfXKbRk=",
+                            "name": "addPlanned",
+                            "description": "",
+                            "schema": "input AddPlannedInput {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism!]!\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\nscalar DateTime\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "0S7ypJN+L6TEpBVCJLtaTBlmX9Y=",
+                            "name": "addStats",
+                            "description": "",
+                            "schema": "input AddStatsInput {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\nscalar DateTime\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                }
+            ],
             "state": {
                 "global": {
                     "examples": [],
-                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"grantSize\":\"\",\"matchingGrantSize\":\"\",\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":\"\",\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"actuals\":[],\"planned\":[],\"stats\":[]}",
-                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: FundingType\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tactuals: [GranteeActuals]\n\tplanned: [GranteePlanned]\n\tstats: [GranteeStats]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\n\ntype GranteeActuals {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: DistributionMechanism\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n\n\n# input\n\ninput InitGrantee {\n\tid: ID!\n}\n\ninput InitGranteeName {\n\tgranteeName: String!\n}\n\ninput InitGranteeGrantSize {\n\tgrantSize: Float!\n\tmatchingGrantSize: Float!\n}\n\ninput InitGranteeSummary {\n\tgrantSummary: String!\n\tfundingAddress: String!\n\tfundingType: FundingType!\n\tdisbursementContractAddress: String!\n}\n\ninput InitGranteeMetrics {\n\tmetricsDashboardLink: String!\n}\n\ninput Actuals {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ninput Planned {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: DistributionMechanism\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ninput Stats {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}"
+                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"grantSize\":\"\",\"matchingGrantSize\":\"\",\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":[],\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"actuals\":[],\"planned\":[],\"stats\":[]}",
+                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: [FundingType]\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tactuals: [GranteeActuals]\n\tplanned: [GranteePlanned]\n\tstats: [GranteeStats]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\n\ntype GranteeActuals {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n"
                 },
                 "local": {
                     "examples": [],
-                    "initialValue": "{}",
-                    "schema": "type ArbLtipGranteeLocalState"
+                    "initialValue": "",
+                    "schema": ""
                 }
             },
             "version": 1
