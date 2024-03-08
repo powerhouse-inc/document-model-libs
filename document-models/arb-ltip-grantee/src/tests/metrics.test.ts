@@ -20,43 +20,28 @@ describe('Metrics Operations', () => {
 
     it('should handle addActuals operation', () => {
         const input = generateMock(z.AddActualsInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.addActuals(input),
-        );
+        const updatedDocument = reducer(document, creators.addActuals(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'ADD_ACTUALS',
-        );
+        expect(updatedDocument.operations.global[0].type).toBe('ADD_ACTUALS');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle addPlanned operation', () => {
         const input = generateMock(z.AddPlannedInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.addPlanned(input),
-        );
+        const updatedDocument = reducer(document, creators.addPlanned(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'ADD_PLANNED',
-        );
+        expect(updatedDocument.operations.global[0].type).toBe('ADD_PLANNED');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
     it('should handle addStats operation', () => {
         const input = generateMock(z.AddStatsInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.addStats(input),
-        );
+        const updatedDocument = reducer(document, creators.addStats(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'ADD_STATS',
-        );
+        expect(updatedDocument.operations.global[0].type).toBe('ADD_STATS');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });

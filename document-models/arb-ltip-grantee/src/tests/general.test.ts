@@ -20,15 +20,10 @@ describe('General Operations', () => {
 
     it('should handle setGrantee operation', () => {
         const input = generateMock(z.SetGranteeInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.setGrantee(input),
-        );
+        const updatedDocument = reducer(document, creators.setGrantee(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'SET_GRANTEE',
-        );
+        expect(updatedDocument.operations.global[0].type).toBe('SET_GRANTEE');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
