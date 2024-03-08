@@ -1,30 +1,25 @@
 /**
-* This is a scaffold file meant for customization: 
-* - modify it by implementing the reducer functions
-* - delete the file and run the code generator again to have it reset
-*/
+ * This is a scaffold file meant for customization:
+ * - modify it by implementing the reducer functions
+ * - delete the file and run the code generator again to have it reset
+ */
 
 import { ArbLtipGranteeGeneralOperations } from '../../gen/general/operations';
 
 export const reducer: ArbLtipGranteeGeneralOperations = {
     setGranteeOperation(state, action, dispatch) {
-        // TODO: Implement "setGranteeOperation" reducer
-        throw new Error('Reducer "setGranteeOperation" not yet implemented');
+        state.id = action.input.id;
     },
     setGranteeNameOperation(state, action, dispatch) {
-        // TODO: Implement "setGranteeNameOperation" reducer
-        throw new Error('Reducer "setGranteeNameOperation" not yet implemented');
+        state.granteeName = action.input.granteeName;
     },
     setGranteeGrantSizeOperation(state, action, dispatch) {
-        // TODO: Implement "setGranteeGrantSizeOperation" reducer
-        throw new Error('Reducer "setGranteeGrantSizeOperation" not yet implemented');
+        state.grantSize = action.input.grantSize;
     },
     setGranteeSummaryOperation(state, action, dispatch) {
-        // TODO: Implement "setGranteeSummaryOperation" reducer
-        throw new Error('Reducer "setGranteeSummaryOperation" not yet implemented');
+        state.grantSummary = action.input.grantSummary;
     },
     setGranteeMetricsOperation(state, action, dispatch) {
-        // TODO: Implement "setGranteeMetricsOperation" reducer
-        throw new Error('Reducer "setGranteeMetricsOperation" not yet implemented');
+        state.metricsDashboardLink = action.input.metricsDashboardLink;
     },
-}
+};
