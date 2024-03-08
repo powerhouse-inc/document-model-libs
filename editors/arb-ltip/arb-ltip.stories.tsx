@@ -1,4 +1,4 @@
-import { reducer, utils } from '../../document-models/real-world-assets';
+import { reducer, utils } from '../../document-models/arb-ltip-grantee';
 import Editor from './editor';
 import { createDocumentStory } from 'document-model-editors';
 
