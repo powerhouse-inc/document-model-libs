@@ -1,0 +1,432 @@
+{
+    "id": "powerhouse/scope-of-work",
+    "name": "ScopeOfWork",
+    "extension": "phsow",
+    "description": "Document model specifying the scope of work data types",
+    "author": {
+        "name": "Powerhouse",
+        "website": "https://powerhouse.inc"
+    },
+    "specifications": [
+        {
+            "version": 1,
+            "changeLog": [],
+            "state": {
+                "global": {
+                    "schema": "type ScopeOfWorkState { # should always be called the \"...State\"\n  projects: [Project] \n\troadmaps: [Roadmap] \n\tmilestones : [Milestones]\n\tdeliverables: [Deliverable]\n}\n\ntype Roadmap {\n id: ID! \n slug: String! # e.g., title = \"Endgame Phase 2\" slug= \"endgame-phase-2\" URL = /roadmaps/{slug}\n milestones: [Milestones!]!\n title: String! # for e.g. Phase One \n description: String!\n}\ntype Project {\n  id: ID!\n  owner: Owner!\n  code: String!\n  title: String!\n  abstract: String\n  status: ProjectStatus!\n  progress: Percentage\n  imgUrl: String\n  budget: Float!\n  deliverables: [Deliverable!]  \n}\n\ntype Owner {\n  ref: String! \n  id: ID!\n  imgUrl: String\n  name: String\n  code: String\n}\n\n# frontend-side logic can determine the relationship between a project and milestone by examining the shared deliverables.\n\ntype Deliverable { \n  id: ID!\n  title: String!\n  status: DeliverableStatus! # Updated to include \"BLOCKED\"\n  workProgress: Progress\n\tworkUnitBudget: Float! # Default is 1.\n  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  \n  owner: Owner!\n\tdescription: String! \n  keyResults: [KeyResult!]!\n\tproject:Project! \n\n}\n\ntype KeyResult {\n  id: ID!\n\tdeliverable: ID! # reducing the complexity... copilot! \n  title: String!\n  link: String!\n}\n\ntype PercentageProgress {\n  status: ProjectStatus!\n  indication: Progress\n}\nunion Progress = StoryPoints | Percentage | DeliverablesCompleted\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype DeliverablesCompleted {\n  total: Int!\n  completed: Int!\n}\n\ntype Milestones {\n  id: ID!\n  code: String!\n  title: String!\n  description: String!\n  progress: MilestoneProgress \n  targetDate: String\n  estimatedBudgetCap: Float! # denominated in DAI\n  budgetExpenditure: BudgetExpenditure!\n  coordinators: [Coordinator!]! # assumption: sings-off the deliverables of the ecosystem actors \n  contributorTeams: [ContributorTeam!]!\n  deliverables: [Deliverable!]\n}\n\ntype MilestoneProgress {\n  status: MilestoneStatus!\n  indication: Progress\n}\n\ntype BudgetExpenditure {\n  percentage: Float! # between 0 and 1, where 1 means 100%\n  actuals: Float! # denominated in DAI\n  cap: Float! # denominated in DAI\n}\n\ntype Coordinator {\n  ref: String!\n  id: ID!\n  name: String\n  code: String\n}\n\ntype ContributorTeam {\n  ref: String!\n  id: ID!\n  imgUrl: String\n  name: String\n  code: String\n}\n\n# Enums\n\nenum OwnerType {\n  CoreUnit\n  EcosystemActor\n  Delegates\n}\n\nenum ProjectStatus {\n  TODO\n  IN_PROGRESS\n  FINISHED\n}\n\nenum DeliverableStatus {\n  TODO\n  IN_PROGRESS\n  DELIVERED\n  BLOCKED\n\tWONT_DO\n}\n\nenum MilestoneStatus {\n  TODO\n  IN_PROGRESS\n  FINISHED\n}\n\nenum CoordinatorType {\n  EcosystemActor\n  ScopeFacilitator\n  ActiveMKRHolder\n}\n\nenum BudgetType {\n  CONTINGENCY\n  OPEX\n  CAPEX\n  OVERHEAD\n}",
+                    "initialValue": "{\"projects\":[],\"roadmaps\":[],\"milestones\":[],\"deliverables\":[]}",
+                    "examples": []
+                },
+                "local": {
+                    "schema": "",
+                    "initialValue": "",
+                    "examples": []
+                }
+            },
+            "modules": [
+                {
+                    "id": "QDcTlbAl4499CdRMdBvUQnwGQp4=",
+                    "name": "Deliverables",
+                    "description": "",
+                    "operations": [
+                        {
+                            "id": "amh2Cumrjo43uqNeu6abx2aKwmI=",
+                            "name": "UpdateDeliverableProgress",
+                            "description": "",
+                            "schema": "input UpdateDeliverableProgressInput {\n    deliverableId: ID!\n\tworkProgress: Progress!\n}\n# add new types here\nunion Progress = StoryPoints | Percentage | DeliverablesCompleted\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype DeliverablesCompleted {\n  total: Int!\n  completed: Int!\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "l0kWo3UVtLPQKbEH2+bYeUyuRAI=",
+                            "name": "DeleteDeliverable",
+                            "description": "",
+                            "schema": "input DeleteDeliverableInput {\n    deliverableId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "LNeydW92CoA2rEhUIFWC3NAuBNk=",
+                            "name": "CreateDeliverable",
+                            "description": "",
+                            "schema": "input CreateDeliverableInput {\n    title: String!\n    status: DeliverableStatus!\n    workProgress: Progress!\n    workUnitBudget: Float!\n    deliverableBudget: Float!\n    owner: Owner!\n    description: String!\n    keyResults: [KeyResultInput!]!\n    project: ID!\n}\n\n# add new types here\ntype KeyResultInput {\n    deliverable: ID! # ?\n    title: String!\n    link: String!\n}\n\nenum DeliverableStatus {\n  TODO\n  IN_PROGRESS\n  DELIVERED\n  BLOCKED\n    WONT_DO\n}\n\nunion Progress = StoryPoints | Percentage | DeliverablesCompleted\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype DeliverablesCompleted {\n  total: Int!\n  completed: Int!\n}\n\ntype Owner {\n  ref: String! \n  id: ID!\n  imgUrl: String\n  name: String\n  code: String\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "+mJI+WqpoUAT9pwRpWfvg5hhI1w=",
+                            "name": "UpdateDeliverableStatus",
+                            "description": "",
+                            "schema": "input UpdateDeliverableStatusInput {\n    deliverableId: ID!\n    status: DeliverableStatus!\n}\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "JnofJ18wO9JE79LYFZqhaEtPBpc=",
+                            "name": "UpdateDeliverableDetails",
+                            "description": "",
+                            "schema": "input UpdateDeliverableDetailsInput {\n    deliverableId: ID!\n    title: String\n    description: String\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "RIDU4blk5NWn1HcmKD4XXJ1c6aY=",
+                            "name": "AddKeyResultToDeliverable",
+                            "description": "",
+                            "schema": "input AddKeyResultToDeliverableInput {\n    deliverableId: ID!\n    title: String!\n    link: String!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "WHpw9MBVYCTRmHovA1h3IC3UeMc=",
+                            "name": "UpdateKeyResult",
+                            "description": "",
+                            "schema": "input UpdateKeyResultInput {\n    keyResultId: ID!\n    title: String\n    link: String\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "QSnVhJgK79jn7biIM12rUs95l7w=",
+                            "name": "RemoveKeyResultFromDeliverable",
+                            "description": "",
+                            "schema": "input RemoveKeyResultFromDeliverableInput {\n    deliverableId: ID!\n    keyResultId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "tFxTQpOkBZtLjc71d974nSPu7zc=",
+                            "name": "SetDeliverableBudget",
+                            "description": "",
+                            "schema": "input SetDeliverableBudgetInput {\n    deliverableId: ID!\n    workUnitBudget: Float! # Default is 1.\n    deliverableBudget: Float! \n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "znpR9lsIYyDuDg3U4Z19NuvX/R0=",
+                            "name": "AddDeliverableToMilestone",
+                            "description": "",
+                            "schema": "input AddDeliverableToMilestoneInput {\n    deliverableId: ID!\n    milestoneId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "IpuR6ti58M+joX4JskEyCb2usWk=",
+                            "name": "RemoveDeliverableFromMilestone",
+                            "description": "",
+                            "schema": "input RemoveDeliverableFromMilestoneInput {\n    deliverableId: ID!\n    milestoneId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                },
+                {
+                    "id": "YglSpYeuaTxfkN+POw9oRngePqo=",
+                    "name": "Projects",
+                    "description": "",
+                    "operations": [
+                        {
+                            "id": "5uKFKjpZQqM42UfMKrA9eaeQ2mo=",
+                            "name": "CreateProject",
+                            "description": "",
+                            "schema": "input CreateProjectInput {\n    owner: OwnerInput!\n    code: String!\n    title: String!\n    abstract: String\n    status: ProjectStatus!\n    progress: Percentage!\n    imgUrl: String\n    budget: Float!\n}\n\n# add new types here\ntype OwnerInput {\n  ref: String! \n  imgUrl: String\n  name: String\n  code: String\n}\n\nenum ProjectStatus {\n  TODO\n  IN_PROGRESS\n  FINISHED\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "b0gU7kmNrEuM+hOrNXU2c48+DaY=",
+                            "name": "UpdateProjectStatus",
+                            "description": "",
+                            "schema": "input UpdateProjectStatusInput {\n    projectId: ID!\n    status: ProjectStatus!\n}\n# add new types here\nenum ProjectStatus {\n  TODO\n  IN_PROGRESS\n  FINISHED\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "wPSueHotzdcws8lRb0vBLoYYT4g=",
+                            "name": "UpdateProjectDetails",
+                            "description": "",
+                            "schema": "input UpdateProjectDetailsInput {\n    projectId: ID!\n    title: String\n    abstract: String\n    imgUrl: String\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "G0+ETqkxFLp4g84QgEdMyMpyulY=",
+                            "name": "UpdateProjectProgress",
+                            "description": "",
+                            "schema": "input UpdateProjectProgressInput {\n    projectId: ID!\n    progress: Percentage! \n}\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\n# add new types here\n\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "OZjlDvL22FPmtsOBU4GDdXsAS3k=",
+                            "name": "AddDeliverableToProject",
+                            "description": "",
+                            "schema": "input AddDeliverableToProjectInput {\n    projectId: ID!\n    deliverableId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "Q06I2RYzXHtA14wkBiiriQV7AEs=",
+                            "name": "RemoveDeliverableFromProject",
+                            "description": "",
+                            "schema": "input RemoveDeliverableFromProjectInput {\n    projectId: ID!\n    deliverableId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "Feyf8agHKI2Io6s09NUah1kcl5k=",
+                            "name": "DeleteProject",
+                            "description": "",
+                            "schema": "input DeleteProjectInput {\n    projectId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "Z+/NLuxn08iqNPrGDdNvubY7Cjs=",
+                            "name": "AssignProjectOwner",
+                            "description": "",
+                            "schema": "input AssignProjectOwnerInput {\n    projectId: ID!\n    owner: OwnerInput!\n}\n\n# add new types here\ntype OwnerInput {\n  ref: String! \n  imgUrl: String\n  name: String\n  code: String\n}\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                },
+                {
+                    "id": "3i1BTbNoiQcf6ZkkPFKNyryDe5E=",
+                    "name": "Milestones",
+                    "description": "",
+                    "operations": [
+                        {
+                            "id": "qDnwL3nhky0HdvL44uusEe3n82c=",
+                            "name": "CreateMilestone",
+                            "description": "",
+                            "schema": "input CreateMilestoneInput {\n    roadmapId: ID!\n    code: String!\n    title: String!\n    description: String!\n    targetDate: String\n    imgURL: String\n    estimatedBudgetCap: Float!\n    coordinators: [CoordinatorInput]!\n    contributorTeams: [ContributorTeamInput]!\n}\n\n# add new types here\ntype CoordinatorInput {\n  ref: String!\n  name: String\n  code: String\n}\n\ntype ContributorTeamInput {\n  ref: String!\n  imgUrl: String\n  name: String\n  code: String\n}\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "U2hp/rmGlQCvy4izlunRZpc+RpE=",
+                            "name": "UpdateMilestoneProgress",
+                            "description": "",
+                            "schema": "input UpdateMilestoneProgressInput {\n    milestoneId: ID!\n    progress: MilestoneProgress!\n}\n\n# add new types here\ntype MilestoneProgress {\n  status: MilestoneStatus!\n  indication: Progress\n}\nenum MilestoneStatus {\n  TODO\n  IN_PROGRESS\n  FINISHED\n}\nunion Progress = StoryPoints | Percentage | DeliverablesCompleted\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype DeliverablesCompleted {\n  total: Int!\n  completed: Int!\n}\n\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "UthSCdeatpTzjQ+lZpmtQ8YjDuw=",
+                            "name": "AddDeliverableToMilestone",
+                            "description": "",
+                            "schema": "input AddDeliverableToMilestoneInput {\n    milestoneId: ID!\n    deliverableId: ID!  \n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "25J4etmw15OXfvYqUMb9RQFQbQs=",
+                            "name": "DeleteMilestone",
+                            "description": "",
+                            "schema": "input DeleteMilestoneInput {\n    milestoneId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "8ftni35tLpkWuswX5mND3fweZAQ=",
+                            "name": "UpdateMilestoneDetails",
+                            "description": "",
+                            "schema": "input UpdateMilestoneDetailsInput {\n    milestoneId: ID!\n    title: String\n    description: String\n    targetDate: String\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "mxo9FzASA/o3jDZ7/zHnaZ72V9Q=",
+                            "name": "UpdateMilestoneBudget",
+                            "description": "",
+                            "schema": "input UpdateMilestoneBudgetInput {\n     milestoneId: ID!\n    estimatedBudgetCap: Float\n    budgetExpenditure: BudgetExpenditureInput!\n}\n\n# add new types here\ninput BudgetExpenditureInput {\n  percentage: Float\n  actuals: Float\n  cap: Float\n}\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "xPeln7O8XO9vp11n1uMbkZBmK+A=",
+                            "name": "AssignCoordinatorToMilestone",
+                            "description": "",
+                            "schema": "input AssignCoordinatorToMilestoneInput {\n    milestoneId: ID!\n    coordinatorId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "sBvm+PBHgNly0N4U7Q3Tj2qC0ww=",
+                            "name": "AddContributorTeamToMilestone",
+                            "description": "",
+                            "schema": "input AddContributorTeamToMilestoneInput {\n    milestoneId: ID!\n    contributorTeamId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "qtRpU7172M+D6YMfJX2ElJTeS7s=",
+                            "name": "RemoveContributorTeamFromMilestone",
+                            "description": "",
+                            "schema": "input RemoveContributorTeamFromMilestoneInput {\n    milestoneId: ID!\n    contributorTeamId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                },
+                {
+                    "id": "KcrFE2ITnBLi7HvYnKkbEFECtY8=",
+                    "name": "Roadmaps",
+                    "description": "",
+                    "operations": [
+                        {
+                            "id": "oPg+kLyntIpV+qO0/Tbt/3OL9L0=",
+                            "name": "CreateRoadmap",
+                            "description": "",
+                            "schema": "input CreateRoadmapInput {\n    slug: String!\n    title: String!\n    description: String!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "ArAoLZKaz1S8v18zNxaz3+ck3ig=",
+                            "name": "UpdateRoadmapDescription",
+                            "description": "",
+                            "schema": "input UpdateRoadmapDescriptionInput {\n    roadmapId: ID!\n    description: String!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "bmD+YUF7xmU2Bb2rB31aFQVMnOc=",
+                            "name": "DeleteRoadmap",
+                            "description": "",
+                            "schema": "input DeleteRoadmapInput {\n    roadmapId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "A1mTbza5NavUgWH3JCwL+ElQb2Y=",
+                            "name": "UpdateRoadmapTitle",
+                            "description": "",
+                            "schema": "input UpdateRoadmapTitleInput {\n    roadmapId: ID!\n    title: String\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "IuIxpwCSbU/Ke6FuAbDwC6wOTcs=",
+                            "name": "AddMilestoneToRoadmap",
+                            "description": "",
+                            "schema": "input AddMilestoneToRoadmapInput {\n    roadmapId: ID!\n    milestoneId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "Ll6nnojEtnteiw739nAFYJW0E0Q=",
+                            "name": "RemoveMilestoneFromRoadmap",
+                            "description": "",
+                            "schema": "input RemoveMilestoneFromRoadmapInput {\n    roadmapId: ID!\n    milestoneId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

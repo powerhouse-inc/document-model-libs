@@ -1,0 +1,600 @@
+type ScopeOfWorkState { # should always be called the "...State"
+  projects: [Project] 
+	roadmaps: [Roadmap] 
+	milestones : [Milestones]
+	deliverables: [Deliverable]
+}
+
+type Roadmap {
+ id: ID! 
+ slug: String! # e.g., title = "Endgame Phase 2" slug= "endgame-phase-2" URL = /roadmaps/{slug}
+ milestones: [Milestones!]!
+ title: String! # for e.g. Phase One 
+ description: String!
+}
+type Project {
+  id: ID!
+  owner: Owner!
+  code: String!
+  title: String!
+  abstract: String
+  status: ProjectStatus!
+  progress: Percentage
+  imgUrl: String
+  budget: Float!
+  deliverables: [Deliverable!]  
+}
+
+type Owner {
+  ref: String! 
+  id: ID!
+  imgUrl: String
+  name: String
+  code: String
+}
+
+# frontend-side logic can determine the relationship between a project and milestone by examining the shared deliverables.
+
+type Deliverable { 
+  id: ID!
+  title: String!
+  status: DeliverableStatus! # Updated to include "BLOCKED"
+  workProgress: Progress
+	workUnitBudget: Float! # Default is 1.
+  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  
+  owner: Owner!
+	description: String! 
+  keyResults: [KeyResult!]!
+	project:Project! 
+
+}
+
+type KeyResult {
+  id: ID!
+	deliverable: ID! # reducing the complexity... copilot! 
+  title: String!
+  link: String!
+}
+
+type PercentageProgress {
+  status: ProjectStatus!
+  indication: Progress
+}
+union Progress = StoryPoints | Percentage | DeliverablesCompleted
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less then or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type DeliverablesCompleted {
+  total: Int!
+  completed: Int!
+}
+
+type Milestones {
+  id: ID!
+  code: String!
+  title: String!
+  description: String!
+  progress: MilestoneProgress 
+  targetDate: String
+  estimatedBudgetCap: Float! # denominated in DAI
+  budgetExpenditure: BudgetExpenditure!
+  coordinators: [Coordinator!]! # assumption: sings-off the deliverables of the ecosystem actors 
+  contributorTeams: [ContributorTeam!]!
+  deliverables: [Deliverable!]
+}
+
+type MilestoneProgress {
+  status: MilestoneStatus!
+  indication: Progress
+}
+
+type BudgetExpenditure {
+  percentage: Float! # between 0 and 1, where 1 means 100%
+  actuals: Float! # denominated in DAI
+  cap: Float! # denominated in DAI
+}
+
+type Coordinator {
+  ref: String!
+  id: ID!
+  name: String
+  code: String
+}
+
+type ContributorTeam {
+  ref: String!
+  id: ID!
+  imgUrl: String
+  name: String
+  code: String
+}
+
+# Enums
+
+enum OwnerType {
+  CoreUnit
+  EcosystemActor
+  Delegates
+}
+
+enum ProjectStatus {
+  TODO
+  IN_PROGRESS
+  FINISHED
+}
+
+enum DeliverableStatus {
+  TODO
+  IN_PROGRESS
+  DELIVERED
+  BLOCKED
+	WONT_DO
+}
+
+enum MilestoneStatus {
+  TODO
+  IN_PROGRESS
+  FINISHED
+}
+
+enum CoordinatorType {
+  EcosystemActor
+  ScopeFacilitator
+  ActiveMKRHolder
+}
+
+enum BudgetType {
+  CONTINGENCY
+  OPEX
+  CAPEX
+  OVERHEAD
+}
+
+
+
+# Deliverables
+
+input UpdateDeliverableProgressInput {
+    deliverableId: ID!
+	workProgress: Progress!
+}
+# add new types here
+union Progress = StoryPoints | Percentage | DeliverablesCompleted
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less then or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type DeliverablesCompleted {
+  total: Int!
+  completed: Int!
+}
+
+
+input DeleteDeliverableInput {
+    deliverableId: ID!
+}
+
+# add new types here
+
+
+input CreateDeliverableInput {
+    title: String!
+    status: DeliverableStatus!
+    workProgress: Progress!
+    workUnitBudget: Float!
+    deliverableBudget: Float!
+    owner: Owner!
+    description: String!
+    keyResults: [KeyResultInput!]!
+    project: ID!
+}
+
+# add new types here
+type KeyResultInput {
+    deliverable: ID! # ?
+    title: String!
+    link: String!
+}
+
+enum DeliverableStatus {
+  TODO
+  IN_PROGRESS
+  DELIVERED
+  BLOCKED
+    WONT_DO
+}
+
+union Progress = StoryPoints | Percentage | DeliverablesCompleted
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less then or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type DeliverablesCompleted {
+  total: Int!
+  completed: Int!
+}
+
+type Owner {
+  ref: String! 
+  id: ID!
+  imgUrl: String
+  name: String
+  code: String
+}
+
+
+input UpdateDeliverableStatusInput {
+    deliverableId: ID!
+    status: DeliverableStatus!
+}
+enum DeliverableStatus {
+    TODO
+    IN_PROGRESS
+    DELIVERED
+    BLOCKED
+    WONT_DO
+}
+
+
+
+input UpdateDeliverableDetailsInput {
+    deliverableId: ID!
+    title: String
+    description: String
+}
+
+
+input AddKeyResultToDeliverableInput {
+    deliverableId: ID!
+    title: String!
+    link: String!
+}
+
+# add new types here
+
+
+input UpdateKeyResultInput {
+    keyResultId: ID!
+    title: String
+    link: String
+}
+
+# add new types here
+
+
+input RemoveKeyResultFromDeliverableInput {
+    deliverableId: ID!
+    keyResultId: ID!
+}
+
+# add new types here
+
+
+input SetDeliverableBudgetInput {
+    deliverableId: ID!
+    workUnitBudget: Float! # Default is 1.
+    deliverableBudget: Float! 
+}
+
+# add new types here
+
+
+input AddDeliverableToMilestoneInput {
+    deliverableId: ID!
+    milestoneId: ID!
+}
+
+# add new types here
+
+
+input RemoveDeliverableFromMilestoneInput {
+    deliverableId: ID!
+    milestoneId: ID!
+}
+
+# add new types here
+
+
+# Projects
+
+input CreateProjectInput {
+    owner: OwnerInput!
+    code: String!
+    title: String!
+    abstract: String
+    status: ProjectStatus!
+    progress: Percentage!
+    imgUrl: String
+    budget: Float!
+}
+
+# add new types here
+type OwnerInput {
+  ref: String! 
+  imgUrl: String
+  name: String
+  code: String
+}
+
+enum ProjectStatus {
+  TODO
+  IN_PROGRESS
+  FINISHED
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+
+
+input UpdateProjectStatusInput {
+    projectId: ID!
+    status: ProjectStatus!
+}
+# add new types here
+enum ProjectStatus {
+  TODO
+  IN_PROGRESS
+  FINISHED
+}
+
+# add new types here
+
+
+input UpdateProjectDetailsInput {
+    projectId: ID!
+    title: String
+    abstract: String
+    imgUrl: String
+}
+
+# add new types here
+
+
+input UpdateProjectProgressInput {
+    projectId: ID!
+    progress: Percentage! 
+}
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+# add new types here
+
+
+# add new types here
+
+
+input AddDeliverableToProjectInput {
+    projectId: ID!
+    deliverableId: ID!
+}
+
+# add new types here
+
+
+input RemoveDeliverableFromProjectInput {
+    projectId: ID!
+    deliverableId: ID!
+}
+
+# add new types here
+
+
+input DeleteProjectInput {
+    projectId: ID!
+}
+
+# add new types here
+
+
+input AssignProjectOwnerInput {
+    projectId: ID!
+    owner: OwnerInput!
+}
+
+# add new types here
+type OwnerInput {
+  ref: String! 
+  imgUrl: String
+  name: String
+  code: String
+}
+
+
+
+# Milestones
+
+input CreateMilestoneInput {
+    roadmapId: ID!
+    code: String!
+    title: String!
+    description: String!
+    targetDate: String
+    imgURL: String
+    estimatedBudgetCap: Float!
+    coordinators: [CoordinatorInput]!
+    contributorTeams: [ContributorTeamInput]!
+}
+
+# add new types here
+type CoordinatorInput {
+  ref: String!
+  name: String
+  code: String
+}
+
+type ContributorTeamInput {
+  ref: String!
+  imgUrl: String
+  name: String
+  code: String
+}
+
+
+input UpdateMilestoneProgressInput {
+    milestoneId: ID!
+    progress: MilestoneProgress!
+}
+
+# add new types here
+type MilestoneProgress {
+  status: MilestoneStatus!
+  indication: Progress
+}
+enum MilestoneStatus {
+  TODO
+  IN_PROGRESS
+  FINISHED
+}
+union Progress = StoryPoints | Percentage | DeliverablesCompleted
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less then or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type DeliverablesCompleted {
+  total: Int!
+  completed: Int!
+}
+
+
+
+
+input AddDeliverableToMilestoneInput {
+    milestoneId: ID!
+    deliverableId: ID!  
+}
+
+# add new types here
+
+
+input DeleteMilestoneInput {
+    milestoneId: ID!
+}
+
+# add new types here
+
+
+input UpdateMilestoneDetailsInput {
+    milestoneId: ID!
+    title: String
+    description: String
+    targetDate: String
+}
+
+# add new types here
+
+
+input UpdateMilestoneBudgetInput {
+     milestoneId: ID!
+    estimatedBudgetCap: Float
+    budgetExpenditure: BudgetExpenditureInput!
+}
+
+# add new types here
+input BudgetExpenditureInput {
+  percentage: Float
+  actuals: Float
+  cap: Float
+}
+
+
+
+input AssignCoordinatorToMilestoneInput {
+    milestoneId: ID!
+    coordinatorId: ID!
+}
+
+# add new types here
+
+
+input AddContributorTeamToMilestoneInput {
+    milestoneId: ID!
+    contributorTeamId: ID!
+}
+
+# add new types here
+
+
+input RemoveContributorTeamFromMilestoneInput {
+    milestoneId: ID!
+    contributorTeamId: ID!
+}
+
+# add new types here
+
+
+# Roadmaps
+
+input CreateRoadmapInput {
+    slug: String!
+    title: String!
+    description: String!
+}
+
+# add new types here
+
+
+input UpdateRoadmapDescriptionInput {
+    roadmapId: ID!
+    description: String!
+}
+
+# add new types here
+
+
+input DeleteRoadmapInput {
+    roadmapId: ID!
+}
+
+# add new types here
+
+
+input UpdateRoadmapTitleInput {
+    roadmapId: ID!
+    title: String
+}
+
+# add new types here
+
+
+input AddMilestoneToRoadmapInput {
+    roadmapId: ID!
+    milestoneId: ID!
+}
+
+# add new types here
+
+
+input RemoveMilestoneFromRoadmapInput {
+    roadmapId: ID!
+    milestoneId: ID!
+}
+
+# add new types here
