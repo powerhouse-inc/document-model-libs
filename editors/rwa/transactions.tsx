@@ -41,7 +41,7 @@ const fieldsPriority: (keyof Fields)[] = [
     'Entry time',
     'Asset',
     'Quantity',
-    'USD Amount',
+    'Cash Amount',
     'Cash Balance Change',
 ];
 
