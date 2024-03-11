@@ -5,21 +5,18 @@ const steps = [
         id: '01',
         name: 'Start',
         description: 'Report planned resources.',
-        href: '#',
-        status: 'complete',
+        status: 'current',
     },
     {
         id: '02',
         name: 'In-progress',
         description: 'Active development.',
-        href: '#',
-        status: 'current',
+        status: 'upcoming',
     },
     {
         id: '03',
         name: 'Finalize',
         description: 'Report actuals and stats.',
-        href: '#',
         status: 'upcoming',
     },
 ];
@@ -27,10 +24,7 @@ const steps = [
 const PhaseTimeline = () => {
     return (
         <div className="lg:border-b lg:border-t lg:border-gray-200">
-            <nav
-                className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-                aria-label="Progress"
-            >
+            <nav className="mx-auto" aria-label="Progress">
                 <ol
                     role="list"
                     className="overflow-hidden rounded-md md:flex lg:rounded-none lg:border-l lg:border-r lg:border-gray-200"

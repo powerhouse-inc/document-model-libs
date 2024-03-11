@@ -1,4 +1,7 @@
-import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
+import {
+    ArbLtipGranteeState,
+    FundingType,
+} from '../../../document-models/arb-ltip-grantee';
 import { TextInput } from 'document-model-editors';
 import {
     setGranteeMetrics,
@@ -7,8 +10,28 @@ import {
 } from '../../../document-models/arb-ltip-grantee/gen/creators';
 import { useCallback, useMemo, useState } from 'react';
 import { maybeToArray } from '../util';
-import FundingTypeTagSelector from '../components/FundingTypeTagSelector';
+import FundingTypeTagSelector from './TagSelector';
 import { IProps } from '../editor';
+import TagSelector from './TagSelector';
+
+const fundingTypes = [
+    {
+        name: 'EOA',
+        value: 'EOA',
+    },
+    {
+        name: 'Multisig',
+        value: 'Multisig',
+    },
+    {
+        name: '3/5 Multisig',
+        value: 'ThreeofFiveMultisig',
+    },
+    {
+        name: '2/3 Multisig',
+        value: 'TwoofThreeMultisig',
+    },
+];
 
 type GranteeFormProps = ArbLtipGranteeState &
     Pick<IProps, 'editorContext' | 'dispatch'> & { onClose: () => void };
@@ -166,10 +189,14 @@ const GranteeForm = (props: GranteeFormProps) => {
                     <label className="block text-xs font-medium text-gray-900 mb-1">
                         Funding Type(s) (required)
                     </label>
-                    <FundingTypeTagSelector
+                    <TagSelector
                         value={fundingTypeLocal}
+                        schema={fundingTypes}
                         onAdd={value => {
-                            setFundingTypeLocal([...fundingTypeLocal, value]);
+                            setFundingTypeLocal([
+                                ...fundingTypeLocal,
+                                value as FundingType,
+                            ]);
                         }}
                         onRemove={value => {
                             setFundingTypeLocal(

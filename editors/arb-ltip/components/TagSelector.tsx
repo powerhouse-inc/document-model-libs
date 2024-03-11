@@ -1,43 +1,21 @@
 import { Menu, Transition } from '@headlessui/react';
-import { FundingType } from '../../../document-models/arb-ltip-grantee';
 import { Icon } from '@powerhousedao/design-system';
 import { Fragment } from 'react/jsx-runtime';
 import { classNames } from '../util';
 
-type FundingTypeTag = {
+type TagSelectorSchemaRecord = {
     name: string;
-    value: FundingType;
-};
-const fundingTypes: FundingTypeTag[] = [
-    {
-        name: 'EOA',
-        value: 'EOA',
-    },
-    {
-        name: 'Multisig',
-        value: 'Multisig',
-    },
-    {
-        name: '3/5 Multisig',
-        value: 'ThreeofFiveMultisig',
-    },
-    {
-        name: '2/3 Multisig',
-        value: 'TwoofThreeMultisig',
-    },
-];
-
-type FundingTypeTagSelectorProps = {
-    value: FundingType[];
-    onAdd: (value: FundingType) => void;
-    onRemove: (value: FundingType) => void;
+    value: string;
 };
 
-const FundingTypeTagSelector = ({
-    value,
-    onAdd,
-    onRemove,
-}: FundingTypeTagSelectorProps) => {
+type TagSelectorProps = {
+    value: string[];
+    schema: TagSelectorSchemaRecord[];
+    onAdd: (value: string) => void;
+    onRemove: (value: string) => void;
+};
+
+const TagSelector = ({ value, schema, onAdd, onRemove }: TagSelectorProps) => {
     return (
         <div>
             <Menu as="div" className="relative inline-block text-left">
@@ -64,7 +42,7 @@ const FundingTypeTagSelector = ({
                 >
                     <Menu.Items className="absolute left-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="">
-                            {fundingTypes
+                            {schema
                                 .filter(
                                     type => !value.some(v => v === type.value),
                                 )
@@ -119,4 +97,4 @@ const FundingTypeTagSelector = ({
     );
 };
 
-export default FundingTypeTagSelector;
+export default TagSelector;
