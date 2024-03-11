@@ -20,6 +20,9 @@ const config = {
             },
         },
     },
+    plugins:[
+        require('@tailwindcss/forms'),
+    ],
 } satisfies Config;
 
 export default config;
