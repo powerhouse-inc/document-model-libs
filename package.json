@@ -173,11 +173,13 @@
         "@headlessui/react": "^1.7.18",
         "@internationalized/date": "^3.5.1",
         "@tailwindcss/forms": "^0.5.7",
+        "@types/react-datepicker": "^6.0.3",
         "date-fns": "^3.3.1",
         "document-model": "^1.0.30",
         "jsonc-parser": "^3.2.1",
         "jszip": "^3.10.1",
         "react-aria-components": "1.1.1",
+        "react-datepicker": "^6.3.0",
         "tailwind-merge": "^2.2.1",
         "uuid": "^9.0.1"
     }

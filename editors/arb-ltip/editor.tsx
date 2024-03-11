@@ -121,8 +121,10 @@ const Editor = (props: IProps) => {
                             onEdit={() => setIsEditMode(true)}
                         />
                     )}
-                    {activeTab === 'Current Phase' && <PhaseDisplay />}
-                    {activeTab === 'Historical' && <PhaseDisplay />}
+                    {activeTab === 'Current Phase' && (
+                        <PhaseDisplay {...props} />
+                    )}
+                    {activeTab === 'Historical' && <PhaseDisplay {...props} />}
                 </>
             )}
         </div>

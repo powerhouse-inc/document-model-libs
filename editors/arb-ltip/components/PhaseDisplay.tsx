@@ -1,11 +1,13 @@
+import { IProps } from '../editor';
 import PhaseStartForm from './PhaseStartForm';
 import PhaseTimeline from './PhaseTimeline';
 
-const PhaseDisplay = () => {
+type PhaseDisplayProps = Pick<IProps, 'editorContext' | 'dispatch'>;
+const PhaseDisplay = (props: PhaseDisplayProps) => {
     return (
         <div>
             <PhaseTimeline />
-            <PhaseStartForm />
+            <PhaseStartForm {...props} />
         </div>
     );
 };

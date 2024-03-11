@@ -215,7 +215,6 @@ const GranteeForm = (props: GranteeFormProps) => {
                         id="comment"
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter grant summary here"
-                        defaultValue={''}
                         value={grantSummaryLocal}
                         onChange={e => setGrantSummaryLocal(e.target.value)}
                     />
