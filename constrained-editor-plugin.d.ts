@@ -6,6 +6,7 @@ declare module 'constrained-editor-plugin' {
 
     interface ConstrainedInstance {
         initializeIn: (editor: editor.IStandaloneCodeEditor) => void;
+        removeRestrictionsIn: (model: editor.ITextModel | null) => void;
         addRestrictionsTo: (
             // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
             model: editor.ITextModel | null,
