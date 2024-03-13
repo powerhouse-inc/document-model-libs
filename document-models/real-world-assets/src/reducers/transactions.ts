@@ -5,11 +5,7 @@
  */
 
 import {
-    BaseTransaction,
     Cash,
-    EditBaseTransactionInput,
-    InputMaybe,
-    Maybe,
     makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
     validateFeeTransactions,
@@ -30,7 +26,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         const type = action.input.type;
         const entryTime = action.input.entryTime;
         const fees = action.input.fees ?? null;
-
+        const cashBalanceChange = action.input.cashBalanceChange;
         let cashTransaction = action.input.cashTransaction ?? null;
         let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
@@ -38,7 +34,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         let feeTransactions = action.input.feeTransactions
             ? action.input.feeTransactions
             : null;
-        let cashBalanceChange = 0;
 
         if (cashTransaction) {
             cashTransaction = {
@@ -46,7 +41,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 entryTime,
             };
             validateCashTransaction(state, cashTransaction);
-            cashBalanceChange = cashTransaction.amount;
         }
 
         if (fixedIncomeTransaction) {
@@ -75,17 +69,14 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (fees) {
             validateTransactionFees(state, fees);
-            fees.forEach(fee => {
-                cashBalanceChange -= fee.amount;
-            });
         }
 
         const newGroupTransaction = {
             id,
             type,
             entryTime,
-            cashBalanceChange,
             fees,
+            cashBalanceChange,
             cashTransaction,
             feeTransactions,
             fixedIncomeTransaction,
@@ -123,6 +114,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         );
     },
     editGroupTransactionOperation(state, action, dispatch) {
+        console.log('edit reducer', state, action);
         const id = action.input.id;
 
         if (!id) {
@@ -139,77 +131,38 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             );
         }
 
-        const entryTime = action.input.entryTime ?? transaction.entryTime;
-        const type = action.input.type ?? transaction.type;
-
-        function maybeMakeUpdatedBaseTransaction(
-            updates: InputMaybe<EditBaseTransactionInput>,
-            existing: Maybe<BaseTransaction>,
-        ) {
-            if (!updates && !existing) return null;
-            if (!updates || Object.keys(updates).length === 0) return existing;
-            return {
-                ...existing,
-                ...updates,
-            } as BaseTransaction;
-        }
-        let cashTransaction = maybeMakeUpdatedBaseTransaction(
-            action.input.cashTransaction,
-            transaction.cashTransaction,
-        );
-        let fixedIncomeTransaction = maybeMakeUpdatedBaseTransaction(
-            action.input.fixedIncomeTransaction,
-            transaction.fixedIncomeTransaction,
-        );
-        let interestTransaction = maybeMakeUpdatedBaseTransaction(
-            action.input.interestTransaction,
-            transaction.interestTransaction,
-        );
-        let cashBalanceChange = 0;
-
-        if (cashTransaction) {
-            cashTransaction = {
-                ...cashTransaction,
-                entryTime,
-            };
-            validateCashTransaction(state, cashTransaction);
-            cashBalanceChange = cashTransaction.amount;
+        if (action.input.type) {
+            transaction.type = action.input.type;
         }
 
-        if (fixedIncomeTransaction) {
-            fixedIncomeTransaction = {
-                ...fixedIncomeTransaction,
-                entryTime,
-            };
-            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
+        if (action.input.entryTime) {
+            transaction.entryTime = action.input.entryTime;
+            transaction.cashTransaction!.entryTime = action.input.entryTime;
+            transaction.fixedIncomeTransaction!.entryTime =
+                action.input.entryTime;
         }
 
-        if (interestTransaction) {
-            interestTransaction = {
-                ...interestTransaction,
-                entryTime,
-            };
-            validateInterestTransaction(state, interestTransaction);
+        if (action.input.fixedIncomeTransaction?.amount) {
+            transaction.fixedIncomeTransaction!.amount =
+                action.input.fixedIncomeTransaction.amount;
         }
 
-        state.transactions = state.transactions.map(t =>
-            t.id === id
-                ? {
-                      ...t,
-                      id,
-                      type,
-                      entryTime,
-                      cashBalanceChange,
-                      cashTransaction,
-                      fixedIncomeTransaction,
-                      interestTransaction,
-                  }
-                : t,
-        );
+        if (action.input.fixedIncomeTransaction?.assetId) {
+            console.log('look im doing it');
+            transaction.fixedIncomeTransaction!.assetId =
+                action.input.fixedIncomeTransaction.assetId;
+        }
 
-        const fixedIncomeAssetId = fixedIncomeTransaction?.assetId;
+        if (action.input.cashTransaction?.amount) {
+            transaction.cashTransaction!.amount =
+                action.input.cashTransaction.amount;
+        }
 
-        if (!fixedIncomeAssetId) return;
+        if (action.input.cashBalanceChange) {
+            transaction.cashBalanceChange = action.input.cashBalanceChange;
+        }
+
+        const fixedIncomeAssetId = transaction.fixedIncomeTransaction!.assetId;
 
         const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
             state,
@@ -220,7 +173,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
         );
 
-        const cashAssetId = cashTransaction?.assetId;
+        const cashAssetId = transaction.cashTransaction?.assetId;
 
         const cashAsset = state.portfolio.find(
             a => a.id === cashAssetId,
@@ -228,7 +181,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         const updatedCashAsset = {
             ...cashAsset,
-            balance: cashAsset.balance + cashBalanceChange,
+            balance: cashAsset.balance + transaction.cashBalanceChange,
         };
 
         state.portfolio = state.portfolio.map(a =>

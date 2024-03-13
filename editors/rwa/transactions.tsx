@@ -2,12 +2,14 @@ import {
     CashAsset,
     Fields,
     GroupTransactionDetailInputs,
+    GroupTransactionType,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
     TransactionFee,
     FixedIncome as UiFixedIncome,
     GroupTransaction as UiGroupTransaction,
 } from '@powerhousedao/design-system';
+import { copy } from 'copy-anything';
 import { Maybe, utils } from 'document-model/document';
 import diff from 'microdiff';
 import { useCallback, useState } from 'react';
@@ -77,6 +79,22 @@ export const Transactions = (props: IProps) => {
     const [showNewGroupTransactionForm, setShowNewGroupTransactionForm] =
         useState(false);
 
+    function calculateCashBalanceChange(
+        transactionType: GroupTransactionType | undefined,
+        cashAmount: number | undefined,
+        fees: Maybe<TransactionFee[]> | undefined,
+    ) {
+        if (!cashAmount || !transactionType) return 0;
+
+        const operation = transactionType === 'AssetPurchase' ? -1 : 1;
+
+        const totalFees = fees
+            ? fees.reduce((acc, fee) => acc + Number(fee.amount), 0)
+            : 0;
+
+        return Number(cashAmount) * operation - totalFees;
+    }
+
     const createNewGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionDetailInputs) => {
             const { cashAmount, fixedIncomeId, fixedIncomeAmount, type } = data;
@@ -126,10 +144,17 @@ export const Transactions = (props: IProps) => {
                       }
                     : null;
 
+            const cashBalanceChange = calculateCashBalanceChange(
+                type,
+                cashAmount,
+                fees,
+            );
+
             const groupTransaction = {
                 id: utils.hashKey(),
                 type,
                 cashTransaction,
+                cashBalanceChange,
                 entryTime,
                 fees,
                 fixedIncomeTransaction,
@@ -252,6 +277,14 @@ export const Transactions = (props: IProps) => {
                 const newCashAmount = data.cashAmount
                     ? Number(data.cashAmount)
                     : undefined;
+                const newCashBalanceChange =
+                    newType || newCashAmount || data.fees
+                        ? calculateCashBalanceChange(
+                              newType,
+                              newCashAmount,
+                              data.fees,
+                          )
+                        : undefined;
 
                 const existingCashTransaction =
                     selectedGroupTransactionToEdit.cashTransaction;
@@ -268,66 +301,57 @@ export const Transactions = (props: IProps) => {
                     );
                 }
 
-                let update = {
-                    ...selectedGroupTransactionToEdit,
-                };
+                const update = copy(selectedGroupTransactionToEdit);
 
                 if (newType) {
-                    update = {
-                        ...update,
-                        type: newType,
-                    };
+                    update.type = newType;
                 }
 
                 if (newEntryTime) {
-                    update = {
-                        ...update,
-                        entryTime: newEntryTime,
-                    };
+                    update.entryTime = newEntryTime;
                 }
 
                 // use direct comparison to avoid false positives on zero
                 if (newCashAmount !== undefined) {
-                    update = {
-                        ...update,
-                        cashTransaction: {
-                            ...existingCashTransaction,
-                            amount: newCashAmount,
-                        },
-                    };
+                    update.cashTransaction!.amount = newCashAmount;
                 }
 
                 if (newFixedIncomeAssetId) {
-                    update = {
-                        ...update,
-                        fixedIncomeTransaction: {
-                            ...existingFixedIncomeTransaction,
-                            assetId: newFixedIncomeAssetId,
-                        },
-                    };
+                    update.fixedIncomeTransaction!.assetId =
+                        newFixedIncomeAssetId;
                 }
 
                 // use direct comparison to avoid false positives on zero
                 if (newFixedIncomeAssetAmount !== undefined) {
-                    update = {
-                        ...update,
-                        fixedIncomeTransaction: {
-                            ...existingFixedIncomeTransaction,
-                            amount: newFixedIncomeAssetAmount,
-                        },
-                    };
+                    update.fixedIncomeTransaction!.amount =
+                        newFixedIncomeAssetAmount;
                 }
+
+                if (newCashBalanceChange !== undefined) {
+                    update.cashBalanceChange = newCashBalanceChange;
+                }
+
+                console.log({
+                    newFixedIncomeAssetId,
+                    existingFixedIncomeId:
+                        existingFixedIncomeTransaction.assetId,
+                    update,
+                });
 
                 let changedFields = getDifferences(
                     selectedGroupTransactionToEdit,
                     update,
                 );
 
+                console.log({ changedFields });
+
                 if ('fixedIncomeTransaction' in changedFields) {
                     const fixedIncomeTransactionChangedFields = getDifferences(
                         existingFixedIncomeTransaction,
                         update.fixedIncomeTransaction,
                     ) as BaseTransaction;
+
+                    console.log({ fixedIncomeTransactionChangedFields });
 
                     changedFields = {
                         ...changedFields,
@@ -375,6 +399,7 @@ export const Transactions = (props: IProps) => {
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
         useCallback(
             data => {
+                console.log('create', data);
                 const transaction =
                     createNewGroupTransactionFromFormInputs(data);
 
