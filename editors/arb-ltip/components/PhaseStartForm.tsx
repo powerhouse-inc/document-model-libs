@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import TagSelector from './TagSelector';
 import {
     Contract,
@@ -162,7 +162,6 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         id="comment"
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter summary here"
-                        defaultValue={''}
                         value={summaryLocal}
                         onChange={e => setSummaryLocal(e.target.value)}
                     />
@@ -177,7 +176,6 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         id="comment"
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter summary of changes here"
-                        defaultValue={''}
                         value={summaryOfChangesLocal}
                         onChange={e => setSummaryOfChangesLocal(e.target.value)}
                     />

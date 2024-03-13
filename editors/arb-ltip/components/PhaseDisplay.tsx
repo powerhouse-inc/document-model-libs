@@ -4,6 +4,8 @@ import PhaseTimeline from './PhaseTimeline';
 
 type PhaseDisplayProps = Pick<IProps, 'editorContext' | 'dispatch'>;
 const PhaseDisplay = (props: PhaseDisplayProps) => {
+    // determine phase
+
     return (
         <div>
             <PhaseTimeline />

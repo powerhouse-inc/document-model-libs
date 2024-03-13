@@ -10,7 +10,7 @@ import {
 } from '../../../document-models/arb-ltip-grantee/gen/creators';
 import { useCallback, useMemo, useState } from 'react';
 import { maybeToArray } from '../util';
-import FundingTypeTagSelector from './TagSelector';
+import DatePicker from 'react-datepicker';
 import { IProps } from '../editor';
 import TagSelector from './TagSelector';
 
@@ -67,6 +67,10 @@ const GranteeForm = (props: GranteeFormProps) => {
         metricsDashboardLink || '',
     );
 
+    // 16 weeks
+    const startDate = new Date(2024, 3, 22);
+    const endDate = new Date(2024, 7, 12);
+
     const onSetGranteeName = useCallback(
         (name: string) => {
             setGranteeNameLocal(name);
@@ -90,6 +94,8 @@ const GranteeForm = (props: GranteeFormProps) => {
                 metricsDashboardLink: metricsDashboardLinkLocal,
             }),
         );
+
+        // create 8 updates
 
         onClose();
     }, [
@@ -145,6 +151,32 @@ const GranteeForm = (props: GranteeFormProps) => {
                 />
             </div>
             <div className="isolate -space-y-px rounded-md shadow-sm">
+                <div className="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
+                    <div>
+                        <label className="block text-xs font-medium text-gray-900">
+                            Start Date
+                        </label>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={_ => {
+                                //
+                            }}
+                            disabled={true}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-medium text-gray-900">
+                            End Date
+                        </label>
+                        <DatePicker
+                            selected={endDate}
+                            onChange={_ => {
+                                /* disallow */
+                            }}
+                            disabled={true}
+                        />
+                    </div>
+                </div>
                 <div className="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="block text-xs font-medium text-gray-900">
                         Disbursement Address (required)

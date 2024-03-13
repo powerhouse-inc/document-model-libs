@@ -7,52 +7,70 @@
 import { Contract, DistributionMechanism } from '../..';
 import { ArbLtipGranteeMetricsOperations } from '../../gen/metrics/operations';
 
+class MissingFieldError extends Error {
+    fields: string[];
+
+    constructor(...fields: string[]) {
+        super(`Missing required field '${fields.join('.')}'.`);
+        this.fields = fields;
+    }
+}
+
 export const reducer: ArbLtipGranteeMetricsOperations = {
     addActualsOperation(state, action, dispatch) {
         if (!action.input.arbReceived) {
-            throw new Error(`Actuals must have arbReceived`);
+            throw new MissingFieldError('arbReceived');
         }
 
         if (!action.input.arbRemaining) {
-            throw new Error(`Actuals must have arbRemaining`);
+            throw new MissingFieldError('arbRemaining');
         }
 
         if (!action.input.arbUtilized) {
-            throw new Error(`Actuals must have arbUtilized`);
+            throw new MissingFieldError('arbUtilized');
         }
 
         if (!action.input.summary) {
-            throw new Error(`Actuals must have summary`);
+            throw new MissingFieldError('summary');
         }
 
         if (!action.input.disclosures) {
-            throw new Error(`Actuals must have disclosures`);
+            throw new MissingFieldError('disclosures');
         }
 
         if (
             !action.input.contractsIncentivized ||
             action.input.contractsIncentivized.length === 0
         ) {
-            throw new Error(`Actuals must have contractsIncentivized`);
+            throw new MissingFieldError('contractsIncentivized');
         }
 
         // inspect each contract
         const contracts: Contract[] = [];
         for (const contract of action.input.contractsIncentivized) {
             if (!contract) {
-                throw new Error(`Actuals must have contractsIncentivized`);
+                throw new Error('Contract must be defined.');
             }
 
             if (!contract.contractId) {
-                throw new Error(`Contract must have contractId`);
+                throw new MissingFieldError(
+                    'contractsIncentivized',
+                    'contractId',
+                );
             }
 
             if (!contract.contractAddress) {
-                throw new Error(`Contract must have contractAddress`);
+                throw new MissingFieldError(
+                    'contractsIncentivized',
+                    'contractAddress',
+                );
             }
 
             if (!contract.contractLabel) {
-                throw new Error(`Contract must have contractLabel`);
+                throw new MissingFieldError(
+                    'contractsIncentivized',
+                    'contractLabel',
+                );
             }
 
             contracts.push(contract);
@@ -75,49 +93,58 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
     },
     addPlannedOperation(state, action, dispatch) {
         if (!action.input.arbToBeDistributed) {
-            throw new Error(`Planned must have arbToBeDistributed`);
+            throw new MissingFieldError('arbToBeDistributed');
         }
 
         if (!action.input.startDate) {
-            throw new Error(`Planned must have startDate`);
+            throw new MissingFieldError('startDate');
         }
 
         if (!action.input.endDate) {
-            throw new Error(`Planned must have endDate`);
+            throw new MissingFieldError('endDate');
         }
 
         if (!action.input.summary) {
-            throw new Error(`Planned must have summary`);
+            throw new MissingFieldError('summary');
         }
 
         if (!action.input.summaryOfChanges) {
-            throw new Error(`Planned must have summaryOfChanges`);
+            throw new MissingFieldError('summaryOfChanges');
         }
 
         if (
             !action.input.contractsIncentivized ||
             action.input.contractsIncentivized.length === 0
         ) {
-            throw new Error(`Planned must have contractsIncentivized`);
+            throw new MissingFieldError('contractsIncentivized');
         }
 
         // inspect each contract
         const contracts: Contract[] = [];
         for (const contract of action.input.contractsIncentivized) {
             if (!contract) {
-                throw new Error(`Planned must have contractsIncentivized`);
+                throw new Error('Contract must be defined.');
             }
 
             if (!contract.contractId) {
-                throw new Error(`Contract must have contractId`);
+                throw new MissingFieldError(
+                    'contractsIncentivized',
+                    'contractId',
+                );
             }
 
             if (!contract.contractAddress) {
-                throw new Error(`Contract must have contractAddress`);
+                throw new MissingFieldError(
+                    'contractsIncentivized',
+                    'contractAddress',
+                );
             }
 
             if (!contract.contractLabel) {
-                throw new Error(`Contract must have contractLabel`);
+                throw new MissingFieldError(
+                    'contractsIncentivized',
+                    'contractLabel',
+                );
             }
 
             contracts.push(contract);
@@ -135,7 +162,7 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
         for (const distributionMechanism of action.input
             .distributionMechanism) {
             if (!distributionMechanism) {
-                throw new Error(`Planned must have distributionMechanism`);
+                throw new Error('Distribution mechanism must be defined.');
             }
 
             distributionMechanisms.push(distributionMechanism);
@@ -157,31 +184,31 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
     },
     addStatsOperation(state, action, dispatch) {
         if (!action.input.avgDailyTVL) {
-            throw new Error(`Stats must have avgDailyTVL`);
+            throw new MissingFieldError('avgDailyTVL');
         }
 
         if (!action.input.avgDailyTXNS) {
-            throw new Error(`Stats must have avgDailyTXNS`);
+            throw new MissingFieldError('avgDailyTXNS');
         }
 
         if (!action.input.avgDailyVolume) {
-            throw new Error(`Stats must have avgDailyVolume`);
+            throw new MissingFieldError('avgDailyVolume');
         }
 
         if (!action.input.transactionFees) {
-            throw new Error(`Stats must have transactionFees`);
+            throw new MissingFieldError('transactionFees');
         }
 
         if (!action.input.uniqueAddressesCount) {
-            throw new Error(`Stats must have uniqueAddressesCount`);
+            throw new MissingFieldError('uniqueAddressesCount');
         }
 
         if (!action.input.startDate) {
-            throw new Error(`Stats must have startDate`);
+            throw new MissingFieldError('startDate');
         }
 
         if (!action.input.endDate) {
-            throw new Error(`Stats must have endDate`);
+            throw new MissingFieldError('endDate');
         }
 
         if (!state.stats) {

@@ -104,7 +104,7 @@ const Editor = (props: IProps) => {
     ]);
 
     return (
-        <div className="w-full">
+        <div className="w-[960px] mx-auto">
             {!isValid || isEditMode ? (
                 <GranteeForm
                     {...document.state.global}
