@@ -11,6 +11,7 @@ import {
     validateFeeTransactions,
     validateFixedIncomeTransaction,
     validateInterestTransaction,
+    validateTransactionFee,
     validateTransactionFees,
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
@@ -235,21 +236,16 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Transaction does not exist');
         }
 
-        const fees = transaction.fees;
-
-        if (!fees) {
-            throw new Error('This transaction has no fees to remove');
+        if (!transaction.fees) {
+            throw new Error('Transaction has no fees to remove');
         }
 
-        const newFees = fees.filter(fee => !feeIdsToRemove?.includes(fee.id));
+        transaction.fees = transaction.fees.filter(
+            fee => !feeIdsToRemove?.includes(fee.id),
+        );
 
-        const newTransaction = {
-            ...transaction,
-            fees: newFees,
-        };
-
-        state.transactions = state.transactions.map(transaction =>
-            transaction.id === id ? newTransaction : transaction,
+        state.transactions = state.transactions.map(t =>
+            t.id === id ? transaction : t,
         );
     },
     editGroupTransactionFeesOperation(state, action, dispatch) {
@@ -263,28 +259,23 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Transaction does not exist');
         }
 
-        const feesToUpdate = action.input.fees;
+        validateTransactionFees(state, action.input.fees);
 
-        validateTransactionFees(state, feesToUpdate);
-
-        const fees = transaction.fees;
-
-        if (!fees) {
+        if (!transaction.fees) {
             throw new Error('This transaction has no fees to update');
         }
 
-        const newFees = fees.map(fee => {
-            const feeToUpdate = feesToUpdate.find(f => f.id === fee.id);
-            return feeToUpdate ? { ...fee, ...feeToUpdate } : fee;
+        transaction.fees = transaction.fees.map(fee => {
+            const feeToUpdate = action.input.fees!.find(f => f.id === fee.id);
+            if (!feeToUpdate) {
+                throw new Error(`Fee with id ${fee.id} does not exist`);
+            }
+            validateTransactionFee(state, feeToUpdate);
+            return { ...fee, ...feeToUpdate };
         });
 
-        const newTransaction = {
-            ...transaction,
-            fees: newFees,
-        };
-
-        state.transactions = state.transactions.map(transaction =>
-            transaction.id === id ? newTransaction : transaction,
+        state.transactions = state.transactions.map(t =>
+            t.id === id ? transaction : t,
         );
     },
 };
