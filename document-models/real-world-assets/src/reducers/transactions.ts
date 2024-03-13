@@ -14,7 +14,6 @@ import {
     validateTransactionFees,
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
-
 export const reducer: RealWorldAssetsTransactionsOperations = {
     createGroupTransactionOperation(state, action, dispatch) {
         const id = action.input.id;
@@ -114,22 +113,23 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         );
     },
     editGroupTransactionOperation(state, action, dispatch) {
-        console.log('edit reducer', state, action);
         const id = action.input.id;
 
         if (!id) {
             throw new Error('Group transaction must have an id');
         }
 
-        const transaction = state.transactions.find(
+        const transactionIndex = state.transactions.findIndex(
             transaction => transaction.id === action.input.id,
         );
 
-        if (!transaction) {
+        if (transactionIndex === -1) {
             throw new Error(
                 `Group transaction with id ${action.input.id} does not exist!`,
             );
         }
+
+        const transaction = state.transactions[transactionIndex];
 
         if (action.input.type) {
             transaction.type = action.input.type;
@@ -148,7 +148,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         }
 
         if (action.input.fixedIncomeTransaction?.assetId) {
-            console.log('look im doing it');
             transaction.fixedIncomeTransaction!.assetId =
                 action.input.fixedIncomeTransaction.assetId;
         }
@@ -161,6 +160,10 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         if (action.input.cashBalanceChange) {
             transaction.cashBalanceChange = action.input.cashBalanceChange;
         }
+
+        state.transactions = state.transactions.map(t =>
+            t.id === transaction.id ? transaction : t,
+        );
 
         const fixedIncomeAssetId = transaction.fixedIncomeTransaction!.assetId;
 
@@ -208,21 +211,16 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error(`Group transaction with id ${id} does not exist!`);
         }
 
-        const feesToAdd = action.input.fees;
+        validateTransactionFees(state, action.input.fees);
 
-        validateTransactionFees(state, feesToAdd);
+        if (!transaction.fees) {
+            transaction.fees = [];
+        }
 
-        const newFees = transaction.fees ?? [];
+        transaction.fees.push(...action.input.fees);
 
-        newFees.push(...feesToAdd);
-
-        const newTransaction = {
-            ...transaction,
-            fees: newFees,
-        };
-
-        state.transactions = state.transactions.map(transaction =>
-            transaction.id === id ? newTransaction : transaction,
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id ? transaction : t,
         );
     },
     removeFeesFromGroupTransactionOperation(state, action, dispatch) {

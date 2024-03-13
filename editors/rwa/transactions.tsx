@@ -17,6 +17,7 @@ import {
     BaseTransaction,
     Cash,
     FixedIncome,
+    GroupTransaction,
     TransactionFeeInput,
     getDifferences,
     isCashAsset,
@@ -46,6 +47,10 @@ const fieldsPriority: (keyof Fields)[] = [
     'Cash Amount',
     'Cash Balance Change',
 ];
+
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export const Transactions = (props: IProps) => {
     const { dispatch, document } = props;
@@ -179,11 +184,11 @@ export const Transactions = (props: IProps) => {
         }, []);
 
     const handleFeeUpdates = useCallback(
-        (
+        async (
             feeInputs: Maybe<TransactionFee[]> | undefined,
-            selectedTransactionToEdit: UiGroupTransaction,
+            transaction: GroupTransaction,
         ) => {
-            if (!feeInputs || !selectedGroupTransactionToEdit) {
+            if (!feeInputs) {
                 return;
             }
 
@@ -193,15 +198,16 @@ export const Transactions = (props: IProps) => {
                 amount: Number(fee.amount),
             }));
 
-            const existingFees = selectedTransactionToEdit.fees;
+            const existingFees = transaction.fees;
 
             if (!existingFees?.length) {
                 dispatch(
                     addFeesToGroupTransaction({
-                        id: selectedGroupTransactionToEdit.id,
+                        id: transaction.id,
                         fees: feeUpdates,
                     }),
                 );
+                await delay(10);
                 return;
             }
             const feeDifferences = diff(existingFees, feeInputs);
@@ -225,7 +231,7 @@ export const Transactions = (props: IProps) => {
                 }
                 if (difference.type === 'REMOVE') {
                     feeIdsToRemove.push(
-                        existingFees[difference.path[0] as number].id!,
+                        existingFees[difference.path[0] as number].id,
                     );
                 }
                 if (difference.type === 'CHANGE') {
@@ -236,34 +242,37 @@ export const Transactions = (props: IProps) => {
             if (newFeesToCreate.length) {
                 dispatch(
                     addFeesToGroupTransaction({
-                        id: selectedGroupTransactionToEdit.id,
+                        id: transaction.id,
                         fees: newFeesToCreate,
                     }),
                 );
+                await delay(100);
             }
             if (feesToUpdate.length) {
                 dispatch(
                     editGroupTransactionFees({
-                        id: selectedGroupTransactionToEdit.id,
+                        id: transaction.id,
                         fees: feesToUpdate,
                     }),
                 );
+                await delay(100);
             }
             if (feeIdsToRemove.length) {
                 dispatch(
                     removeFeesFromGroupTransaction({
-                        id: selectedGroupTransactionToEdit.id,
+                        id: transaction.id,
                         feeIds: feeIdsToRemove,
                     }),
                 );
+                await delay(100);
             }
         },
-        [dispatch, selectedGroupTransactionToEdit],
+        [dispatch],
     );
 
     const onSubmitEdit: GroupTransactionsTableProps['onSubmitEdit'] =
         useCallback(
-            data => {
+            async data => {
                 if (!selectedGroupTransactionToEdit) return;
 
                 const newEntryTime = data.entryTime
@@ -331,27 +340,16 @@ export const Transactions = (props: IProps) => {
                     update.cashBalanceChange = newCashBalanceChange;
                 }
 
-                console.log({
-                    newFixedIncomeAssetId,
-                    existingFixedIncomeId:
-                        existingFixedIncomeTransaction.assetId,
-                    update,
-                });
-
                 let changedFields = getDifferences(
                     selectedGroupTransactionToEdit,
                     update,
                 );
-
-                console.log({ changedFields });
 
                 if ('fixedIncomeTransaction' in changedFields) {
                     const fixedIncomeTransactionChangedFields = getDifferences(
                         existingFixedIncomeTransaction,
                         update.fixedIncomeTransaction,
                     ) as BaseTransaction;
-
-                    console.log({ fixedIncomeTransactionChangedFields });
 
                     changedFields = {
                         ...changedFields,
@@ -377,19 +375,21 @@ export const Transactions = (props: IProps) => {
                     };
                 }
 
-                handleFeeUpdates(data.fees, selectedGroupTransactionToEdit);
-
-                if (Object.keys(changedFields).length === 0) {
-                    setSelectedGroupTransactionToEdit(undefined);
-                    return;
+                if (data.fees) {
+                    await handleFeeUpdates(
+                        data.fees,
+                        update as GroupTransaction,
+                    );
                 }
 
-                dispatch(
-                    editGroupTransaction({
-                        ...changedFields,
-                        id: selectedGroupTransactionToEdit.id,
-                    }),
-                );
+                if (Object.keys(changedFields).length !== 0) {
+                    dispatch(
+                        editGroupTransaction({
+                            ...changedFields,
+                            id: selectedGroupTransactionToEdit.id,
+                        }),
+                    );
+                }
 
                 setSelectedGroupTransactionToEdit(undefined);
             },
@@ -399,7 +399,6 @@ export const Transactions = (props: IProps) => {
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
         useCallback(
             data => {
-                console.log('create', data);
                 const transaction =
                     createNewGroupTransactionFromFormInputs(data);
 
