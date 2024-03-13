@@ -6,10 +6,10 @@ import { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 import codegen from '../common/codegen';
+import { getStateSchemaRestrictions } from './utils';
 import {
     constrainedEditor,
     ConstrainedInstance,
-    ConstrainedEditorRestriction,
 } from 'constrained-editor-plugin';
 
 export type ScopeType = 'global' | 'local';
@@ -23,52 +23,6 @@ interface IProps extends SchemaEditorProps {
         validator: () => z.AnyZodObject;
     }) => void;
     theme: styles.ColorTheme;
-}
-
-function getSchemaRestrictions(
-    schema?: string,
-    name?: string,
-    scope?: ScopeType,
-): undefined | ConstrainedEditorRestriction[] {
-    const scopeStateName = scope === 'local' ? 'Local' : '';
-    const inputDeclaration = `type ${pascalCase(name || '')}${scopeStateName}State`;
-
-    if (!schema) return;
-
-    // split schema into lines
-    const lines = schema.split('\n');
-
-    // get the line where the input declaration is contained
-    const inputDeclarationLine = lines.find(line =>
-        line.includes(inputDeclaration),
-    );
-    const inputDeclarationStartIndex =
-        lines.findIndex(line => line.includes(inputDeclaration)) + 1;
-
-    // if the input declaration is not found, return the schema as is with no restrictions
-    if (!inputDeclarationLine) return;
-
-    // get the position where the input declaration starts
-    const inputDeclarationStart =
-        inputDeclarationLine.indexOf(inputDeclaration) + 1;
-
-    const lastLine = lines[lines.length - 1];
-
-    return [
-        {
-            range: [1, 1, inputDeclarationStartIndex, inputDeclarationStart],
-            allowMultiline: true,
-        },
-        {
-            range: [
-                inputDeclarationStartIndex,
-                inputDeclaration.length + 1,
-                lines.length,
-                lastLine.length + 1,
-            ],
-            allowMultiline: true,
-        },
-    ];
 }
 
 const typeRegexp = /^type (\S*State)( })?/g;
@@ -136,7 +90,7 @@ export default function EditorSchema({
             setTimeout(() => {
                 constrainedEditorRef.current?.addRestrictionsTo(
                     modelEditorRef.current,
-                    getSchemaRestrictions(normalizedSchema, name, scope) || [],
+                    getStateSchemaRestrictions(normalizedSchema, name, scope),
                 );
             }, 50);
         }
@@ -245,11 +199,6 @@ export default function EditorSchema({
                     constrainedEditorRef.current = constrainedEditor(monaco);
                     modelEditorRef.current = editor.getModel();
                     constrainedEditorRef.current.initializeIn(editor);
-
-                    constrainedEditorRef.current.addRestrictionsTo(
-                        modelEditorRef.current,
-                        getSchemaRestrictions(code, name, scope) || [],
-                    );
                 }}
                 options={{
                     lineNumbers: 'off',
