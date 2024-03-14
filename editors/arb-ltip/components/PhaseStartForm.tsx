@@ -7,7 +7,6 @@ import {
 import ContractSelector from './ContractSelector';
 import { IProps } from '../editor';
 import DatePicker from 'react-datepicker';
-import { addPlanned } from '../../../document-models/arb-ltip-grantee/gen/creators';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const distributionMechanisms = [
@@ -49,7 +48,7 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
             startDate: startDateLocal.toISOString(),
         };
 
-        dispatch(addPlanned(value));
+        //dispatch(addPlanned(value));
     }, [
         dispatch,
         disbursementAmountLocal,

@@ -4,225 +4,109 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { Contract, DistributionMechanism } from '../..';
+import { Phase } from '../..';
 import { ArbLtipGranteeMetricsOperations } from '../../gen/metrics/operations';
 
-class MissingFieldError extends Error {
-    fields: string[];
-
-    constructor(...fields: string[]) {
-        super(`Missing required field '${fields.join('.')}'.`);
-        this.fields = fields;
-    }
-}
-
 export const reducer: ArbLtipGranteeMetricsOperations = {
-    addActualsOperation(state, action, dispatch) {
-        if (!action.input.arbReceived) {
-            throw new MissingFieldError('arbReceived');
+    initPhaseOperation(state, action, dispatch) {
+        const { startDate, numberOfPhases, phaseDuration } = action.input;
+        if (!startDate) {
+            throw new Error('startDate is required');
         }
 
-        if (!action.input.arbRemaining) {
-            throw new MissingFieldError('arbRemaining');
+        if (!numberOfPhases) {
+            throw new Error('numberOfPhases is required');
         }
 
-        if (!action.input.arbUtilized) {
-            throw new MissingFieldError('arbUtilized');
+        if (!phaseDuration) {
+            throw new Error('phaseDuration is required');
         }
 
-        if (!action.input.summary) {
-            throw new MissingFieldError('summary');
+        if (numberOfPhases <= 0 || numberOfPhases > 10) {
+            throw new Error('numberOfPhases must be in [0, 10]');
         }
 
-        if (!action.input.disclosures) {
-            throw new MissingFieldError('disclosures');
+        if (phaseDuration <= 0 || phaseDuration > 10) {
+            throw new Error('phaseDuration must be in than [0, 10]');
         }
 
-        if (
-            !action.input.contractsIncentivized ||
-            action.input.contractsIncentivized.length === 0
-        ) {
-            throw new MissingFieldError('contractsIncentivized');
+        const phases = [];
+        for (let i = 0; i < numberOfPhases; i++) {
+            const phaseStartDate = new Date(startDate);
+            phaseStartDate.setDate(
+                phaseStartDate.getDate() + i * phaseDuration,
+            );
+
+            const phaseEndDate = new Date(startDate);
+            phaseEndDate.setDate(
+                phaseEndDate.getDate() + (i + 1) * phaseDuration,
+            );
+
+            const phaseStartDateString = phaseStartDate.toISOString();
+            const phaseEndDateString = phaseEndDate.toISOString();
+
+            const phase: Phase = {
+                startDate: phaseStartDateString,
+                endDate: phaseEndDateString,
+                status: 'NotStarted',
+                actuals: {
+                    arbReceived: 0,
+                    arbRemaining: 0,
+                    arbUtilized: 0,
+                    contractsIncentivized: [],
+                    disclosures: '',
+                    summary: '',
+                },
+                planned: {
+                    arbToBeDistributed: 0,
+                    contractsIncentivized: [],
+                    distributionMechanism: [],
+                    summary: '',
+                    summaryOfChanges: '',
+                },
+                stats: {
+                    avgDailyTVL: 0,
+                    avgDailyTXNS: 0,
+                    avgDailyVolume: 0,
+                    transactionFees: 0,
+                    uniqueAddressesCount: 0,
+                },
+            };
+
+            phases.push(phase);
         }
 
-        // inspect each contract
-        const contracts: Contract[] = [];
-        for (const contract of action.input.contractsIncentivized) {
-            if (!contract) {
-                throw new Error('Contract must be defined.');
-            }
-
-            if (!contract.contractId) {
-                throw new MissingFieldError(
-                    'contractsIncentivized',
-                    'contractId',
-                );
-            }
-
-            if (!contract.contractAddress) {
-                throw new MissingFieldError(
-                    'contractsIncentivized',
-                    'contractAddress',
-                );
-            }
-
-            if (!contract.contractLabel) {
-                throw new MissingFieldError(
-                    'contractsIncentivized',
-                    'contractLabel',
-                );
-            }
-
-            contracts.push(contract);
-        }
-
-        if (!state.actuals) {
-            state.actuals = [];
-        }
-
-        state.actuals.push({
-            arbReceived: action.input.arbReceived,
-            arbRemaining: action.input.arbRemaining,
-            arbUtilized: action.input.arbUtilized,
-            contractsIncentivized: contracts,
-            disclosures: action.input.disclosures,
-            endDate: action.input.endDate,
-            startDate: action.input.startDate,
-            summary: action.input.summary,
-        });
+        state.phases = phases;
     },
-    addPlannedOperation(state, action, dispatch) {
-        if (!action.input.arbToBeDistributed) {
-            throw new MissingFieldError('arbToBeDistributed');
+    editPhaseOperation(state, action, dispatch) {
+        const { actuals, planned, stats, phaseIndex } = action.input;
+        if (phaseIndex === undefined || phaseIndex === null) {
+            throw new Error('phaseIndex is required');
         }
 
-        if (!action.input.startDate) {
-            throw new MissingFieldError('startDate');
+        if (!state.phases) {
+            throw new Error('state phases are uninitialized');
         }
 
-        if (!action.input.endDate) {
-            throw new MissingFieldError('endDate');
+        if (phaseIndex < 0 || phaseIndex >= state.phases.length) {
+            throw new Error('phaseIndex must be within the range of phases');
         }
 
-        if (!action.input.summary) {
-            throw new MissingFieldError('summary');
+        const phase = state.phases[phaseIndex];
+        if (!phase) {
+            throw new Error('phase is not found');
         }
 
-        if (!action.input.summaryOfChanges) {
-            throw new MissingFieldError('summaryOfChanges');
+        if (actuals) {
+            phase.actuals = actuals;
         }
 
-        if (
-            !action.input.contractsIncentivized ||
-            action.input.contractsIncentivized.length === 0
-        ) {
-            throw new MissingFieldError('contractsIncentivized');
+        if (planned) {
+            phase.planned = planned;
         }
 
-        // inspect each contract
-        const contracts: Contract[] = [];
-        for (const contract of action.input.contractsIncentivized) {
-            if (!contract) {
-                throw new Error('Contract must be defined.');
-            }
-
-            if (!contract.contractId) {
-                throw new MissingFieldError(
-                    'contractsIncentivized',
-                    'contractId',
-                );
-            }
-
-            if (!contract.contractAddress) {
-                throw new MissingFieldError(
-                    'contractsIncentivized',
-                    'contractAddress',
-                );
-            }
-
-            if (!contract.contractLabel) {
-                throw new MissingFieldError(
-                    'contractsIncentivized',
-                    'contractLabel',
-                );
-            }
-
-            contracts.push(contract);
+        if (stats) {
+            phase.stats = stats;
         }
-
-        if (
-            !action.input.distributionMechanism ||
-            action.input.distributionMechanism.length === 0
-        ) {
-            throw new Error(`Planned must have distributionMechanism`);
-        }
-
-        // inspect each distribution mechanism
-        const distributionMechanisms: DistributionMechanism[] = [];
-        for (const distributionMechanism of action.input
-            .distributionMechanism) {
-            if (!distributionMechanism) {
-                throw new Error('Distribution mechanism must be defined.');
-            }
-
-            distributionMechanisms.push(distributionMechanism);
-        }
-
-        if (!state.planned) {
-            state.planned = [];
-        }
-
-        state.planned.push({
-            arbToBeDistributed: action.input.arbToBeDistributed,
-            contractsIncentivized: contracts,
-            distributionMechanism: distributionMechanisms,
-            endDate: action.input.endDate,
-            startDate: action.input.startDate,
-            summary: action.input.summary,
-            summaryOfChanges: action.input.summaryOfChanges,
-        });
-    },
-    addStatsOperation(state, action, dispatch) {
-        if (!action.input.avgDailyTVL) {
-            throw new MissingFieldError('avgDailyTVL');
-        }
-
-        if (!action.input.avgDailyTXNS) {
-            throw new MissingFieldError('avgDailyTXNS');
-        }
-
-        if (!action.input.avgDailyVolume) {
-            throw new MissingFieldError('avgDailyVolume');
-        }
-
-        if (!action.input.transactionFees) {
-            throw new MissingFieldError('transactionFees');
-        }
-
-        if (!action.input.uniqueAddressesCount) {
-            throw new MissingFieldError('uniqueAddressesCount');
-        }
-
-        if (!action.input.startDate) {
-            throw new MissingFieldError('startDate');
-        }
-
-        if (!action.input.endDate) {
-            throw new MissingFieldError('endDate');
-        }
-
-        if (!state.stats) {
-            state.stats = [];
-        }
-
-        state.stats.push({
-            avgDailyTVL: action.input.avgDailyTVL,
-            avgDailyTXNS: action.input.avgDailyTXNS,
-            avgDailyVolume: action.input.avgDailyVolume,
-            transactionFees: action.input.transactionFees,
-            uniqueAddressesCount: action.input.uniqueAddressesCount,
-            startDate: action.input.startDate,
-            endDate: action.input.endDate,
-        });
     },
 };

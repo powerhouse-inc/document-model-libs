@@ -10,9 +10,7 @@ type ArbLtipGranteeState {
 	fundingType: [FundingType]
 	disbursementContractAddress: String
 	metricsDashboardLink: String
-	actuals: [GranteeActuals]
-	planned: [GranteePlanned]
-	stats: [GranteeStats]
+	phases: [Phase]
 }
 
 enum FundingType {
@@ -22,10 +20,24 @@ enum FundingType {
 	ThreeofFiveMultisig
 }
 
-
-type GranteeActuals {
+type Phase {
 	startDate: DateTime!
 	endDate: DateTime!
+	actuals: GranteeActuals
+	planned: GranteePlanned
+	stats: GranteeStats
+	status: Status
+}
+
+enum Status {
+	Uninitialized
+	NotStarted
+	InProgress
+	Finalized
+}
+
+
+type GranteeActuals {
 	arbReceived: Float
 	arbUtilized: Float
 	arbRemaining: Float
@@ -35,8 +47,6 @@ type GranteeActuals {
 }
 
 type GranteePlanned {
-	startDate: DateTime!
-	endDate: DateTime!
 	arbToBeDistributed: Float
 	contractsIncentivized: [Contract]
 	distributionMechanism: [DistributionMechanism]
@@ -45,8 +55,6 @@ type GranteePlanned {
 }
 
 type GranteeStats {
-	startDate: DateTime!
-	endDate: DateTime!
 	avgDailyTVL: Float
 	avgDailyTXNS: Float
 	avgDailyVolume: Float
@@ -101,16 +109,54 @@ enum FundingType {
 }
 
 
-input SetGranteeMetricsInput {
-	metricsDashboardLink: String!
+input SetGranteeMetricsDashInput {
+    metricsDashboardLink: String!
 }
+
+# add new types here
 
 
 # Metrics
 
-input AddActualsInput {
+input InitPhaseInput {
+    startDate: DateTime!
+	phaseDuration: Int 
+    numberOfPhases: Int
+}
+
+scalar DateTime
+
+
+
+input EditPhaseInput {
+    startDate: DateTime!
+	endDate: DateTime!
+	phaseIndex: Int
+	actuals: GranteeActuals
+	planned: GranteePlanned
+	stats: GranteeStats
+	status: Status
+}
+
+scalar DateTime
+
+type Phase {
 	startDate: DateTime!
 	endDate: DateTime!
+	actuals: GranteeActuals
+	planned: GranteePlanned
+	stats: GranteeStats
+	status: Status
+}
+
+enum Status {
+	Uninitialized
+	NotStarted
+	InProgress
+	Finalized
+}
+
+type GranteeActuals {
 	arbReceived: Float
 	arbUtilized: Float
 	arbRemaining: Float
@@ -119,43 +165,15 @@ input AddActualsInput {
 	disclosures: String
 }
 
-scalar DateTime
-
-type Contract {
-	contractId: ID!
-	contractLabel: String
-	contractAddress: String
-}
-
-
-input AddPlannedInput {
-	startDate: DateTime!
-	endDate: DateTime!
+type GranteePlanned {
 	arbToBeDistributed: Float
 	contractsIncentivized: [Contract]
-	distributionMechanism: [DistributionMechanism!]!
+	distributionMechanism: [DistributionMechanism]
 	summary: String
 	summaryOfChanges: String
 }
 
-scalar DateTime
-
-type Contract {
-	contractId: ID!
-	contractLabel: String
-	contractAddress: String
-}
-
-
-enum DistributionMechanism {
-	LPIncentives
-	Airdrop
-}
-
-
-input AddStatsInput {
-	startDate: DateTime!
-	endDate: DateTime!
+type GranteeStats {
 	avgDailyTVL: Float
 	avgDailyTXNS: Float
 	avgDailyVolume: Float
@@ -163,5 +181,15 @@ input AddStatsInput {
 	transactionFees: Float
 }
 
-scalar DateTime
+type Contract {
+	contractId: ID!
+	contractLabel: String
+	contractAddress: String
+}
+
+enum DistributionMechanism {
+	LPIncentives
+	Airdrop
+}
+
 

@@ -98,7 +98,8 @@
         "prepare:scripts": "node scripts/index.cjs",
         "chromatic": "npx chromatic --project-token chpt_7f618da80620e4d",
         "prepare": "husky install",
-        "release": "semantic-release"
+        "release": "semantic-release",
+        "test-arb": "vitest --no-file-parallelism --dir document-models/arb-ltip-grantee"
     },
     "devDependencies": {
         "@commitlint/cli": "^18.4.4",

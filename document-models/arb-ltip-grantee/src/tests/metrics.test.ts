@@ -18,31 +18,37 @@ describe('Metrics Operations', () => {
         document = utils.createDocument();
     });
 
-    it('should handle addActuals operation', () => {
-        const input = generateMock(z.AddActualsInputSchema());
-        const updatedDocument = reducer(document, creators.addActuals(input));
+    it('should handle initPhase operation', () => {
+        const input = generateMock(z.InitPhaseInputSchema());
+        input.numberOfPhases = 8;
+        input.phaseDuration = 2;
+        input.startDate = new Date().toISOString();
+
+        const updatedDocument = reducer(document, creators.initPhase(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe('ADD_ACTUALS');
+        expect(updatedDocument.operations.global[0].type).toBe('INIT_PHASE');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle addPlanned operation', () => {
-        const input = generateMock(z.AddPlannedInputSchema());
-        const updatedDocument = reducer(document, creators.addPlanned(input));
+    it('should handle editPhase operation', () => {
+        let updatedDocument = reducer(
+            document,
+            creators.initPhase({
+                startDate: new Date().toISOString(),
+                numberOfPhases: 8,
+                phaseDuration: 2,
+            }),
+        );
 
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe('ADD_PLANNED');
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
-    });
-    it('should handle addStats operation', () => {
-        const input = generateMock(z.AddStatsInputSchema());
-        const updatedDocument = reducer(document, creators.addStats(input));
+        const input = generateMock(z.EditPhaseInputSchema());
+        input.phaseIndex = 0;
+        input.endDate = new Date().toISOString();
 
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe('ADD_STATS');
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
+        updatedDocument = reducer(updatedDocument, creators.editPhase(input));
+
+        expect(updatedDocument.operations.global).toHaveLength(2);
+        expect(updatedDocument.operations.global[1].type).toBe('EDIT_PHASE');
+        expect(updatedDocument.operations.global[1].input).toStrictEqual(input);
     });
 });

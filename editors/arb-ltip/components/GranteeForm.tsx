@@ -4,7 +4,8 @@ import {
 } from '../../../document-models/arb-ltip-grantee';
 import { TextInput } from 'document-model-editors';
 import {
-    setGranteeMetrics,
+    initPhase,
+    setGranteeMetricsDash,
     setGranteeName,
     setGranteeSummary,
 } from '../../../document-models/arb-ltip-grantee/gen/creators';
@@ -90,12 +91,18 @@ const GranteeForm = (props: GranteeFormProps) => {
         );
 
         dispatch(
-            setGranteeMetrics({
+            setGranteeMetricsDash({
                 metricsDashboardLink: metricsDashboardLinkLocal,
             }),
         );
 
-        // create 8 updates
+        dispatch(
+            initPhase({
+                numberOfPhases: 8,
+                phaseDuration: 2,
+                startDate: startDate.toISOString(),
+            }),
+        );
 
         onClose();
     }, [

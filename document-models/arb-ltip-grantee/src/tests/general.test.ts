@@ -69,16 +69,16 @@ describe('General Operations', () => {
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle setGranteeMetrics operation', () => {
-        const input = generateMock(z.SetGranteeMetricsInputSchema());
+    it('should handle setGranteeMetricsDash operation', () => {
+        const input = generateMock(z.SetGranteeMetricsDashInputSchema());
         const updatedDocument = reducer(
             document,
-            creators.setGranteeMetrics(input),
+            creators.setGranteeMetricsDash(input),
         );
 
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
-            'SET_GRANTEE_METRICS',
+            'SET_GRANTEE_METRICS_DASH',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);

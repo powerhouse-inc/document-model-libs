@@ -39,7 +39,7 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
         state.fundingType = action.input.fundingType;
         state.grantSummary = action.input.grantSummary;
     },
-    setGranteeMetricsOperation(state, action, dispatch) {
+    setGranteeMetricsDashOperation(state, action, dispatch) {
         state.metricsDashboardLink = action.input.metricsDashboardLink;
     },
 };

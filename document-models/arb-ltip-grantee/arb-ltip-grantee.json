@@ -61,10 +61,10 @@
                             "scope": "global"
                         },
                         {
-                            "id": "+3BVN+B6FwkhWtZ4AKWDbKDwk1Q=",
-                            "name": "setGranteeMetrics",
+                            "id": "qvLtbE4SRX3UDLpCCwRIaf4IhEg=",
+                            "name": "setGranteeMetricsDash",
                             "description": "",
-                            "schema": "input SetGranteeMetricsInput {\n\tmetricsDashboardLink: String!\n}\n",
+                            "schema": "input SetGranteeMetricsDashInput {\n    metricsDashboardLink: String!\n}\n\n# add new types here\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -76,13 +76,13 @@
                 {
                     "id": "BrtCSCJQjZUqvg6MZxzgXeSTZyQ=",
                     "name": "Metrics",
-                    "description": "Actual Planned Stats",
+                    "description": "Edit Metrics",
                     "operations": [
                         {
-                            "id": "yy5ZdE7zOGyyOHOLp7dl9tnbR9U=",
-                            "name": "addActuals",
+                            "id": "uhNRV5lCc4rbg7L/wgjntvJCoXc=",
+                            "name": "initPhase",
                             "description": "",
-                            "schema": "input AddActualsInput {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\nscalar DateTime\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n",
+                            "schema": "input InitPhaseInput {\n    startDate: DateTime!\n\tphaseDuration: Int \n    numberOfPhases: Int\n}\n\nscalar DateTime\n\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -90,21 +90,10 @@
                             "scope": "global"
                         },
                         {
-                            "id": "7Tj/29aPVwU87B8V2OE9IfXKbRk=",
-                            "name": "addPlanned",
+                            "id": "ZSbkPIZOZoCK6jT/XShHEDnRzqs=",
+                            "name": "editPhase",
                             "description": "",
-                            "schema": "input AddPlannedInput {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism!]!\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\nscalar DateTime\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "0S7ypJN+L6TEpBVCJLtaTBlmX9Y=",
-                            "name": "addStats",
-                            "description": "",
-                            "schema": "input AddStatsInput {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\nscalar DateTime\n\n",
+                            "schema": "input EditPhaseInput {\n    startDate: DateTime!\n\tendDate: DateTime!\n\tphaseIndex: Int\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nscalar DateTime\n\ntype Phase {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n\n\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -117,8 +106,8 @@
             "state": {
                 "global": {
                     "examples": [],
-                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"grantSize\":0,\"matchingGrantSize\":0,\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":[],\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"actuals\":[],\"planned\":[],\"stats\":[]}",
-                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: [FundingType]\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tactuals: [GranteeActuals]\n\tplanned: [GranteePlanned]\n\tstats: [GranteeStats]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\n\ntype GranteeActuals {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n"
+                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"grantSize\":0,\"matchingGrantSize\":0,\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":[],\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"phases\":[]}",
+                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: [FundingType]\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tphases: [Phase]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\ntype Phase {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n"
                 },
                 "local": {
                     "examples": [],
