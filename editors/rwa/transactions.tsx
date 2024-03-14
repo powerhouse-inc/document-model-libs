@@ -207,7 +207,7 @@ export const Transactions = (props: IProps) => {
                         fees: feeUpdates,
                     }),
                 );
-                await delay(10);
+                await delay(100);
                 return;
             }
             const feeDifferences = diff(existingFees, feeInputs);
