@@ -1,6 +1,6 @@
 import { getConfig } from '@powerhousedao/codegen';
 import { readdirSync } from 'node:fs';
-import { resolve } from 'path';
+import path, { resolve } from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { InlineConfig } from 'vitest';
@@ -37,6 +37,7 @@ export default defineConfig(({ mode }) => {
                 module: './create-require.js',
                 path: 'path-browserify',
                 crypto: 'crypto-browserify',
+                '@editor-utils': path.resolve(__dirname, './editors/utils'),
             },
         },
         build: {

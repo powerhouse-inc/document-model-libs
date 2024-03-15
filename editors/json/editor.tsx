@@ -6,7 +6,7 @@ import {
     ToolbarButton,
     EditorWorksheet,
     TextInput,
-} from 'document-model-editors';
+} from '@editor-utils';
 import JSONEditor from '../common/json-editor';
 
 export type IProps = EditorProps<unknown, Action, unknown>;
