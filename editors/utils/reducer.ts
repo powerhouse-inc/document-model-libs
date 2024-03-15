@@ -5,8 +5,9 @@ import type {
     ExtendedState,
     PartialState,
     Reducer,
+    ActionErrorCallback,
 } from 'document-model/document';
-import { useReducer } from 'react';
+import { useState } from 'react';
 
 export function wrapReducer<State, A extends Action, LocalState>(
     reducer: Reducer<State, A, LocalState>,
@@ -39,10 +40,23 @@ export function useDocumentReducer<State, A extends Action, LocalState>(
     initialState: Document<State, A, LocalState>,
     onError?: (error: unknown) => void,
 ): readonly [Document<State, A, LocalState>, (action: A | BaseAction) => void] {
-    const [state, dispatch] = useReducer(
-        wrapReducer(reducer, onError),
-        initialState,
-    );
+    const [state, setState] = useState(initialState);
+
+    const dispatch = (
+        action: A | BaseAction,
+        onErrorCallback?: ActionErrorCallback,
+    ) => {
+        setState(_state => {
+            try {
+                const newState = reducer(_state, action);
+                return newState;
+            } catch (error) {
+                onError?.(error);
+                onErrorCallback?.(error);
+                return _state;
+            }
+        });
+    };
 
     return [state, dispatch] as const;
 }

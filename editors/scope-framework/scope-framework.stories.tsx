@@ -1,4 +1,4 @@
-import { createDocumentStory } from '@editor-utils';
+import { createDocumentStory } from 'document-model-libs/utils';
 import { reducer, utils } from '../../document-models/scope-framework';
 import Editor from './editor';
 

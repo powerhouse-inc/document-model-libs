@@ -10,6 +10,7 @@ const { documentModelsDir, editorsDir } = getConfig();
 const entry: Record<string, string> = {
     index: 'index.ts',
     'document-models': resolve(documentModelsDir, 'index.ts'),
+    utils: resolve(editorsDir, 'utils/index.ts'),
     editors: resolve(editorsDir, 'index.ts'),
 };
 
@@ -37,7 +38,10 @@ export default defineConfig(({ mode }) => {
                 module: './create-require.js',
                 path: 'path-browserify',
                 crypto: 'crypto-browserify',
-                '@editor-utils': path.resolve(__dirname, './editors/utils'),
+                'document-model-libs/utils': path.resolve(
+                    __dirname,
+                    './editors/utils',
+                ),
             },
         },
         build: {

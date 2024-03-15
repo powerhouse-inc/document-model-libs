@@ -1,5 +1,5 @@
 import Editor from './editor';
-import { createDocumentStory } from '@editor-utils';
+import { createDocumentStory } from 'document-model-libs/utils';
 import { reducer, utils } from '../../document-models/budget-statement';
 
 const initialAccount = utils.createAccount({

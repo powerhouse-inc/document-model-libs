@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextInputVariant, stylesVariant } from '@editor-utils';
+import { TextInputVariant, stylesVariant } from 'document-model-libs/utils';
 import {
     ScopeFrameworkElement,
     ScopeFrameworkElementType,
