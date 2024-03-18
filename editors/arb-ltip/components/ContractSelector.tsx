@@ -33,8 +33,13 @@ const ContractCard = (props: ContractCardProps) => {
                 <label className="block text-xs font-medium text-gray-900">
                     Contract Address
                 </label>
-                <p className="block w-full p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 truncate">
-                    {contractAddress}
+                <p className="block w-full p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 truncate underline">
+                    <a
+                        href={`https://optimistic.etherscan.io/address/${contractAddress}`}
+                        target="blank"
+                    >
+                        {contractAddress}
+                    </a>
                 </p>
             </div>
             <div className="flex-1"></div>

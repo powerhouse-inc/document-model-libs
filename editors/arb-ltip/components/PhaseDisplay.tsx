@@ -1,15 +1,64 @@
 import { IProps } from '../editor';
-import PhaseStartForm from './PhaseStartForm';
+import PlannedResourcesForm from './PlannedResourcesForm';
 import PhaseTimeline from './PhaseTimeline';
+import { useMemo } from 'react';
+import ReportingForm from './ReportingForm';
+import FinalizingForm from './FinalizingForm';
+import useTodoPhase from '../hooks/use-todo-phase';
 
-type PhaseDisplayProps = Pick<IProps, 'editorContext' | 'dispatch'>;
+type PhaseDisplayProps = IProps;
 const PhaseDisplay = (props: PhaseDisplayProps) => {
-    // determine phase
+    const [phase, phaseIndex] = useTodoPhase(props.document);
+    const status = useMemo(() => {
+        if (!phase) {
+            return 'Invalid';
+        }
+
+        switch (phase.status) {
+            case 'NotStarted': {
+                return 'Start';
+            }
+            case 'InProgress': {
+                return 'InProgress';
+            }
+            case 'Finalized': {
+                return 'Finalize';
+            }
+            default: {
+                return 'Invalid';
+            }
+        }
+    }, [phase]);
 
     return (
         <div>
-            <PhaseTimeline />
-            <PhaseStartForm {...props} />
+            {phase && status !== 'Invalid' && (
+                <>
+                    <PhaseTimeline status={status} />
+
+                    {status === 'Start' && (
+                        <PlannedResourcesForm
+                            phase={phase}
+                            phaseIndex={phaseIndex}
+                            {...props}
+                        />
+                    )}
+                    {status === 'InProgress' && (
+                        <ReportingForm
+                            phase={phase}
+                            phaseIndex={phaseIndex}
+                            {...props}
+                        />
+                    )}
+                    {status === 'Finalize' && (
+                        <FinalizingForm
+                            phase={phase}
+                            phaseIndex={phaseIndex}
+                            {...props}
+                        />
+                    )}
+                </>
+            )}
         </div>
     );
 };

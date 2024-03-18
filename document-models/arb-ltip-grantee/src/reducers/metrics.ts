@@ -6,6 +6,7 @@
 
 import { Phase } from '../..';
 import { ArbLtipGranteeMetricsOperations } from '../../gen/metrics/operations';
+import validators from '../validators';
 
 export const reducer: ArbLtipGranteeMetricsOperations = {
     initPhaseOperation(state, action, dispatch) {
@@ -79,7 +80,7 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
         state.phases = phases;
     },
     editPhaseOperation(state, action, dispatch) {
-        const { actuals, planned, stats, phaseIndex } = action.input;
+        const { status, actuals, planned, stats, phaseIndex } = action.input;
         if (phaseIndex === undefined || phaseIndex === null) {
             throw new Error('phaseIndex is required');
         }
@@ -97,12 +98,20 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
             throw new Error('phase is not found');
         }
 
+        if (status) {
+            phase.status = status;
+        }
+
         if (actuals) {
             phase.actuals = actuals;
         }
 
         if (planned) {
-            phase.planned = planned;
+            if (validators.isPlannedValid(planned)) {
+                phase.planned = planned;
+            } else {
+                throw new Error('planned is not valid');
+            }
         }
 
         if (stats) {

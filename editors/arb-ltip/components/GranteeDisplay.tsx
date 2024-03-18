@@ -43,16 +43,26 @@ const GranteeDisplay = (props: GranteeDisplayProps) => {
                         <dt className="text-sm font-medium leading-6 text-gray-900">
                             Disbursement Address
                         </dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate">
-                            {disbursementContractAddress}
+                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline">
+                            <a
+                                href={`https://optimistic.etherscan.io/address/${disbursementContractAddress}`}
+                                target="blank"
+                            >
+                                {disbursementContractAddress}
+                            </a>
                         </dd>
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
                         <dt className="text-sm font-medium leading-6 text-gray-900">
                             Funding Address
                         </dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate">
-                            {fundingAddress}
+                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline">
+                            <a
+                                href={`https://optimistic.etherscan.io/address/${fundingAddress}`}
+                                target="blank"
+                            >
+                                {fundingAddress}
+                            </a>
                         </dd>
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-0">

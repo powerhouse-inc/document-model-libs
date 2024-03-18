@@ -1,13 +1,18 @@
-import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import TagSelector from './TagSelector';
 import {
-    Contract,
     DistributionMechanism,
+    GranteePlanned,
+    Phase,
 } from '../../../document-models/arb-ltip-grantee';
 import ContractSelector from './ContractSelector';
 import { IProps } from '../editor';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
+import { Maybe } from 'document-model/document-model';
+import validators from '../../../document-models/arb-ltip-grantee/src/validators';
+import { classNames } from '../util';
 
 const distributionMechanisms = [
     {
@@ -20,45 +25,114 @@ const distributionMechanisms = [
     },
 ];
 
-type PhaseStartFormProps = Pick<IProps, 'editorContext' | 'dispatch'>;
-const PhaseStartForm = (props: PhaseStartFormProps) => {
-    const { dispatch } = props;
+function toArray<T>(value: Maybe<Array<Maybe<T>>>): T[] {
+    return value?.map(v => v as T) || [];
+}
 
-    const [startDateLocal, setStartDateLocal] = useState(new Date());
-    const [disbursementAmountLocal, setDisbursementAmountLocal] = useState(0);
+type PlannedResourcesFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
+    phase: Phase;
+    phaseIndex: number;
+};
+const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
+    const { dispatch, phase, phaseIndex } = props;
+    const planned = phase.planned!;
+
+    const [showErrors, setShowErrors] = useState(false);
+    const [startDateLocal, setStartDateLocal] = useState(
+        new Date(phase.startDate),
+    );
+    const [disbursementAmountLocal, setDisbursementAmountLocal] = useState(
+        planned.arbToBeDistributed || 0,
+    );
     const [distributionMechanismsLocal, setDistributionMechanismsLocal] =
-        useState([] as DistributionMechanism[]);
-    const [contractsLocal, setContractsLocal] = useState([] as Contract[]);
-    const [summaryLocal, setSummaryLocal] = useState('');
-    const [summaryOfChangesLocal, setSummaryOfChangesLocal] = useState('');
+        useState(toArray(planned.distributionMechanism));
+    const [contractsLocal, setContractsLocal] = useState(
+        toArray(planned.contractsIncentivized),
+    );
+    const [summaryLocal, setSummaryLocal] = useState(planned.summary || '');
+    const [summaryOfChangesLocal, setSummaryOfChangesLocal] = useState(
+        planned.summaryOfChanges || '',
+    );
 
     const endDate = useMemo(
         () => new Date(startDateLocal.getTime() + 12096e5),
         [startDateLocal],
     );
 
+    const isValid = useMemo(
+        () => validators.isPlannedValid(planned),
+        [planned],
+    );
+
     const submit = useCallback(() => {
-        const value = {
+        const planned = {
             arbToBeDistributed: disbursementAmountLocal,
             contractsIncentivized: contractsLocal,
             distributionMechanism: distributionMechanismsLocal,
             summary: summaryLocal,
             summaryOfChanges: summaryOfChangesLocal,
-            endDate: endDate.toISOString(),
-            startDate: startDateLocal.toISOString(),
         };
 
-        //dispatch(addPlanned(value));
+        if (!validators.isPlannedValid(planned)) {
+            setShowErrors(true);
+            return;
+        }
+
+        dispatch(
+            editPhase({
+                phaseIndex,
+                planned,
+                status: 'InProgress',
+                startDate: startDateLocal.toISOString(),
+                endDate: endDate.toISOString(),
+            }),
+        );
     }, [
         dispatch,
+        phaseIndex,
+        startDateLocal,
+        endDate,
         disbursementAmountLocal,
         contractsLocal,
         distributionMechanismsLocal,
         summaryLocal,
         summaryOfChangesLocal,
-        endDate,
-        startDateLocal,
     ]);
+
+    const isDisbursementValid = useMemo(
+        () => validators.isDisbursementValid(disbursementAmountLocal),
+        [disbursementAmountLocal],
+    );
+    const isDistributionMechanismsValid = useMemo(
+        () =>
+            validators.isDistributionMechanismsValid(
+                distributionMechanismsLocal,
+            ),
+        [distributionMechanismsLocal],
+    );
+    const isContractsValid = useMemo(
+        () => validators.isContractsValid(contractsLocal),
+        [contractsLocal],
+    );
+    const isSummaryValid = useMemo(
+        () => validators.isSummaryValid(summaryLocal),
+        [summaryLocal],
+    );
+    const isSummaryOfChangesValid = useMemo(
+        () => validators.isSummaryOfChangesValid(summaryOfChangesLocal),
+        [summaryOfChangesLocal],
+    );
+
+    const wrapperClasses = useCallback(
+        (isValid: boolean) =>
+            classNames(
+                showErrors && !isValid
+                    ? 'ring-2 ring-red-300'
+                    : 'ring-1 ring-gray-300',
+                'relative rounded-md rounded-b-none rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
+            ),
+        [showErrors],
+    );
 
     return (
         <div className="w-full">
@@ -88,7 +162,7 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         />
                     </div>
                 </div>
-                <div className="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className={wrapperClasses(isDisbursementValid)}>
                     <label className="block text-xs font-medium text-gray-900">
                         ARB Disbursement Amount (required)
                     </label>
@@ -113,9 +187,9 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         }}
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className={wrapperClasses(isContractsValid)}>
                     <label className="block text-xs font-medium text-gray-900">
-                        Contracts Incentivized
+                        Contracts Incentivized (required)
                     </label>
                     <ContractSelector
                         contracts={contractsLocal}
@@ -129,9 +203,9 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         }
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className={wrapperClasses(isDistributionMechanismsValid)}>
                     <label className="block text-xs font-medium text-gray-900">
-                        Distribution Mechanisms
+                        Distribution Mechanisms (required)
                     </label>
                     <TagSelector
                         value={distributionMechanismsLocal}
@@ -151,9 +225,9 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         }
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className={wrapperClasses(isSummaryValid)}>
                     <label className="block text-xs font-medium text-gray-900 mb-1">
-                        Summary
+                        Summary (required)
                     </label>
                     <textarea
                         rows={4}
@@ -165,9 +239,9 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                         onChange={e => setSummaryLocal(e.target.value)}
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className={wrapperClasses(isSummaryOfChangesValid)}>
                     <label className="block text-xs font-medium text-gray-900 mb-1">
-                        Summary of Changes
+                        Summary of Changes (required)
                     </label>
                     <textarea
                         rows={4}
@@ -185,10 +259,10 @@ const PhaseStartForm = (props: PhaseStartFormProps) => {
                 className="inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 onClick={submit}
             >
-                Start
+                {isValid ? 'Update' : 'Submit'}
             </button>
         </div>
     );
 };
 
-export default PhaseStartForm;
+export default PlannedResourcesForm;

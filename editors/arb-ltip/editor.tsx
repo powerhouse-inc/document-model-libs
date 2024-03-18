@@ -31,7 +31,7 @@ const TabHeader = ({ active, setActive }: TabHeaderProps) => {
             name: 'Summary',
         },
         {
-            name: 'Current Phase',
+            name: 'Todo',
         },
         {
             name: 'Historical',
@@ -121,9 +121,7 @@ const Editor = (props: IProps) => {
                             onEdit={() => setIsEditMode(true)}
                         />
                     )}
-                    {activeTab === 'Current Phase' && (
-                        <PhaseDisplay {...props} />
-                    )}
+                    {activeTab === 'Todo' && <PhaseDisplay {...props} />}
                     {activeTab === 'Historical' && <PhaseDisplay {...props} />}
                 </>
             )}
