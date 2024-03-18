@@ -1,3 +1,52 @@
+# [1.11.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.10.0...v1.11.0) (2024-03-18)
+
+
+### Features
+
+* format initial state on mount ([#98](https://github.com/powerhouse-inc/document-model-libs/issues/98)) ([4a657f3](https://github.com/powerhouse-inc/document-model-libs/commit/4a657f359cfdf2fa04f04fa8aecc81ad2eba973f))
+
+# [1.10.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.9.0...v1.10.0) (2024-03-15)
+
+
+### Features
+
+* added error handling support for Editor components and dispatch function ([#104](https://github.com/powerhouse-inc/document-model-libs/issues/104)) ([02d8f4e](https://github.com/powerhouse-inc/document-model-libs/commit/02d8f4e050889e1f6a9f583cf2442ec3e69d21ff))
+
+# [1.9.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.8.0...v1.9.0) (2024-03-15)
+
+
+### Features
+
+* bump design system ([#103](https://github.com/powerhouse-inc/document-model-libs/issues/103)) ([f88d715](https://github.com/powerhouse-inc/document-model-libs/commit/f88d715e08163645639975fd87901d8debdc59f6))
+
+# [1.8.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.7.0...v1.8.0) (2024-03-14)
+
+
+### Features
+
+* treat cash balance change as input ([#102](https://github.com/powerhouse-inc/document-model-libs/issues/102)) ([35ffe88](https://github.com/powerhouse-inc/document-model-libs/commit/35ffe886d928331a882bc86d9989d941dad882b4))
+
+# [1.7.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.6.1...v1.7.0) (2024-03-14)
+
+
+### Features
+
+* fix object references and temp hack for state delay bug ([#99](https://github.com/powerhouse-inc/document-model-libs/issues/99)) ([8a67580](https://github.com/powerhouse-inc/document-model-libs/commit/8a67580d4239e993127a2543205055986b910cac))
+
+## [1.6.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.6.0...v1.6.1) (2024-03-12)
+
+
+### Bug Fixes
+
+* pass object reference directly to avoid unexpected behavior ([#96](https://github.com/powerhouse-inc/document-model-libs/issues/96)) ([00aa306](https://github.com/powerhouse-inc/document-model-libs/commit/00aa306ba08b8d094aacb32602b6009b5f02163b))
+
+# [1.6.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.5.1...v1.6.0) (2024-03-11)
+
+
+### Features
+
+* add transactions editor ([#94](https://github.com/powerhouse-inc/document-model-libs/issues/94)) ([f58006a](https://github.com/powerhouse-inc/document-model-libs/commit/f58006a0af91c1a525de5016c3cbec19c9080295))
+
 ## [1.5.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.5.0...v1.5.1) (2024-03-08)
 
 

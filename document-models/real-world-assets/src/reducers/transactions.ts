@@ -5,720 +5,191 @@
  */
 
 import {
-    makeEmptyGroupTransactionByType,
+    Cash,
     makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
-    validateFeeTransaction,
     validateFeeTransactions,
     validateFixedIncomeTransaction,
-    validateHasCorrectTransactions,
     validateInterestTransaction,
+    validateTransactionFee,
+    validateTransactionFees,
 } from '../..';
 import { RealWorldAssetsTransactionsOperations } from '../../gen/transactions/operations';
-import {
-    ASSET_PURCHASE,
-    ASSET_SALE,
-    FEES_PAYMENT,
-    FEE_TRANSACTIONS,
-    INTEREST_DRAW,
-    INTEREST_RETURN,
-    PRINCIPAL_DRAW,
-    PRINCIPAL_RETURN,
-    groupTransactionTypesToAllowedTransactions,
-} from '../constants';
-
 export const reducer: RealWorldAssetsTransactionsOperations = {
-    createPrincipalDrawGroupTransactionOperation(state, action, dispatch) {
+    createGroupTransactionOperation(state, action, dispatch) {
         const id = action.input.id;
 
         if (!id) {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = PRINCIPAL_DRAW;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-
-            if (cashTransaction.amount < 0) {
-                throw new Error(
-                    'Principal draw cash transaction amount must be positive',
-                );
-            }
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            cashTransaction,
-            feeTransactions,
-        };
-
-        state.transactions.push(newGroupTransaction);
-    },
-    createPrincipalReturnGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = PRINCIPAL_RETURN;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-            if (cashTransaction.amount > 0) {
-                throw new Error(
-                    'Principal return cash transaction amount must be negative',
-                );
-            }
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            cashTransaction,
-            feeTransactions,
-        };
-
-        state.transactions.push(newGroupTransaction);
-    },
-    createAssetPurchaseGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = ASSET_PURCHASE;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const fixedIncomeTransaction =
+        const type = action.input.type;
+        const entryTime = action.input.entryTime;
+        const fees = action.input.fees ?? null;
+        const cashBalanceChange = action.input.cashBalanceChange;
+        let cashTransaction = action.input.cashTransaction ?? null;
+        let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
+        let interestTransaction = action.input.interestTransaction ?? null;
+        let feeTransactions = action.input.feeTransactions
+            ? action.input.feeTransactions
             : null;
+
+        if (cashTransaction) {
+            cashTransaction = {
+                ...cashTransaction,
+                entryTime,
+            };
+            validateCashTransaction(state, cashTransaction);
+        }
 
         if (fixedIncomeTransaction) {
+            fixedIncomeTransaction = {
+                ...fixedIncomeTransaction,
+                entryTime,
+            };
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            fixedIncomeTransaction,
-            cashTransaction,
-            feeTransactions,
-        };
-
-        state.transactions.push(newGroupTransaction);
-
-        const assetId = fixedIncomeTransaction?.assetId;
-
-        if (!assetId) return;
-
-        const newAsset = makeFixedIncomeAssetWithDerivedFields(state, assetId);
-
-        state.portfolio = state.portfolio.map(a =>
-            a.id === assetId ? newAsset : a,
-        );
-    },
-    createAssetSaleGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = ASSET_SALE;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const fixedIncomeTransaction =
-            action.input.fixedIncomeTransaction ?? null;
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (fixedIncomeTransaction) {
-            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
-        }
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            fixedIncomeTransaction,
-            cashTransaction,
-            feeTransactions,
-        };
-
-        state.transactions.push(newGroupTransaction);
-
-        const assetId = fixedIncomeTransaction?.assetId;
-
-        if (!assetId) return;
-
-        const newAsset = makeFixedIncomeAssetWithDerivedFields(state, assetId);
-
-        state.portfolio = state.portfolio.map(a =>
-            a.id === assetId ? newAsset : a,
-        );
-    },
-    createInterestDrawGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = INTEREST_DRAW;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const interestTransaction = action.input.interestTransaction ?? null;
 
         if (interestTransaction) {
+            interestTransaction = {
+                ...interestTransaction,
+                entryTime,
+            };
             validateInterestTransaction(state, interestTransaction);
         }
 
+        if (feeTransactions) {
+            feeTransactions = feeTransactions.map(ft => ({
+                ...ft,
+                entryTime,
+            }));
+            validateFeeTransactions(state, feeTransactions);
+        }
+
+        if (fees) {
+            validateTransactionFees(state, fees);
+        }
+
         const newGroupTransaction = {
             id,
             type,
+            entryTime,
+            fees,
+            cashBalanceChange,
+            cashTransaction,
+            feeTransactions,
+            fixedIncomeTransaction,
             interestTransaction,
         };
 
         state.transactions.push(newGroupTransaction);
-    },
-    createInterestReturnGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
 
-        const type = INTEREST_RETURN;
+        const fixedIncomeAssetId = fixedIncomeTransaction?.assetId;
 
-        validateHasCorrectTransactions(type, action.input);
+        if (!fixedIncomeAssetId) return;
 
-        const interestTransaction = action.input.interestTransaction ?? null;
+        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
+            state,
+            fixedIncomeAssetId,
+        );
 
-        if (interestTransaction) {
-            validateInterestTransaction(state, interestTransaction);
-        }
+        state.portfolio = state.portfolio.map(a =>
+            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
+        );
 
-        const newGroupTransaction = {
-            id,
-            type,
-            interestTransaction,
+        const cashAssetId = cashTransaction?.assetId;
+
+        const cashAsset = state.portfolio.find(
+            a => a.id === cashAssetId,
+        ) as Cash;
+
+        const updatedCashAsset = {
+            ...cashAsset,
+            balance: cashAsset.balance + cashBalanceChange,
         };
 
-        state.transactions.push(newGroupTransaction);
+        state.portfolio = state.portfolio.map(a =>
+            a.id === cashAssetId ? updatedCashAsset : a,
+        );
     },
-    createFeesPaymentGroupTransactionOperation(state, action, dispatch) {
+    editGroupTransactionOperation(state, action, dispatch) {
         const id = action.input.id;
 
         if (!id) {
             throw new Error('Group transaction must have an id');
         }
 
-        const type = FEES_PAYMENT;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            feeTransactions,
-        };
-
-        state.transactions.push(newGroupTransaction);
-    },
-    editGroupTransactionTypeOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const transaction = state.transactions.find(
+        const transactionIndex = state.transactions.findIndex(
             transaction => transaction.id === action.input.id,
         );
-        if (!transaction) {
+
+        if (transactionIndex === -1) {
             throw new Error(
                 `Group transaction with id ${action.input.id} does not exist!`,
             );
         }
 
-        if (action.input.type === transaction.type) {
-            return;
+        const transaction = state.transactions[transactionIndex];
+
+        if (action.input.type) {
+            transaction.type = action.input.type;
         }
 
-        const newGroupTransaction = makeEmptyGroupTransactionByType(
-            action.input.type,
-            action.input.id,
-        );
+        if (action.input.entryTime) {
+            transaction.entryTime = action.input.entryTime;
+            transaction.cashTransaction!.entryTime = action.input.entryTime;
+            transaction.fixedIncomeTransaction!.entryTime =
+                action.input.entryTime;
+        }
+
+        if (action.input.fixedIncomeTransaction?.amount) {
+            transaction.fixedIncomeTransaction!.amount =
+                action.input.fixedIncomeTransaction.amount;
+        }
+
+        if (action.input.fixedIncomeTransaction?.assetId) {
+            transaction.fixedIncomeTransaction!.assetId =
+                action.input.fixedIncomeTransaction.assetId;
+        }
+
+        if (action.input.cashTransaction?.amount) {
+            transaction.cashTransaction!.amount =
+                action.input.cashTransaction.amount;
+        }
+
+        if (action.input.cashBalanceChange) {
+            transaction.cashBalanceChange = action.input.cashBalanceChange;
+        }
 
         state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    editPrincipalDrawGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = PRINCIPAL_DRAW;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-            if (cashTransaction.amount < 0) {
-                throw new Error(
-                    'Principal draw cash transaction amount must be positive',
-                );
-            }
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            cashTransaction,
-            feeTransactions,
-        };
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    editPrincipalReturnGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = PRINCIPAL_RETURN;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-            if (cashTransaction.amount > 0) {
-                throw new Error(
-                    'Principal return cash transaction amount must be negative',
-                );
-            }
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            cashTransaction,
-            feeTransactions,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    editAssetPurchaseGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = ASSET_PURCHASE;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const fixedIncomeTransaction =
-            action.input.fixedIncomeTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-        }
-
-        if (fixedIncomeTransaction) {
-            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            fixedIncomeTransaction,
-            cashTransaction,
-            feeTransactions,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
+            t.id === transaction.id ? transaction : t,
         );
 
-        const assetId = fixedIncomeTransaction?.assetId;
+        const fixedIncomeAssetId = transaction.fixedIncomeTransaction!.assetId;
 
-        if (!assetId) return;
-
-        const newAsset = makeFixedIncomeAssetWithDerivedFields(state, assetId);
+        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
+            state,
+            fixedIncomeAssetId,
+        );
 
         state.portfolio = state.portfolio.map(a =>
-            a.id === assetId ? newAsset : a,
+            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
         );
-    },
-    editAssetSaleGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
 
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
+        const cashAssetId = transaction.cashTransaction?.assetId;
 
-        const type = ASSET_SALE;
+        const cashAsset = state.portfolio.find(
+            a => a.id === cashAssetId,
+        ) as Cash;
 
-        validateHasCorrectTransactions(type, action.input);
-
-        const fixedIncomeTransaction =
-            action.input.fixedIncomeTransaction ?? null;
-        const cashTransaction = action.input.cashTransaction ?? null;
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (fixedIncomeTransaction) {
-            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
-        }
-
-        if (cashTransaction) {
-            validateCashTransaction(state, cashTransaction);
-        }
-
-        if (feeTransactions) {
-            validateFeeTransactions(state, feeTransactions);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            fixedIncomeTransaction,
-            cashTransaction,
-            feeTransactions,
+        const updatedCashAsset = {
+            ...cashAsset,
+            balance: cashAsset.balance + transaction.cashBalanceChange,
         };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-
-        const assetId = fixedIncomeTransaction?.assetId;
-
-        if (!assetId) return;
-
-        const newAsset = makeFixedIncomeAssetWithDerivedFields(state, assetId);
 
         state.portfolio = state.portfolio.map(a =>
-            a.id === assetId ? newAsset : a,
-        );
-    },
-    editInterestDrawGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = INTEREST_DRAW;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const interestTransaction = action.input.interestTransaction ?? null;
-
-        if (interestTransaction) {
-            validateInterestTransaction(state, interestTransaction);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            interestTransaction,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    editInterestReturnGroupTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const type = INTEREST_RETURN;
-
-        validateHasCorrectTransactions(type, action.input);
-
-        const interestTransaction = action.input.interestTransaction ?? null;
-
-        if (interestTransaction) {
-            validateInterestTransaction(state, interestTransaction);
-        }
-
-        const newGroupTransaction = {
-            id,
-            type,
-            interestTransaction,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    addFeeTransactionsToGroupTransactionOperation(state, action) {
-        const id = action.input.id;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        const transaction = state.transactions.find(
-            transaction => transaction.id === id,
-        );
-
-        if (!transaction) {
-            throw new Error(`Group transaction with id ${id} does not exist!`);
-        }
-
-        if (
-            !groupTransactionTypesToAllowedTransactions[
-                transaction.type
-            ].includes(FEE_TRANSACTIONS) ||
-            !('feeTransactions' in transaction)
-        ) {
-            throw new Error(
-                `Group transaction of type ${transaction.type} cannot have fee transactions`,
-            );
-        }
-
-        const feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions.map(ft => ft ?? null).filter(Boolean)
-            : null;
-
-        if (!feeTransactions) return;
-
-        validateFeeTransactions(state, feeTransactions);
-
-        const newFeeTransactions = [
-            ...feeTransactions,
-            ...(transaction.feeTransactions || []),
-        ];
-
-        const newGroupTransaction = {
-            ...transaction,
-            feeTransactions: newFeeTransactions,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    editFeeTransactionOperation(state, action, dispatch) {
-        const id = action.input.id;
-        const feeTransactionId = action.input.feeTransactionId;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        if (!feeTransactionId) {
-            throw new Error('Fee transaction must have an id');
-        }
-
-        const groupTransaction = state.transactions.find(
-            transaction => transaction.id === id,
-        );
-
-        if (!groupTransaction) {
-            throw new Error(`Group transaction with id ${id} does not exist!`);
-        }
-
-        if (
-            !groupTransactionTypesToAllowedTransactions[
-                groupTransaction.type
-            ].includes(FEE_TRANSACTIONS) ||
-            !('feeTransactions' in groupTransaction)
-        ) {
-            throw new Error(
-                `Group transaction of type ${groupTransaction.type} cannot have fee transactions`,
-            );
-        }
-
-        if (!groupTransaction.feeTransactions) {
-            throw new Error(
-                `Group transaction with id ${id} does not have fee transactions`,
-            );
-        }
-
-        const feeTransaction = groupTransaction.feeTransactions.find(
-            f => f?.id === feeTransactionId,
-        );
-
-        if (!feeTransaction) {
-            throw new Error(
-                `Fee transaction with id ${feeTransactionId} does not exist!`,
-            );
-        }
-
-        const newFeeTransaction = {
-            ...feeTransaction,
-            ...action.input,
-        };
-
-        validateFeeTransaction(state, newFeeTransaction);
-
-        const newFeeTransactions = groupTransaction.feeTransactions.map(f =>
-            f?.id === feeTransactionId ? newFeeTransaction : f,
-        );
-
-        const newGroupTransaction = {
-            ...groupTransaction,
-            feeTransactions: newFeeTransactions,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === action.input.id ? newGroupTransaction : t,
-        );
-    },
-    removeFeeTransactionFromGroupTransactionOperation(state, action) {
-        const { id, feeTransactionId } = action.input;
-
-        if (!id) {
-            throw new Error('Group transaction must have an id');
-        }
-
-        if (!feeTransactionId) {
-            throw new Error('Fee transaction must have an id');
-        }
-
-        const groupTransaction = state.transactions.find(
-            transaction => transaction.id === id,
-        );
-
-        if (!groupTransaction) {
-            throw new Error(`Group transaction with id ${id} does not exist!`);
-        }
-
-        if (
-            !groupTransactionTypesToAllowedTransactions[
-                groupTransaction.type
-            ].includes(FEE_TRANSACTIONS) ||
-            !('feeTransactions' in groupTransaction)
-        ) {
-            throw new Error(
-                `Group transaction of type ${groupTransaction.type} cannot have fee transactions`,
-            );
-        }
-
-        if (!groupTransaction.feeTransactions) {
-            throw new Error(
-                `Group transaction with id ${id} does not have fee transactions`,
-            );
-        }
-
-        const feeTransaction = groupTransaction.feeTransactions.find(
-            f => f?.id === feeTransactionId,
-        );
-
-        if (!feeTransaction) {
-            throw new Error(
-                `Fee transaction with id ${feeTransactionId} does not exist!`,
-            );
-        }
-
-        const newFeeTransactions = groupTransaction.feeTransactions.filter(
-            f => f?.id !== feeTransactionId,
-        );
-
-        const newGroupTransaction = {
-            ...groupTransaction,
-            feeTransactions: newFeeTransactions,
-        };
-
-        state.transactions = state.transactions.map(t =>
-            t.id === id ? newGroupTransaction : t,
+            a.id === cashAssetId ? updatedCashAsset : a,
         );
     },
     deleteGroupTransactionOperation(state, action, dispatch) {
@@ -728,6 +199,85 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         state.transactions = state.transactions.filter(
             transaction => transaction.id !== action.input.id,
+        );
+    },
+    addFeesToGroupTransactionOperation(state, action, dispatch) {
+        const id = action.input.id;
+
+        const transaction = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transaction) {
+            throw new Error(`Group transaction with id ${id} does not exist!`);
+        }
+
+        validateTransactionFees(state, action.input.fees);
+
+        if (!transaction.fees) {
+            transaction.fees = [];
+        }
+
+        transaction.fees.push(...action.input.fees);
+
+        state.transactions = state.transactions.map(t =>
+            t.id === action.input.id ? transaction : t,
+        );
+    },
+    removeFeesFromGroupTransactionOperation(state, action, dispatch) {
+        const id = action.input.id;
+        const feeIdsToRemove = action.input.feeIds;
+
+        const transaction = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transaction) {
+            throw new Error('Transaction does not exist');
+        }
+
+        if (!transaction.fees) {
+            throw new Error('Transaction has no fees to remove');
+        }
+
+        transaction.fees = transaction.fees.filter(
+            fee => !feeIdsToRemove?.includes(fee.id),
+        );
+
+        state.transactions = state.transactions.map(t =>
+            t.id === id ? transaction : t,
+        );
+    },
+    editGroupTransactionFeesOperation(state, action, dispatch) {
+        const id = action.input.id;
+
+        const transaction = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transaction) {
+            throw new Error('Transaction does not exist');
+        }
+
+        validateTransactionFees(state, action.input.fees);
+
+        if (!transaction.fees) {
+            throw new Error('This transaction has no fees to update');
+        }
+
+        transaction.fees = transaction.fees
+            .map(fee => {
+                const feeToUpdate = action.input.fees!.find(
+                    f => f.id === fee.id,
+                );
+                if (!feeToUpdate) return;
+                validateTransactionFee(state, feeToUpdate);
+                return { ...fee, ...feeToUpdate };
+            })
+            .filter(Boolean);
+
+        state.transactions = state.transactions.map(t =>
+            t.id === id ? transaction : t,
         );
     },
 };
