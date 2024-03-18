@@ -80,7 +80,15 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
         state.phases = phases;
     },
     editPhaseOperation(state, action, dispatch) {
-        const { status, actuals, planned, stats, phaseIndex } = action.input;
+        const {
+            status,
+            startDate,
+            endDate,
+            actuals,
+            planned,
+            stats,
+            phaseIndex,
+        } = action.input;
         if (phaseIndex === undefined || phaseIndex === null) {
             throw new Error('phaseIndex is required');
         }
@@ -96,6 +104,14 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
         const phase = state.phases[phaseIndex];
         if (!phase) {
             throw new Error('phase is not found');
+        }
+
+        if (startDate) {
+            phase.startDate = startDate;
+        }
+
+        if (endDate) {
+            phase.endDate = endDate;
         }
 
         if (status) {

@@ -12,7 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
 import { Maybe } from 'document-model/document-model';
 import validators from '../../../document-models/arb-ltip-grantee/src/validators';
-import { classNames } from '../util';
+import { classNames, toArray } from '../util';
 
 const distributionMechanisms = [
     {
@@ -24,10 +24,6 @@ const distributionMechanisms = [
         value: 'LPIncentives',
     },
 ];
-
-function toArray<T>(value: Maybe<Array<Maybe<T>>>): T[] {
-    return value?.map(v => v as T) || [];
-}
 
 type PlannedResourcesFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;
@@ -137,6 +133,11 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     return (
         <div className="w-full">
             <div className="isolate -space-y-px rounded-md shadow-sm">
+                <div className="text-lg px-4 pt-4 pb-8">
+                    Before the two-week disbursement phase begins, please enter
+                    the planned resources here. After the phase start date, you
+                    will be able to update the project actuals.
+                </div>
                 <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
                     <div>
                         <label className="block text-xs font-medium text-gray-900">

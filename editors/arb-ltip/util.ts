@@ -11,3 +11,7 @@ export function maybeToArray<T>(value: Maybe<Maybe<T>[]>): T[] {
 export function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
 }
+
+export function toArray<T>(value: Maybe<Array<Maybe<T>>>): T[] {
+    return value?.map(v => v as T) || [];
+}
