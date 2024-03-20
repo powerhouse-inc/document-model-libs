@@ -6,10 +6,8 @@ import {
 } from '../../document-models/arb-ltip-grantee';
 import { Icon, RWATabsProps } from '@powerhousedao/design-system';
 import { useMemo, useState } from 'react';
-import './style.css';
 import GranteeForm from './components/GranteeForm';
 import GranteeDisplay from './components/GranteeDisplay';
-import GranteeStats from './components/GranteeStats';
 import PhaseDisplay from './components/PhaseDisplay';
 import { classNames } from './util';
 import { actions } from 'document-model/document-model';
