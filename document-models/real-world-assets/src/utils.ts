@@ -316,7 +316,7 @@ export function computeFixedIncomeAssetDerivedFields(
         assetSaleFixedIncomeTransactions,
     );
     const realizedSurplus = calculateRealizedSurplus(
-        allFixedIncomeTransactions,
+        salesProceeds,
         purchaseProceeds,
     );
     const purchasePrice = calculatePurchasePrice(notional, purchaseProceeds);
@@ -562,13 +562,12 @@ export function calculateSalesProceeds(
 }
 
 export function calculateRealizedSurplus(
-    allFixedIncomeTransactions: BaseTransaction[],
+    salesProceeds: number,
     purchaseProceeds: number,
 ) {
-    const sumOfAllFixedIncomeTransactions = sumBaseTransactionAmounts(
-        allFixedIncomeTransactions,
-    );
-    return -sumOfAllFixedIncomeTransactions + purchaseProceeds;
+    // todo: when interest payment transactions are implemented, change to
+    // salesProceeds + interestPayments - purchaseProceeds
+    return salesProceeds - purchaseProceeds;
 }
 
 export function sumBaseTransactionAmounts(transactions: BaseTransaction[]) {
