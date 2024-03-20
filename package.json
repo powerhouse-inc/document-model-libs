@@ -111,7 +111,7 @@
         "@emotion/styled": "^11.11.0",
         "@monaco-editor/react": "^4.6.0",
         "@mui/material": "^5.15.5",
-        "@powerhousedao/design-system": "1.0.0-alpha.74",
+        "@powerhousedao/design-system": "1.0.0-alpha.77",
         "@powerhousedao/codegen": "0.0.15",
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/git": "^10.0.1",

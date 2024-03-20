@@ -62,8 +62,8 @@ devDependencies:
     specifier: 0.0.15
     version: 0.0.15(graphql@16.8.1)(zod@3.22.4)
   '@powerhousedao/design-system':
-    specifier: 1.0.0-alpha.74
-    version: 1.0.0-alpha.74(@types/react@18.2.57)(react-aria-components@1.1.1)(react-aria@3.32.1)(react-dom@18.2.0)(react@18.2.0)
+    specifier: 1.0.0-alpha.77
+    version: 1.0.0-alpha.77(@types/react@18.2.57)(react-aria-components@1.1.1)(react-aria@3.32.1)(react-dom@18.2.0)(react@18.2.0)
   '@semantic-release/changelog':
     specifier: ^6.0.3
     version: 6.0.3(semantic-release@23.0.2)
@@ -3867,8 +3867,8 @@ packages:
       - zod
     dev: true
 
-  /@powerhousedao/design-system@1.0.0-alpha.74(@types/react@18.2.57)(react-aria-components@1.1.1)(react-aria@3.32.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-A8DQpBU69VIa8t2TuQifUEWsMkNZpuTDZ6wRmM2OKd38CEd4pu9VwJezSwGpFOE/UsfBFQPovxHHq2EZjE4aog==}
+  /@powerhousedao/design-system@1.0.0-alpha.77(@types/react@18.2.57)(react-aria-components@1.1.1)(react-aria@3.32.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-H8RidMyNa4Vox25voy+eeOFYt4m4Tg0hEFAO7+ZawL0vymMNvfBn6H+RibPUPpTR3RhAIY/DCadFqT6X2UAvPQ==}
     peerDependencies:
       react: ^18.2.0
       react-aria: ^3.32.0
@@ -3877,16 +3877,15 @@ packages:
     dependencies:
       '@internationalized/date': 3.5.2
       '@radix-ui/react-dialog': 1.0.5(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
-      '@react-input/number-format': 1.0.22(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
       change-case: 5.4.3
-      currency.js: 2.0.4
       date-fns: 3.3.1
       react: 18.2.0
       react-aria: 3.32.1(react-dom@18.2.0)(react@18.2.0)
       react-aria-components: 1.1.1(react-dom@18.2.0)(react@18.2.0)
       react-dom: 18.2.0(react@18.2.0)
-      react-hook-form: 7.51.0(react@18.2.0)
+      react-hook-form: 7.51.1(react@18.2.0)
       react-multi-select-component: 4.3.4(react-dom@18.2.0)(react@18.2.0)
+      react-number-format: 5.3.4(react-dom@18.2.0)(react@18.2.0)
       react-toastify: 10.0.5(react-dom@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -5214,37 +5213,6 @@ packages:
       '@react-types/shared': 3.22.1(react@18.2.0)
       '@swc/helpers': 0.5.6
       react: 18.2.0
-
-  /@react-input/core@1.0.8(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-PFGh92/bwBOnHgKd5/KOCgcWoSpN0ueSG146Schh3QIBVhLOKct8QDpnmeMl0xP40W8hyEZNr65Eqliw34jL4A==}
-    peerDependencies:
-      '@types/react': '>=16.8'
-      react: '>=16.8'
-      react-dom: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      '@types/react': 18.2.57
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: true
-
-  /@react-input/number-format@1.0.22(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-ARaj0EAw7qqUEycV1cY0BRENgTzYU4hzgzWyzZ0VMBkUsYN5rafBk1Q3J0nYg7pJvIVJtkZLvRBAHcERKZOv6w==}
-    peerDependencies:
-      '@types/react': '>=16.8'
-      react: '>=16.8'
-      react-dom: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-    dependencies:
-      '@react-input/core': 1.0.8(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.57
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: true
 
   /@react-stately/calendar@3.4.4(react@18.2.0):
     resolution: {integrity: sha512-f9ZOd096gGGD+3LmU1gkmfqytGyQtrgi+Qjn+70GbM2Jy65pwOR4I9YrobbmeAFov5Tff13mQEa0yqWvbcDLZQ==}
@@ -9209,11 +9177,6 @@ packages:
 
   /csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
-    dev: true
-
-  /currency.js@2.0.4:
-    resolution: {integrity: sha512-6/OplJYgJ0RUlli74d93HJ/OsKVBi8lB1+Z6eJYS1YZzBuIp4qKKHpJ7ad+GvTlWmLR/hLJOWTykN5Nm8NJ7+w==}
-    engines: {node: '>=4'}
     dev: true
 
   /dargs@7.0.0:
@@ -14094,8 +14057,8 @@ packages:
       react-is: 18.1.0
     dev: true
 
-  /react-hook-form@7.51.0(react@18.2.0):
-    resolution: {integrity: sha512-BggOy5j58RdhdMzzRUHGOYhSz1oeylFAv6jUSG86OvCIvlAvS7KvnRY7yoAf2pfEiPN7BesnR0xx73nEk3qIiw==}
+  /react-hook-form@7.51.1(react@18.2.0):
+    resolution: {integrity: sha512-ifnBjl+kW0ksINHd+8C/Gp6a4eZOdWyvRv0UBaByShwU8JbVx5hTcTWEcd5VdybvmPTATkVVXk9npXArHmo56w==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -14125,6 +14088,17 @@ packages:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
     dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: true
+
+  /react-number-format@5.3.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-2hHN5mbLuCDUx19bv0Q8wet67QqYK6xmtLQeY5xx+h7UXiMmRtaCwqko4mMPoKXLc6xAzwRrutg8XbTRlsfjRg==}
+    peerDependencies:
+      react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
