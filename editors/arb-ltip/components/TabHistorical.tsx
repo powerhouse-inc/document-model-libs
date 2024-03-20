@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import validators from '../../../document-models/arb-ltip-grantee/src/validators';
 import { IProps } from '../editor';
-import { classNames, toArray } from '../util';
+import { classNames, formatDate, toArray } from '../util';
+import PhaseSummaryModal from './PhaseSummaryModal';
+import { Phase } from '../../../document-models/arb-ltip-grantee';
+import { set } from 'date-fns';
 
 type DataBadgeProps = {
     isDue: boolean;
@@ -43,23 +47,19 @@ const StatusBadge = ({ status }: { status: Status }) => {
     );
 };
 
-const pad = (num: string, size: number) => {
-    let s = num + '';
-    while (s.length < size) s = '0' + s;
-    return s;
-};
-
-const formatDate = (date: string) => {
-    const parts = new Date(date).toLocaleDateString('en-US').split('/');
-    return `${pad(parts[0], 2)} / ${pad(parts[1], 2)}`;
-};
-
 type TabHistoricalProps = IProps;
 const TabHistorical = (props: TabHistoricalProps) => {
+    const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
+
     const phases = toArray(props.document.state.global.phases);
 
     return (
         <div>
+            <PhaseSummaryModal
+                isOpen={!!selectedPhase}
+                onClose={() => setSelectedPhase(null)}
+                phase={selectedPhase}
+            />
             <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -147,7 +147,14 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                     }
 
                                     return (
-                                        <tr key={phaseIndex}>
+                                        <tr
+                                            key={phaseIndex}
+                                            className={
+                                                isPhaseInProgress
+                                                    ? 'border-s-8'
+                                                    : ''
+                                            }
+                                        >
                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                 <div className="flex items-center">
                                                     <div className="ml-4">
@@ -181,7 +188,12 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                                 />
                                             </td>
                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                <p className="text-indigo-600 hover:text-indigo-900">
+                                                <p
+                                                    className="text-purple-600 hover:text-purple-900 cursor-pointer"
+                                                    onClick={() =>
+                                                        setSelectedPhase(phase)
+                                                    }
+                                                >
                                                     View
                                                 </p>
                                             </td>
