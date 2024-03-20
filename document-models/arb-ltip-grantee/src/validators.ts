@@ -45,6 +45,9 @@ const isStatsValid = (stats: GranteeStats) =>
     gteZero(stats.uniqueAddressesCount);
 
 const validators = {
+    gtZero,
+    gteZero,
+
     isDisbursementValid,
     isDistributionMechanismsValid,
     isContractsValid,

@@ -103,7 +103,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         dispatch(
             initPhase({
                 numberOfPhases: 8,
-                phaseDuration: 2,
+                phaseDuration: 14,
                 startDate: startDate.toISOString(),
             }),
         );
@@ -111,6 +111,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         onClose();
     }, [
         dispatch,
+        startDate,
         disbursementContractAddressLocal,
         fundingAddressLocal,
         grantSummaryLocal,

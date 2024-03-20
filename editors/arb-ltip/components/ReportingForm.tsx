@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
     GranteeActuals,
     Phase,
@@ -55,6 +55,21 @@ const ReportingForm = (props: ReportingFormProps) => {
         () => validators.isSummaryValid(summaryLocal),
         [summaryLocal],
     );
+    const isValid = useMemo(
+        () =>
+            isArbReceivedValid &&
+            isArbUtilizedValid &&
+            isContractsValid &&
+            isDisclosuresValid &&
+            isSummaryValid,
+        [
+            isArbReceivedValid,
+            isArbUtilizedValid,
+            isContractsValid,
+            isDisclosuresValid,
+            isSummaryValid,
+        ],
+    );
 
     // TODO: calculate
     const arbRemaining = useMemo(() => {
@@ -67,16 +82,22 @@ const ReportingForm = (props: ReportingFormProps) => {
         return date.toLocaleDateString();
     }, [phase.endDate]);
 
-    const description = (
+    const description = isValid ? (
+        <div>
+            The information looks good! Waiting for{' '}
+            <span className="font-bold">{dueDate}</span> to collect final
+            statistics.
+        </div>
+    ) : (
         <div>
             While the two-week phase is ongoing, please track the project
-            actuals here. This information should be submitted by{' '}
-            <span className="font-bold">{dueDate}</span>.
+            actuals here. This information should be submitted by
+            <span className="font-bold">&nbsp;{dueDate}</span>.
         </div>
     );
 
     const submit = useCallback(() => {
-        const actuals = {
+        const actuals: GranteeActuals = {
             arbReceived: arbReceivedLocal,
             arbUtilized: arbUtilizedLocal,
             arbRemaining: arbRemaining,
@@ -84,9 +105,6 @@ const ReportingForm = (props: ReportingFormProps) => {
             disclosures: disclosuresLocal,
             summary: summaryLocal,
         };
-
-        const isAfterCompletionDate =
-            Date.now() >= new Date(phase.endDate).getTime();
 
         dispatch(
             editPhase({

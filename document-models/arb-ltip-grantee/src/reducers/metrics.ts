@@ -27,8 +27,8 @@ export const reducer: ArbLtipGranteeMetricsOperations = {
             throw new Error('numberOfPhases must be in [0, 10]');
         }
 
-        if (phaseDuration <= 0 || phaseDuration > 10) {
-            throw new Error('phaseDuration must be in than [0, 10]');
+        if (phaseDuration < 1 || phaseDuration > 31) {
+            throw new Error('phaseDuration must be in than [1, 31]');
         }
 
         const phases = [];

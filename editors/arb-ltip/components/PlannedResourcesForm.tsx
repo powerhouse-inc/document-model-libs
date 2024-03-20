@@ -31,7 +31,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     const { dispatch, phase, phaseIndex } = props;
     const planned = phase.planned!;
 
-    const [showErrors, setShowErrors] = useState(false);
+    const [showErrors, setShowErrors] = useState(
+        Date.now() >= new Date(phase.startDate).getTime(),
+    );
 
     const [disbursementAmountLocal, setDisbursementAmountLocal] = useState(
         planned.arbToBeDistributed || 0,
