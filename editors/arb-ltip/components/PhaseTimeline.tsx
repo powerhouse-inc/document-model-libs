@@ -1,10 +1,10 @@
 import { classNames } from '../util';
 
 export type PhaseTimelineStatus =
-    | 'Start'
-    | 'Waiting'
-    | 'InProgress'
-    | 'Finalize';
+    | 'Invalid'
+    | 'Planning'
+    | 'Reporting'
+    | 'Finalizing';
 
 type StepType = {
     id: string;
@@ -18,19 +18,19 @@ const steps: StepType[] = [
         id: '01',
         name: 'Start',
         description: 'Report planned resources.',
-        statuses: ['Start', 'Waiting'],
+        statuses: ['Planning'],
     },
     {
         id: '02',
         name: 'In-progress',
         description: 'Active development.',
-        statuses: ['InProgress'],
+        statuses: ['Reporting'],
     },
     {
         id: '03',
         name: 'Finalize',
         description: 'Report actuals and stats.',
-        statuses: ['Finalize'],
+        statuses: ['Finalizing'],
     },
 ];
 
@@ -87,7 +87,7 @@ const PhaseTimeline = (props: PhaseTimelineProps) => {
                                                     <span className="text-sm font-medium">
                                                         {name}
                                                     </span>
-                                                    <span className="text-sm font-medium">
+                                                    <span className="text-xs font-medium">
                                                         {description}
                                                     </span>
                                                 </span>
@@ -118,7 +118,7 @@ const PhaseTimeline = (props: PhaseTimelineProps) => {
                                                     <span className="text-sm font-medium text-gray-500">
                                                         {name}
                                                     </span>
-                                                    <span className="text-sm font-medium text-gray-500">
+                                                    <span className="text-xs font-medium text-gray-500">
                                                         {description}
                                                     </span>
                                                 </span>

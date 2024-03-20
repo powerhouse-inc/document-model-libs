@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     GranteeActuals,
     Phase,
@@ -8,6 +8,7 @@ import validators from '../../../document-models/arb-ltip-grantee/src/validators
 import { classNames, toArray } from '../util';
 import ContractSelector from './ContractSelector';
 import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
+import PhaseTimespan from './PhaseTimespan';
 
 type ReportingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;
@@ -17,7 +18,9 @@ const ReportingForm = (props: ReportingFormProps) => {
     const { dispatch, phase, phaseIndex } = props;
     const actuals = phase.actuals!;
 
-    const [showErrors, setShowErrors] = useState(true);
+    const [showErrors, setShowErrors] = useState(
+        Date.now() >= new Date(phase.endDate).getTime(),
+    );
     const [arbReceivedLocal, setArbReceivedLocal] = useState(
         actuals.arbReceived ?? 0,
     );
@@ -64,6 +67,14 @@ const ReportingForm = (props: ReportingFormProps) => {
         return date.toLocaleDateString();
     }, [phase.endDate]);
 
+    const description = (
+        <div>
+            While the two-week phase is ongoing, please track the project
+            actuals here. This information should be submitted by{' '}
+            <span className="font-bold">{dueDate}</span>.
+        </div>
+    );
+
     const submit = useCallback(() => {
         const actuals = {
             arbReceived: arbReceivedLocal,
@@ -74,15 +85,13 @@ const ReportingForm = (props: ReportingFormProps) => {
             summary: summaryLocal,
         };
 
-        //const isAfterCompletionDate = Date.now() >= new Date(phase.endDate).getTime();
+        const isAfterCompletionDate =
+            Date.now() >= new Date(phase.endDate).getTime();
 
         dispatch(
             editPhase({
                 phaseIndex,
                 actuals,
-                status: validators.isActualsValid(actuals)
-                    ? 'Finalized'
-                    : 'InProgress',
 
                 // todo: make these optional
                 startDate: phase.startDate,
@@ -113,12 +122,11 @@ const ReportingForm = (props: ReportingFormProps) => {
     return (
         <div className="w-full">
             <div className="isolate -space-y-px rounded-md shadow-sm">
-                <div className="text-lg px-4 pt-4 pb-8">
-                    While the two-week phase is ongoing, please track the
-                    project actuals here. This information should be submitted
-                    by <span className="font-bold">{dueDate}</span>.
+                <PhaseTimespan phase={phase} />
+                <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
+                    {description}
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
+                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex">
                     <div
                         className={classNames(
                             showErrors && !isArbReceivedValid

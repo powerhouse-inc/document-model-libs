@@ -2,17 +2,15 @@ import { useCallback, useMemo, useState } from 'react';
 import TagSelector from './TagSelector';
 import {
     DistributionMechanism,
-    GranteePlanned,
     Phase,
 } from '../../../document-models/arb-ltip-grantee';
 import ContractSelector from './ContractSelector';
 import { IProps } from '../editor';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
-import { Maybe } from 'document-model/document-model';
 import validators from '../../../document-models/arb-ltip-grantee/src/validators';
 import { classNames, toArray } from '../util';
+import PhaseTimespan from './PhaseTimespan';
 
 const distributionMechanisms = [
     {
@@ -34,9 +32,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     const planned = phase.planned!;
 
     const [showErrors, setShowErrors] = useState(false);
-    const [startDateLocal, setStartDateLocal] = useState(
-        new Date(phase.startDate),
-    );
+
     const [disbursementAmountLocal, setDisbursementAmountLocal] = useState(
         planned.arbToBeDistributed || 0,
     );
@@ -50,10 +46,11 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         planned.summaryOfChanges || '',
     );
 
-    const endDate = useMemo(
-        () => new Date(startDateLocal.getTime() + 12096e5),
-        [startDateLocal],
+    const startDate = useMemo(
+        () => new Date(phase.startDate),
+        [phase.startDate],
     );
+    const endDate = useMemo(() => new Date(phase.endDate), [phase.endDate]);
 
     const isValid = useMemo(
         () => validators.isPlannedValid(planned),
@@ -79,14 +76,14 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                 phaseIndex,
                 planned,
                 status: 'InProgress',
-                startDate: startDateLocal.toISOString(),
+                startDate: startDate.toISOString(),
                 endDate: endDate.toISOString(),
             }),
         );
     }, [
         dispatch,
         phaseIndex,
-        startDateLocal,
+        startDate,
         endDate,
         disbursementAmountLocal,
         contractsLocal,
@@ -119,6 +116,35 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         [summaryOfChangesLocal],
     );
 
+    const description = useMemo(() => {
+        const now = new Date();
+        if (now < startDate) {
+            if (isValid) {
+                return (
+                    <div>
+                        Once the two-week disbursement phase begins, you will be
+                        able to update the project actuals.
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    Before the two-week disbursement phase begins, please enter
+                    the planned resources here. After the phase start date, you
+                    will be able to update the project actuals.
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    The two-week disbursement phase has already begun. Please
+                    enter planned resources to continue.
+                </div>
+            );
+        }
+    }, [isValid, startDate]);
+
     const wrapperClasses = useCallback(
         (isValid: boolean) =>
             classNames(
@@ -133,35 +159,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     return (
         <div className="w-full">
             <div className="isolate -space-y-px rounded-md shadow-sm">
-                <div className="text-lg px-4 pt-4 pb-8">
-                    Before the two-week disbursement phase begins, please enter
-                    the planned resources here. After the phase start date, you
-                    will be able to update the project actuals.
-                </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
-                    <div>
-                        <label className="block text-xs font-medium text-gray-900">
-                            Start Date
-                        </label>
-                        <DatePicker
-                            selected={startDateLocal}
-                            onChange={date =>
-                                setStartDateLocal(date || startDateLocal)
-                            }
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-900">
-                            End Date
-                        </label>
-                        <DatePicker
-                            selected={endDate}
-                            onChange={_ => {
-                                /* disallow */
-                            }}
-                            disabled={true}
-                        />
-                    </div>
+                <PhaseTimespan phase={phase} />
+                <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
+                    {description}
                 </div>
                 <div className={wrapperClasses(isDisbursementValid)}>
                     <label className="block text-xs font-medium text-gray-900">

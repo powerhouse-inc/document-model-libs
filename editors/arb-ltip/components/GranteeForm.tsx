@@ -69,8 +69,12 @@ const GranteeForm = (props: GranteeFormProps) => {
     );
 
     // 16 weeks
-    const startDate = new Date(2024, 3, 22);
-    const endDate = new Date(2024, 7, 12);
+    const [startDate, setStartDate] = useState(new Date(2024, 3, 22));
+    const endDate = useMemo(() => {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + 112);
+        return date;
+    }, [startDate]);
 
     const onSetGranteeName = useCallback(
         (name: string) => {
@@ -165,10 +169,13 @@ const GranteeForm = (props: GranteeFormProps) => {
                         </label>
                         <DatePicker
                             selected={startDate}
-                            onChange={_ => {
-                                //
+                            onChange={date => {
+                                if (!date) {
+                                    return;
+                                }
+
+                                setStartDate(date);
                             }}
-                            disabled={true}
                         />
                     </div>
                     <div>

@@ -1,4 +1,4 @@
-import { GranteeActuals, GranteePlanned, Maybe } from '..';
+import { GranteeActuals, GranteePlanned, GranteeStats, Maybe } from '..';
 
 const gtZero = (value: Maybe<number>) => !!value && value > 0;
 const gteZero = (value: Maybe<number>) => !!value && value > 0;
@@ -37,6 +37,13 @@ const isActualsValid = (actuals: GranteeActuals) =>
     isDisclosuresValid(actuals.disclosures) &&
     isSummaryValid(actuals.summary);
 
+const isStatsValid = (stats: GranteeStats) =>
+    gteZero(stats.avgDailyTVL) &&
+    gteZero(stats.avgDailyTXNS) &&
+    gteZero(stats.avgDailyVolume) &&
+    gteZero(stats.transactionFees) &&
+    gteZero(stats.uniqueAddressesCount);
+
 const validators = {
     isDisbursementValid,
     isDistributionMechanismsValid,
@@ -53,5 +60,6 @@ const validators = {
 
     isPlannedValid,
     isActualsValid,
+    isStatsValid,
 };
 export default validators;

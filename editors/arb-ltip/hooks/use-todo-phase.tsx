@@ -1,23 +1,10 @@
-import { Document } from 'document-model/document';
-import {
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState,
-    ArbLtipGranteeState,
-    Phase,
-} from '../../../document-models/arb-ltip-grantee';
+import { Phase } from '../../../document-models/arb-ltip-grantee';
 import { Maybe } from 'document-model/document-model';
 
 // finds the next phase that needs attention
-const useTodoPhase = (
-    document: Document<
-        ArbLtipGranteeState,
-        ArbLtipGranteeAction,
-        ArbLtipGranteeLocalState
-    >,
-): [Maybe<Phase>, number] => {
-    const phases = document.state.global.phases;
+const useTodoPhase = (phases: Maybe<Array<Maybe<Phase>>>): number => {
     if (!phases) {
-        return [null, -1];
+        return -1;
     }
 
     const now = Date.now();
@@ -28,12 +15,16 @@ const useTodoPhase = (
         }
 
         const phaseStart = new Date(phase.startDate).getTime();
-        if (phase.status !== 'Finalized' && phaseStart < now) {
-            return [phase, i];
+        if (phaseStart > now) {
+            return i;
+        }
+
+        if (phase.status !== 'Finalized') {
+            return i;
         }
     }
 
-    return [phases[0]!, 0];
+    return -1;
 };
 
 export default useTodoPhase;

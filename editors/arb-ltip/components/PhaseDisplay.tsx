@@ -9,26 +9,50 @@ import validators from '../../../document-models/arb-ltip-grantee/src/validators
 
 type PhaseDisplayProps = IProps;
 const PhaseDisplay = (props: PhaseDisplayProps) => {
-    const [phase, phaseIndex] = useTodoPhase(props.document);
+    const phases = props.document.state.global.phases;
+    const phaseIndex = useTodoPhase(phases);
+
+    const phase = useMemo(() => {
+        if (
+            !phases?.length ||
+            !(phaseIndex >= 0 && phaseIndex < phases.length)
+        ) {
+            return null;
+        }
+
+        return phases[phaseIndex];
+    }, [phases, phaseIndex]);
+
     const status = useMemo(() => {
         if (!phase) {
             return 'Invalid';
         }
 
-        switch (phase.status) {
-            case 'NotStarted': {
-                return 'Start';
-            }
-            case 'InProgress': {
-                return 'InProgress';
-            }
-            case 'Finalized': {
-                return 'Finalize';
-            }
-            default: {
-                return 'Invalid';
-            }
+        const now = Date.now();
+        const phaseEnd = new Date(phase.endDate).getTime();
+        const phaseStart = new Date(phase.startDate).getTime();
+        const isPlannedValid =
+            !!phase.planned && validators.isPlannedValid(phase.planned);
+        const isActualsValid =
+            !!phase.actuals && validators.isActualsValid(phase.actuals);
+
+        if (now < phaseStart) {
+            return 'Planning';
         }
+
+        if (!isPlannedValid) {
+            return 'Planning';
+        }
+
+        if (!isActualsValid) {
+            return 'Reporting';
+        }
+
+        if (now > phaseEnd) {
+            return 'Finalizing';
+        }
+
+        return 'Reporting';
     }, [phase]);
 
     return (
@@ -37,21 +61,21 @@ const PhaseDisplay = (props: PhaseDisplayProps) => {
                 <>
                     <PhaseTimeline status={status} />
 
-                    {status === 'Start' && (
+                    {status === 'Planning' && (
                         <PlannedResourcesForm
                             phase={phase}
                             phaseIndex={phaseIndex}
                             {...props}
                         />
                     )}
-                    {status === 'InProgress' && (
+                    {status === 'Reporting' && (
                         <ReportingForm
                             phase={phase}
                             phaseIndex={phaseIndex}
                             {...props}
                         />
                     )}
-                    {status === 'Finalize' && (
+                    {status === 'Finalizing' && (
                         <FinalizingForm
                             phase={phase}
                             phaseIndex={phaseIndex}
