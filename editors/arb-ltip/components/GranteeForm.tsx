@@ -68,11 +68,11 @@ const GranteeForm = (props: GranteeFormProps) => {
         metricsDashboardLink || '',
     );
 
-    // 16 weeks
-    const [startDate, setStartDate] = useState(new Date(2024, 3, 22));
+    // 12 weeks
+    const [startDate, setStartDate] = useState(new Date(2024, 3, 27));
     const endDate = useMemo(() => {
         const date = new Date(startDate);
-        date.setDate(date.getDate() + 112);
+        date.setDate(date.getDate() + 84);
         return date;
     }, [startDate]);
 

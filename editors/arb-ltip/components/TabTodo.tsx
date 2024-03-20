@@ -7,8 +7,8 @@ import FinalizingForm from './FinalizingForm';
 import useTodoPhase from '../hooks/use-todo-phase';
 import validators from '../../../document-models/arb-ltip-grantee/src/validators';
 
-type PhaseDisplayProps = IProps;
-const PhaseDisplay = (props: PhaseDisplayProps) => {
+type TabTodoProps = IProps;
+const TabTodo = (props: TabTodoProps) => {
     const phases = props.document.state.global.phases;
     const phaseIndex = useTodoPhase(phases);
 
@@ -88,4 +88,4 @@ const PhaseDisplay = (props: PhaseDisplayProps) => {
     );
 };
 
-export default PhaseDisplay;
+export default TabTodo;

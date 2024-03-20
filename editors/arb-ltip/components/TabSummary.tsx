@@ -1,8 +1,8 @@
 import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
 import GranteeStats from './GranteeStats';
 
-type GranteeDisplayProps = ArbLtipGranteeState & { onEdit: () => void };
-const GranteeDisplay = (props: GranteeDisplayProps) => {
+type TabSummaryProps = ArbLtipGranteeState & { onEdit: () => void };
+const TabSummary = (props: TabSummaryProps) => {
     const {
         granteeName,
         grantSummary,
@@ -79,4 +79,4 @@ const GranteeDisplay = (props: GranteeDisplayProps) => {
     );
 };
 
-export default GranteeDisplay;
+export default TabSummary;

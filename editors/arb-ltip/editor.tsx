@@ -7,10 +7,11 @@ import {
 import { Icon, RWATabsProps } from '@powerhousedao/design-system';
 import { useMemo, useState } from 'react';
 import GranteeForm from './components/GranteeForm';
-import GranteeDisplay from './components/GranteeDisplay';
-import PhaseDisplay from './components/PhaseDisplay';
+import TabTodo from './components/TabTodo';
 import { classNames } from './util';
 import { actions } from 'document-model/document-model';
+import TabSummary from './components/TabSummary';
+import TabHistorical from './components/TabHistorical';
 
 export type CustomEditorProps = Pick<
     RWATabsProps,
@@ -190,13 +191,13 @@ const Editor = (props: IProps) => {
                         onExport={onExport}
                     />
                     {activeTab === 'Summary' && (
-                        <GranteeDisplay
+                        <TabSummary
                             {...document.state.global}
                             onEdit={() => setIsEditMode(true)}
                         />
                     )}
-                    {activeTab === 'Todo' && <PhaseDisplay {...props} />}
-                    {activeTab === 'Historical' && <PhaseDisplay {...props} />}
+                    {activeTab === 'Todo' && <TabTodo {...props} />}
+                    {activeTab === 'Historical' && <TabHistorical {...props} />}
                 </>
             )}
         </div>
