@@ -187,9 +187,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         <DatePicker
                             selected={endDate}
                             className="py-2 px-3 border border-gray-600 bg-white outline-none"
-                            onChange={_ => {
-                                /* disallow */
-                            }}
+                            onChange={() => {}}
                             disabled={true}
                         />
                     </div>
