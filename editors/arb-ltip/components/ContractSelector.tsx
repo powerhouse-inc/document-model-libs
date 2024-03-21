@@ -88,7 +88,7 @@ const ContractSelector = (props: ContractSelectorProps) => {
         <div>
             <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="h-60 rounded-lg bg-white px-4 py-5 shadow-lg sm:p-6 flex flex-col -space-y-px">
-                    <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                    <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                         <label className="block text-xs font-medium text-gray-900">
                             Contract Label
                         </label>
@@ -100,7 +100,7 @@ const ContractSelector = (props: ContractSelectorProps) => {
                             onChange={e => setLabelLocal(e.target.value)}
                         />
                     </div>
-                    <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                    <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                         <label className="block text-xs font-medium text-gray-900">
                             Contract Address
                         </label>
