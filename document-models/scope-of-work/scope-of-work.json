@@ -1,0 +1,48 @@
+{
+    "id": "powerhouse/scope-of-work",
+    "name": "ScopeOfWork",
+    "extension": "phsow",
+    "description": "Document Model Type for scope of work data types",
+    "author": {
+        "name": "Powerhouse",
+        "website": "https://powerhouse.inc"
+    },
+    "specifications": [
+        {
+            "version": 1,
+            "changeLog": [],
+            "state": {
+                "global": {
+                    "schema": "type ScopeOfWorkState {\n    deliverables: [Deliverable]\n    owners: [Owner]\n}\n\ntype Deliverable { \n  id: ID!\n  title: String!\n  description: String\n\n  status: DeliverableStatus! # Updated to include \"BLOCKED\"\n  owner: Owner\n\t\n  workProgress: DeliverableProgress\n\tworkUnitBudget: Float! # Default is 1.\n  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  \n  \n  keyResults: [KeyResult!]!\n}\n\ntype Owner {\n  ref: OwnerType! \n  id: ID!\n  imgUrl: String\n  name: String!\n  code: String!\n}\n\nunion DeliverableProgress = StoryPoints | Percentage\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype KeyResult {\n  id: ID!\n  title: String\n  link: String!\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\nenum OwnerType {\n  CoreUnit\n  Delegates\n  SpecialPurposeFund\n  Project\n  EcosystemActor\n  AlignedDelegates\n  Keepers\n}",
+                    "initialValue": "{\"deliverables\":[],\"owners\":[]}",
+                    "examples": []
+                },
+                "local": {
+                    "schema": "",
+                    "initialValue": "",
+                    "examples": []
+                }
+            },
+            "modules": [
+                {
+                    "id": "ArJxIfACVoDiH2T7UjwBLA5kaas=",
+                    "name": "Deliverables",
+                    "description": "Basic operations to create, edit and manage the set of deliverables.",
+                    "operations": [
+                        {
+                            "id": "IvA8hHMhzErU735rGKbMGvRolEs=",
+                            "name": "CreateDeliverable",
+                            "description": "",
+                            "schema": "input CreateDeliverableInput {\n    title: String!\n    description: String\n    status: DeliverableStatus\n    owner: Owner\n}\n\ntype Owner {\n  id: ID\n  imgUrl: String\n  name: String\n  code: String\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

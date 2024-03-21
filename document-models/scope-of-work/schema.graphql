@@ -1,0 +1,89 @@
+type ScopeOfWorkState {
+    deliverables: [Deliverable!]!
+    owners: [Owner]
+}
+
+type Deliverable { 
+  id: ID!
+  title: String!
+  description: String
+
+  status: DeliverableStatus! # Updated to include "BLOCKED"
+  owner: Owner
+	
+  workProgress: DeliverableProgress
+	workUnitBudget: Float! # Default is 1.
+  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  
+  
+  keyResults: [KeyResult!]!
+}
+
+type Owner {
+  ref: OwnerType! 
+  id: ID!
+  imgUrl: String
+  name: String!
+  code: String!
+}
+
+union DeliverableProgress = StoryPoints | Percentage
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less then or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type KeyResult {
+  id: ID!
+  title: String
+  link: String!
+}
+
+enum DeliverableStatus {
+    TODO
+    IN_PROGRESS
+    DELIVERED
+    BLOCKED
+    WONT_DO
+}
+
+enum OwnerType {
+  CoreUnit
+  Delegates
+  SpecialPurposeFund
+  Project
+  EcosystemActor
+  AlignedDelegates
+  Keepers
+}
+
+# Deliverables
+
+input CreateDeliverableInput {
+    id: ID!
+    title: String!
+    description: String
+    status: DeliverableStatus
+    owner: Owner
+}
+
+type Owner {
+  id: ID
+  imgUrl: String
+  name: String
+  code: String
+}
+
+enum DeliverableStatus {
+    TODO
+    IN_PROGRESS
+    DELIVERED
+    BLOCKED
+    WONT_DO
+}
+
+# add new types here
