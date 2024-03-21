@@ -194,6 +194,7 @@ const Editor = (props: IProps) => {
                         <TabSummary
                             {...document.state.global}
                             onEdit={() => setIsEditMode(true)}
+                            onOpenHistorical={() => setActiveTab('Historical')}
                         />
                     )}
                     {activeTab === 'Todo' && <TabTodo {...props} />}

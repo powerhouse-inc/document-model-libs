@@ -1,7 +1,10 @@
 import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
 import GranteeStats from './GranteeStats';
 
-type TabSummaryProps = ArbLtipGranteeState & { onEdit: () => void };
+type TabSummaryProps = ArbLtipGranteeState & {
+    onEdit: () => void;
+    onOpenHistorical: () => void;
+};
 const TabSummary = (props: TabSummaryProps) => {
     const {
         granteeName,
@@ -36,7 +39,10 @@ const TabSummary = (props: TabSummaryProps) => {
                     </a>
                 </div>
             )}
-            <GranteeStats />
+            <GranteeStats
+                state={props}
+                onOpenHistorical={props.onOpenHistorical}
+            />
             <div className="mt-6">
                 <dl className="grid grid-cols-1 sm:grid-cols-2">
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
