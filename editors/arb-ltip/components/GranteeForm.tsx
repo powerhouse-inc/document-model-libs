@@ -2,7 +2,7 @@ import {
     ArbLtipGranteeState,
     FundingType,
 } from '../../../document-models/arb-ltip-grantee';
-import { TextInput } from 'document-model-editors';
+import { TextInput } from 'document-model-libs/utils';
 import {
     initPhase,
     setGranteeMetricsDash,
@@ -163,13 +163,14 @@ const GranteeForm = (props: GranteeFormProps) => {
                 />
             </div>
             <div className="isolate -space-y-px rounded-md shadow-sm">
-                <div className="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
+                <div className="group relative rounded-md !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
                     <div>
                         <label className="block text-xs font-medium text-gray-900">
                             Start Date
                         </label>
                         <DatePicker
                             selected={startDate}
+                            className="py-2 px-3 border border-gray-600 group-focus-within:border-purple-600 outline-none"
                             onChange={date => {
                                 if (!date) {
                                     return;
@@ -185,6 +186,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         </label>
                         <DatePicker
                             selected={endDate}
+                            className="py-2 px-3 border border-gray-600 bg-white outline-none"
                             onChange={_ => {
                                 /* disallow */
                             }}
@@ -192,7 +194,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         />
                     </div>
                 </div>
-                <div className="relative rounded-md rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className="relative rounded-md !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="block text-xs font-medium text-gray-900">
                         Disbursement Address (required)
                     </label>
@@ -206,7 +208,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         }
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="block text-xs font-medium text-gray-900">
                         Funding Address (required)
                     </label>
@@ -218,7 +220,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         onChange={e => setFundingAddressLocal(e.target.value)}
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="block text-xs font-medium text-gray-900">
                         Metrics Dashboard Link
                     </label>
@@ -232,7 +234,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         }
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="block text-xs font-medium text-gray-900 mb-1">
                         Funding Type(s) (required)
                     </label>
@@ -252,7 +254,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         }}
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                <div className="relative rounded-md !rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="block text-xs font-medium text-gray-900">
                         Grant Summary (required)
                     </label>

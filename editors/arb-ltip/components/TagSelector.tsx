@@ -1,6 +1,6 @@
 import { Menu, Transition } from '@headlessui/react';
 import { Icon } from '@powerhousedao/design-system';
-import { Fragment } from 'react/jsx-runtime';
+import { Fragment } from 'react';
 import { classNames } from '../util';
 
 type TagSelectorSchemaRecord = {

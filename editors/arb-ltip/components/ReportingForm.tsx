@@ -132,7 +132,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                 showErrors && !isValid
                     ? 'ring-2 ring-red-300'
                     : 'ring-1 ring-gray-300',
-                'relative rounded-md rounded-b-none rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
+                'relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
             ),
         [showErrors],
     );
@@ -144,13 +144,13 @@ const ReportingForm = (props: ReportingFormProps) => {
                 <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
                     {description}
                 </div>
-                <div className="relative rounded-md rounded-t-none rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex">
+                <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex">
                     <div
                         className={classNames(
                             showErrors && !isArbReceivedValid
                                 ? 'ring-2 ring-red-300'
                                 : '',
-                            'flex-1 relative rounded-md rounded-b-none rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
+                            'flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
                         )}
                     >
                         <label className="block text-xs font-medium text-gray-900">
@@ -182,7 +182,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                             showErrors && !isArbUtilizedValid
                                 ? 'ring-2 ring-red-300'
                                 : '',
-                            'flex-1 relative rounded-md rounded-b-none rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
+                            'flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
                         )}
                     >
                         <label className="block text-xs font-medium text-gray-900">
@@ -209,7 +209,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                             }}
                         />
                     </div>
-                    <div className="flex-1 relative rounded-md rounded-b-none rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                    <div className="flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                         <label className="block text-xs font-medium text-gray-900">
                             ARB Remaining
                         </label>

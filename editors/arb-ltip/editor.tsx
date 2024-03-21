@@ -171,7 +171,7 @@ const Editor = (props: IProps) => {
     ]);
 
     return (
-        <div className="w-[840px] mx-auto">
+        <div className="w-[840px] mx-auto [&_input]:outline-none [&_textarea]:outline-none">
             {!isValid || isEditMode ? (
                 <>
                     <ControlsHeader {...props} />
