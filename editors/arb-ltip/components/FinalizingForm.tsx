@@ -66,8 +66,6 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                 phaseIndex,
                 stats,
                 status: 'Finalized',
-                startDate: phase.startDate,
-                endDate: phase.endDate,
             }),
         );
     }, [

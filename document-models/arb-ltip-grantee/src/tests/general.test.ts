@@ -6,7 +6,7 @@
 import { generateMock } from '@powerhousedao/codegen';
 
 import utils from '../../gen/utils';
-import { z } from '../../gen/schema';
+import { InitGranteeInput, z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/general/creators';
 import { ArbLtipGranteeDocument } from '../../gen/types';
@@ -18,68 +18,34 @@ describe('General Operations', () => {
         document = utils.createDocument();
     });
 
-    it('should handle setGrantee operation', () => {
-        const input = generateMock(z.SetGranteeInputSchema());
-        const updatedDocument = reducer(document, creators.setGrantee(input));
+    it('should handle initGrantee operation', () => {
+        const input: InitGranteeInput = {
+            disbursementContractAddress:
+                '0x1234567890123456789012345678901234567890',
+            fundingAddress: '0x1234567890123456789012345678901234567890',
+            fundingType: [],
+            grantSize: 100,
+            grantSummary: 'Summary',
+            granteeName: 'Name',
+            matchingGrantSize: 10,
+            metricsDashboardLink: '',
+            numberOfPhases: 1,
+            phaseDuration: 1,
+            startDate: new Date().toISOString(),
+        };
+        const updatedDocument = reducer(document, creators.initGrantee(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe('SET_GRANTEE');
+        expect(updatedDocument.operations.global[0].type).toBe('INIT_GRANTEE');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle setGranteeName operation', () => {
-        const input = generateMock(z.SetGranteeNameInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.setGranteeName(input),
-        );
+    it('should handle editGrantee operation', () => {
+        const input = generateMock(z.EditGranteeInputSchema());
+        const updatedDocument = reducer(document, creators.editGrantee(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'SET_GRANTEE_NAME',
-        );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
-    });
-    it('should handle setGranteeGrantSize operation', () => {
-        const input = generateMock(z.SetGranteeGrantSizeInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.setGranteeGrantSize(input),
-        );
-
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'SET_GRANTEE_GRANT_SIZE',
-        );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
-    });
-    it('should handle setGranteeSummary operation', () => {
-        const input = generateMock(z.SetGranteeSummaryInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.setGranteeSummary(input),
-        );
-
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'SET_GRANTEE_SUMMARY',
-        );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
-    });
-    it('should handle setGranteeMetricsDash operation', () => {
-        const input = generateMock(z.SetGranteeMetricsDashInputSchema());
-        const updatedDocument = reducer(
-            document,
-            creators.setGranteeMetricsDash(input),
-        );
-
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'SET_GRANTEE_METRICS_DASH',
-        );
+        expect(updatedDocument.operations.global[0].type).toBe('EDIT_GRANTEE');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });

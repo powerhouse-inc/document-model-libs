@@ -16,39 +16,26 @@ describe('Metrics Operations', () => {
 
     beforeEach(() => {
         document = utils.createDocument();
-    });
-
-    it('should handle initPhase operation', () => {
-        const input = generateMock(z.InitPhaseInputSchema());
-        input.numberOfPhases = 8;
-        input.phaseDuration = 2;
-        input.startDate = new Date().toISOString();
-
-        const updatedDocument = reducer(document, creators.initPhase(input));
-
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe('INIT_PHASE');
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
-    });
-    it('should handle editPhase operation', () => {
-        let updatedDocument = reducer(
-            document,
-            creators.initPhase({
+        document.state.global.phases = [
+            {
                 startDate: new Date().toISOString(),
-                numberOfPhases: 8,
-                phaseDuration: 2,
-            }),
-        );
+                endDate: new Date().toISOString(),
+                actuals: null,
+                planned: null,
+                stats: null,
+                status: 'NotStarted',
+            },
+        ];
+    });
 
+    it('should handle editPhase operation', () => {
         const input = generateMock(z.EditPhaseInputSchema());
         input.phaseIndex = 0;
-        input.endDate = new Date().toISOString();
 
-        updatedDocument = reducer(updatedDocument, creators.editPhase(input));
+        const updatedDocument = reducer(document, creators.editPhase(input));
 
-        expect(updatedDocument.operations.global).toHaveLength(2);
-        expect(updatedDocument.operations.global[1].type).toBe('EDIT_PHASE');
-        expect(updatedDocument.operations.global[1].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe('EDIT_PHASE');
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
     });
 });

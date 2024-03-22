@@ -6,7 +6,7 @@
     "description": "ARB LTIP Grantee",
     "extension": "grantee",
     "id": "ARBLTIPGrantee",
-    "name": "ArbLtipGrantee",
+    "name": " ArbLtipGrantee",
     "specifications": [
         {
             "changeLog": [],
@@ -17,10 +17,10 @@
                     "description": "General",
                     "operations": [
                         {
-                            "id": "jcyII5IYWGnyRzBvIPginX947L4=",
-                            "name": "setGrantee",
+                            "id": "oYXrC8tmu7Nt4mrtgVW5DZxffuY=",
+                            "name": "initGrantee",
                             "description": "",
-                            "schema": "input SetGranteeInput {\n    id: ID!\n}\n",
+                            "schema": "input InitGranteeInput {\n\tgranteeName: String!\n\tgrantSize: Float!\n\tmatchingGrantSize: Float!\n\tgrantSummary: String!\n\tfundingAddress: String!\n\tfundingType: [FundingType!]!\n\tdisbursementContractAddress: String!\n\tmetricsDashboardLink: String!\n\tstartDate: DateTime!\n\tphaseDuration: Int \n\tnumberOfPhases: Int\n}\n\nscalar DateTime\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -28,43 +28,10 @@
                             "scope": "global"
                         },
                         {
-                            "id": "UUFQ8o068cEU3qGt5oFrvs3lv0s=",
-                            "name": "setGranteeName",
+                            "id": "2/3yfjjh2asyidCdADsI/H5f6uM=",
+                            "name": "editGrantee",
                             "description": "",
-                            "schema": "input SetGranteeNameInput {\n\tgranteeName: String!\n}\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "D0a+Qv6ufp2rp1wt/AMBK2m0VY0=",
-                            "name": "setGranteeGrantSize",
-                            "description": "",
-                            "schema": "input SetGranteeGrantSizeInput {\n\tgrantSize: Float!\n\tmatchingGrantSize: Float!\n}\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "e2UI8QLnDAY0uW71fZ8mzsP7pSc=",
-                            "name": "setGranteeSummary",
-                            "description": "",
-                            "schema": "input SetGranteeSummaryInput {\n\tgrantSummary: String!\n\tfundingAddress: String!\n\tfundingType: [FundingType!]!\n\tdisbursementContractAddress: String!\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "qvLtbE4SRX3UDLpCCwRIaf4IhEg=",
-                            "name": "setGranteeMetricsDash",
-                            "description": "",
-                            "schema": "input SetGranteeMetricsDashInput {\n    metricsDashboardLink: String!\n}\n\n# add new types here\n",
+                            "schema": "input EditGranteeInput {\n\tgranteeName: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: [FundingType!]\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],
@@ -79,21 +46,10 @@
                     "description": "Edit Metrics",
                     "operations": [
                         {
-                            "id": "uhNRV5lCc4rbg7L/wgjntvJCoXc=",
-                            "name": "initPhase",
-                            "description": "",
-                            "schema": "input InitPhaseInput {\n    startDate: DateTime!\n\tphaseDuration: Int \n    numberOfPhases: Int\n}\n\nscalar DateTime\n\n",
-                            "template": "",
-                            "reducer": "",
-                            "errors": [],
-                            "examples": [],
-                            "scope": "global"
-                        },
-                        {
-                            "id": "ZSbkPIZOZoCK6jT/XShHEDnRzqs=",
+                            "id": "9xN3SAzSEHq7PmyWXfADGKzvVW8=",
                             "name": "editPhase",
                             "description": "",
-                            "schema": "input EditPhaseInput {\n    startDate: DateTime!\n\tendDate: DateTime!\n\tphaseIndex: Int\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nscalar DateTime\n\ntype Phase {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n\n\n",
+                            "schema": "input EditPhaseInput {\n\tphaseIndex: Int!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}\n\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],

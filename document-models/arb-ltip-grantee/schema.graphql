@@ -78,27 +78,38 @@ enum DistributionMechanism {
 
 # General
 
-input SetGranteeInput {
-    id: ID!
-}
-
-
-input SetGranteeNameInput {
+input InitGranteeInput {
 	granteeName: String!
-}
-
-
-input SetGranteeGrantSizeInput {
 	grantSize: Float!
 	matchingGrantSize: Float!
-}
-
-
-input SetGranteeSummaryInput {
 	grantSummary: String!
 	fundingAddress: String!
 	fundingType: [FundingType!]!
 	disbursementContractAddress: String!
+	metricsDashboardLink: String!
+	startDate: DateTime!
+	phaseDuration: Int 
+	numberOfPhases: Int
+}
+
+scalar DateTime
+
+enum FundingType {
+	EOA
+	Multisig
+	TwoofThreeMultisig
+	ThreeofFiveMultisig
+}
+
+input EditGranteeInput {
+	granteeName: String
+	grantSize: Float
+	matchingGrantSize: Float
+	grantSummary: String
+	fundingAddress: String
+	fundingType: [FundingType!]
+	disbursementContractAddress: String
+	metricsDashboardLink: String
 }
 
 enum FundingType {
@@ -109,40 +120,10 @@ enum FundingType {
 }
 
 
-input SetGranteeMetricsDashInput {
-    metricsDashboardLink: String!
-}
-
-# add new types here
-
-
 # Metrics
 
-input InitPhaseInput {
-    startDate: DateTime!
-	phaseDuration: Int 
-    numberOfPhases: Int
-}
-
-scalar DateTime
-
-
-
 input EditPhaseInput {
-    startDate: DateTime!
-	endDate: DateTime!
-	phaseIndex: Int
-	actuals: GranteeActuals
-	planned: GranteePlanned
-	stats: GranteeStats
-	status: Status
-}
-
-scalar DateTime
-
-type Phase {
-	startDate: DateTime!
-	endDate: DateTime!
+	phaseIndex: Int!
 	actuals: GranteeActuals
 	planned: GranteePlanned
 	stats: GranteeStats
@@ -191,5 +172,4 @@ enum DistributionMechanism {
 	LPIncentives
 	Airdrop
 }
-
 

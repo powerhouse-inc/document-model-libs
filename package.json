@@ -54,6 +54,11 @@
       "import": "./dist/utils.js",
       "require": "./dist/utils.cjs",
       "types": "./dist/utils.d.ts"
+    },
+    "./arb-ltip-grantee": {
+      "import": "./dist/arb-ltip-grantee.js",
+      "require": "./dist/arb-ltip-grantee.cjs",
+      "types": "./dist/arb-ltip-grantee.d.ts"
     }
   },
   "scripts": {

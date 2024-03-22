@@ -110,10 +110,6 @@ const ReportingForm = (props: ReportingFormProps) => {
             editPhase({
                 phaseIndex,
                 actuals,
-
-                // todo: make these optional
-                startDate: phase.startDate,
-                endDate: phase.endDate,
             }),
         );
     }, [

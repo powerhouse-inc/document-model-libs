@@ -78,8 +78,6 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                 phaseIndex,
                 planned,
                 status: 'InProgress',
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString(),
             }),
         );
     }, [
