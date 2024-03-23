@@ -1,0 +1,175 @@
+scalar DateTime
+
+type ArbLtipGranteeState {
+	id: ID!
+	granteeName: String
+	grantSize: Float
+	matchingGrantSize: Float
+	grantSummary: String
+	fundingAddress: String
+	fundingType: [FundingType]
+	disbursementContractAddress: String
+	metricsDashboardLink: String
+	phases: [Phase]
+}
+
+enum FundingType {
+	EOA
+	Multisig
+	TwoofThreeMultisig
+	ThreeofFiveMultisig
+}
+
+type Phase {
+	startDate: DateTime!
+	endDate: DateTime!
+	actuals: GranteeActuals
+	planned: GranteePlanned
+	stats: GranteeStats
+	status: Status
+}
+
+enum Status {
+	Uninitialized
+	NotStarted
+	InProgress
+	Finalized
+}
+
+
+type GranteeActuals {
+	arbReceived: Float
+	arbUtilized: Float
+	arbRemaining: Float
+	contractsIncentivized: [Contract]
+	summary: String
+	disclosures: String
+}
+
+type GranteePlanned {
+	arbToBeDistributed: Float
+	contractsIncentivized: [Contract]
+	distributionMechanism: [DistributionMechanism]
+	summary: String
+	summaryOfChanges: String
+}
+
+type GranteeStats {
+	avgDailyTVL: Float
+	avgDailyTXNS: Float
+	avgDailyVolume: Float
+	uniqueAddressesCount: Float
+	transactionFees: Float
+}
+
+type Contract {
+	contractId: ID!
+	contractLabel: String
+	contractAddress: String
+}
+
+enum DistributionMechanism {
+	LPIncentives
+	Airdrop
+}
+
+
+
+
+# General
+
+input InitGranteeInput {
+	granteeName: String!
+	grantSize: Float!
+	matchingGrantSize: Float!
+	grantSummary: String!
+	fundingAddress: String!
+	fundingType: [FundingType!]!
+	disbursementContractAddress: String!
+	metricsDashboardLink: String!
+	startDate: DateTime!
+	phaseDuration: Int 
+	numberOfPhases: Int
+}
+
+scalar DateTime
+
+enum FundingType {
+	EOA
+	Multisig
+	TwoofThreeMultisig
+	ThreeofFiveMultisig
+}
+
+input EditGranteeInput {
+	granteeName: String
+	grantSize: Float
+	matchingGrantSize: Float
+	grantSummary: String
+	fundingAddress: String
+	fundingType: [FundingType!]
+	disbursementContractAddress: String
+	metricsDashboardLink: String
+}
+
+enum FundingType {
+	EOA
+	Multisig
+	TwoofThreeMultisig
+	ThreeofFiveMultisig
+}
+
+
+# Metrics
+
+input EditPhaseInput {
+	phaseIndex: Int!
+	actuals: GranteeActuals
+	planned: GranteePlanned
+	stats: GranteeStats
+	status: Status
+}
+
+enum Status {
+	Uninitialized
+	NotStarted
+	InProgress
+	Finalized
+}
+
+type GranteeActuals {
+	arbReceived: Float
+	arbUtilized: Float
+	arbRemaining: Float
+	contractsIncentivized: [Contract]
+	summary: String
+	disclosures: String
+}
+
+type GranteePlanned {
+	arbToBeDistributed: Float
+	contractsIncentivized: [Contract]
+	distributionMechanism: [DistributionMechanism]
+	summary: String
+	summaryOfChanges: String
+}
+
+type GranteeStats {
+	avgDailyTVL: Float
+	avgDailyTXNS: Float
+	avgDailyVolume: Float
+	uniqueAddressesCount: Float
+	transactionFees: Float
+}
+
+type Contract {
+	contractId: ID!
+	contractLabel: String
+	contractAddress: String
+}
+
+enum DistributionMechanism {
+	LPIncentives
+	Airdrop
+}
+

@@ -4,6 +4,7 @@
 /storybook-static
 
 **/gen
+document-models/arb-ltip-grantee/arb-ltip-grantee.json
 
 .yalc/
 yalc.lock

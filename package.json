@@ -54,6 +54,11 @@
       "import": "./dist/utils.js",
       "require": "./dist/utils.cjs",
       "types": "./dist/utils.d.ts"
+    },
+    "./arb-ltip-grantee": {
+      "import": "./dist/arb-ltip-grantee.js",
+      "require": "./dist/arb-ltip-grantee.cjs",
+      "types": "./dist/arb-ltip-grantee.d.ts"
     }
   },
   "scripts": {
@@ -99,6 +104,7 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.57",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "@vitest/coverage-v8": "^1.2.1",
@@ -147,14 +153,18 @@
     "@acaldas/graphql-codegen-typescript-validation-schema": "^0.12.3",
     "@graphql-codegen/core": "^4.0.2",
     "@graphql-codegen/typescript": "^4.0.6",
+    "@headlessui/react": "^1.7.18",
     "@internationalized/date": "^3.5.1",
     "@storybook/test": "^8.0.2",
+    "@types/react-datepicker": "^6.2.0",
     "copy-anything": "^3.0.5",
     "date-fns": "^3.3.1",
     "deep-object-diff": "^1.1.9",
     "jsonc-parser": "^3.2.1",
     "jszip": "^3.10.1",
     "react-aria-components": "1.1.1",
-    "tailwind-merge": "^2.2.1"
+    "react-datepicker": "^6.5.0",
+    "tailwind-merge": "^2.2.1",
+    "uuid": "^9.0.1"
   }
 }
