@@ -1,7 +1,7 @@
 {
     "id": "powerhouse/scope-of-work",
     "name": "ScopeOfWork",
-    "extension": "phsow",
+    "extension": "pwsow",
     "description": "Document Model Type for scope of work data types",
     "author": {
         "name": "Powerhouse",
@@ -13,7 +13,7 @@
             "changeLog": [],
             "state": {
                 "global": {
-                    "schema": "type ScopeOfWorkState {\n    deliverables: [Deliverable]\n    owners: [Owner]\n}\n\ntype Deliverable { \n  id: ID!\n  title: String!\n  description: String\n\n  status: DeliverableStatus! # Updated to include \"BLOCKED\"\n  owner: Owner\n\t\n  workProgress: DeliverableProgress\n\tworkUnitBudget: Float! # Default is 1.\n  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  \n  \n  keyResults: [KeyResult!]!\n}\n\ntype Owner {\n  ref: OwnerType! \n  id: ID!\n  imgUrl: String\n  name: String!\n  code: String!\n}\n\nunion DeliverableProgress = StoryPoints | Percentage\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype KeyResult {\n  id: ID!\n  title: String\n  link: String!\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\nenum OwnerType {\n  CoreUnit\n  Delegates\n  SpecialPurposeFund\n  Project\n  EcosystemActor\n  AlignedDelegates\n  Keepers\n}",
+                    "schema": "type ScopeOfWorkState {\n\tdeliverables: [Deliverable]\n    owners: [Owner]\n}\n\ntype Deliverable { \n  id: ID!\n  title: String!\n  description: String\n\n  status: DeliverableStatus! # Updated to include \"BLOCKED\"\n  owner: Owner\n\t\n  workProgress: DeliverableProgress\n\tworkUnitBudget: Float! # Default is 1.\n  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  \n  \n  keyResults: [KeyResult!]!\n}\n\ntype Owner {\n  ref: OwnerType! \n  id: ID!\n  imgUrl: String\n  name: String!\n  code: String!\n}\n\nunion DeliverableProgress = StoryPoints | Percentage\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype KeyResult {\n  id: ID!\n  title: String\n  link: String!\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\nenum OwnerType {\n  CoreUnit\n  Delegates\n  SpecialPurposeFund\n  Project\n  EcosystemActor\n  AlignedDelegates\n  Keepers\n}",
                     "initialValue": "{\"deliverables\":[],\"owners\":[]}",
                     "examples": []
                 },
@@ -25,15 +25,103 @@
             },
             "modules": [
                 {
-                    "id": "ArJxIfACVoDiH2T7UjwBLA5kaas=",
+                    "id": "0/gyYNc+LG5knGmnfsEqDYbiSSQ=",
                     "name": "Deliverables",
-                    "description": "Basic operations to create, edit and manage the set of deliverables.",
+                    "description": "",
                     "operations": [
                         {
-                            "id": "IvA8hHMhzErU735rGKbMGvRolEs=",
+                            "id": "kjVL+miiBb8dq408rACR1Lo40g0=",
                             "name": "CreateDeliverable",
                             "description": "",
-                            "schema": "input CreateDeliverableInput {\n    title: String!\n    description: String\n    status: DeliverableStatus\n    owner: Owner\n}\n\ntype Owner {\n  id: ID\n  imgUrl: String\n  name: String\n  code: String\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\n# add new types here\n",
+                            "schema": "input CreateDeliverableInput {\n    id: ID!\n    title: String!\n    description: String\n    status: DeliverableStatus\n    owner: Owner\n}\n\ntype Owner {\n  id: ID\n  imgUrl: String\n  name: String\n  code: String\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\n# add new types here\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "7mzdY6jAfccISrkdXdiyigii+zg=",
+                            "name": "UpdateDeliverableProgress",
+                            "description": "",
+                            "schema": "input UpdateDeliverableProgressInput {\n    deliverableId: ID!\n    workProgress: Progress!\n}\n\nunion Progress = StoryPoints | Percentage | DeliverablesCompleted\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype DeliverablesCompleted {\n  total: Int!\n  completed: Int!\n}\n\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "vsFq7z2OXkwE9MxfYPybZDC3hKs=",
+                            "name": "DeleteDeliverable",
+                            "description": "",
+                            "schema": "input DeleteDeliverableInput {\n    deliverableId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "zn+3fx/JD5a27xEA9NYjc1X2t4g=",
+                            "name": "UpdateDeliverableStatus",
+                            "description": "",
+                            "schema": "input UpdateDeliverableStatusInput {\n    deliverableId: ID!\n    status: DeliverableStatus!\n}\n\nenum DeliverableStatus {\n    TODO\n    IN_PROGRESS\n    DELIVERED\n    BLOCKED\n    WONT_DO\n}\n\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "SULHWmxBKckQjFFW5H6nmGkvglY=",
+                            "name": "UpdateDeliverableDetails",
+                            "description": "",
+                            "schema": "input UpdateDeliverableDetailsInput {\n    deliverableId: ID!\n    title: String\n    description: String\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "gE0BdfsstrogNel/LBEvDc9xq5g=",
+                            "name": "AddKeyResultToDeliverable",
+                            "description": "",
+                            "schema": "input AddKeyResultToDeliverableInput {\n    deliverableId: ID!\n    id: ID!\n    title: String!\n    link: String!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "4BwFWu0x3Xrlq+SuM0b1d/xBmAk=",
+                            "name": "UpdateKeyResult",
+                            "description": "",
+                            "schema": "input UpdateKeyResultInput {\n    keyResultId: ID!\n    title: String\n    link: String\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "n8YPHeII2HGBGlGzuP9xrM3mwFo=",
+                            "name": "RemoveKeyResultFromDeliverable",
+                            "description": "",
+                            "schema": "input RemoveKeyResultFromDeliverableInput {\n    deliverableId: ID!\n    keyResultId: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "TEKlE0oxHZ1Otvj5gsyqqSSK7Ms=",
+                            "name": "SetDeliverableBudget",
+                            "description": "",
+                            "schema": "input SetDeliverableBudgetInput {\n    deliverableId: ID!\n    workUnitBudget: Float! # Default is 1.\n    deliverableBudget: Float! \n}\n\n# add new types here\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],

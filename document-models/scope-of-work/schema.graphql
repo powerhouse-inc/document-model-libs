@@ -1,46 +1,45 @@
 type ScopeOfWorkState {
-    deliverables: [Deliverable!]!
+    deliverables: [Deliverable]
     owners: [Owner]
 }
 
-type Deliverable { 
-  id: ID!
-  title: String!
-  description: String
+type Deliverable {
+    id: ID!
+    title: String!
+    description: String
 
-  status: DeliverableStatus! # Updated to include "BLOCKED"
-  owner: Owner
-	
-  workProgress: DeliverableProgress
-	workUnitBudget: Float! # Default is 1.
-  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.  
-  
-  keyResults: [KeyResult!]!
+    status: DeliverableStatus! # Updated to include "BLOCKED"
+    owner: Owner
+
+    workProgress: DeliverableProgress
+    workUnitBudget: Float! # Default is 1.
+    deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget.
+    keyResults: [KeyResult!]!
 }
 
 type Owner {
-  ref: OwnerType! 
-  id: ID!
-  imgUrl: String
-  name: String!
-  code: String!
+    ref: OwnerType!
+    id: ID!
+    imgUrl: String
+    name: String!
+    code: String!
 }
 
 union DeliverableProgress = StoryPoints | Percentage
 
 type StoryPoints {
-  total: Int! # a positive number greater than 0
-  completed: Int! # a positive number less then or equal to total, can be 0
+    total: Int! # a positive number greater than 0
+    completed: Int! # a positive number less then or equal to total, can be 0
 }
 
 type Percentage {
-  value: Float! # between 0 and 1, where 1 means 100%
+    value: Float! # between 0 and 1, where 1 means 100%
 }
 
 type KeyResult {
-  id: ID!
-  title: String
-  link: String!
+    id: ID!
+    title: String
+    link: String!
 }
 
 enum DeliverableStatus {
@@ -52,13 +51,13 @@ enum DeliverableStatus {
 }
 
 enum OwnerType {
-  CoreUnit
-  Delegates
-  SpecialPurposeFund
-  Project
-  EcosystemActor
-  AlignedDelegates
-  Keepers
+    CoreUnit
+    Delegates
+    SpecialPurposeFund
+    Project
+    EcosystemActor
+    AlignedDelegates
+    Keepers
 }
 
 # Deliverables
@@ -72,10 +71,10 @@ input CreateDeliverableInput {
 }
 
 type Owner {
-  id: ID
-  imgUrl: String
-  name: String
-  code: String
+    id: ID
+    imgUrl: String
+    name: String
+    code: String
 }
 
 enum DeliverableStatus {
@@ -84,6 +83,86 @@ enum DeliverableStatus {
     DELIVERED
     BLOCKED
     WONT_DO
+}
+
+# add new types here
+
+input UpdateDeliverableProgressInput {
+    deliverableId: ID!
+    workProgress: Progress!
+}
+
+union Progress = StoryPoints | Percentage | DeliverablesCompleted
+
+type StoryPoints {
+    total: Int! # a positive number greater than 0
+    completed: Int! # a positive number less then or equal to total, can be 0
+}
+
+type Percentage {
+    value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type DeliverablesCompleted {
+    total: Int!
+    completed: Int!
+}
+
+input DeleteDeliverableInput {
+    deliverableId: ID!
+}
+
+# add new types here
+
+input UpdateDeliverableStatusInput {
+    deliverableId: ID!
+    status: DeliverableStatus!
+}
+
+enum DeliverableStatus {
+    TODO
+    IN_PROGRESS
+    DELIVERED
+    BLOCKED
+    WONT_DO
+}
+
+input UpdateDeliverableDetailsInput {
+    deliverableId: ID!
+    title: String
+    description: String
+}
+
+# add new types here
+
+input AddKeyResultToDeliverableInput {
+    deliverableId: ID!
+    id: ID!
+    title: String!
+    link: String!
+}
+
+# add new types here
+
+input UpdateKeyResultInput {
+    keyResultId: ID!
+    title: String
+    link: String
+}
+
+# add new types here
+
+input RemoveKeyResultFromDeliverableInput {
+    deliverableId: ID!
+    keyResultId: ID!
+}
+
+# add new types here
+
+input SetDeliverableBudgetInput {
+    deliverableId: ID!
+    workUnitBudget: Float! # Default is 1.
+    deliverableBudget: Float!
 }
 
 # add new types here
