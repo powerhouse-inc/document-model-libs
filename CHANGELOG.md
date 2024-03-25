@@ -1,3 +1,11 @@
+# [1.16.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.1...v1.16.0-arbitrum.2) (2024-03-25)
+
+
+### Features
+
+* form validation for addresses, initial scroll for tabs ([4879fb7](https://github.com/powerhouse-inc/document-model-libs/commit/4879fb70e40f21e2e701d62d0db212239b4850e3))
+* reorganizing folder structure for components ([4df369a](https://github.com/powerhouse-inc/document-model-libs/commit/4df369aa75facbd745c7230f4429d7712bcdb99e))
+
 # [1.16.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.15.0...v1.16.0-arbitrum.1) (2024-03-25)
 
 
