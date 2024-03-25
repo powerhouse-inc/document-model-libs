@@ -6,12 +6,12 @@ import {
 } from '../../document-models/arb-ltip-grantee';
 import { Icon, RWATabsProps } from '@powerhousedao/design-system';
 import { useMemo, useState } from 'react';
-import GranteeForm from './components/GranteeForm';
-import TabTodo from './components/TabTodo';
+import GranteeForm from './components/forms/GranteeForm';
+import TabTodo from './components/tabs/TabTodo';
 import { classNames } from './util';
 import { actions } from 'document-model/document-model';
-import TabSummary from './components/TabSummary';
-import TabHistorical from './components/TabHistorical';
+import TabSummary from './components/tabs/TabSummary';
+import TabHistorical from './components/tabs/TabHistorical';
 
 export type CustomEditorProps = Pick<
     RWATabsProps,

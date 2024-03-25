@@ -2,14 +2,14 @@ import { useCallback, useMemo, useState } from 'react';
 import {
     GranteeActuals,
     Phase,
-} from '../../../document-models/arb-ltip-grantee';
-import { IProps } from '../editor';
-import validators from '../../../document-models/arb-ltip-grantee/src/validators';
-import { classNames, toArray } from '../util';
-import ContractSelector from './ContractSelector';
-import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
-import PhaseTimespan from './PhaseTimespan';
-import useInitialScroll from '../hooks/use-initial-scroll';
+} from '../../../../document-models/arb-ltip-grantee';
+import { IProps } from '../../editor';
+import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import { classNames, toArray } from '../../util';
+import ContractSelector from '../ContractSelector';
+import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
+import PhaseTimespan from '../PhaseTimespan';
+import useInitialScroll from '../../hooks/use-initial-scroll';
 
 type ReportingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;

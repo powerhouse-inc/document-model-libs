@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import validators from '../../../document-models/arb-ltip-grantee/src/validators';
-import { IProps } from '../editor';
-import { classNames, formatDate, toArray } from '../util';
-import PhaseSummaryModal from './PhaseSummaryModal';
-import { Phase } from '../../../document-models/arb-ltip-grantee';
+import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import { IProps } from '../../editor';
+import { classNames, formatDate, toArray } from '../../util';
+import PhaseSummaryModal from '../PhaseSummaryModal';
+import { Phase } from '../../../../document-models/arb-ltip-grantee';
 import { set } from 'date-fns';
 
 type DataBadgeProps = {

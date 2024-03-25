@@ -1,11 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
-import { GranteeStats, Phase } from '../../../document-models/arb-ltip-grantee';
-import { IProps } from '../editor';
-import { classNames } from '../util';
-import PhaseTimespan from './PhaseTimespan';
-import validators from '../../../document-models/arb-ltip-grantee/src/validators';
-import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
-import useInitialScroll from '../hooks/use-initial-scroll';
+import {
+    GranteeStats,
+    Phase,
+} from '../../../../document-models/arb-ltip-grantee';
+import { IProps } from '../../editor';
+import { classNames } from '../../util';
+import PhaseTimespan from '../PhaseTimespan';
+import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
+import useInitialScroll from '../../hooks/use-initial-scroll';
 
 type FinalizingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;

@@ -1,11 +1,11 @@
-import { IProps } from '../editor';
-import PlannedResourcesForm from './PlannedResourcesForm';
-import PhaseTimeline from './PhaseTimeline';
+import { IProps } from '../../editor';
+import PlannedResourcesForm from '../forms/PlannedResourcesForm';
+import PhaseTimeline from '../PhaseTimeline';
 import { useMemo } from 'react';
-import ReportingForm from './ReportingForm';
-import FinalizingForm from './FinalizingForm';
-import useTodoPhase from '../hooks/use-todo-phase';
-import validators from '../../../document-models/arb-ltip-grantee/src/validators';
+import ReportingForm from '../forms/ReportingForm';
+import FinalizingForm from '../forms/FinalizingForm';
+import useTodoPhase from '../../hooks/use-todo-phase';
+import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
 
 type TabTodoProps = IProps;
 const TabTodo = (props: TabTodoProps) => {

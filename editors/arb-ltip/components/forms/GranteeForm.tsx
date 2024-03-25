@@ -2,15 +2,15 @@ import {
     ArbLtipGranteeState,
     FundingType,
     actions,
-} from '../../../document-models/arb-ltip-grantee';
+} from '../../../../document-models/arb-ltip-grantee';
 import { TextInput } from 'document-model-libs/utils';
 import { useCallback, useMemo, useState } from 'react';
-import { classNames, maybeToArray } from '../util';
+import { classNames, maybeToArray } from '../../util';
 import DatePicker from 'react-datepicker';
-import { IProps } from '../editor';
-import TagSelector from './TagSelector';
-import { InitGranteeInput } from '../../../document-models/arb-ltip-grantee/gen';
-import validators from '../../../document-models/arb-ltip-grantee/src/validators';
+import { IProps } from '../../editor';
+import TagSelector from '../TagSelector';
+import { InitGranteeInput } from '../../../../document-models/arb-ltip-grantee/gen';
+import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
 
 const fundingTypes = [
     {

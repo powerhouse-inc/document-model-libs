@@ -1,5 +1,5 @@
-import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
-import GranteeStats from './GranteeStats';
+import { ArbLtipGranteeState } from '../../../../document-models/arb-ltip-grantee';
+import GranteeStats from '../GranteeStats';
 
 type TabSummaryProps = ArbLtipGranteeState & {
     onEdit: () => void;
