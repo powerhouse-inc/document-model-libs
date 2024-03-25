@@ -9,7 +9,10 @@ function isNotEmpty<T>(value: Maybe<Array<Maybe<T>>>) {
     return !!value && value.filter(v => !!v).length > 0;
 }
 const isNotEmptyString = (value: Maybe<string>) => !!value && value.length > 0;
-const isValidAddress = (value: string) => !!value;
+
+const walletAddressRegex = /^0x[a-fA-F0-9]{40}$/;
+const isValidAddress = (value: string) =>
+    !!value && walletAddressRegex.test(value);
 
 const isDisbursementValid = gtZero;
 const isDistributionMechanismsValid = isNotEmpty;

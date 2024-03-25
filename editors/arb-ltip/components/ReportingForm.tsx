@@ -9,6 +9,7 @@ import { classNames, toArray } from '../util';
 import ContractSelector from './ContractSelector';
 import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
 import PhaseTimespan from './PhaseTimespan';
+import useInitialScroll from '../hooks/use-initial-scroll';
 
 type ReportingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;
@@ -95,6 +96,8 @@ const ReportingForm = (props: ReportingFormProps) => {
             <span className="font-bold">&nbsp;{dueDate}</span>.
         </div>
     );
+
+    useInitialScroll();
 
     const submit = useCallback(() => {
         const actuals: GranteeActuals = {

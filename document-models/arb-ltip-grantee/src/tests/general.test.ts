@@ -21,8 +21,8 @@ describe('General Operations', () => {
     it('should handle initGrantee operation', () => {
         const input: InitGranteeInput = {
             disbursementContractAddress:
-                '0x1234567890123456789012345678901234567890',
-            fundingAddress: '0x1234567890123456789012345678901234567890',
+                '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
+            fundingAddress: '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
             fundingType: [],
             grantSize: 100,
             grantSummary: 'Summary',
@@ -42,6 +42,9 @@ describe('General Operations', () => {
     });
     it('should handle editGrantee operation', () => {
         const input = generateMock(z.EditGranteeInputSchema());
+        input.disbursementContractAddress =
+            '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747';
+        input.fundingAddress = '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747';
         const updatedDocument = reducer(document, creators.editGrantee(input));
 
         expect(updatedDocument.operations.global).toHaveLength(1);

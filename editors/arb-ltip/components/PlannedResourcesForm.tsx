@@ -11,6 +11,7 @@ import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creator
 import validators from '../../../document-models/arb-ltip-grantee/src/validators';
 import { classNames, toArray } from '../util';
 import PhaseTimespan from './PhaseTimespan';
+import useInitialScroll from '../hooks/use-initial-scroll';
 
 const distributionMechanisms = [
     {
@@ -58,6 +59,8 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         () => validators.isPlannedValid(planned),
         [planned],
     );
+
+    useInitialScroll();
 
     const submit = useCallback(() => {
         const planned = {

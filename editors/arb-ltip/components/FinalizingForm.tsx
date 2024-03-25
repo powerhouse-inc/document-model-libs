@@ -5,6 +5,7 @@ import { classNames } from '../util';
 import PhaseTimespan from './PhaseTimespan';
 import validators from '../../../document-models/arb-ltip-grantee/src/validators';
 import { editPhase } from '../../../document-models/arb-ltip-grantee/gen/creators';
+import useInitialScroll from '../hooks/use-initial-scroll';
 
 type FinalizingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;
@@ -41,6 +42,8 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         () => validators.gteZero(uniqueAddressesCountLocal),
         [uniqueAddressesCountLocal],
     );
+
+    useInitialScroll();
 
     const submit = useCallback(() => {
         if (
