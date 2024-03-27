@@ -27,7 +27,7 @@ function Editor(props: IProps) {
     const { document, dispatch, onClose, onExport, onSwitchboardLinkClick } =
         props;
 
-    const [activeTab, setActiveTab] = useState<Key>('portfolio');
+    const [activeTab, setActiveTab] = useState<Key>('other');
 
     const undo = () => dispatch(actions.undo());
     const redo = () => dispatch(actions.redo());
@@ -51,6 +51,7 @@ function Editor(props: IProps) {
                 { id: 'portfolio', label: 'Portfolio' },
                 { id: 'transactions', label: 'Transactions' },
                 { id: 'attachments', label: 'Attachments' },
+                { id: 'other', label: 'Other' },
             ]}
         >
             <div className="flex justify-center mt-3">
@@ -63,6 +64,9 @@ function Editor(props: IProps) {
                     </TabPanel>
                     <TabPanel id="attachments">
                         <Attachments />
+                    </TabPanel>
+                    <TabPanel id="other">
+                        <div>Other</div>
                     </TabPanel>
                 </div>
             </div>

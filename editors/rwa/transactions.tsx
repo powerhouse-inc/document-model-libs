@@ -1,6 +1,6 @@
 import {
     CashAsset,
-    GroupTransactionDetailInputs,
+    GroupTransactionFormInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
     TransactionFee,
@@ -62,13 +62,11 @@ export const Transactions = (props: IProps) => {
         document.state.global.serviceProviderFeeTypes;
 
     const [expandedRowId, setExpandedRowId] = useState<string>();
-    const [selectedGroupTransactionToEdit, setSelectedGroupTransactionToEdit] =
-        useState<UiGroupTransaction>();
-    const [showNewGroupTransactionForm, setShowNewGroupTransactionForm] =
-        useState(false);
+    const [selectedItem, setSelectedItem] = useState<UiGroupTransaction>();
+    const [showNewItemForm, setShowNewItemForm] = useState(false);
 
     const createNewGroupTransactionFromFormInputs = useCallback(
-        (data: GroupTransactionDetailInputs) => {
+        (data: GroupTransactionFormInputs) => {
             const {
                 cashAmount,
                 fixedIncomeId,
@@ -140,17 +138,9 @@ export const Transactions = (props: IProps) => {
         [principalLenderAccountId, cashAsset.id],
     );
 
-    const toggleExpandedRow = useCallback((id: string) => {
-        setExpandedRowId(curr => (id === curr ? undefined : id));
+    const toggleExpandedRow = useCallback((id: string | undefined) => {
+        setExpandedRowId(id);
     }, []);
-
-    const onClickDetails: GroupTransactionsTableProps['onClickDetails'] =
-        useCallback(() => {}, []);
-
-    const onCancelEdit: GroupTransactionsTableProps['onCancelEdit'] =
-        useCallback(() => {
-            setSelectedGroupTransactionToEdit(undefined);
-        }, []);
 
     const handleFeeUpdates = useCallback(
         async (
@@ -242,7 +232,7 @@ export const Transactions = (props: IProps) => {
     const onSubmitEdit: GroupTransactionsTableProps['onSubmitEdit'] =
         useCallback(
             async data => {
-                if (!selectedGroupTransactionToEdit) return;
+                if (!selectedItem) return;
 
                 const newEntryTime = data.entryTime
                     ? new Date(data.entryTime).toISOString()
@@ -253,11 +243,10 @@ export const Transactions = (props: IProps) => {
                 const newCashAmount = data.cashAmount;
                 const newCashBalanceChange = data.cashBalanceChange;
 
-                const existingCashTransaction =
-                    selectedGroupTransactionToEdit.cashTransaction;
+                const existingCashTransaction = selectedItem.cashTransaction;
 
                 const existingFixedIncomeTransaction =
-                    selectedGroupTransactionToEdit.fixedIncomeTransaction;
+                    selectedItem.fixedIncomeTransaction;
 
                 if (
                     !existingCashTransaction ||
@@ -268,7 +257,7 @@ export const Transactions = (props: IProps) => {
                     );
                 }
 
-                const update = copy(selectedGroupTransactionToEdit);
+                const update = copy(selectedItem);
 
                 if (newType) {
                     update.type = newType;
@@ -298,10 +287,7 @@ export const Transactions = (props: IProps) => {
                     update.cashBalanceChange = newCashBalanceChange;
                 }
 
-                let changedFields = getDifferences(
-                    selectedGroupTransactionToEdit,
-                    update,
-                );
+                let changedFields = getDifferences(selectedItem, update);
 
                 if ('fixedIncomeTransaction' in changedFields) {
                     const fixedIncomeTransactionChangedFields = getDifferences(
@@ -344,14 +330,14 @@ export const Transactions = (props: IProps) => {
                     dispatch(
                         editGroupTransaction({
                             ...changedFields,
-                            id: selectedGroupTransactionToEdit.id,
+                            id: selectedItem.id,
                         } as EditBaseTransactionInput),
                     );
                 }
 
-                setSelectedGroupTransactionToEdit(undefined);
+                setSelectedItem(undefined);
             },
-            [dispatch, selectedGroupTransactionToEdit, handleFeeUpdates],
+            [dispatch, selectedItem, handleFeeUpdates],
         );
 
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
@@ -361,7 +347,7 @@ export const Transactions = (props: IProps) => {
                     createNewGroupTransactionFromFormInputs(data);
 
                 dispatch(createGroupTransaction(transaction));
-                setShowNewGroupTransactionForm(false);
+                setShowNewItemForm(false);
             },
             [createNewGroupTransactionFromFormInputs, dispatch],
         );
@@ -375,21 +361,17 @@ export const Transactions = (props: IProps) => {
             <GroupTransactionsTable
                 fixedIncomes={fixedIncomeAssets as UiFixedIncome[]}
                 cashAssets={cashAssets}
-                items={transactions}
+                transactions={transactions}
                 serviceProviderFeeTypes={serviceProviderFeeTypes}
                 expandedRowId={expandedRowId}
                 toggleExpandedRow={toggleExpandedRow}
-                onClickDetails={onClickDetails}
-                selectedGroupTransactionToEdit={selectedGroupTransactionToEdit}
+                selectedItem={selectedItem}
                 principalLenderAccountId={principalLenderAccountId}
-                setSelectedGroupTransactionToEdit={
-                    setSelectedGroupTransactionToEdit
-                }
-                onCancelEdit={onCancelEdit}
+                setSelectedItem={setSelectedItem}
                 onSubmitEdit={onSubmitEdit}
                 onSubmitCreate={onSubmitCreate}
-                showNewGroupTransactionForm={showNewGroupTransactionForm}
-                setShowNewGroupTransactionForm={setShowNewGroupTransactionForm}
+                showNewItemForm={showNewItemForm}
+                setShowNewItemForm={setShowNewItemForm}
             />
         </div>
     );
