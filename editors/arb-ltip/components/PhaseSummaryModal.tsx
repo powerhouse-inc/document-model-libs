@@ -2,6 +2,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Phase } from '../../../document-models/arb-ltip-grantee';
 import { Fragment } from 'react/jsx-runtime';
 import PhaseTimespan from './PhaseTimespan';
+import PhasePlanned from './PhasePlanned';
+import PhaseActuals from './PhaseActuals';
+import PhaseStats from './PhaseStats';
 
 type PhaseSummaryModalProps = {
     phase: Phase | null;
@@ -46,6 +49,9 @@ const PhaseSummaryModal = ({
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all my-8 w-[820px]">
                                 <div className="mt-2">
                                     <PhaseTimespan phase={phase} />
+                                    <PhasePlanned phase={phase} />
+                                    <PhaseActuals phase={phase} />
+                                    <PhaseStats phase={phase} />
                                 </div>
                                 <div className="mt-5 sm:mt-6"></div>
                             </Dialog.Panel>
