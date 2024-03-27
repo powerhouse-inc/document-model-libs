@@ -3,7 +3,6 @@ import {
     FundingType,
     actions,
 } from '../../../../document-models/arb-ltip-grantee';
-import { TextInput } from 'document-model-libs/utils';
 import { useCallback, useMemo, useState } from 'react';
 import { classNames, maybeToArray } from '../../util';
 import DatePicker from 'react-datepicker';
@@ -53,6 +52,8 @@ const GranteeForm = (props: GranteeFormProps) => {
         disbursementContractAddressLocal,
         setDisbursementContractAddressLocal,
     ] = useState(disbursementContractAddress || '');
+    const [authorizedSignerAddressLocal, setAuthorizedSignerAddressLocal] =
+        useState('');
     const [fundingAddressLocal, setFundingAddressLocal] = useState(
         fundingAddress || '',
     );
@@ -169,14 +170,14 @@ const GranteeForm = (props: GranteeFormProps) => {
 
     return (
         <div className="w-full">
-            <div>
-                <TextInput
-                    value={granteeNameLocal}
-                    size="huge"
+            <div className="mt-4">
+                <input
+                    type="text"
+                    className="w-full rounded-md !rounded-b-none px-2 text-gray-900 placeholder:text-gray-400 text-4xl ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600"
                     placeholder="Grantee Name"
-                    theme={editorContext.theme}
-                    onSubmit={setGranteeNameLocal}
                     autoFocus
+                    value={granteeNameLocal}
+                    onChange={e => setGranteeNameLocal(e.target.value)}
                 />
             </div>
             <div className="isolate -space-y-px rounded-md shadow-sm">
@@ -254,6 +255,20 @@ const GranteeForm = (props: GranteeFormProps) => {
                             }}
                         />
                     </div>
+                </div>
+                <div className={wrapperClasses(true)}>
+                    <label className="block text-xs font-medium text-gray-900">
+                        Authorized Signer Address
+                    </label>
+                    <input
+                        type="text"
+                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        placeholder="0x..."
+                        value={authorizedSignerAddressLocal}
+                        onChange={e =>
+                            setAuthorizedSignerAddressLocal(e.target.value)
+                        }
+                    />
                 </div>
                 <div
                     className={wrapperClasses(
