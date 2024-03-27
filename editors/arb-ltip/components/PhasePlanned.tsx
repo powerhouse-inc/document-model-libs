@@ -8,11 +8,11 @@ const PhasePlanned = ({ phase: { planned } }: { phase: Phase }) => {
         ? planned.arbToBeDistributed
         : 0;
 
-    const summary = planned?.summary ? planned.summary : 'none';
+    const summary = planned?.summary ? planned.summary : 'None';
 
     const summaryOfChanges = planned?.summaryOfChanges
         ? planned.summaryOfChanges
-        : 'none';
+        : 'None';
 
     function translateDistributionMechanism(
         distributionMechanism: DistributionMechanism,
@@ -57,6 +57,7 @@ const PhasePlanned = ({ phase: { planned } }: { phase: Phase }) => {
                         Contracts Incentivized
                     </label>
                     <div>
+                        {contractsDetails.length === 0 && <p>None</p>}
                         {contractsDetails.map((contract, index) => (
                             <div key={index}>
                                 <a
@@ -75,6 +76,7 @@ const PhasePlanned = ({ phase: { planned } }: { phase: Phase }) => {
                         Distribution Mechanisms
                     </label>
                     <div>
+                        {distributionMechanismText.length === 0 && <p>None</p>}
                         {distributionMechanismText.map(
                             (distribution, index) => (
                                 <div key={index}>

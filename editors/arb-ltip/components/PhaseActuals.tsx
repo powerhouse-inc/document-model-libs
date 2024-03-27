@@ -5,9 +5,9 @@ const PhaseActuals = ({ phase: { actuals } }: { phase: Phase }) => {
     const arbUtilized = actuals?.arbUtilized ? actuals.arbUtilized : 0;
     const arbRemaining = actuals?.arbRemaining ? actuals.arbRemaining : 0;
 
-    const disclosures = actuals?.disclosures ? actuals.disclosures : 'none';
+    const disclosures = actuals?.disclosures ? actuals.disclosures : 'None';
 
-    const summary = actuals?.summary ? actuals.summary : 'none';
+    const summary = actuals?.summary ? actuals.summary : 'None';
 
     const contractsDetails =
         actuals?.contractsIncentivized?.map(contract => ({
@@ -45,6 +45,7 @@ const PhaseActuals = ({ phase: { actuals } }: { phase: Phase }) => {
                         Contracts Incentivized
                     </label>
                     <div>
+                        {contractsDetails.length === 0 && <p>None</p>}
                         {contractsDetails.map((contract, index) => (
                             <div key={index}>
                                 <a
