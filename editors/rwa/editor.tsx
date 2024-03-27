@@ -28,7 +28,7 @@ function Editor(props: IProps) {
     const { document, dispatch, onClose, onExport, onSwitchboardLinkClick } =
         props;
 
-    const [activeTab, setActiveTab] = useState<Key>('other');
+    const [activeTab, setActiveTab] = useState<Key>('portfolio');
 
     const undo = () => dispatch(actions.undo());
     const redo = () => dispatch(actions.redo());
