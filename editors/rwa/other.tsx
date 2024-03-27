@@ -15,7 +15,7 @@ import {
 import { IProps } from './editor';
 
 function createAssetFromFormInputs(data: AssetFormInputs) {
-    const maturity = new Date(data.maturity).toISOString();
+    const maturity = data.maturity.toString() + 'T00:00:00.000Z';
     return {
         ...data,
         maturity,
