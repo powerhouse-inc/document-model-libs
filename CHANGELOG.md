@@ -1,3 +1,10 @@
+# [1.16.0-arbitrum.6](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.5...v1.16.0-arbitrum.6) (2024-03-27)
+
+
+### Features
+
+* style changes ([37c6efa](https://github.com/powerhouse-inc/document-model-libs/commit/37c6efa385fbcf0e88822781a703b9651124629a))
+
 # [1.16.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.4...v1.16.0-arbitrum.5) (2024-03-27)
 
 
