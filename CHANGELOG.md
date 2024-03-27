@@ -1,3 +1,10 @@
+# [1.16.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.3...v1.16.0-arbitrum.4) (2024-03-27)
+
+
+### Features
+
+* replace TextInput with vanilla form input ([801f381](https://github.com/powerhouse-inc/document-model-libs/commit/801f38160b62b2e0b28b807ff85f3588c682a333))
+
 # [1.16.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.2...v1.16.0-arbitrum.3) (2024-03-27)
 
 
