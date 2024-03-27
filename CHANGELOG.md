@@ -1,3 +1,10 @@
+# [1.16.0-arbitrum.9](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.8...v1.16.0-arbitrum.9) (2024-03-27)
+
+
+### Features
+
+* fix set name action dispatch ([bcd9f4c](https://github.com/powerhouse-inc/document-model-libs/commit/bcd9f4cc493eb403ba741808f15cbb9ca2aaa4a1))
+
 # [1.16.0-arbitrum.8](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.7...v1.16.0-arbitrum.8) (2024-03-27)
 
 
