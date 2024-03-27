@@ -53,19 +53,9 @@ const PhaseTimeline = (props: PhaseTimelineProps) => {
                         return (
                             <li
                                 key={step.id}
-                                className="relative overflow-hidden lg:flex-1"
+                                className="relative overflow-hidden flex-1"
                             >
-                                <div
-                                    className={classNames(
-                                        stepIdx === 0
-                                            ? 'rounded-t-md border-b-0'
-                                            : '',
-                                        stepIdx === steps.length - 1
-                                            ? 'rounded-b-md border-t-0'
-                                            : '',
-                                        'overflow-hidden border border-gray-200 lg:border-0',
-                                    )}
-                                >
+                                <div className="overflow-hidden border border-gray-200 lg:border-0">
                                     {step.statuses.includes(status) ? (
                                         <div>
                                             <span

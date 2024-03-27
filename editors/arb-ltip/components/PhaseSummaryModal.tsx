@@ -5,6 +5,7 @@ import PhaseTimespan from './PhaseTimespan';
 import PhasePlanned from './PhasePlanned';
 import PhaseActuals from './PhaseActuals';
 import PhaseStats from './PhaseStats';
+import { Icon } from '@powerhousedao/design-system';
 
 type PhaseSummaryModalProps = {
     phase: Phase | null;
@@ -47,7 +48,14 @@ const PhaseSummaryModal = ({
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
                             <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all my-8 w-[820px]">
-                                <div className="mt-2">
+                                <Dialog.Title>
+                                    <Icon
+                                        name="xmark"
+                                        onClick={onClose}
+                                        className="absolute top-2 right-4 cursor-pointer"
+                                    />
+                                </Dialog.Title>
+                                <div className="mt-4">
                                     <PhaseTimespan phase={phase} />
                                     <PhasePlanned phase={phase} />
                                     <PhaseActuals phase={phase} />

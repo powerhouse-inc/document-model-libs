@@ -44,71 +44,65 @@ const PhasePlanned = ({ phase: { planned } }: { phase: Phase }) => {
     const submissionStatus = planned?.arbToBeDistributed ? true : false;
 
     return (
-        <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
-            <div className="flex-1" />
+        <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex flex-col space-y-2">
             <div>
-                <div>
-                    Planned
-                    {!submissionStatus && <p>Not Started</p>}
-                </div>
-                <div>
-                    {submissionStatus && (
-                        <div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    ARB To Be Distributed
-                                </label>
-                                <p>{arbToBeDistributed} </p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Contracts Incentivized
-                                </label>
-                                <div>
-                                    {contractsDetails.map((contract, index) => (
-                                        <div key={index}>
-                                            <a
-                                                href={contract.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {contract.label}
-                                            </a>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Distribution Mechanisms
-                                </label>
-                                <div>
-                                    {distributionMechanismText.map(
-                                        (distribution, index) => (
-                                            <div key={index}>
-                                                <p>{distribution}</p>
-                                            </div>
-                                        ),
-                                    )}
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Summary
-                                </label>
-                                <p>{summary}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Summary Of Changes
-                                </label>
-                                <p>{summaryOfChanges}</p>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                <span className="text-xl">Planned Resources</span>
+                {!submissionStatus && <p>Not Started</p>}
             </div>
-            <div className="flex-1" />
+            {submissionStatus && (
+                <>
+                    <div>
+                        <label className="text-xs font-medium text-gray-900">
+                            ARB To Be Distributed
+                        </label>
+                        <p>{arbToBeDistributed} </p>
+                    </div>
+                    <div>
+                        <label className="text-xs font-medium text-gray-900">
+                            Contracts Incentivized
+                        </label>
+                        <div>
+                            {contractsDetails.map((contract, index) => (
+                                <div key={index}>
+                                    <a
+                                        href={contract.link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {contract.label}
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="text-xs font-medium text-gray-900">
+                            Distribution Mechanisms
+                        </label>
+                        <div>
+                            {distributionMechanismText.map(
+                                (distribution, index) => (
+                                    <div key={index}>
+                                        <p>{distribution}</p>
+                                    </div>
+                                ),
+                            )}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="text-xs font-medium text-gray-900">
+                            Summary
+                        </label>
+                        <p>{summary}</p>
+                    </div>
+                    <div>
+                        <label className="text-xs font-medium text-gray-900">
+                            Summary Of Changes
+                        </label>
+                        <p>{summaryOfChanges}</p>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
