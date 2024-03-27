@@ -1,3 +1,10 @@
+# [1.16.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.4...v1.16.0-arbitrum.5) (2024-03-27)
+
+
+### Features
+
+* correcting arb derived numbers ([a83b4a4](https://github.com/powerhouse-inc/document-model-libs/commit/a83b4a46033a184c69080aa3e1ba28bf1a7c7a7c))
+
 # [1.16.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.3...v1.16.0-arbitrum.4) (2024-03-27)
 
 
