@@ -84,7 +84,7 @@ export const Transactions = (props: IProps) => {
             const entryTime = new Date(data.entryTime).toISOString();
 
             const fees =
-                data.fees?.map(fee => ({
+                data.fees.map(fee => ({
                     ...fee,
                     id: utils.hashKey(),
                 })) ?? null;
@@ -138,9 +138,14 @@ export const Transactions = (props: IProps) => {
         [principalLenderAccountId, cashAsset.id],
     );
 
-    const toggleExpandedRow = useCallback((id: string | undefined) => {
-        setExpandedRowId(id);
-    }, []);
+    const toggleExpandedRow = useCallback(
+        (id: string | undefined) => {
+            setExpandedRowId(curr =>
+                curr && curr === expandedRowId ? undefined : id,
+            );
+        },
+        [expandedRowId],
+    );
 
     const handleFeeUpdates = useCallback(
         async (

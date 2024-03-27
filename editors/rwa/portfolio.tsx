@@ -37,9 +37,14 @@ export const Portfolio = (props: IProps) => {
         (asset): asset is FixedIncome => isFixedIncomeAsset(asset),
     );
 
-    const toggleExpandedRow = useCallback((id: string | undefined) => {
-        setExpandedRowId(id);
-    }, []);
+    const toggleExpandedRow = useCallback(
+        (id: string | undefined) => {
+            setExpandedRowId(curr =>
+                curr && curr === expandedRowId ? undefined : id,
+            );
+        },
+        [expandedRowId],
+    );
 
     const onSubmitEdit: AssetsTableProps['onSubmitEdit'] = useCallback(
         data => {

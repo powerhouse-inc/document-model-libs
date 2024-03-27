@@ -8,6 +8,7 @@ import {
     RealWorldAssetsState,
 } from '../../document-models/real-world-assets';
 import { Attachments } from './attachments';
+import { Other } from './other';
 import { Portfolio } from './portfolio';
 import { Transactions } from './transactions';
 
@@ -66,7 +67,7 @@ function Editor(props: IProps) {
                         <Attachments />
                     </TabPanel>
                     <TabPanel id="other">
-                        <div>Other</div>
+                        <Other {...props} />
                     </TabPanel>
                 </div>
             </div>
