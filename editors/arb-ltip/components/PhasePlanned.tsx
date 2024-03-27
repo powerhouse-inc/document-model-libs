@@ -40,69 +40,63 @@ const PhasePlanned = ({ phase: { planned } }: { phase: Phase }) => {
             link: `https://arbiscan.io/address/${contract?.contractAddress}`,
         })) ?? [];
 
-    // all phases are initialized with values set to 0
-    const submissionStatus = planned?.arbToBeDistributed ? true : false;
-
     return (
         <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex flex-col space-y-2">
             <div>
                 <span className="text-xl">Planned Resources</span>
-                {!submissionStatus && <p>Not Started</p>}
             </div>
-            {submissionStatus && (
-                <>
+            <>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        ARB To Be Distributed
+                    </label>
+                    <p>{arbToBeDistributed} </p>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Contracts Incentivized
+                    </label>
                     <div>
-                        <label className="text-xs font-medium text-gray-900">
-                            ARB To Be Distributed
-                        </label>
-                        <p>{arbToBeDistributed} </p>
+                        {contractsDetails.map((contract, index) => (
+                            <div key={index}>
+                                <a
+                                    href={contract.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {contract.label}
+                                </a>
+                            </div>
+                        ))}
                     </div>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Distribution Mechanisms
+                    </label>
                     <div>
-                        <label className="text-xs font-medium text-gray-900">
-                            Contracts Incentivized
-                        </label>
-                        <div>
-                            {contractsDetails.map((contract, index) => (
+                        {distributionMechanismText.map(
+                            (distribution, index) => (
                                 <div key={index}>
-                                    <a
-                                        href={contract.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {contract.label}
-                                    </a>
+                                    <p>{distribution}</p>
                                 </div>
-                            ))}
-                        </div>
+                            ),
+                        )}
                     </div>
-                    <div>
-                        <label className="text-xs font-medium text-gray-900">
-                            Distribution Mechanisms
-                        </label>
-                        <div>
-                            {distributionMechanismText.map(
-                                (distribution, index) => (
-                                    <div key={index}>
-                                        <p>{distribution}</p>
-                                    </div>
-                                ),
-                            )}
-                        </div>
-                    </div>
-                    <div>
-                        <label className="text-xs font-medium text-gray-900">
-                            Summary
-                        </label>
-                        <p>{summary}</p>
-                    </div>
-                    <div>
-                        <label className="text-xs font-medium text-gray-900">
-                            Summary Of Changes
-                        </label>
-                        <p>{summaryOfChanges}</p>
-                    </div>
-                </>
-            )}
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Summary
+                    </label>
+                    <p>{summary}</p>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Summary Of Changes
+                    </label>
+                    <p>{summaryOfChanges}</p>
+                </div>
+            </>
         </div>
     );
 };

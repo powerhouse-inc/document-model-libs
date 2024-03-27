@@ -9,55 +9,43 @@ const PhaseStats = ({ phase: { stats } }: { phase: Phase }) => {
         ? stats.uniqueAddressesCount
         : 0;
 
-    // all phases are initialized with values set to 0
-    const submissionStatus = stats?.avgDailyTVL ? true : false;
-
     return (
-        <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600 flex">
-            <div className="flex-1" />
+        <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex flex-col space-y-2">
             <div>
-                <div>
-                    Stats
-                    {!submissionStatus && <p>Not Started</p>}
-                </div>
-                <div>
-                    {submissionStatus && (
-                        <div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Average Daily TVL
-                                </label>
-                                <p>{avgDailyTVL} </p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Average Daily Transactions
-                                </label>
-                                <p>{avgDailyTXNS} </p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Average Daily Volume
-                                </label>
-                                <p>{avgDailyVolume} </p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Transaction Fees
-                                </label>
-                                <p>{transactionFees} </p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-900">
-                                    Unique Addresses Count
-                                </label>
-                                <p>{uniqueAddressesCount} </p>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                <span className="text-xl">Stats</span>
             </div>
-            <div className="flex-1" />
+            <>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Average Daily TVL
+                    </label>
+                    <p>{avgDailyTVL} </p>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Average Daily Transactions
+                    </label>
+                    <p>{avgDailyTXNS} </p>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Average Daily Volume
+                    </label>
+                    <p>{avgDailyVolume} </p>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Transaction Fees
+                    </label>
+                    <p>{transactionFees} </p>
+                </div>
+                <div>
+                    <label className="text-xs font-medium text-gray-900">
+                        Unique Addresses Count
+                    </label>
+                    <p>{uniqueAddressesCount} </p>
+                </div>
+            </>
         </div>
     );
 };
