@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
+    ArbLtipGranteeState,
     GranteeActuals,
     Phase,
 } from '../../../../document-models/arb-ltip-grantee';
 import { IProps } from '../../editor';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
-import { classNames, toArray } from '../../util';
+import { calculateArbReceived, classNames, toArray } from '../../util';
 import ContractSelector from '../ContractSelector';
 import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
 import PhaseTimespan from '../PhaseTimespan';
@@ -14,9 +15,10 @@ import useInitialScroll from '../../hooks/use-initial-scroll';
 type ReportingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
+    state: ArbLtipGranteeState;
 };
 const ReportingForm = (props: ReportingFormProps) => {
-    const { dispatch, phase, phaseIndex } = props;
+    const { dispatch, phase, phaseIndex, state } = props;
     const actuals = phase.actuals!;
 
     const [showErrors, setShowErrors] = useState(
@@ -35,7 +37,6 @@ const ReportingForm = (props: ReportingFormProps) => {
         actuals.disclosures ?? '',
     );
     const [summaryLocal, setSummaryLocal] = useState(actuals.summary ?? '');
-
     const isArbReceivedValid = useMemo(
         () => validators.isArbReceivedValid(arbReceivedLocal),
         [arbReceivedLocal],
@@ -72,10 +73,12 @@ const ReportingForm = (props: ReportingFormProps) => {
         ],
     );
 
-    // TODO: calculate
     const arbRemaining = useMemo(() => {
-        return arbReceivedLocal;
-    }, [arbReceivedLocal]);
+        return (
+            (state.grantSize || 0) - calculateArbReceived(toArray(state.phases))
+        );
+    }, [state.grantSize, state.phases]);
+
     const dueDate = useMemo(() => {
         const date = new Date(phase.endDate);
 
@@ -215,7 +218,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                         <input
                             type="text"
                             className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            value={arbReceivedLocal}
+                            value={arbRemaining}
                             readOnly
                         />
                     </div>

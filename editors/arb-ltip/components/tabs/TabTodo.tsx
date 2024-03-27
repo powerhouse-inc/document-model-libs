@@ -70,6 +70,7 @@ const TabTodo = (props: TabTodoProps) => {
                     )}
                     {status === 'Reporting' && (
                         <ReportingForm
+                            state={props.document.state.global}
                             phase={phase}
                             phaseIndex={phaseIndex}
                             {...props}

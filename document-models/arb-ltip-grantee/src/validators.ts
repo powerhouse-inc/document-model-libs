@@ -1,7 +1,7 @@
 import { GranteeActuals, GranteePlanned, GranteeStats, Maybe } from '..';
 
-const gtZero = (value: Maybe<number>) => !!value && value > 0;
-const gteZero = (value: Maybe<number>) => !!value && value >= 0;
+const gtZero = (value: Maybe<number>) => null !== value && value > 0;
+const gteZero = (value: Maybe<number>) => null !== value && value >= 0;
 const notEmpty = (value: Maybe<string>) => !!value && value.length > 0;
 const pastDate = (value: Date) => value.getTime() < Date.now();
 const futureDate = (value: Date) => value.getTime() > Date.now();
@@ -22,9 +22,9 @@ const isSummaryOfChangesValid = notEmpty;
 const isStartDateValid = futureDate;
 const isEndDateValid = futureDate;
 
-const isArbReceivedValid = gtZero;
-const isArbRemainingValid = gtZero;
-const isArbUtilizedValid = gtZero;
+const isArbReceivedValid = gteZero;
+const isArbRemainingValid = gteZero;
+const isArbUtilizedValid = gteZero;
 const isDisclosuresValid = notEmpty;
 
 const isPlannedValid = (planned: GranteePlanned) =>
