@@ -35,7 +35,6 @@ type GranteeFormProps = ArbLtipGranteeState &
 
 const GranteeForm = (props: GranteeFormProps) => {
     const {
-        editorContext,
         dispatch,
         onClose,
         granteeName,
@@ -70,7 +69,7 @@ const GranteeForm = (props: GranteeFormProps) => {
     const [matchingGrantSizeLocal, setMatchingGrantSizeLocal] = useState(0);
 
     // 12 weeks
-    const [startDate, setStartDate] = useState(new Date(2024, 3, 27));
+    const [startDate, setStartDate] = useState(new Date(2024, 3, 29));
     const endDate = useMemo(() => {
         const date = new Date(startDate);
         date.setDate(date.getDate() + 84);

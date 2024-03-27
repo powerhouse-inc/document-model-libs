@@ -187,9 +187,9 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                                     isSubmitted={isStatsValid}
                                                 />
                                             </td>
-                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                            <td className="relative whitespace-nowrap py-5 pl-3 text-right text-sm font-medium">
                                                 <p
-                                                    className="text-purple-600 hover:text-purple-900 cursor-pointer"
+                                                    className="text-purple-600 pr-4 hover:text-purple-900 cursor-pointer"
                                                     onClick={() =>
                                                         setSelectedPhase(phase)
                                                     }

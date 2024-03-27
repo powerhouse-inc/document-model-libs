@@ -37,31 +37,29 @@ const PhaseSummaryModal = ({
                 </Transition.Child>
 
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div className="flex min-h-full items-end justify-center p-4 text-center">
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
-                            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            enterTo="opacity-100 translate-y-0 sm:scale-100"
+                            enterFrom="opacity-0 translate-y-4"
+                            enterTo="opacity-100 translate-y-0"
                             leave="ease-in duration-200"
-                            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            leaveFrom="opacity-100 translate-y-0"
+                            leaveTo="opacity-0 translate-y-4"
                         >
-                            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all my-8 w-[820px]">
-                                <Dialog.Title>
-                                    <Icon
-                                        name="xmark"
-                                        onClick={onClose}
-                                        className="absolute top-2 right-4 cursor-pointer"
-                                    />
-                                </Dialog.Title>
-                                <div className="mt-4">
-                                    <PhaseTimespan phase={phase} />
-                                    <PhasePlanned phase={phase} />
-                                    <PhaseActuals phase={phase} />
-                                    <PhaseStats phase={phase} />
+                            <Dialog.Panel
+                                style={{ width: '480px' }}
+                                className=""
+                            >
+                                <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all my-8">
+                                    <div className="mt-4">
+                                        <PhaseTimespan phase={phase} />
+                                        <PhasePlanned phase={phase} />
+                                        <PhaseActuals phase={phase} />
+                                        <PhaseStats phase={phase} />
+                                    </div>
+                                    <div className="mt-5"></div>
                                 </div>
-                                <div className="mt-5 sm:mt-6"></div>
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>
