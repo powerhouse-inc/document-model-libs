@@ -1,3 +1,10 @@
+# [1.16.0-arbitrum.8](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.7...v1.16.0-arbitrum.8) (2024-03-27)
+
+
+### Features
+
+* phase historical view modal add styling to actuals and stats ([162ccdb](https://github.com/powerhouse-inc/document-model-libs/commit/162ccdb5593720757704790511e6df03694609a0))
+
 # [1.16.0-arbitrum.7](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.6...v1.16.0-arbitrum.7) (2024-03-27)
 
 
