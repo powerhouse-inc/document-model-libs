@@ -1,3 +1,12 @@
+# [1.16.0-arbitrum.11](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.10...v1.16.0-arbitrum.11) (2024-03-28)
+
+
+### Features
+
+* add other tab ([#111](https://github.com/powerhouse-inc/document-model-libs/issues/111)) ([5efcc4f](https://github.com/powerhouse-inc/document-model-libs/commit/5efcc4f7f6994befa7462d2b9c83e0e392c6cfbb))
+* bump libs ([0f0d30a](https://github.com/powerhouse-inc/document-model-libs/commit/0f0d30aefcd2ccdaff16f398c1f6b99db0b61647))
+* fix textInput rerender ([180fd62](https://github.com/powerhouse-inc/document-model-libs/commit/180fd62ed57cb12aa9fe865596b085eb4405a091))
+
 # [1.16.0-arbitrum.10](https://github.com/powerhouse-inc/document-model-libs/compare/v1.16.0-arbitrum.9...v1.16.0-arbitrum.10) (2024-03-27)
 
 
