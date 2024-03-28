@@ -89,10 +89,10 @@ enum DeliverableStatus {
 
 input UpdateDeliverableProgressInput {
     deliverableId: ID!
-    workProgress: Progress!
+    workProgress: DeliverableProgress!
 }
 
-union Progress = StoryPoints | Percentage | DeliverablesCompleted
+union DeliverableProgress = StoryPoints | Percentage
 
 type StoryPoints {
     total: Int! # a positive number greater than 0
@@ -101,11 +101,6 @@ type StoryPoints {
 
 type Percentage {
     value: Float! # between 0 and 1, where 1 means 100%
-}
-
-type DeliverablesCompleted {
-    total: Int!
-    completed: Int!
 }
 
 input DeleteDeliverableInput {

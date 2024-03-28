@@ -44,7 +44,7 @@
                             "id": "7mzdY6jAfccISrkdXdiyigii+zg=",
                             "name": "UpdateDeliverableProgress",
                             "description": "",
-                            "schema": "input UpdateDeliverableProgressInput {\n    deliverableId: ID!\n    workProgress: Progress!\n}\n\nunion Progress = StoryPoints | Percentage | DeliverablesCompleted\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n\ntype DeliverablesCompleted {\n  total: Int!\n  completed: Int!\n}\n\n\n",
+                            "schema": "input UpdateDeliverableProgressInput {\n    deliverableId: ID!\n    workProgress: DeliverableProgress!\n}\n\nunion DeliverableProgress = StoryPoints | Percentage\n\ntype StoryPoints {\n  total: Int! # a positive number greater than 0\n  completed: Int! # a positive number less then or equal to total, can be 0\n}\n\ntype Percentage {\n  value: Float! # between 0 and 1, where 1 means 100%\n}\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],
