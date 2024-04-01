@@ -1,12 +1,15 @@
 import { ArbLtipGranteeState } from '../../../../document-models/arb-ltip-grantee';
+import { Role } from '../../hooks/use-role';
 import GranteeStats from '../GranteeStats';
 
 type TabSummaryProps = ArbLtipGranteeState & {
+    role: Role;
     onEdit: () => void;
     onOpenHistorical: () => void;
 };
 const TabSummary = (props: TabSummaryProps) => {
     const {
+        role,
         granteeName,
         grantSummary,
         disbursementContractAddress,
@@ -19,13 +22,15 @@ const TabSummary = (props: TabSummaryProps) => {
                 <p className="flex-1 mt-3 font-semibold text-4xl text-gray-900">
                     {granteeName}
                 </p>
-                <button
-                    type="button"
-                    className="inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    onClick={props.onEdit}
-                >
-                    Edit
-                </button>
+                {(role === Role.Editor || role === Role.Root) && (
+                    <button
+                        type="button"
+                        className="inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        onClick={props.onEdit}
+                    >
+                        Edit
+                    </button>
+                )}
             </div>
             {metricsDashboardLink && (
                 <div className="px-4 sm:px-0 flex items-center">

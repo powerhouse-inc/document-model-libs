@@ -12,6 +12,7 @@ import { classNames } from './util';
 import { actions } from 'document-model/document-model';
 import TabSummary from './components/tabs/TabSummary';
 import TabHistorical from './components/tabs/TabHistorical';
+import useRole, { Role } from './hooks/use-role';
 
 export type CustomEditorProps = Pick<
     RWATabsProps,
@@ -25,11 +26,13 @@ export type IProps = EditorProps<
 > &
     CustomEditorProps;
 
-type TabHeaderProps = { active: string; setActive: (a: string) => void } & Pick<
-    IProps,
-    'onExport' | 'onClose'
->;
+type TabHeaderProps = {
+    role: Role;
+    active: string;
+    setActive: (a: string) => void;
+} & Pick<IProps, 'onExport' | 'onClose'>;
 const TabHeader = ({
+    role,
     active,
     setActive,
     onClose,
@@ -40,12 +43,15 @@ const TabHeader = ({
             name: 'Summary',
         },
         {
-            name: 'Todo',
-        },
-        {
             name: 'Historical',
         },
     ];
+
+    if (role === Role.Root || role === Role.Editor) {
+        tabs.splice(1, 0, {
+            name: 'Todo',
+        });
+    }
 
     return (
         <div className="border-b border-gray-200">
@@ -133,6 +139,8 @@ const Editor = (props: IProps) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [activeTab, setActiveTab] = useState('Summary');
 
+    const role = useRole(document.state.global);
+
     const {
         disbursementContractAddress,
         fundingAddress,
@@ -185,6 +193,7 @@ const Editor = (props: IProps) => {
             ) : (
                 <>
                     <TabHeader
+                        role={role}
                         active={activeTab}
                         setActive={setActiveTab}
                         onClose={onClose}
@@ -193,6 +202,7 @@ const Editor = (props: IProps) => {
                     {activeTab === 'Summary' && (
                         <TabSummary
                             {...document.state.global}
+                            role={role}
                             onEdit={() => setIsEditMode(true)}
                             onOpenHistorical={() => setActiveTab('Historical')}
                         />
