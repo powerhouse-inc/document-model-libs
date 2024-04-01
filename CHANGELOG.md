@@ -1,3 +1,10 @@
+# [1.18.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.18.0-arbitrum.1...v1.18.0-arbitrum.2) (2024-04-01)
+
+
+### Features
+
+* stubbed in fake role, disallow editing if viewer ([3a56bfc](https://github.com/powerhouse-inc/document-model-libs/commit/3a56bfc1014076d22da5064ef98148eff8788044))
+
 # [1.18.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.17.1...v1.18.0-arbitrum.1) (2024-03-29)
 
 
