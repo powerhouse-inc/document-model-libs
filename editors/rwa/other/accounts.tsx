@@ -3,6 +3,7 @@ import {
     AccountsTable,
     AccountsTableProps,
 } from '@powerhousedao/design-system';
+import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import {
@@ -32,7 +33,15 @@ export function Accounts(props: IProps) {
     const onSubmitEdit: AccountsTableProps['onSubmitEdit'] = useCallback(
         data => {
             if (!selectedItem) return;
-            const changedFields = getDifferences(selectedItem, data);
+
+            const update = copy(selectedItem);
+            const newReference = data.reference;
+            const newLabel = data.label;
+
+            if (newReference) update.reference = newReference;
+            if (newLabel) update.label = newLabel;
+
+            const changedFields = getDifferences(selectedItem, update);
 
             if (Object.values(changedFields).filter(Boolean).length === 0) {
                 setSelectedItem(undefined);
@@ -52,10 +61,16 @@ export function Accounts(props: IProps) {
 
     const onSubmitCreate: AccountsTableProps['onSubmitCreate'] = useCallback(
         data => {
+            const id = utils.hashKey();
+            const reference = data.reference;
+            const label = data.label;
+            if (!reference) throw new Error('Reference is required');
+
             dispatch(
                 actions.createAccount({
-                    ...data,
-                    id: utils.hashKey(),
+                    id,
+                    reference,
+                    label,
                 }),
             );
             setShowNewItemForm(false);

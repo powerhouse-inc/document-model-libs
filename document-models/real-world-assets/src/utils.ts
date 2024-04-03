@@ -605,8 +605,8 @@ export function calculateTotalDiscount(
 }
 
 export function getDifferences<T extends object>(
-    obj1: T | null,
-    obj2: Partial<T> | null,
+    obj1: T | undefined | null,
+    obj2: Partial<T> | undefined | null,
 ): Partial<T> {
     if (!obj1 || !obj2) return {};
 
