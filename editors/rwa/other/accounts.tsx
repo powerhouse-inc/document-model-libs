@@ -18,8 +18,11 @@ export function Accounts(props: IProps) {
     const [showNewItemForm, setShowNewItemForm] = useState(false);
 
     const { dispatch, document } = props;
-
-    const accounts = document.state.global.accounts;
+    const principalLenderAccountId =
+        document.state.global.principalLenderAccountId;
+    const accounts = document.state.global.accounts.filter(
+        account => account.id !== principalLenderAccountId,
+    );
 
     const toggleExpandedRow = useCallback(
         (id: string | undefined) => {
