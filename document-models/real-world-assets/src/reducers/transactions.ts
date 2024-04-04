@@ -8,9 +8,7 @@ import {
     Cash,
     makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
-    validateFeeTransactions,
     validateFixedIncomeTransaction,
-    validateInterestTransaction,
     validateTransactionFee,
     validateTransactionFees,
 } from '../..';
@@ -30,10 +28,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         let cashTransaction = action.input.cashTransaction ?? null;
         let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
-        let interestTransaction = action.input.interestTransaction ?? null;
-        let feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions
-            : null;
 
         if (cashTransaction) {
             cashTransaction = {
@@ -51,22 +45,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
 
-        if (interestTransaction) {
-            interestTransaction = {
-                ...interestTransaction,
-                entryTime,
-            };
-            validateInterestTransaction(state, interestTransaction);
-        }
-
-        if (feeTransactions) {
-            feeTransactions = feeTransactions.map(ft => ({
-                ...ft,
-                entryTime,
-            }));
-            validateFeeTransactions(state, feeTransactions);
-        }
-
         if (fees) {
             validateTransactionFees(state, fees);
         }
@@ -78,9 +56,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             fees,
             cashBalanceChange,
             cashTransaction,
-            feeTransactions,
             fixedIncomeTransaction,
-            interestTransaction,
         };
 
         state.transactions.push(newGroupTransaction);

@@ -12,8 +12,7 @@ import utils from '../../gen/utils';
 import {
     ASSET_PURCHASE,
     ASSET_SALE,
-    INTEREST_DRAW,
-    INTEREST_RETURN,
+    INTEREST_PAYMENT,
     PRINCIPAL_DRAW,
     PRINCIPAL_RETURN,
 } from '../constants';
@@ -134,31 +133,13 @@ describe('Transactions Operations', () => {
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    test('createInterestDrawGroupTransactionOperation', () => {
+    test('createInterestPaymentGroupTransactionOperation', () => {
         const input = makeEmptyGroupTransactionByType(
-            INTEREST_DRAW,
-            'interestDraw',
+            INTEREST_PAYMENT,
+            'interestPayment',
         );
         // @ts-expect-error mock
-        input.interestTransaction = mockInterestTransaction;
-        const updatedDocument = reducer(
-            document,
-            creators.createGroupTransaction(input),
-        );
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'CREATE_GROUP_TRANSACTION',
-        );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
-    });
-    test('createInterestReturnGroupTransactionOperation', () => {
-        const input = makeEmptyGroupTransactionByType(
-            INTEREST_RETURN,
-            'interestReturn',
-        );
-        // @ts-expect-error mock
-        input.interestTransaction = mockInterestTransaction;
+        input.cashTransaction = positiveMockCashTransaction;
         const updatedDocument = reducer(
             document,
             creators.createGroupTransaction(input),
@@ -186,6 +167,7 @@ describe('Transactions Operations', () => {
                 ...document.state,
                 global: {
                     ...document.state.global,
+                    // @ts-expect-error mock
                     transactions: [existingGroupTransaction],
                 },
             },

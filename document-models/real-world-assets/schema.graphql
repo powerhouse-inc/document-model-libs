@@ -19,7 +19,7 @@ type FixedIncome {
     purchaseDate: DateTime! # Weighted average of underlying transactions
     notional: Float! # Face value sum of the underlying transactions
     purchaseProceeds: Float! # Total cash outflow spent on purchases
-    salesProceeds: Float! # 
+    salesProceeds: Float! #
     purchasePrice: Float! # purchaseProceeds / notional
     totalDiscount: Float! # notional - purchaseProceeds
     realizedSurplus: Float! # Sum(Asset Proceeds) + Purchase Proceeds
@@ -77,26 +77,16 @@ type GroupTransaction {
     fees: [TransactionFee!]
     cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
-    feeTransactions: [BaseTransaction!]
-    interestTransaction: BaseTransaction
 }
 
-enum CashGroupTransactionType {
+enum GroupTransactionType {
     PrincipalDraw
     PrincipalReturn
-}
-
-enum FixedIncomeGroupTransactionType {
     AssetPurchase
     AssetSale
-    InterestDraw # Payment from Borrower to Arranger (If there is a coupon)
-    InterestReturn # Payment from Arranger to Maker
+    InterestPayment
     FeesPayment
 }
-
-union GroupTransactionType =
-    | CashGroupTransactionType
-    | FixedIncomeGroupTransactionType
 
 type ServiceProviderFeeType {
     id: ID!
@@ -252,8 +242,6 @@ input CreateGroupTransactionInput {
     cashBalanceChange: Float!
     cashTransaction: CreateBaseTransactionInput
     fixedIncomeTransaction: CreateBaseTransactionInput
-    feeTransactions: [CreateBaseTransactionInput!]
-    interestTransaction: CreateBaseTransactionInput
 }
 
 input EditGroupTransactionInput {
@@ -263,7 +251,6 @@ input EditGroupTransactionInput {
     cashBalanceChange: Float
     cashTransaction: EditBaseTransactionInput
     fixedIncomeTransaction: EditBaseTransactionInput
-    interestTransaction: EditBaseTransactionInput
 }
 
 input DeleteGroupTransactionInput {

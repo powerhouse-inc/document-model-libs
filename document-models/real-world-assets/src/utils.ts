@@ -17,8 +17,7 @@ import {
     ASSET_SALE,
     FEES_PAYMENT,
     FIXED_INCOME_TRANSACTION,
-    INTEREST_DRAW,
-    INTEREST_RETURN,
+    INTEREST_PAYMENT,
     PRINCIPAL_DRAW,
     PRINCIPAL_RETURN,
 } from './constants';
@@ -392,14 +391,11 @@ export function makeEmptyGroupTransactionByType(
     const fees = null;
     const cashTransaction = null;
     const fixedIncomeTransaction = null;
-    const interestTransaction = null;
-    const feeTransactions = null;
     const base = {
         type,
         id,
         entryTime,
         cashBalanceChange,
-        fees,
     };
     switch (type) {
         case PRINCIPAL_DRAW:
@@ -407,38 +403,29 @@ export function makeEmptyGroupTransactionByType(
             return {
                 ...base,
                 cashTransaction,
-                feeTransactions,
-                fixedIncomeTransaction: null,
-                interestTransaction: null,
+                fees,
             };
         }
         case ASSET_PURCHASE:
         case ASSET_SALE: {
             return {
                 ...base,
+                fees,
                 cashTransaction,
                 fixedIncomeTransaction,
-                feeTransactions,
-                interestTransaction: null,
             };
         }
-        case INTEREST_DRAW:
-        case INTEREST_RETURN: {
+        case INTEREST_PAYMENT: {
             return {
                 ...base,
-                interestTransaction,
+                fees,
                 cashTransaction: null,
-                fixedIncomeTransaction: null,
-                feeTransactions: null,
             };
         }
         case FEES_PAYMENT: {
             return {
                 ...base,
-                feeTransactions,
                 cashTransaction: null,
-                fixedIncomeTransaction: null,
-                interestTransaction: null,
             };
         }
     }
