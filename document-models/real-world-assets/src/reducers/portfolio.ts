@@ -4,8 +4,9 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { Asset, FixedIncome, validateFixedIncomeAsset } from '../..';
+import { Asset, FixedIncome } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
+import { validateFixedIncomeAsset } from '../utils';
 
 export const reducer: RealWorldAssetsPortfolioOperations = {
     createFixedIncomeTypeOperation(state, action, dispatch) {
