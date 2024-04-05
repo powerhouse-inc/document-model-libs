@@ -1,5 +1,205 @@
-import { BaseTransaction, GroupTransaction } from '../..';
+import { GroupTransaction } from '../..';
+import { ASSET_PURCHASE, ASSET_SALE } from '../constants';
 
+/**
+ * Compute derived fields for fixed income assets
+ *
+ * @param transactions - All group transactions for given asset
+ */
+export function computeFixedIncomeAssetDerivedFields(
+    transactions: GroupTransaction[],
+) {
+    const purchaseDate = calculatePurchaseDate(transactions);
+    const notional = calculateNotional(transactions);
+    const assetProceeds = calculateAssetProceeds(transactions);
+    const purchaseProceeds = calculatePurchaseProceeds(transactions);
+    const salesProceeds = calculateSalesProceeds(transactions);
+    const purchasePrice = calculatePurchasePrice(transactions);
+    const totalDiscount = calculateTotalDiscount(transactions);
+    const realizedSurplus = calculateRealizedSurplus(transactions);
+
+    return {
+        purchaseDate,
+        notional,
+        assetProceeds,
+        purchaseProceeds,
+        salesProceeds,
+        purchasePrice,
+        totalDiscount,
+        realizedSurplus,
+    };
+}
+
+/**
+ * Purchase date
+ *
+ * Weighted average of fixed income transaction amounts for a given asset
+ * Weighted Average Purchase Date = (SUM( Quantity * Date )) / SUM( Quantity)
+ * Where Quantity is the amount of each fixed income transaction
+ */
+export function calculatePurchaseDate(transactions: GroupTransaction[]) {
+    const now = new Date().toISOString();
+
+    if (!transactions.length) return now;
+
+    let sumQuantityTimesDate = 0;
+    let sumQuantity = 0;
+
+    transactions.forEach(({ cashTransaction }) => {
+        if (!cashTransaction) return;
+        const { entryTime, amount } = cashTransaction;
+        // Convert to milliseconds since the epoch
+        const time = new Date(entryTime).getTime();
+        sumQuantityTimesDate += time * amount;
+        sumQuantity += amount;
+    });
+
+    // avoid divide by zero
+    if (sumQuantity === 0) return now;
+
+    // Calculate the weighted average in milliseconds
+    const purchaseDateMs = sumQuantityTimesDate / sumQuantity;
+    // Convert back to a Date object
+    const purchaseDate = new Date(purchaseDateMs);
+    // Round to the nearest day
+    return roundToNearestDay(purchaseDate).toISOString();
+}
+
+/**
+ * Notional
+ *
+ * Face value sum of cash transactions for a given asset
+ * Notional = SUM(Asset Proceeds)
+ * Where Asset Proceeds is the amount of each cash transaction
+ */
+export function calculateNotional(transactions: GroupTransaction[]) {
+    return sumBaseTransactionAmounts(transactions, 'cashTransaction');
+}
+
+/**
+ * Asset proceeds
+ * Cost to acquire or dispose of an asset _without_ fees
+ *
+ * Asset Proceeds = SUM(Cost to acquire or dispose of an asset without fees)
+ */
+export function calculateAssetProceeds(transactions: GroupTransaction[]) {
+    return sumBaseTransactionAmounts(transactions, 'cashTransaction');
+}
+
+/**
+ * Purchase proceeds
+ *
+ * Cost to acquire asset _with_ fees
+ * Purchase Proceeds = SUM(Cash Balance Change of Purchase Txs)
+ */
+export function calculatePurchaseProceeds(transactions: GroupTransaction[]) {
+    const purchaseTransactions = transactions.filter(
+        ({ type }) => type === ASSET_PURCHASE,
+    );
+    const sumCashBalanceChange = sumBaseTransactionAmounts(
+        purchaseTransactions,
+        'cashTransaction',
+    );
+
+    return sumCashBalanceChange;
+}
+
+/**
+ * Sales proceeds
+ *
+ * Amount received for the disposal of asset with fees
+ * Sale Proceeds = SUM(Cash Balance Change of Sale Txs)
+ */
+export function calculateSalesProceeds(transactions: GroupTransaction[]) {
+    const saleTransactions = transactions.filter(
+        ({ type }) => type === ASSET_SALE,
+    );
+    const sumCashBalanceChange = sumBaseTransactionAmounts(
+        saleTransactions,
+        'cashTransaction',
+    );
+
+    return sumCashBalanceChange;
+}
+
+/**
+ * Purchase price
+ *
+ * Total spent per unit including fees
+ *
+ * Purchase price = Purchase proceeds / Quantity
+ */
+export function calculatePurchasePrice(transactions: GroupTransaction[]) {
+    const quantity = sumBaseTransactionAmounts(
+        transactions,
+        'fixedIncomeTransaction',
+    );
+    // avoid divide by zero
+    if (quantity === 0) return 0;
+
+    const purchaseProceeds = calculatePurchaseProceeds(transactions);
+
+    return purchaseProceeds / quantity;
+}
+
+/**
+ * Total discount
+ *
+ * Notional minus purchase proceeds
+ * Total discount = Notional - SUM(Purchase proceeds - Sale Proceeds)
+ */
+export function calculateTotalDiscount(transactions: GroupTransaction[]) {
+    const notional = calculateNotional(transactions);
+    const purchaseProceeds = calculatePurchaseProceeds(transactions);
+    const salesProceeds = calculateSalesProceeds(transactions);
+
+    return notional - (purchaseProceeds - salesProceeds);
+}
+
+/**
+ * Realized surplus
+ *
+ * Excess of total assets over total liabilities that have been confirmed through the actual sale or disposal of assets.
+ *
+ * Realized Surplus = only give value if >0 -> Sale Proceeds - Purchase Proceeds
+ */
+export function calculateRealizedSurplus(transactions: GroupTransaction[]) {
+    const salesProceeds = calculateSalesProceeds(transactions);
+    const purchaseProceeds = calculatePurchaseProceeds(transactions);
+
+    const realizedSurplus = salesProceeds - purchaseProceeds;
+
+    return realizedSurplus > 0 ? realizedSurplus : 0;
+}
+
+/**
+ * Helper function to sum fees for a given group transaction
+ */
+export function sumGroupTransactionFees(transactions: GroupTransaction[]) {
+    return transactions.reduce((sum, { fees }) => {
+        if (!fees) return sum;
+        return sum + fees.reduce((feeSum, { amount }) => feeSum + amount, 0);
+    }, 0);
+}
+
+/**
+ * Helper function to sum amounts for either cash or fixed income transactions for a given asset
+ */
+export function sumBaseTransactionAmounts(
+    transactions: GroupTransaction[],
+    cashOrFixedIncomeTransaction: 'cashTransaction' | 'fixedIncomeTransaction',
+) {
+    return transactions.reduce((sum, transaction) => {
+        const baseTransaction = transaction[cashOrFixedIncomeTransaction];
+        if (!baseTransaction) return sum;
+        const { amount } = baseTransaction;
+        return sum + amount;
+    }, 0);
+}
+
+/**
+ * Round a date to the nearest day
+ */
 export function roundToNearestDay(date: Date) {
     // Convert to UTC date components
     const year = date.getUTCFullYear();
@@ -16,143 +216,4 @@ export function roundToNearestDay(date: Date) {
     }
 
     return roundedDate;
-}
-
-export function computeFixedIncomeAssetDerivedFields(
-    assetPurchaseFixedIncomeTransactions: BaseTransaction[],
-    assetSaleFixedIncomeTransactions: BaseTransaction[],
-    groupTransactions: GroupTransaction[],
-) {
-    const allFixedIncomeTransactions = [
-        ...assetPurchaseFixedIncomeTransactions,
-        ...assetSaleFixedIncomeTransactions,
-    ];
-    const notional = calculateNotional(
-        assetPurchaseFixedIncomeTransactions,
-        assetSaleFixedIncomeTransactions,
-    );
-    const purchaseProceeds = calculatePurchaseProceeds(
-        assetPurchaseFixedIncomeTransactions,
-        groupTransactions,
-    );
-    const salesProceeds = calculateSalesProceeds(
-        assetSaleFixedIncomeTransactions,
-    );
-    const realizedSurplus = calculateRealizedSurplus(
-        salesProceeds,
-        purchaseProceeds,
-    );
-    const purchasePrice = calculatePurchasePrice(notional, purchaseProceeds);
-    const totalDiscount = calculateTotalDiscount(notional, purchaseProceeds);
-    const purchaseDate = computeWeightedAveragePurchaseDate(
-        allFixedIncomeTransactions,
-    );
-
-    return {
-        notional,
-        purchaseProceeds,
-        salesProceeds,
-        purchasePrice,
-        totalDiscount,
-        purchaseDate,
-        realizedSurplus,
-    };
-}
-
-export function computeWeightedAveragePurchaseDate(
-    transactions: BaseTransaction[],
-) {
-    if (!transactions.length) return new Date().toISOString();
-    let sumWeightedTime = 0;
-    let sumAmount = 0;
-
-    transactions.forEach(({ entryTime, amount }) => {
-        const time = new Date(entryTime).getTime(); // Convert to milliseconds since the epoch
-        sumWeightedTime += time * amount; // Weight by the amount
-        sumAmount += amount;
-    });
-
-    if (sumAmount === 0) throw new Error('Sum of amount cannot be zero.');
-
-    const averageTimeInMs = sumWeightedTime / sumAmount; // Calculate the weighted average in milliseconds
-    const averageDate = new Date(averageTimeInMs); // Convert back to a Date object
-
-    // Round to the nearest day
-    return roundToNearestDay(averageDate).toISOString();
-}
-
-export function calculateNotional(
-    assetPurchaseFixedIncomeTransactions: BaseTransaction[],
-    assetSaleFixedIncomeTransactions: BaseTransaction[],
-) {
-    const sumOfAssetPurchaseFixedIncomeTransactions =
-        assetPurchaseFixedIncomeTransactions.reduce(
-            (sum, transaction) => sum + transaction.amount,
-            0,
-        );
-
-    const sumOfAssetSaleFixedIncomeTransactions =
-        assetSaleFixedIncomeTransactions.reduce(
-            (sum, transaction) => sum + transaction.amount,
-            0,
-        );
-
-    return (
-        sumOfAssetPurchaseFixedIncomeTransactions -
-        sumOfAssetSaleFixedIncomeTransactions
-    );
-}
-
-export function calculatePurchaseProceeds(
-    assetPurchaseBaseTransactions: BaseTransaction[],
-    allGroupTransactions: GroupTransaction[],
-) {
-    const totalSpentOnPurchases = sumBaseTransactionAmounts(
-        assetPurchaseBaseTransactions,
-    );
-    const totalFees = sumGroupTransactionFees(allGroupTransactions);
-
-    return totalSpentOnPurchases + totalFees;
-}
-
-export function calculateSalesProceeds(
-    assetSaleFixedIncomeTransactions: BaseTransaction[],
-) {
-    // total proceeds from sales
-    return sumBaseTransactionAmounts(assetSaleFixedIncomeTransactions);
-}
-
-export function calculateRealizedSurplus(
-    salesProceeds: number,
-    purchaseProceeds: number,
-) {
-    // todo: when interest payment transactions are implemented, change to
-    // salesProceeds + interestPayments - purchaseProceeds
-    return salesProceeds - purchaseProceeds;
-}
-
-export function sumGroupTransactionFees(transactions: GroupTransaction[]) {
-    return transactions.reduce((sum, { fees }) => {
-        if (!fees) return sum;
-        return sum + fees.reduce((feeSum, { amount }) => feeSum + amount, 0);
-    }, 0);
-}
-
-export function sumBaseTransactionAmounts(transactions: BaseTransaction[]) {
-    return transactions.reduce((sum, { amount }) => sum + amount, 0);
-}
-
-export function calculatePurchasePrice(
-    purchaseProceeds: number,
-    notional: number,
-) {
-    if (notional === 0) return 0;
-    return purchaseProceeds / notional;
-}
-
-export function calculateTotalDiscount(
-    notional: number,
-    purchaseProceeds: number,
-) {
-    return notional - purchaseProceeds;
 }
