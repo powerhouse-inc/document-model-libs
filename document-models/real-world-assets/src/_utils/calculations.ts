@@ -1,5 +1,5 @@
-import { GroupTransaction } from '../..';
-import { ASSET_PURCHASE, ASSET_SALE } from '../constants';
+import { GroupTransaction, GroupTransactionType } from '../..';
+import { ASSET_PURCHASE, ASSET_SALE, PRINCIPAL_RETURN } from '../constants';
 
 /**
  * Compute derived fields for fixed income assets
@@ -38,24 +38,28 @@ export function computeFixedIncomeAssetDerivedFields(
  * Where Quantity is the amount of each fixed income transaction
  */
 export function calculatePurchaseDate(transactions: GroupTransaction[]) {
-    const now = new Date().toISOString();
+    if (!transactions.length) return '';
 
-    if (!transactions.length) return now;
+    const sumQuantity = sumBaseTransactionAmounts(
+        transactions,
+        'cashTransaction',
+    );
 
-    let sumQuantityTimesDate = 0;
-    let sumQuantity = 0;
+    // In the special case where the most recent transaction brings the sum quantity to zero,
+    // we perform the calculation excluding the most recent transaction
+    const transactionsToUse =
+        sumQuantity === 0 ? transactions.slice(0, -1) : transactions;
 
-    transactions.forEach(({ cashTransaction }) => {
-        if (!cashTransaction) return;
-        const { entryTime, amount } = cashTransaction;
-        // Convert to milliseconds since the epoch
-        const time = new Date(entryTime).getTime();
-        sumQuantityTimesDate += time * amount;
-        sumQuantity += amount;
-    });
-
-    // avoid divide by zero
-    if (sumQuantity === 0) return now;
+    const sumQuantityTimesDate = transactionsToUse.reduce(
+        (sum, { cashTransaction }) => {
+            if (!cashTransaction) return sum;
+            const { entryTime, amount } = cashTransaction;
+            // Convert to milliseconds since the epoch
+            const time = new Date(entryTime).getTime();
+            return sum + time * amount;
+        },
+        0,
+    );
 
     // Calculate the weighted average in milliseconds
     const purchaseDateMs = sumQuantityTimesDate / sumQuantity;
@@ -192,9 +196,22 @@ export function sumBaseTransactionAmounts(
     return transactions.reduce((sum, transaction) => {
         const baseTransaction = transaction[cashOrFixedIncomeTransaction];
         if (!baseTransaction) return sum;
+        const { type } = transaction;
         const { amount } = baseTransaction;
-        return sum + amount;
+        const sign = getTransactionAmountSign(type);
+        return sum + sign * amount;
     }, 0);
+}
+
+export function getTransactionAmountSign(
+    transactionType: GroupTransactionType,
+) {
+    const sign =
+        transactionType === ASSET_SALE || transactionType === PRINCIPAL_RETURN
+            ? 1
+            : -1;
+
+    return sign;
 }
 
 /**

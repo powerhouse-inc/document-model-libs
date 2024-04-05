@@ -72,6 +72,7 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             notional: 0,
             purchaseDate: '',
             purchaseProceeds: 0,
+            assetProceeds: 0,
             salesProceeds: 0,
             realizedSurplus: 0,
         };

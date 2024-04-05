@@ -46,6 +46,7 @@ const mockFixedIncome: FixedIncome = {
     maturity: '',
     purchaseDate: '',
     notional: 0,
+    assetProceeds: 0,
     purchasePrice: 0,
     purchaseProceeds: 0,
     salesProceeds: 0,

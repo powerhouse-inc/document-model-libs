@@ -23,8 +23,9 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         const type = action.input.type;
         const entryTime = action.input.entryTime;
-        const fees = action.input.fees ?? null;
         const cashBalanceChange = action.input.cashBalanceChange;
+        const unitPrice = action.input.unitPrice;
+        const fees = action.input.fees ?? null;
         let cashTransaction = action.input.cashTransaction ?? null;
         let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
@@ -53,8 +54,9 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             id,
             type,
             entryTime,
-            fees,
             cashBalanceChange,
+            unitPrice,
+            fees,
             cashTransaction,
             fixedIncomeTransaction,
         };
@@ -136,6 +138,10 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (action.input.cashBalanceChange) {
             transaction.cashBalanceChange = action.input.cashBalanceChange;
+        }
+
+        if (action.input.unitPrice) {
+            transaction.unitPrice = action.input.unitPrice;
         }
 
         state.transactions = state.transactions.map(t =>
