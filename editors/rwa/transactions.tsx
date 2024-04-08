@@ -5,6 +5,7 @@ import {
     GroupTransactionsTableProps,
     FixedIncome as UiFixedIncome,
     GroupTransaction as UiGroupTransaction,
+    assetGroupTransactions,
 } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
@@ -77,8 +78,10 @@ export const Transactions = (props: IProps) => {
             if (!cashBalanceChange) {
                 throw new Error('Cash balance change is required');
             }
-            if (!unitPrice) {
-                throw new Error('Unit price is required');
+            if (!unitPrice && assetGroupTransactions.includes(type)) {
+                throw new Error(
+                    'Unit price is required for asset transactions',
+                );
             }
 
             const entryTime = new Date(data.entryTime).toISOString();

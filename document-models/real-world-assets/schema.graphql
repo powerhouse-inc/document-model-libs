@@ -74,8 +74,8 @@ type GroupTransaction {
     id: ID!
     type: GroupTransactionType!
     entryTime: DateTime!
-    unitPrice: Float!
     cashBalanceChange: Float!
+    unitPrice: Float
     fees: [TransactionFee!]
     cashTransaction: BaseTransaction
     fixedIncomeTransaction: BaseTransaction
@@ -236,7 +236,7 @@ input CreateGroupTransactionInput {
     entryTime: DateTime!
     fees: [TransactionFeeInput!]
     cashBalanceChange: Float!
-    unitPrice: Float!
+    unitPrice: Float
     cashTransaction: CreateBaseTransactionInput
     fixedIncomeTransaction: CreateBaseTransactionInput
 }
