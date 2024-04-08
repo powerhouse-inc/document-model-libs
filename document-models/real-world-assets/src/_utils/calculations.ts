@@ -1,5 +1,8 @@
-import { GroupTransaction, GroupTransactionType } from '../..';
-import { ASSET_PURCHASE, ASSET_SALE, PRINCIPAL_RETURN } from '../constants';
+import {
+    GroupTransaction,
+    GroupTransactionType,
+} from '@powerhousedao/design-system';
+import { ASSET_PURCHASE, ASSET_SALE } from '../constants';
 
 /**
  * Compute derived fields for fixed income assets
@@ -33,27 +36,29 @@ export function computeFixedIncomeAssetDerivedFields(
 /**
  * Purchase date
  *
- * Weighted average of fixed income transaction amounts for a given asset
+ * Weighted average of asset purchase transaction amounts for a given asset
  * Weighted Average Purchase Date = (SUM( Quantity * Date )) / SUM( Quantity)
- * Where Quantity is the amount of each fixed income transaction
+ * Where Quantity is the amount of each asset purchase transaction
  */
 export function calculatePurchaseDate(transactions: GroupTransaction[]) {
     if (!transactions.length) return '';
 
-    const sumQuantity = sumBaseTransactionAmounts(
-        transactions,
-        'cashTransaction',
+    const purchaseTransactions = transactions.filter(
+        ({ type }) => type === ASSET_PURCHASE,
     );
 
-    // In the special case where the most recent transaction brings the sum quantity to zero,
-    // we perform the calculation excluding the most recent transaction
-    const transactionsToUse =
-        sumQuantity === 0 ? transactions.slice(0, -1) : transactions;
+    const sumQuantity = purchaseTransactions.reduce(
+        (sum, { fixedIncomeTransaction }) => {
+            if (!fixedIncomeTransaction) return sum;
+            return sum + fixedIncomeTransaction.amount;
+        },
+        0,
+    );
 
-    const sumQuantityTimesDate = transactionsToUse.reduce(
-        (sum, { cashTransaction }) => {
-            if (!cashTransaction) return sum;
-            const { entryTime, amount } = cashTransaction;
+    const sumQuantityTimesDate = purchaseTransactions.reduce(
+        (sum, { fixedIncomeTransaction }) => {
+            if (!fixedIncomeTransaction) return sum;
+            const { entryTime, amount } = fixedIncomeTransaction;
             // Convert to milliseconds since the epoch
             const time = new Date(entryTime).getTime();
             return sum + time * amount;
@@ -77,7 +82,10 @@ export function calculatePurchaseDate(transactions: GroupTransaction[]) {
  * Where Asset Proceeds is the amount of each cash transaction
  */
 export function calculateNotional(transactions: GroupTransaction[]) {
-    return sumBaseTransactionAmounts(transactions, 'cashTransaction');
+    return (
+        sumCashTransactionsForType(transactions, ASSET_SALE) -
+        sumCashTransactionsForType(transactions, ASSET_PURCHASE)
+    );
 }
 
 /**
@@ -87,7 +95,10 @@ export function calculateNotional(transactions: GroupTransaction[]) {
  * Asset Proceeds = SUM(Cost to acquire or dispose of an asset without fees)
  */
 export function calculateAssetProceeds(transactions: GroupTransaction[]) {
-    return sumBaseTransactionAmounts(transactions, 'cashTransaction');
+    return (
+        sumCashTransactionsForType(transactions, ASSET_SALE) -
+        sumCashTransactionsForType(transactions, ASSET_PURCHASE)
+    );
 }
 
 /**
@@ -97,15 +108,14 @@ export function calculateAssetProceeds(transactions: GroupTransaction[]) {
  * Purchase Proceeds = SUM(Cash Balance Change of Purchase Txs)
  */
 export function calculatePurchaseProceeds(transactions: GroupTransaction[]) {
-    const purchaseTransactions = transactions.filter(
-        ({ type }) => type === ASSET_PURCHASE,
-    );
-    const sumCashBalanceChange = sumBaseTransactionAmounts(
-        purchaseTransactions,
-        'cashTransaction',
+    const sumPurchaseTransactions = sumCashTransactionsForType(
+        transactions,
+        ASSET_PURCHASE,
     );
 
-    return sumCashBalanceChange;
+    const sumFees = sumGroupTransactionFees(transactions, ASSET_PURCHASE);
+
+    return sumPurchaseTransactions + sumFees;
 }
 
 /**
@@ -115,15 +125,14 @@ export function calculatePurchaseProceeds(transactions: GroupTransaction[]) {
  * Sale Proceeds = SUM(Cash Balance Change of Sale Txs)
  */
 export function calculateSalesProceeds(transactions: GroupTransaction[]) {
-    const saleTransactions = transactions.filter(
-        ({ type }) => type === ASSET_SALE,
-    );
-    const sumCashBalanceChange = sumBaseTransactionAmounts(
-        saleTransactions,
-        'cashTransaction',
+    const sumSaleTransactions = sumCashTransactionsForType(
+        transactions,
+        ASSET_SALE,
     );
 
-    return sumCashBalanceChange;
+    const sumFees = sumGroupTransactionFees(transactions, ASSET_SALE);
+
+    return sumSaleTransactions - sumFees;
 }
 
 /**
@@ -134,16 +143,17 @@ export function calculateSalesProceeds(transactions: GroupTransaction[]) {
  * Purchase price = Purchase proceeds / Quantity
  */
 export function calculatePurchasePrice(transactions: GroupTransaction[]) {
-    const quantity = sumBaseTransactionAmounts(
+    const sumAssetPurchaseAmounts = sumAssetTransactionsForType(
         transactions,
-        'fixedIncomeTransaction',
+        ASSET_PURCHASE,
     );
+
     // avoid divide by zero
-    if (quantity === 0) return 0;
+    if (sumAssetPurchaseAmounts === 0) return 0;
 
     const purchaseProceeds = calculatePurchaseProceeds(transactions);
 
-    return purchaseProceeds / quantity;
+    return purchaseProceeds / sumAssetPurchaseAmounts;
 }
 
 /**
@@ -179,39 +189,37 @@ export function calculateRealizedSurplus(transactions: GroupTransaction[]) {
 /**
  * Helper function to sum fees for a given group transaction
  */
-export function sumGroupTransactionFees(transactions: GroupTransaction[]) {
-    return transactions.reduce((sum, { fees }) => {
+export function sumGroupTransactionFees(
+    transactions: GroupTransaction[],
+    typeFilter?: GroupTransactionType,
+) {
+    return transactions.reduce((sum, { type, fees }) => {
         if (!fees) return sum;
+        if (typeFilter && type !== typeFilter) return sum;
         return sum + fees.reduce((feeSum, { amount }) => feeSum + amount, 0);
     }, 0);
 }
 
-/**
- * Helper function to sum amounts for either cash or fixed income transactions for a given asset
- */
-export function sumBaseTransactionAmounts(
+export function sumCashTransactionsForType(
     transactions: GroupTransaction[],
-    cashOrFixedIncomeTransaction: 'cashTransaction' | 'fixedIncomeTransaction',
+    type: GroupTransactionType,
 ) {
     return transactions.reduce((sum, transaction) => {
-        const baseTransaction = transaction[cashOrFixedIncomeTransaction];
-        if (!baseTransaction) return sum;
-        const { type } = transaction;
-        const { amount } = baseTransaction;
-        const sign = getTransactionAmountSign(type);
-        return sum + sign * amount;
+        if (transaction.type !== type) return sum;
+        const { amount } = transaction.cashTransaction ?? { amount: 0 };
+        return sum + amount;
     }, 0);
 }
 
-export function getTransactionAmountSign(
-    transactionType: GroupTransactionType,
+export function sumAssetTransactionsForType(
+    transactions: GroupTransaction[],
+    type: GroupTransactionType,
 ) {
-    const sign =
-        transactionType === ASSET_SALE || transactionType === PRINCIPAL_RETURN
-            ? 1
-            : -1;
-
-    return sign;
+    return transactions.reduce((sum, transaction) => {
+        if (transaction.type !== type) return sum;
+        const { amount } = transaction.fixedIncomeTransaction ?? { amount: 0 };
+        return sum + amount;
+    }, 0);
 }
 
 /**
