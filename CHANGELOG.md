@@ -1,3 +1,33 @@
+# [1.20.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.19.0...v1.20.0) (2024-04-04)
+
+
+### Features
+
+* add missing date string conversion ([bd6b6e5](https://github.com/powerhouse-inc/document-model-libs/commit/bd6b6e5ce2c30fa54cf95816357cb10f99df0e14))
+
+# [1.19.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.18.1...v1.19.0) (2024-04-04)
+
+
+### Features
+
+* implement teep's feedback 2 ([#120](https://github.com/powerhouse-inc/document-model-libs/issues/120)) ([1a8ac23](https://github.com/powerhouse-inc/document-model-libs/commit/1a8ac235e6df8ac91eab279c97ccc12b665f41e7))
+
+## [1.18.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.18.0...v1.18.1) (2024-04-03)
+
+
+### Reverts
+
+* Revert "feat: use uuid instead of incrementing sync id on document drive" ([49a7bd8](https://github.com/powerhouse-inc/document-model-libs/commit/49a7bd8d2b5597ff08c1e050186984df87c70ddd))
+* Revert "feat: use uuid to generate sync id" ([d55e309](https://github.com/powerhouse-inc/document-model-libs/commit/d55e30926a105d5d21b7296ba6620e1f47304eab))
+
+# [1.18.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.17.1...v1.18.0) (2024-04-03)
+
+
+### Features
+
+* use uuid instead of incrementing sync id on document drive ([b77f2fe](https://github.com/powerhouse-inc/document-model-libs/commit/b77f2fe5d0fcdac7f923f331598719af27544caf))
+* use uuid to generate sync id ([b322b0c](https://github.com/powerhouse-inc/document-model-libs/commit/b322b0c08c32f74a377d18394f5e2077474ecfcf))
+
 # [1.16.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.15.0...v1.16.0) (2024-03-29)
 
 
