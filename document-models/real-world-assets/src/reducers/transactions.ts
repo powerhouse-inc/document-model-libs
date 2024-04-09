@@ -8,9 +8,7 @@ import {
     Cash,
     makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
-    validateFeeTransactions,
     validateFixedIncomeTransaction,
-    validateInterestTransaction,
     validateTransactionFee,
     validateTransactionFees,
 } from '../..';
@@ -25,15 +23,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         const type = action.input.type;
         const entryTime = action.input.entryTime;
-        const fees = action.input.fees ?? null;
         const cashBalanceChange = action.input.cashBalanceChange;
+        const unitPrice = action.input.unitPrice ?? null;
+        const fees = action.input.fees ?? null;
         let cashTransaction = action.input.cashTransaction ?? null;
         let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
-        let interestTransaction = action.input.interestTransaction ?? null;
-        let feeTransactions = action.input.feeTransactions
-            ? action.input.feeTransactions
-            : null;
 
         if (cashTransaction) {
             cashTransaction = {
@@ -51,22 +46,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             validateFixedIncomeTransaction(state, fixedIncomeTransaction);
         }
 
-        if (interestTransaction) {
-            interestTransaction = {
-                ...interestTransaction,
-                entryTime,
-            };
-            validateInterestTransaction(state, interestTransaction);
-        }
-
-        if (feeTransactions) {
-            feeTransactions = feeTransactions.map(ft => ({
-                ...ft,
-                entryTime,
-            }));
-            validateFeeTransactions(state, feeTransactions);
-        }
-
         if (fees) {
             validateTransactionFees(state, fees);
         }
@@ -75,12 +54,11 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             id,
             type,
             entryTime,
-            fees,
             cashBalanceChange,
+            unitPrice,
+            fees,
             cashTransaction,
-            feeTransactions,
             fixedIncomeTransaction,
-            interestTransaction,
         };
 
         state.transactions.push(newGroupTransaction);
@@ -138,23 +116,36 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (action.input.entryTime) {
             transaction.entryTime = action.input.entryTime;
-            transaction.cashTransaction!.entryTime = action.input.entryTime;
-            transaction.fixedIncomeTransaction!.entryTime =
-                action.input.entryTime;
+            if (transaction.cashTransaction) {
+                transaction.cashTransaction.entryTime = action.input.entryTime;
+            }
+            if (transaction.fixedIncomeTransaction) {
+                transaction.fixedIncomeTransaction.entryTime =
+                    action.input.entryTime;
+            }
         }
 
-        if (action.input.fixedIncomeTransaction?.amount) {
-            transaction.fixedIncomeTransaction!.amount =
+        if (
+            action.input.fixedIncomeTransaction?.amount &&
+            transaction.fixedIncomeTransaction
+        ) {
+            transaction.fixedIncomeTransaction.amount =
                 action.input.fixedIncomeTransaction.amount;
         }
 
-        if (action.input.fixedIncomeTransaction?.assetId) {
-            transaction.fixedIncomeTransaction!.assetId =
+        if (
+            action.input.fixedIncomeTransaction?.assetId &&
+            transaction.fixedIncomeTransaction
+        ) {
+            transaction.fixedIncomeTransaction.assetId =
                 action.input.fixedIncomeTransaction.assetId;
         }
 
-        if (action.input.cashTransaction?.amount) {
-            transaction.cashTransaction!.amount =
+        if (
+            action.input.cashTransaction?.amount &&
+            transaction.cashTransaction
+        ) {
+            transaction.cashTransaction.amount =
                 action.input.cashTransaction.amount;
         }
 
@@ -162,19 +153,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             transaction.cashBalanceChange = action.input.cashBalanceChange;
         }
 
+        if (action.input.unitPrice) {
+            transaction.unitPrice = action.input.unitPrice;
+        }
+
         state.transactions = state.transactions.map(t =>
             t.id === transaction.id ? transaction : t,
-        );
-
-        const fixedIncomeAssetId = transaction.fixedIncomeTransaction!.assetId;
-
-        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
-            state,
-            fixedIncomeAssetId,
-        );
-
-        state.portfolio = state.portfolio.map(a =>
-            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
         );
 
         const cashAssetId = transaction.cashTransaction?.assetId;
@@ -191,14 +175,68 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         state.portfolio = state.portfolio.map(a =>
             a.id === cashAssetId ? updatedCashAsset : a,
         );
+
+        const fixedIncomeAssetId = transaction.fixedIncomeTransaction?.assetId;
+
+        if (!fixedIncomeAssetId) return;
+
+        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
+            state,
+            fixedIncomeAssetId,
+        );
+
+        state.portfolio = state.portfolio.map(a =>
+            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
+        );
     },
     deleteGroupTransactionOperation(state, action, dispatch) {
-        if (!action.input.id) {
+        const id = action.input.id;
+
+        if (!id) {
             throw new Error('Group transaction must have an id');
         }
 
+        const transactionToRemove = state.transactions.find(
+            transaction => transaction.id === id,
+        );
+
+        if (!transactionToRemove) {
+            throw new Error('Transaction does not exist');
+        }
+
         state.transactions = state.transactions.filter(
-            transaction => transaction.id !== action.input.id,
+            transaction => transaction.id !== id,
+        );
+
+        const fixedIncomeAssetId =
+            transactionToRemove.fixedIncomeTransaction?.assetId;
+
+        if (!fixedIncomeAssetId) return;
+
+        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
+            state,
+            fixedIncomeAssetId,
+        );
+
+        state.portfolio = state.portfolio.map(a =>
+            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
+        );
+
+        const cashAssetId = transactionToRemove.cashTransaction?.assetId;
+
+        if (!cashAssetId) return;
+
+        const cashAsset = state.portfolio.find(
+            a => a.id === cashAssetId,
+        ) as Cash;
+
+        const updatedCashAsset = {
+            ...cashAsset,
+            balance: cashAsset.balance - transactionToRemove.cashBalanceChange,
+        };
+
+        state.portfolio = state.portfolio.map(a =>
+            a.id === cashAssetId ? updatedCashAsset : a,
         );
     },
     addFeesToGroupTransactionOperation(state, action, dispatch) {
@@ -250,6 +288,8 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
     },
     editGroupTransactionFeesOperation(state, action, dispatch) {
         const id = action.input.id;
+        const fees = action.input.fees;
+        if (!fees) throw new Error('Fees must be provided');
 
         const transaction = state.transactions.find(
             transaction => transaction.id === id,
@@ -267,9 +307,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         transaction.fees = transaction.fees
             .map(fee => {
-                const feeToUpdate = action.input.fees!.find(
-                    f => f.id === fee.id,
-                );
+                const feeToUpdate = fees.find(f => f.id === fee.id);
                 if (!feeToUpdate) return;
                 validateTransactionFee(state, feeToUpdate);
                 return { ...fee, ...feeToUpdate };

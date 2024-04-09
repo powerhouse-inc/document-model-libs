@@ -4,8 +4,9 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { Asset, FixedIncome, validateFixedIncomeAsset } from '../..';
+import { Asset, FixedIncome } from '../..';
 import { RealWorldAssetsPortfolioOperations } from '../../gen/portfolio/operations';
+import { validateFixedIncomeAsset } from '../utils';
 
 export const reducer: RealWorldAssetsPortfolioOperations = {
     createFixedIncomeTypeOperation(state, action, dispatch) {
@@ -37,6 +38,25 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
                       name: action.input.name ?? type.name,
                   }
                 : type,
+        );
+    },
+    deleteFixedIncomeTypeOperation(state, action, dispatch) {
+        const id = action.input.id;
+
+        if (!id) {
+            throw new Error(`Fixed income type must have an id`);
+        }
+
+        const fixedIncomeType = state.fixedIncomeTypes.find(
+            type => type.id === id,
+        );
+
+        if (!fixedIncomeType) {
+            throw new Error(`Type with id ${id} does not exist!`);
+        }
+
+        state.fixedIncomeTypes = state.fixedIncomeTypes.filter(
+            type => type.id !== id,
         );
     },
     createFixedIncomeAssetOperation(state, action, dispatch) {
@@ -71,6 +91,7 @@ export const reducer: RealWorldAssetsPortfolioOperations = {
             notional: 0,
             purchaseDate: '',
             purchaseProceeds: 0,
+            assetProceeds: 0,
             salesProceeds: 0,
             realizedSurplus: 0,
         };
