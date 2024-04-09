@@ -61,8 +61,8 @@ const TabHistorical = (props: TabHistoricalProps) => {
                 phase={selectedPhase}
             />
             <div className="mt-8 flow-root">
-                <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <div className="-mx-4 -my-2 overflow-x-auto -mx-6 lg:-mx-8">
+                    <div className="inline-block min-w-full py-2 align-middle px-6 lg:px-8">
                         <table className="min-w-full divide-y divide-gray-300">
                             <thead>
                                 <tr>
@@ -80,19 +80,19 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
                                         Planned
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
                                         Actuals
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
                                         Stats
                                     </th>
@@ -155,7 +155,7 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                                     : ''
                                             }
                                         >
-                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm pl-0">
                                                 <div className="flex items-center">
                                                     <div className="ml-4">
                                                         <div className="font-medium text-gray-900">
@@ -169,19 +169,19 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <StatusBadge status={status} />
                                             </td>
-                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                            <td className="hidden sm:table-cell whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <DataBadge
                                                     isDue={isPhaseStarted}
                                                     isSubmitted={isPlannedValid}
                                                 />
                                             </td>
-                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                            <td className="hidden sm:table-cell whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <DataBadge
                                                     isDue={isPhaseComplete}
                                                     isSubmitted={isActualsValid}
                                                 />
                                             </td>
-                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                            <td className="hidden sm:table-cell whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <DataBadge
                                                     isDue={isPhaseComplete}
                                                     isSubmitted={isStatsValid}

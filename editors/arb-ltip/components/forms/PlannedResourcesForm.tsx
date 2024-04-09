@@ -154,7 +154,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                 showErrors && !isValid
                     ? 'ring-2 ring-red-300'
                     : 'ring-1 ring-gray-300',
-                'relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
+                'rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
             ),
         [showErrors],
     );
@@ -167,12 +167,12 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     {description}
                 </div>
                 <div className={wrapperClasses(isDisbursementValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900">
                         ARB Disbursement Amount (required)
                     </label>
                     <input
                         type="text"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={disbursementAmountLocal}
                         onChange={e => {
@@ -192,7 +192,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isContractsValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900">
                         Contracts Incentivized (required)
                     </label>
                     <ContractSelector
@@ -208,7 +208,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isDistributionMechanismsValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900">
                         Distribution Mechanisms (required)
                     </label>
                     <TagSelector
@@ -230,28 +230,28 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isSummaryValid)}>
-                    <label className="block text-xs font-medium text-gray-900 mb-1">
+                    <label className="text-xs font-medium text-gray-900 mb-1">
                         Summary (required)
                     </label>
                     <textarea
                         rows={4}
                         name="comment"
                         id="comment"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter summary here"
                         value={summaryLocal}
                         onChange={e => setSummaryLocal(e.target.value)}
                     />
                 </div>
                 <div className={wrapperClasses(isSummaryOfChangesValid)}>
-                    <label className="block text-xs font-medium text-gray-900 mb-1">
+                    <label className="text-xs font-medium text-gray-900 mb-1">
                         Summary of Changes (required)
                     </label>
                     <textarea
                         rows={4}
                         name="comment"
                         id="comment"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter summary of changes here"
                         value={summaryOfChangesLocal}
                         onChange={e => setSummaryOfChangesLocal(e.target.value)}
