@@ -19,7 +19,7 @@ const TabSummary = (props: TabSummaryProps) => {
     return (
         <div>
             <div className="px-4 sm:px-0 flex items-center">
-                <p className="flex-1 mt-3 font-semibold text-4xl text-gray-900">
+                <p className="flex-1 mt-3 font-semibold text-4xl text-gray-900 truncate">
                     {granteeName}
                 </p>
                 {(role === Role.Editor || role === Role.Root) && (

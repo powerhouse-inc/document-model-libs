@@ -43,6 +43,8 @@ const GranteeForm = (props: GranteeFormProps) => {
         disbursementContractAddress,
         fundingAddress,
         fundingType,
+        grantSize,
+        matchingGrantSize,
     } = props;
 
     const [showErrors, setShowErrors] = useState(false);
@@ -65,8 +67,10 @@ const GranteeForm = (props: GranteeFormProps) => {
     const [metricsDashboardLinkLocal, setMetricsDashboardLinkLocal] = useState(
         metricsDashboardLink || '',
     );
-    const [grantSizeLocal, setGrantSizeLocal] = useState(0);
-    const [matchingGrantSizeLocal, setMatchingGrantSizeLocal] = useState(0);
+    const [grantSizeLocal, setGrantSizeLocal] = useState(grantSize || 0);
+    const [matchingGrantSizeLocal, setMatchingGrantSizeLocal] = useState(
+        matchingGrantSize || 0,
+    );
 
     // 12 weeks
     const [startDate, setStartDate] = useState(new Date(2024, 3, 29));
@@ -162,7 +166,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     ? 'ring-2 ring-red-300'
                     : 'ring-1 ring-gray-300',
                 classes,
-                'relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
+                'rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
             ),
         [showErrors],
     );
@@ -181,13 +185,13 @@ const GranteeForm = (props: GranteeFormProps) => {
             </div>
             <div className="isolate -space-y-px rounded-md shadow-sm">
                 <div className={wrapperClasses(true, 'flex')}>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-900">
+                    <div className="w-40">
+                        <label className="text-xs font-medium text-gray-900">
                             Start Date
                         </label>
                         <DatePicker
                             selected={startDate}
-                            className="py-2 px-3 border border-gray-600 group-focus-within:border-purple-600 outline-none"
+                            className="w-32 py-2 outline-none cursor-pointer text-sm"
                             onChange={date => {
                                 if (!date) {
                                     return;
@@ -197,13 +201,13 @@ const GranteeForm = (props: GranteeFormProps) => {
                             }}
                         />
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-900">
+                    <div className="w-40">
+                        <label className="text-xs font-medium text-gray-900">
                             End Date
                         </label>
                         <DatePicker
                             selected={endDate}
-                            className="py-2 px-3 border border-gray-600 bg-white outline-none"
+                            className="w-32 py-2 outline-none cursor-not-allowed text-sm"
                             onChange={() => {}}
                             disabled={true}
                         />
@@ -215,13 +219,13 @@ const GranteeForm = (props: GranteeFormProps) => {
                         'flex',
                     )}
                 >
-                    <div>
-                        <label className="block text-xs font-medium text-gray-900">
-                            Grant Size (required)
+                    <div className="w-40">
+                        <label className="text-xs font-medium text-gray-900">
+                            Grant Size
                         </label>
                         <input
                             type="text"
-                            className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                             placeholder="0"
                             value={grantSizeLocal}
                             onChange={e => {
@@ -235,13 +239,13 @@ const GranteeForm = (props: GranteeFormProps) => {
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-xs font-medium text-gray-900">
-                            Matching Grant Size (required)
+                    <div className="w-40">
+                        <label className="text-xs font-medium text-gray-900">
+                            Matching Grant Size
                         </label>
                         <input
                             type="text"
-                            className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                             placeholder="0"
                             value={matchingGrantSizeLocal}
                             onChange={e => {
@@ -256,12 +260,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                     </div>
                 </div>
                 <div className={wrapperClasses(true)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900">
                         Authorized Signer Address
                     </label>
                     <input
                         type="text"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="0x..."
                         value={authorizedSignerAddressLocal}
                         onChange={e =>
@@ -274,12 +278,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                         isDisbursementContractAddressValid,
                     )}
                 >
-                    <label className="block text-xs font-medium text-gray-900">
-                        Disbursement Address (required)
+                    <label className="text-xs font-medium text-gray-900">
+                        Disbursement Address
                     </label>
                     <input
                         type="text"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="0x..."
                         value={disbursementContractAddressLocal}
                         onChange={e =>
@@ -288,24 +292,24 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isFundingAddressValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
-                        Funding Address (required)
+                    <label className="text-xs font-medium text-gray-900">
+                        Funding Address
                     </label>
                     <input
                         type="text"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="0x..."
                         value={fundingAddressLocal}
                         onChange={e => setFundingAddressLocal(e.target.value)}
                     />
                 </div>
-                <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
-                    <label className="block text-xs font-medium text-gray-900">
-                        Metrics Dashboard Link
+                <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                    <label className="text-xs font-medium text-gray-900">
+                        Metrics Dashboard Link (optional)
                     </label>
                     <input
                         type="text"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="https://example.com"
                         value={metricsDashboardLinkLocal}
                         onChange={e =>
@@ -314,8 +318,8 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isFundingTypeValid)}>
-                    <label className="block text-xs font-medium text-gray-900 mb-1">
-                        Funding Type(s) (required)
+                    <label className="text-xs font-medium text-gray-900 mb-1">
+                        Funding Type(s)
                     </label>
                     <TagSelector
                         value={fundingTypeLocal}
@@ -334,14 +338,14 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isGrantSummaryValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
-                        Grant Summary (required)
+                    <label className="text-xs font-medium text-gray-900">
+                        Grant Summary
                     </label>
                     <textarea
                         rows={4}
                         name="comment"
                         id="comment"
-                        className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="Enter grant summary here"
                         value={grantSummaryLocal}
                         onChange={e => setGrantSummaryLocal(e.target.value)}
