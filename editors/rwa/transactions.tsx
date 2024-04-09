@@ -30,10 +30,6 @@ import {
 } from '../../document-models/real-world-assets/gen/creators';
 import { IProps } from './editor';
 
-function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export const Transactions = (props: IProps) => {
     const { dispatch, document } = props;
 
@@ -155,13 +151,11 @@ export const Transactions = (props: IProps) => {
     );
 
     const handleFeeUpdates = useCallback(
-        async (
+        (
             feeInputs: TransactionFeeInput[] | null | undefined,
             transaction: GroupTransaction,
         ) => {
-            if (!feeInputs?.length) {
-                return;
-            }
+            if (!feeInputs) return;
 
             const feeUpdates = feeInputs.map(fee => ({
                 ...fee,
@@ -178,7 +172,6 @@ export const Transactions = (props: IProps) => {
                         fees: feeUpdates,
                     }),
                 );
-                await delay(100);
                 return;
             }
             const feeDifferences = diff(existingFees, feeInputs);
@@ -217,7 +210,6 @@ export const Transactions = (props: IProps) => {
                         fees: newFeesToCreate,
                     }),
                 );
-                await delay(100);
             }
             if (feesToUpdate.length) {
                 dispatch(
@@ -226,7 +218,6 @@ export const Transactions = (props: IProps) => {
                         fees: feesToUpdate,
                     }),
                 );
-                await delay(100);
             }
             if (feeIdsToRemove.length) {
                 dispatch(
@@ -235,7 +226,6 @@ export const Transactions = (props: IProps) => {
                         feeIds: feeIdsToRemove,
                     }),
                 );
-                await delay(100);
             }
         },
         [dispatch],
@@ -243,9 +233,8 @@ export const Transactions = (props: IProps) => {
 
     const onSubmitEdit: GroupTransactionsTableProps['onSubmitEdit'] =
         useCallback(
-            async data => {
+            data => {
                 if (!selectedItem) return;
-
                 const newEntryTime = data.entryTime
                     ? new Date(data.entryTime).toISOString()
                     : undefined;
@@ -260,15 +249,6 @@ export const Transactions = (props: IProps) => {
                 const existingFixedIncomeTransaction =
                     selectedItem.fixedIncomeTransaction;
 
-                if (
-                    !existingCashTransaction ||
-                    !existingFixedIncomeTransaction
-                ) {
-                    throw new Error(
-                        'This group transaction was misconfigured, fixed income or cash transaction is missing',
-                    );
-                }
-
                 const update = copy(selectedItem);
 
                 if (newType) {
@@ -281,17 +261,30 @@ export const Transactions = (props: IProps) => {
 
                 // use type comparison to avoid false positives on zero
                 if (typeof newCashAmount === 'number') {
-                    update.cashTransaction!.amount = newCashAmount;
+                    if (!update.cashTransaction) {
+                        throw new Error('Cash transaction does not exist');
+                    }
+                    update.cashTransaction.amount = newCashAmount;
                 }
 
                 if (newFixedIncomeAssetId) {
-                    update.fixedIncomeTransaction!.assetId =
+                    if (!update.fixedIncomeTransaction) {
+                        throw new Error(
+                            'Fixed income transaction does not exist',
+                        );
+                    }
+                    update.fixedIncomeTransaction.assetId =
                         newFixedIncomeAssetId;
                 }
 
                 // use direct comparison to avoid false positives on zero
                 if (typeof newFixedIncomeAssetAmount === 'number') {
-                    update.fixedIncomeTransaction!.amount =
+                    if (!update.fixedIncomeTransaction) {
+                        throw new Error(
+                            'Fixed income transaction does not exist',
+                        );
+                    }
+                    update.fixedIncomeTransaction.amount =
                         newFixedIncomeAssetAmount;
                 }
 
@@ -302,6 +295,11 @@ export const Transactions = (props: IProps) => {
                 let changedFields = getDifferences(selectedItem, update);
 
                 if ('fixedIncomeTransaction' in changedFields) {
+                    if (!existingFixedIncomeTransaction) {
+                        throw new Error(
+                            'Fixed income transaction does not exist',
+                        );
+                    }
                     const fixedIncomeTransactionChangedFields = getDifferences(
                         existingFixedIncomeTransaction,
                         update.fixedIncomeTransaction,
@@ -317,6 +315,9 @@ export const Transactions = (props: IProps) => {
                 }
 
                 if ('cashTransaction' in changedFields) {
+                    if (!existingCashTransaction) {
+                        throw new Error('Cash transaction does not exist');
+                    }
                     const cashTransactionChangedFields = getDifferences(
                         existingCashTransaction,
                         update.cashTransaction,
@@ -332,10 +333,7 @@ export const Transactions = (props: IProps) => {
                 }
 
                 if (data.fees) {
-                    await handleFeeUpdates(
-                        data.fees,
-                        update as GroupTransaction,
-                    );
+                    handleFeeUpdates(data.fees, update as GroupTransaction);
                 }
 
                 if (Object.keys(changedFields).length !== 0) {
