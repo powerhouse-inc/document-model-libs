@@ -24,6 +24,7 @@ import {
 import {
     addFeesToGroupTransaction,
     createGroupTransaction,
+    deleteGroupTransaction,
     editGroupTransaction,
     editGroupTransactionFees,
     removeFeesFromGroupTransaction,
@@ -54,6 +55,8 @@ export const Transactions = (props: IProps) => {
 
     const serviceProviderFeeTypes =
         document.state.global.serviceProviderFeeTypes;
+
+    const accounts = document.state.global.accounts;
 
     const [expandedRowId, setExpandedRowId] = useState<string>();
     const [selectedItem, setSelectedItem] = useState<UiGroupTransaction>();
@@ -362,6 +365,14 @@ export const Transactions = (props: IProps) => {
             [createNewGroupTransactionFromFormInputs, dispatch],
         );
 
+    const onSubmitDelete: GroupTransactionsTableProps['onSubmitDelete'] =
+        useCallback(
+            (id: string) => {
+                dispatch(deleteGroupTransaction({ id }));
+            },
+            [dispatch],
+        );
+
     return (
         <div>
             <h1 className="text-lg font-bold mb-2">Transactions</h1>
@@ -372,6 +383,7 @@ export const Transactions = (props: IProps) => {
                 fixedIncomes={fixedIncomeAssets as UiFixedIncome[]}
                 cashAsset={cashAsset}
                 transactions={transactions}
+                accounts={accounts}
                 serviceProviderFeeTypes={serviceProviderFeeTypes}
                 expandedRowId={expandedRowId}
                 toggleExpandedRow={toggleExpandedRow}
@@ -382,6 +394,7 @@ export const Transactions = (props: IProps) => {
                 onSubmitCreate={onSubmitCreate}
                 showNewItemForm={showNewItemForm}
                 setShowNewItemForm={setShowNewItemForm}
+                onSubmitDelete={onSubmitDelete}
             />
         </div>
     );
