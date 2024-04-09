@@ -1,3 +1,20 @@
+# [1.23.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.22.0...v1.23.0-arbitrum.1) (2024-04-09)
+
+
+### Features
+
+* correcting arb derived numbers ([a83b4a4](https://github.com/powerhouse-inc/document-model-libs/commit/a83b4a46033a184c69080aa3e1ba28bf1a7c7a7c))
+* force release ([a111cf2](https://github.com/powerhouse-inc/document-model-libs/commit/a111cf2e9da95b13980e2ee31babde981d70ccd8))
+* form validation for addresses, initial scroll for tabs ([4879fb7](https://github.com/powerhouse-inc/document-model-libs/commit/4879fb70e40f21e2e701d62d0db212239b4850e3))
+* phase historical view modal ([8c22163](https://github.com/powerhouse-inc/document-model-libs/commit/8c221631f9c6fb823f6b58cb30333f75a0dda0f6))
+* phase historical view modal add styling to actuals and stats ([162ccdb](https://github.com/powerhouse-inc/document-model-libs/commit/162ccdb5593720757704790511e6df03694609a0))
+* phase historical view modal add styling to actuals and stats ([eb6e01f](https://github.com/powerhouse-inc/document-model-libs/commit/eb6e01fa3eb27fcb73ef7eab1d81f16be8b16162))
+* reorganizing folder structure for components ([4df369a](https://github.com/powerhouse-inc/document-model-libs/commit/4df369aa75facbd745c7230f4429d7712bcdb99e))
+* replace TextInput with vanilla form input ([801f381](https://github.com/powerhouse-inc/document-model-libs/commit/801f38160b62b2e0b28b807ff85f3588c682a333))
+* stubbed in fake role, disallow editing if viewer ([3a56bfc](https://github.com/powerhouse-inc/document-model-libs/commit/3a56bfc1014076d22da5064ef98148eff8788044))
+* style changes ([b0f7839](https://github.com/powerhouse-inc/document-model-libs/commit/b0f7839b1a237b987db7a48b1a981a0397c1b974))
+* style changes ([37c6efa](https://github.com/powerhouse-inc/document-model-libs/commit/37c6efa385fbcf0e88822781a703b9651124629a))
+
 # [1.22.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.21.0...v1.22.0) (2024-04-09)
 
 
