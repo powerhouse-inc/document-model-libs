@@ -41,11 +41,11 @@ export function computeFixedIncomeAssetDerivedFields(
  * Where Quantity is the amount of each asset purchase transaction
  */
 export function calculatePurchaseDate(transactions: GroupTransaction[]) {
-    if (!transactions.length) return '';
-
     const purchaseTransactions = transactions.filter(
         ({ type }) => type === ASSET_PURCHASE,
     );
+
+    if (!purchaseTransactions.length) return '';
 
     const sumQuantity = purchaseTransactions.reduce(
         (sum, { fixedIncomeTransaction }) => {
