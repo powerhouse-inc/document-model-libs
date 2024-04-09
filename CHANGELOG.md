@@ -1,3 +1,11 @@
+# [1.24.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.24.0-arbitrum.1...v1.24.0-arbitrum.2) (2024-04-09)
+
+
+### Features
+
+* responsive pass pt 1 ([db39040](https://github.com/powerhouse-inc/document-model-libs/commit/db390406f551f2fd1867c86fc4cf25ad281c28be))
+* responsive pass pt 2 ([9af2427](https://github.com/powerhouse-inc/document-model-libs/commit/9af2427855f65f781e79a548ce0dfc08bcfa29f5))
+
 # [1.24.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.23.0...v1.24.0-arbitrum.1) (2024-04-09)
 
 
