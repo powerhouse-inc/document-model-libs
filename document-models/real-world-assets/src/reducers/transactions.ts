@@ -95,17 +95,15 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const transactionIndex = state.transactions.findIndex(
+        const transaction = state.transactions.find(
             transaction => transaction.id === action.input.id,
         );
 
-        if (transactionIndex === -1) {
+        if (!transaction) {
             throw new Error(
                 `Group transaction with id ${action.input.id} does not exist!`,
             );
         }
-
-        const transaction = state.transactions[transactionIndex];
 
         if (action.input.type) {
             transaction.type = action.input.type;
