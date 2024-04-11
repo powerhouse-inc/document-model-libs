@@ -8,7 +8,7 @@ import {
     FixedIncome,
     RealWorldAssetsState,
     TransactionFee,
-    TransactionFeeInput,
+    EditTransactionFeeInput,
 } from '../..';
 
 export const dateValidator = z.coerce.date();
@@ -29,7 +29,7 @@ export function isCashAsset(asset: Asset | undefined | null): asset is Cash {
 
 export function validateTransactionFee(
     state: RealWorldAssetsState,
-    fee: InputMaybe<TransactionFeeInput>,
+    fee: InputMaybe<EditTransactionFeeInput>,
 ): asserts fee is TransactionFee {
     if (!fee) {
         throw new Error('Fee does not exist');
@@ -59,7 +59,7 @@ export function validateTransactionFee(
 
 export function validateTransactionFees(
     state: RealWorldAssetsState,
-    fees: InputMaybe<TransactionFeeInput[]>,
+    fees: InputMaybe<EditTransactionFeeInput[]>,
 ): asserts fees is TransactionFee[] {
     if (!Array.isArray(fees)) {
         throw new Error(`Transaction fees must be an array`);

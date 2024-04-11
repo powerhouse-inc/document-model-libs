@@ -213,7 +213,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
         );
 
-        const cashAssetId = transactionToRemove.cashTransaction?.assetId;
+        const cashAssetId = transactionToRemove.cashTransaction.assetId;
 
         if (!cashAssetId) return;
 
