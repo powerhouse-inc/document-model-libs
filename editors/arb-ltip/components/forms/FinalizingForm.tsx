@@ -10,7 +10,7 @@ import validators from '../../../../document-models/arb-ltip-grantee/src/validat
 import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 
-type FinalizingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
+type FinalizingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
 };

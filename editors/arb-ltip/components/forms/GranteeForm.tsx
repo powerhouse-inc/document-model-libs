@@ -31,7 +31,7 @@ const fundingTypes = [
 ];
 
 type GranteeFormProps = ArbLtipGranteeState &
-    Pick<IProps, 'editorContext' | 'dispatch'> & { onClose: () => void };
+    Pick<IProps, 'context' | 'dispatch'> & { onClose: () => void };
 
 const GranteeForm = (props: GranteeFormProps) => {
     const {

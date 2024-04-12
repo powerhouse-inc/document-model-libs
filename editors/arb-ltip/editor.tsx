@@ -185,7 +185,7 @@ const Editor = (props: IProps) => {
                     <ControlsHeader {...props} />
                     <GranteeForm
                         {...document.state.global}
-                        editorContext={props.editorContext}
+                        context={props.context}
                         dispatch={props.dispatch}
                         onClose={() => setIsEditMode(false)}
                     />

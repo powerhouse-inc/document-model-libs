@@ -1,11 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Phase } from '../../../document-models/arb-ltip-grantee';
-import { Fragment } from 'react/jsx-runtime';
 import PhaseTimespan from './PhaseTimespan';
 import PhasePlanned from './PhasePlanned';
 import PhaseActuals from './PhaseActuals';
 import PhaseStats from './PhaseStats';
-import { Icon } from '@powerhousedao/design-system';
+import { Fragment } from 'react';
 
 type PhaseSummaryModalProps = {
     phase: Phase | null;

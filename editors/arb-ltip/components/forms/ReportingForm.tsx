@@ -12,7 +12,7 @@ import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/crea
 import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 
-type ReportingFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
+type ReportingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
     state: ArbLtipGranteeState;

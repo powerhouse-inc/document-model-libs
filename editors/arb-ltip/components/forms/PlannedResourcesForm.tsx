@@ -24,7 +24,7 @@ const distributionMechanisms = [
     },
 ];
 
-type PlannedResourcesFormProps = Pick<IProps, 'editorContext' | 'dispatch'> & {
+type PlannedResourcesFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
 };
