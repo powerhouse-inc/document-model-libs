@@ -1,3 +1,10 @@
+# [1.26.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.26.0-arbitrum.1...v1.26.0-arbitrum.2) (2024-04-12)
+
+
+### Features
+
+* update doc model with authorized signer ([c739a76](https://github.com/powerhouse-inc/document-model-libs/commit/c739a7659246b0df3084be0a4b1f7a47de88af74))
+
 # [1.26.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.25.0...v1.26.0-arbitrum.1) (2024-04-12)
 
 
