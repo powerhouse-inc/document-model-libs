@@ -20,6 +20,8 @@ describe('General Operations', () => {
 
     it('should handle initGrantee operation', () => {
         const input: InitGranteeInput = {
+            authorizedSignerAddress:
+                '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
             disbursementContractAddress:
                 '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
             fundingAddress: '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
@@ -42,6 +44,7 @@ describe('General Operations', () => {
     });
     it('should handle editGrantee operation', () => {
         const input = generateMock(z.EditGranteeInputSchema());
+        input.authorizedSignerAddress = null;
         input.disbursementContractAddress =
             '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747';
         input.fundingAddress = '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747';

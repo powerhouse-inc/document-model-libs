@@ -3,6 +3,7 @@ scalar DateTime
 type ArbLtipGranteeState {
 	id: ID!
 	granteeName: String
+	authorizedSignerAddress: String
 	grantSize: Float
 	matchingGrantSize: Float
 	grantSummary: String
@@ -75,11 +76,11 @@ enum DistributionMechanism {
 
 
 
-
 # General
 
 input InitGranteeInput {
-	granteeName: String!
+     granteeName: String!
+	authorizedSignerAddress: String!
 	grantSize: Float!
 	matchingGrantSize: Float!
 	grantSummary: String!
@@ -92,6 +93,7 @@ input InitGranteeInput {
 	numberOfPhases: Int
 }
 
+# add new types here
 scalar DateTime
 
 enum FundingType {
@@ -102,7 +104,8 @@ enum FundingType {
 }
 
 input EditGranteeInput {
-	granteeName: String
+    granteeName: String
+	authorizedSignerAddress: String
 	grantSize: Float
 	matchingGrantSize: Float
 	grantSummary: String
@@ -123,13 +126,14 @@ enum FundingType {
 # Metrics
 
 input EditPhaseInput {
-	phaseIndex: Int!
+    phaseIndex: Int!
 	actuals: GranteeActuals
 	planned: GranteePlanned
 	stats: GranteeStats
 	status: Status
 }
 
+# add new types here
 enum Status {
 	Uninitialized
 	NotStarted
@@ -172,4 +176,3 @@ enum DistributionMechanism {
 	LPIncentives
 	Airdrop
 }
-

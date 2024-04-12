@@ -40,6 +40,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         granteeName,
         metricsDashboardLink,
         grantSummary,
+        authorizedSignerAddress,
         disbursementContractAddress,
         fundingAddress,
         fundingType,
@@ -54,7 +55,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         setDisbursementContractAddressLocal,
     ] = useState(disbursementContractAddress || '');
     const [authorizedSignerAddressLocal, setAuthorizedSignerAddressLocal] =
-        useState('');
+        useState(authorizedSignerAddress || '');
     const [fundingAddressLocal, setFundingAddressLocal] = useState(
         fundingAddress || '',
     );
@@ -130,6 +131,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         }
 
         const input: InitGranteeInput = {
+            authorizedSignerAddress: authorizedSignerAddressLocal,
             disbursementContractAddress: disbursementContractAddressLocal,
             fundingAddress: fundingAddressLocal,
             fundingType: fundingTypeLocal,

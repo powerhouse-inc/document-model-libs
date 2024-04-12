@@ -11,16 +11,23 @@ import validators from '../validators';
 export const reducer: ArbLtipGranteeGeneralOperations = {
     initGranteeOperation(state, action, dispatch) {
         const {
+            authorizedSignerAddress,
             disbursementContractAddress,
             fundingAddress,
             fundingType,
             grantSize,
+            matchingGrantSize,
             grantSummary,
             granteeName,
+            metricsDashboardLink,
             startDate,
             numberOfPhases,
             phaseDuration,
         } = action.input;
+
+        if (!validators.isValidAddress(authorizedSignerAddress)) {
+            throw new Error('authorizedSignerAddress is invalid');
+        }
 
         if (!validators.isValidAddress(disbursementContractAddress)) {
             throw new Error('disbursementContractAddress is invalid');
@@ -42,15 +49,15 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             throw new Error('granteeName is required');
         }
 
-        state.disbursementContractAddress =
-            action.input.disbursementContractAddress;
-        state.fundingAddress = action.input.fundingAddress;
-        state.fundingType = action.input.fundingType;
-        state.grantSize = action.input.grantSize;
-        state.grantSummary = action.input.grantSummary;
-        state.granteeName = action.input.granteeName;
-        state.matchingGrantSize = action.input.matchingGrantSize;
-        state.metricsDashboardLink = action.input.metricsDashboardLink;
+        state.authorizedSignerAddress = authorizedSignerAddress;
+        state.disbursementContractAddress = disbursementContractAddress;
+        state.fundingAddress = fundingAddress;
+        state.fundingType = fundingType;
+        state.grantSize = grantSize;
+        state.matchingGrantSize = matchingGrantSize;
+        state.grantSummary = grantSummary;
+        state.granteeName = granteeName;
+        state.metricsDashboardLink = metricsDashboardLink;
 
         if (!numberOfPhases) {
             throw new Error('numberOfPhases is required');
@@ -118,6 +125,7 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
     },
     editGranteeOperation(state, action, dispatch) {
         const {
+            authorizedSignerAddress,
             disbursementContractAddress,
             fundingAddress,
             fundingType,
@@ -127,6 +135,13 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             matchingGrantSize,
             metricsDashboardLink,
         } = action.input;
+
+        if (authorizedSignerAddress) {
+            if (!validators.isValidAddress(authorizedSignerAddress)) {
+                throw new Error('authorizedSignerAddress is invalid');
+            }
+            state.authorizedSignerAddress = authorizedSignerAddress;
+        }
 
         if (disbursementContractAddress) {
             if (!validators.isValidAddress(disbursementContractAddress)) {
