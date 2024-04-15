@@ -1,6 +1,6 @@
 {
   "name": "document-model-libs",
-  "version": "1.28.0-arbitrum.1",
+  "version": "1.28.0-arbitrum.2",
   "license": "AGPL-3.0-only",
   "types": "dist/index.d.ts",
   "main": "dist/index.cjs",
@@ -62,7 +62,8 @@
     }
   },
   "scripts": {
-    "generate": "powerhouse generate && eslint . --fix",
+    "generate": "powerhouse generate",
+    "postgenerate": "eslint . --fix",
     "check-types": "tsc",
     "lint": "powerhouse generate && eslint . && npm run check-types",
     "lint-staged": "lint-staged",
@@ -141,6 +142,7 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "uuid": "^9.0.1",
+    "viem": "^2.9.18",
     "vite": "^5.1.6",
     "vite-plugin-dts": "^3.7.3",
     "vitest": "^1.2.1",
