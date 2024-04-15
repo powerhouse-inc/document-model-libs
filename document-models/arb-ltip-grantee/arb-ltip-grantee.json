@@ -13,8 +13,8 @@
             "changeLog": [],
             "state": {
                 "global": {
-                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tauthorizedSignerAddress: String\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: [FundingType]\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tphases: [Phase]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\ntype Phase {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}",
-                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"authorizedSignerAddress\":\"\",\"grantSize\":0,\"matchingGrantSize\":0,\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":[],\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"phases\":[]}",
+                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n\tid: ID!\n\tgranteeName: String\n\tauthorizedSignerAddress: String\n\teditorAddresses: [String]\n\tgrantSize: Float\n\tmatchingGrantSize: Float\n\tgrantSummary: String\n\tfundingAddress: String\n\tfundingType: [FundingType]\n\tdisbursementContractAddress: String\n\tmetricsDashboardLink: String\n\tphases: [Phase]\n}\n\nenum FundingType {\n\tEOA\n\tMultisig\n\tTwoofThreeMultisig\n\tThreeofFiveMultisig\n}\n\ntype Phase {\n\tstartDate: DateTime!\n\tendDate: DateTime!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}",
+                    "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"authorizedSignerAddress\":\"\",\"editorAddresses\":[],\"grantSize\":0,\"matchingGrantSize\":0,\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":[],\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"phases\":[]}",
                     "examples": []
                 },
                 "local": {
@@ -63,6 +63,35 @@
                             "name": "editPhase",
                             "description": "",
                             "schema": "input EditPhaseInput {\n    phaseIndex: Int!\n\tactuals: GranteeActuals\n\tplanned: GranteePlanned\n\tstats: GranteeStats\n\tstatus: Status\n}\n\n# add new types here\nenum Status {\n\tUninitialized\n\tNotStarted\n\tInProgress\n\tFinalized\n}\n\ntype GranteeActuals {\n\tarbReceived: Float\n\tarbUtilized: Float\n\tarbRemaining: Float\n\tcontractsIncentivized: [Contract]\n\tsummary: String\n\tdisclosures: String\n}\n\ntype GranteePlanned {\n\tarbToBeDistributed: Float\n\tcontractsIncentivized: [Contract]\n\tdistributionMechanism: [DistributionMechanism]\n\tsummary: String\n\tsummaryOfChanges: String\n}\n\ntype GranteeStats {\n\tavgDailyTVL: Float\n\tavgDailyTXNS: Float\n\tavgDailyVolume: Float\n\tuniqueAddressesCount: Float\n\ttransactionFees: Float\n}\n\ntype Contract {\n\tcontractId: ID!\n\tcontractLabel: String\n\tcontractAddress: String\n}\n\nenum DistributionMechanism {\n\tLPIncentives\n\tAirdrop\n}",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                },
+                {
+                    "id": "GwZhiMAPW1NSLobPE3ZJ4jIH8MA=",
+                    "name": "Admin",
+                    "description": "",
+                    "operations": [
+                        {
+                            "id": "FSd3myBx5jhKdAMrhW5q4uA4jsw=",
+                            "name": "addEditor",
+                            "description": "",
+                            "schema": "input AddEditorInput {\n    editorAddress: String!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "TAmJDx6QgLhe1gB56ASGQT79fVg=",
+                            "name": "removeEditor",
+                            "description": "",
+                            "schema": "input RemoveEditorInput {\n    editorAddress: String!\n}\n\n# add new types here\n",
                             "template": "",
                             "reducer": "",
                             "errors": [],

@@ -4,6 +4,7 @@ type ArbLtipGranteeState {
 	id: ID!
 	granteeName: String
 	authorizedSignerAddress: String
+	editorAddresses: [String]
 	grantSize: Float
 	matchingGrantSize: Float
 	grantSummary: String
@@ -176,3 +177,18 @@ enum DistributionMechanism {
 	LPIncentives
 	Airdrop
 }
+
+# Admin
+
+input AddEditorInput {
+    editorAddress: String!
+}
+
+# add new types here
+
+
+input RemoveEditorInput {
+    editorAddress: String!
+}
+
+# add new types here

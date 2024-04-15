@@ -12,7 +12,12 @@ import { classNames } from './util';
 import { actions } from 'document-model/document-model';
 import TabSummary from './components/tabs/TabSummary';
 import TabHistorical from './components/tabs/TabHistorical';
-import useRole, { Role } from './hooks/use-role';
+import TabAdmin from './components/tabs/TabAdmin';
+import {
+    UserProvider,
+    useIsAdmin,
+    useIsEditor,
+} from './components/UserProvider';
 
 export type CustomEditorProps = Pick<
     RWATabsProps,
@@ -27,12 +32,10 @@ export type IProps = EditorProps<
     CustomEditorProps;
 
 type TabHeaderProps = {
-    role: Role;
     active: string;
     setActive: (a: string) => void;
 } & Pick<IProps, 'onExport' | 'onClose'>;
 const TabHeader = ({
-    role,
     active,
     setActive,
     onClose,
@@ -47,7 +50,15 @@ const TabHeader = ({
         },
     ];
 
-    if (role === Role.Root || role === Role.Editor) {
+    const isAdmin = useIsAdmin();
+    if (isAdmin) {
+        tabs.push({
+            name: 'Admin',
+        });
+    }
+
+    const isEditor = useIsEditor();
+    if (isEditor) {
         tabs.splice(1, 0, {
             name: 'Todo',
         });
@@ -135,11 +146,9 @@ const ControlsHeader = ({ dispatch, onClose, onExport }: IProps) => {
 };
 
 const Editor = (props: IProps) => {
-    const { document, onClose, onExport } = props;
+    const { context, document, onClose, onExport } = props;
     const [isEditMode, setIsEditMode] = useState(false);
     const [activeTab, setActiveTab] = useState('Summary');
-
-    const role = useRole(document.state.global);
 
     const {
         disbursementContractAddress,
@@ -179,39 +188,44 @@ const Editor = (props: IProps) => {
     ]);
 
     return (
-        <div className="lg:w-[840px] mx-auto [&_input]:outline-none [&_textarea]:outline-none">
-            {!isValid || isEditMode ? (
-                <>
-                    <ControlsHeader {...props} />
-                    <GranteeForm
-                        {...document.state.global}
-                        context={props.context}
-                        dispatch={props.dispatch}
-                        onClose={() => setIsEditMode(false)}
-                    />
-                </>
-            ) : (
-                <>
-                    <TabHeader
-                        role={role}
-                        active={activeTab}
-                        setActive={setActiveTab}
-                        onClose={onClose}
-                        onExport={onExport}
-                    />
-                    {activeTab === 'Summary' && (
-                        <TabSummary
+        <UserProvider user={context.user} state={document.state.global}>
+            <div className="lg:w-[840px] mx-auto [&_input]:outline-none [&_textarea]:outline-none">
+                {!isValid || isEditMode ? (
+                    <>
+                        <ControlsHeader {...props} />
+                        <GranteeForm
                             {...document.state.global}
-                            role={role}
-                            onEdit={() => setIsEditMode(true)}
-                            onOpenHistorical={() => setActiveTab('Historical')}
+                            context={props.context}
+                            dispatch={props.dispatch}
+                            onClose={() => setIsEditMode(false)}
                         />
-                    )}
-                    {activeTab === 'Todo' && <TabTodo {...props} />}
-                    {activeTab === 'Historical' && <TabHistorical {...props} />}
-                </>
-            )}
-        </div>
+                    </>
+                ) : (
+                    <>
+                        <TabHeader
+                            active={activeTab}
+                            setActive={setActiveTab}
+                            onClose={onClose}
+                            onExport={onExport}
+                        />
+                        {activeTab === 'Summary' && (
+                            <TabSummary
+                                {...document.state.global}
+                                onEdit={() => setIsEditMode(true)}
+                                onOpenHistorical={() =>
+                                    setActiveTab('Historical')
+                                }
+                            />
+                        )}
+                        {activeTab === 'Todo' && <TabTodo {...props} />}
+                        {activeTab === 'Historical' && (
+                            <TabHistorical {...props} />
+                        )}
+                        {activeTab === 'Admin' && <TabAdmin {...props} />}
+                    </>
+                )}
+            </div>
+        </UserProvider>
     );
 };
 
