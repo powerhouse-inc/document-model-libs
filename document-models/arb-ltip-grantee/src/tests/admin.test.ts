@@ -11,24 +11,9 @@ import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/admin/creators';
 import { ArbLtipGranteeDocument } from '../../gen/types';
 import { toArray } from '../../../../editors/arb-ltip/util';
+import { createContext, signer } from './util';
 
-const signer = '0x50379DDB64b77e990Bc4A433c9337618C70D2C2a';
 const addr = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
-
-const createContext = () => ({
-    signer: {
-        user: {
-            address: signer,
-            chainId: 1,
-            networkId: '',
-        },
-        app: {
-            key: '',
-            name: '',
-        },
-        signature: '',
-    },
-});
 
 describe('Admin Operations', () => {
     let document: ArbLtipGranteeDocument;

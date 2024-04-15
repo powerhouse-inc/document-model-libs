@@ -1,9 +1,3 @@
-/**
- * This is a scaffold file meant for customization:
- * - modify it by implementing the reducer functions
- * - delete the file and run the code generator again to have it reset
- */
-
 import { ArbLtipGranteeAdminOperations } from '../../gen/admin/operations';
 import validators from '../validators';
 
@@ -17,7 +11,7 @@ export const reducer: ArbLtipGranteeAdminOperations = {
         const signer = action.context?.signer?.user.address;
         const authorizedSigner = state.authorizedSignerAddress;
         if (signer !== authorizedSigner) {
-            throw new Error(`Unauthorized signer: ${signer}`);
+            throw new Error(`Unauthorized signer`);
         }
 
         const editorAddresses = new Set(state.editorAddresses);

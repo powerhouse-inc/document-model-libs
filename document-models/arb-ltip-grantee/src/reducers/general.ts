@@ -1,12 +1,21 @@
-/**
- * This is a scaffold file meant for customization:
- * - modify it by implementing the reducer functions
- * - delete the file and run the code generator again to have it reset
- */
-
-import { Phase } from '../..';
+import { ArbLtipGranteeState, Phase } from '../..';
+import { toArray } from '../../../../editors/arb-ltip/util';
 import { ArbLtipGranteeGeneralOperations } from '../../gen/general/operations';
 import validators from '../validators';
+
+const isEditor = (state: ArbLtipGranteeState, signer: string | undefined) => {
+    if (!signer) {
+        return false;
+    }
+
+    for (const editor of toArray(state.editorAddresses)) {
+        if (editor === signer) {
+            return false;
+        }
+    }
+
+    return state.authorizedSignerAddress === signer;
+};
 
 export const reducer: ArbLtipGranteeGeneralOperations = {
     initGranteeOperation(state, action, dispatch) {
@@ -124,6 +133,11 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
         state.phases = phases;
     },
     editGranteeOperation(state, action, dispatch) {
+        const signer = action.context?.signer?.user.address;
+        if (!isEditor(state, signer)) {
+            throw new Error(`Unauthorized signer`);
+        }
+
         const {
             authorizedSignerAddress,
             disbursementContractAddress,
@@ -140,6 +154,26 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             if (!validators.isValidAddress(authorizedSignerAddress)) {
                 throw new Error('authorizedSignerAddress is invalid');
             }
+
+            if (state.authorizedSignerAddress !== signer) {
+                throw new Error('Unauthorized signer');
+            }
+
+            // move current signer to editor
+            if (!state.editorAddresses) {
+                state.editorAddresses = [];
+            }
+            state.editorAddresses.push(signer);
+
+            // if new signer is an editor, remove them
+            const newSignerIndex = state.editorAddresses.indexOf(
+                authorizedSignerAddress,
+            );
+            if (newSignerIndex !== -1) {
+                state.editorAddresses.splice(newSignerIndex, 1);
+            }
+
+            // save signer
             state.authorizedSignerAddress = authorizedSignerAddress;
         }
 
