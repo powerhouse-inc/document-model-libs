@@ -133,7 +133,7 @@ describe('Node Operations', () => {
     });
     it('should not allow moving folder to descendent', () => {
         // Mock data setup
-        const nodes: Node[] = [
+        const nodes = [
             { id: '1', parentFolder: null, kind: 'folder', name: 'Root' },
             { id: '2', parentFolder: '1', kind: 'folder', name: 'Child' },
             { id: '3', parentFolder: '2', kind: 'folder', name: 'Subchild' },
@@ -154,7 +154,7 @@ describe('Node Operations', () => {
     });
     it('should not allow making folder its own parent', () => {
         // Mock data setup
-        const nodes: Node[] = [
+        const nodes = [
             { id: '1', parentFolder: null, kind: 'folder', name: 'Root' },
             { id: '2', parentFolder: '1', kind: 'folder', name: 'Child' },
             { id: '3', parentFolder: '2', kind: 'folder', name: 'Subchild' },
