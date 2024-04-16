@@ -131,7 +131,7 @@ describe('Node Operations', () => {
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should detect circular references and throw an error', () => {
+    it('should not allow moving folder to descendent', () => {
         // Mock data setup
         const nodes: Node[] = [
             { id: '1', parentFolder: null, kind: 'folder', name: 'Root' },
@@ -141,7 +141,7 @@ describe('Node Operations', () => {
 
         document.state.global.nodes = nodes;
 
-        // Function invocation and error check
+        // move folder to descendent
         expect(() => {
             reducer(
                 document,
@@ -151,5 +151,25 @@ describe('Node Operations', () => {
                 }),
             );
         }).toThrowError('Cannot move a folder to one of its descendants');
+    });
+    it('should not allow making folder its own parent', () => {
+        // Mock data setup
+        const nodes: Node[] = [
+            { id: '1', parentFolder: null, kind: 'folder', name: 'Root' },
+            { id: '2', parentFolder: '1', kind: 'folder', name: 'Child' },
+            { id: '3', parentFolder: '2', kind: 'folder', name: 'Subchild' },
+        ];
+
+        document.state.global.nodes = nodes;
+
+        expect(() => {
+            reducer(
+                document,
+                creators.moveNode({
+                    srcFolder: '1',
+                    targetParentFolder: '1',
+                }),
+            );
+        }).toThrowError('Cannot make folder its own parent');
     });
 });

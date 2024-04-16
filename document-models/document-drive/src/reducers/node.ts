@@ -187,6 +187,9 @@ export const reducer: DocumentDriveNodeOperations = {
         }
 
         if (isFolderNode(node)) {
+            if (action.input.srcFolder === action.input.targetParentFolder) {
+                throw new Error('Cannot make folder its own parent');
+            }
             const descendants = getDescendants(node, state.nodes);
             // throw error if moving a folder to one of its descendants
             if (
