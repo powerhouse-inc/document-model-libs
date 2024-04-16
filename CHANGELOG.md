@@ -1,3 +1,10 @@
+# [1.28.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0-arbitrum.2...v1.28.0-arbitrum.3) (2024-04-15)
+
+
+### Features
+
+* updated model, stubbed out admin panel, added a few tests ([66d4753](https://github.com/powerhouse-inc/document-model-libs/commit/66d47530c50b941b3251309266fc99427cc48d11))
+
 # [1.28.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0-arbitrum.1...v1.28.0-arbitrum.2) (2024-04-15)
 
 
