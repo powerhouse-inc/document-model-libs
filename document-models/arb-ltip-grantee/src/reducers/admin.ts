@@ -1,17 +1,17 @@
 import { ArbLtipGranteeAdminOperations } from '../../gen/admin/operations';
+import { isAdminRole } from '../tests/util';
 import validators from '../validators';
 
 export const reducer: ArbLtipGranteeAdminOperations = {
     addEditorOperation(state, action, dispatch) {
+        const signer = action.context?.signer?.user.address;
+        if (!isAdminRole(state, signer)) {
+            throw new Error(`Unauthorized signer`);
+        }
+
         const { editorAddress } = action.input;
         if (!validators.isValidAddress(editorAddress)) {
             throw new Error('Invalid address');
-        }
-
-        const signer = action.context?.signer?.user.address;
-        const authorizedSigner = state.authorizedSignerAddress;
-        if (signer !== authorizedSigner) {
-            throw new Error(`Unauthorized signer`);
         }
 
         const editorAddresses = new Set(state.editorAddresses);
@@ -20,15 +20,14 @@ export const reducer: ArbLtipGranteeAdminOperations = {
         state.editorAddresses = Array.from(editorAddresses);
     },
     removeEditorOperation(state, action, dispatch) {
+        const signer = action.context?.signer?.user.address;
+        if (!isAdminRole(state, signer)) {
+            throw new Error(`Unauthorized signer`);
+        }
+
         const { editorAddress } = action.input;
         if (!validators.isValidAddress(editorAddress)) {
             throw new Error('Invalid address');
-        }
-
-        const signer = action.context?.signer?.user.address;
-        const authorizedSigner = state.authorizedSignerAddress;
-        if (signer !== authorizedSigner) {
-            throw new Error('Unauthorized signer');
         }
 
         const editorAddresses = new Set(state.editorAddresses);

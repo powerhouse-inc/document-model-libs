@@ -5,10 +5,16 @@
  */
 
 import { ArbLtipGranteeMetricsOperations } from '../../gen/metrics/operations';
+import { isEditorRole } from '../tests/util';
 import validators from '../validators';
 
 export const reducer: ArbLtipGranteeMetricsOperations = {
     editPhaseOperation(state, action, dispatch) {
+        const signer = action.context?.signer?.user.address;
+        if (!isEditorRole(state, signer)) {
+            throw new Error(`Unauthorized signer`);
+        }
+
         const { status, actuals, planned, stats, phaseIndex } = action.input;
         const { phases } = state;
 

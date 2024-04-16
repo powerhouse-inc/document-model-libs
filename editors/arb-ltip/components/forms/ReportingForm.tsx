@@ -38,23 +38,23 @@ const ReportingForm = (props: ReportingFormProps) => {
     );
     const [summaryLocal, setSummaryLocal] = useState(actuals.summary ?? '');
     const isArbReceivedValid = useMemo(
-        () => validators.isArbReceivedValid(arbReceivedLocal),
+        () => validators.gteZero(arbReceivedLocal),
         [arbReceivedLocal],
     );
     const isArbUtilizedValid = useMemo(
-        () => validators.isArbUtilizedValid(arbUtilizedLocal),
+        () => validators.gteZero(arbUtilizedLocal),
         [arbUtilizedLocal],
     );
     const isContractsValid = useMemo(
-        () => validators.isContractsValid(contractsLocal),
+        () => validators.isNotEmpty(contractsLocal),
         [contractsLocal],
     );
     const isDisclosuresValid = useMemo(
-        () => validators.isDisclosuresValid(disclosuresLocal),
+        () => validators.isNotEmptyString(disclosuresLocal),
         [disclosuresLocal],
     );
     const isSummaryValid = useMemo(
-        () => validators.isSummaryValid(summaryLocal),
+        () => validators.isNotEmptyString(summaryLocal),
         [summaryLocal],
     );
     const isValid = useMemo(

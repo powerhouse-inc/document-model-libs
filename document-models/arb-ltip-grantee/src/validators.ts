@@ -14,33 +14,20 @@ const walletAddressRegex = /^0x[a-fA-F0-9]{40}$/;
 const isValidAddress = (value: string) =>
     !!value && walletAddressRegex.test(value);
 
-const isDisbursementValid = gtZero;
-const isDistributionMechanismsValid = isNotEmpty;
-const isContractsValid = isNotEmpty;
-const isSummaryValid = notEmpty;
-const isSummaryOfChangesValid = notEmpty;
-const isStartDateValid = futureDate;
-const isEndDateValid = futureDate;
-
-const isArbReceivedValid = gteZero;
-const isArbRemainingValid = gteZero;
-const isArbUtilizedValid = gteZero;
-const isDisclosuresValid = notEmpty;
-
 const isPlannedValid = (planned: GranteePlanned) =>
-    isDisbursementValid(planned.arbToBeDistributed) &&
-    isDistributionMechanismsValid(planned.distributionMechanism) &&
-    isContractsValid(planned.contractsIncentivized) &&
-    isSummaryValid(planned.summary) &&
-    isSummaryOfChangesValid(planned.summaryOfChanges);
+    gtZero(planned.arbToBeDistributed) &&
+    isNotEmpty(planned.distributionMechanism) &&
+    isNotEmpty(planned.contractsIncentivized) &&
+    isNotEmptyString(planned.summary) &&
+    notEmpty(planned.summaryOfChanges);
 
 const isActualsValid = (actuals: GranteeActuals) =>
     gteZero(actuals.arbReceived) &&
     gteZero(actuals.arbRemaining) &&
     gteZero(actuals.arbUtilized) &&
-    isContractsValid(actuals.contractsIncentivized) &&
-    isDisclosuresValid(actuals.disclosures) &&
-    isSummaryValid(actuals.summary);
+    isNotEmpty(actuals.contractsIncentivized) &&
+    notEmpty(actuals.disclosures) &&
+    isNotEmptyString(actuals.summary);
 
 const isStatsValid = (stats: GranteeStats) =>
     gteZero(stats.avgDailyTVL) &&
@@ -55,19 +42,8 @@ const validators = {
     isValidAddress,
     isNotEmpty,
     isNotEmptyString,
-
-    isDisbursementValid,
-    isDistributionMechanismsValid,
-    isContractsValid,
-    isSummaryValid,
-    isSummaryOfChangesValid,
-    isStartDateValid,
-    isEndDateValid,
-
-    isArbReceivedValid,
-    isArbRemainingValid,
-    isArbUtilizedValid,
-    isDisclosuresValid,
+    notEmpty,
+    futureDate,
 
     isPlannedValid,
     isActualsValid,

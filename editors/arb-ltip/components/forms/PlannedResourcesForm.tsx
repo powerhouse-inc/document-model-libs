@@ -96,26 +96,23 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     ]);
 
     const isDisbursementValid = useMemo(
-        () => validators.isDisbursementValid(disbursementAmountLocal),
+        () => validators.gtZero(disbursementAmountLocal),
         [disbursementAmountLocal],
     );
     const isDistributionMechanismsValid = useMemo(
-        () =>
-            validators.isDistributionMechanismsValid(
-                distributionMechanismsLocal,
-            ),
+        () => validators.isNotEmpty(distributionMechanismsLocal),
         [distributionMechanismsLocal],
     );
     const isContractsValid = useMemo(
-        () => validators.isContractsValid(contractsLocal),
+        () => validators.isNotEmpty(contractsLocal),
         [contractsLocal],
     );
     const isSummaryValid = useMemo(
-        () => validators.isSummaryValid(summaryLocal),
+        () => validators.notEmpty(summaryLocal),
         [summaryLocal],
     );
     const isSummaryOfChangesValid = useMemo(
-        () => validators.isSummaryOfChangesValid(summaryOfChangesLocal),
+        () => validators.notEmpty(summaryOfChangesLocal),
         [summaryOfChangesLocal],
     );
 

@@ -57,8 +57,11 @@ describe('Admin Operations', () => {
         const input = generateMock(z.AddEditorInputSchema());
         input.editorAddress = '0x123';
 
+        const action = creators.addEditor(input);
+        action.context = createContext();
+
         expect(() => {
-            reducer(document, creators.addEditor(input));
+            reducer(document, action);
         }).toThrow('Invalid address');
     });
 

@@ -1,6 +1,8 @@
 import {
     ArbLtipGranteeState,
+    EditGranteeInput,
     FundingType,
+    InitGranteeInput,
     actions,
 } from '../../../../document-models/arb-ltip-grantee';
 import { useCallback, useMemo, useState } from 'react';
@@ -8,8 +10,8 @@ import { classNames, maybeToArray } from '../../util';
 import DatePicker from 'react-datepicker';
 import { IProps } from '../../editor';
 import TagSelector from '../TagSelector';
-import { InitGranteeInput } from '../../../../document-models/arb-ltip-grantee/gen';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import { useIsAdmin } from '../UserProvider';
 
 const fundingTypes = [
     {
@@ -29,6 +31,9 @@ const fundingTypes = [
         value: 'TwoofThreeMultisig',
     },
 ];
+
+const numPhases = 8;
+const phaseDuration = 14;
 
 type GranteeFormProps = ArbLtipGranteeState &
     Pick<IProps, 'context' | 'dispatch'> & { onClose: () => void };
@@ -123,6 +128,9 @@ const GranteeForm = (props: GranteeFormProps) => {
         ],
     );
 
+    const isInit = authorizedSignerAddress === '';
+    const isAdmin = useIsAdmin();
+
     const onSubmit = useCallback(() => {
         if (!isFormValid) {
             setShowErrors(true);
@@ -130,25 +138,47 @@ const GranteeForm = (props: GranteeFormProps) => {
             return;
         }
 
-        const input: InitGranteeInput = {
-            authorizedSignerAddress: authorizedSignerAddressLocal,
-            disbursementContractAddress: disbursementContractAddressLocal,
-            fundingAddress: fundingAddressLocal,
-            fundingType: fundingTypeLocal,
-            grantSize: grantSizeLocal,
-            granteeName: granteeNameLocal,
-            matchingGrantSize: matchingGrantSizeLocal,
-            grantSummary: grantSummaryLocal,
-            metricsDashboardLink: metricsDashboardLinkLocal,
-            numberOfPhases: 8,
-            phaseDuration: 14,
-            startDate: startDate.toISOString(),
-        };
+        if (isInit) {
+            dispatch(
+                actions.initGrantee({
+                    fundingAddress: fundingAddressLocal,
+                    fundingType: fundingTypeLocal,
+                    granteeName: granteeNameLocal,
+                    grantSummary: grantSummaryLocal,
+                    metricsDashboardLink: metricsDashboardLinkLocal,
+                    startDate: startDate.toISOString(),
+                    grantSize: grantSizeLocal,
+                    matchingGrantSize: matchingGrantSizeLocal,
+                    authorizedSignerAddress: authorizedSignerAddressLocal,
+                    disbursementContractAddress:
+                        disbursementContractAddressLocal,
+                    numberOfPhases: numPhases,
+                    phaseDuration: phaseDuration,
+                }),
+            );
+        } else {
+            const input: EditGranteeInput = {
+                fundingAddress: fundingAddressLocal,
+                fundingType: fundingTypeLocal,
+                granteeName: granteeNameLocal,
+                grantSummary: grantSummaryLocal,
+                metricsDashboardLink: metricsDashboardLinkLocal,
+            };
 
-        dispatch(actions.initGrantee(input));
+            if (isAdmin) {
+                input.grantSize = grantSizeLocal;
+                input.matchingGrantSize = matchingGrantSizeLocal;
+                input.authorizedSignerAddress = authorizedSignerAddressLocal;
+                input.disbursementContractAddress =
+                    disbursementContractAddressLocal;
+            }
+
+            dispatch(actions.editGrantee(input));
+        }
 
         onClose();
     }, [
+        isAdmin,
         disbursementContractAddressLocal,
         fundingAddressLocal,
         fundingTypeLocal,
@@ -193,13 +223,16 @@ const GranteeForm = (props: GranteeFormProps) => {
                         </label>
                         <DatePicker
                             selected={startDate}
+                            disabled={!isAdmin && !isInit}
                             className="w-32 py-2 outline-none cursor-pointer text-sm"
                             onChange={date => {
                                 if (!date) {
                                     return;
                                 }
 
-                                setStartDate(date);
+                                if (isAdmin || isInit) {
+                                    setStartDate(date);
+                                }
                             }}
                         />
                     </div>
@@ -229,6 +262,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             type="text"
                             className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                             placeholder="0"
+                            disabled={!isAdmin && !isInit}
                             value={grantSizeLocal}
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
@@ -236,7 +270,9 @@ const GranteeForm = (props: GranteeFormProps) => {
                                     return;
                                 }
 
-                                setGrantSizeLocal(value);
+                                if (isAdmin || isInit) {
+                                    setGrantSizeLocal(value);
+                                }
                             }}
                         />
                     </div>
@@ -249,6 +285,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             type="text"
                             className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                             placeholder="0"
+                            disabled={!isAdmin && !isInit}
                             value={matchingGrantSizeLocal}
                             onChange={e => {
                                 const value = parseInt(e.target.value, 10);
@@ -256,7 +293,9 @@ const GranteeForm = (props: GranteeFormProps) => {
                                     return;
                                 }
 
-                                setMatchingGrantSizeLocal(value);
+                                if (isAdmin || isInit) {
+                                    setMatchingGrantSizeLocal(value);
+                                }
                             }}
                         />
                     </div>
@@ -269,10 +308,13 @@ const GranteeForm = (props: GranteeFormProps) => {
                         type="text"
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="0x..."
+                        disabled={!isAdmin && !isInit}
                         value={authorizedSignerAddressLocal}
-                        onChange={e =>
-                            setAuthorizedSignerAddressLocal(e.target.value)
-                        }
+                        onChange={e => {
+                            if (isAdmin || isInit) {
+                                setAuthorizedSignerAddressLocal(e.target.value);
+                            }
+                        }}
                     />
                 </div>
                 <div
@@ -287,10 +329,15 @@ const GranteeForm = (props: GranteeFormProps) => {
                         type="text"
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="0x..."
+                        disabled={!isAdmin && !isInit}
                         value={disbursementContractAddressLocal}
-                        onChange={e =>
-                            setDisbursementContractAddressLocal(e.target.value)
-                        }
+                        onChange={e => {
+                            if (isAdmin || isInit) {
+                                setDisbursementContractAddressLocal(
+                                    e.target.value,
+                                );
+                            }
+                        }}
                     />
                 </div>
                 <div className={wrapperClasses(isFundingAddressValid)}>

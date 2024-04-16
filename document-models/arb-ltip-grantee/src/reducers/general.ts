@@ -1,21 +1,7 @@
-import { ArbLtipGranteeState, Phase } from '../..';
-import { toArray } from '../../../../editors/arb-ltip/util';
+import { Phase } from '../..';
 import { ArbLtipGranteeGeneralOperations } from '../../gen/general/operations';
+import { isAdminRole, isEditorRole } from '../tests/util';
 import validators from '../validators';
-
-const isEditor = (state: ArbLtipGranteeState, signer: string | undefined) => {
-    if (!signer) {
-        return false;
-    }
-
-    for (const editor of toArray(state.editorAddresses)) {
-        if (editor === signer) {
-            return false;
-        }
-    }
-
-    return state.authorizedSignerAddress === signer;
-};
 
 export const reducer: ArbLtipGranteeGeneralOperations = {
     initGranteeOperation(state, action, dispatch) {
@@ -50,7 +36,7 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             throw new Error('grantSize must be greater than 0');
         }
 
-        if (!validators.isSummaryValid(grantSummary)) {
+        if (!validators.isNotEmptyString(grantSummary)) {
             throw new Error('grantSummary is required');
         }
 
@@ -134,94 +120,102 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
     },
     editGranteeOperation(state, action, dispatch) {
         const signer = action.context?.signer?.user.address;
-        if (!isEditor(state, signer)) {
+        if (!signer) {
             throw new Error(`Unauthorized signer`);
         }
 
         const {
-            authorizedSignerAddress,
-            disbursementContractAddress,
+            // editor or admin
             fundingAddress,
             fundingType,
-            grantSize,
-            grantSummary,
             granteeName,
-            matchingGrantSize,
+            grantSummary,
             metricsDashboardLink,
+
+            // admin only
+            grantSize,
+            matchingGrantSize,
+            authorizedSignerAddress,
+            disbursementContractAddress,
         } = action.input;
 
-        if (authorizedSignerAddress) {
-            if (!validators.isValidAddress(authorizedSignerAddress)) {
-                throw new Error('authorizedSignerAddress is invalid');
-            }
-
-            if (state.authorizedSignerAddress !== signer) {
-                throw new Error('Unauthorized signer');
-            }
-
-            // move current signer to editor
-            if (!state.editorAddresses) {
-                state.editorAddresses = [];
-            }
-            state.editorAddresses.push(signer);
-
-            // if new signer is an editor, remove them
-            const newSignerIndex = state.editorAddresses.indexOf(
-                authorizedSignerAddress,
-            );
-            if (newSignerIndex !== -1) {
-                state.editorAddresses.splice(newSignerIndex, 1);
-            }
-
-            // save signer
-            state.authorizedSignerAddress = authorizedSignerAddress;
+        // must be at least an editor to do anything
+        const isEditor = isEditorRole(state, signer);
+        if (!isEditor) {
+            throw new Error(`Unauthorized signer`);
         }
 
-        if (disbursementContractAddress) {
-            if (!validators.isValidAddress(disbursementContractAddress)) {
-                throw new Error('disbursementContractAddress is invalid');
+        // editor or admin
+        {
+            if (fundingAddress) {
+                if (!validators.isValidAddress(fundingAddress)) {
+                    throw new Error('fundingAddress is invalid');
+                }
+
+                state.fundingAddress = fundingAddress;
             }
-            state.disbursementContractAddress = disbursementContractAddress;
-        }
 
-        if (fundingAddress) {
-            if (!validators.isValidAddress(fundingAddress)) {
-                throw new Error('fundingAddress is required');
+            if (fundingType) {
+                state.fundingType = fundingType;
             }
-            state.fundingAddress = fundingAddress;
-        }
 
-        if (fundingType) {
-            state.fundingType = fundingType;
-        }
-
-        if (grantSize) {
-            if (!validators.gtZero(grantSize)) {
-                throw new Error('grantSize must be greater than 0');
+            if (granteeName) {
+                state.granteeName = granteeName;
             }
-            state.grantSize = grantSize;
-        }
 
-        if (grantSummary) {
-            if (!validators.isSummaryValid(grantSummary)) {
-                throw new Error('grantSummary is required');
+            if (grantSummary) {
+                state.grantSummary = grantSummary;
             }
-            state.grantSummary = grantSummary;
-        }
 
-        if (granteeName) {
-            if (!validators.isNotEmptyString(granteeName)) {
-                throw new Error('granteeName is required');
+            if (metricsDashboardLink) {
+                state.metricsDashboardLink = metricsDashboardLink;
             }
-            state.granteeName = granteeName;
         }
 
-        if (matchingGrantSize) {
-            state.matchingGrantSize = matchingGrantSize;
-        }
+        // admin only
+        const isAdmin = isAdminRole(state, signer);
+        if (isAdmin) {
+            if (grantSize != null && grantSize !== undefined) {
+                if (!validators.gtZero(grantSize)) {
+                    throw new Error('grantSize must be greater than 0');
+                }
+                state.grantSize = grantSize;
+            }
 
-        if (metricsDashboardLink) {
-            state.metricsDashboardLink = metricsDashboardLink;
+            if (matchingGrantSize != null && matchingGrantSize !== undefined) {
+                state.matchingGrantSize = matchingGrantSize;
+            }
+
+            if (authorizedSignerAddress) {
+                if (!validators.isValidAddress(authorizedSignerAddress)) {
+                    throw new Error('authorizedSignerAddress is invalid');
+                }
+
+                // move current signer to editor
+                if (!state.editorAddresses) {
+                    state.editorAddresses = [];
+                }
+                state.editorAddresses.push(signer);
+
+                // if new signer is an editor, remove them
+                const newSignerIndex = state.editorAddresses.indexOf(
+                    authorizedSignerAddress,
+                );
+                if (newSignerIndex !== -1) {
+                    state.editorAddresses.splice(newSignerIndex, 1);
+                }
+
+                // save signer
+                state.authorizedSignerAddress = authorizedSignerAddress;
+            }
+
+            if (disbursementContractAddress) {
+                if (!validators.isValidAddress(disbursementContractAddress)) {
+                    throw new Error('disbursementContractAddress is invalid');
+                }
+
+                state.disbursementContractAddress = disbursementContractAddress;
+            }
         }
     },
 };

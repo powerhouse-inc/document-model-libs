@@ -1,6 +1,7 @@
 import { User } from 'document-model/document';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
+import { toArray } from '../util';
 
 export enum Role {
     Root = 'root',
@@ -40,7 +41,11 @@ const useRole = (): Role => {
             return Role.Root;
         }
 
-        // todo: check editors
+        for (const addr of toArray(state?.editorAddresses || [])) {
+            if (user?.address === addr) {
+                return Role.Editor;
+            }
+        }
 
         return Role.Viewer;
     }, [context]);
