@@ -4,7 +4,6 @@
  */
 
 import { generateMock } from '@powerhousedao/codegen';
-import { Node } from 'document-model-libs/document-drive';
 import * as creators from '../../gen/node/creators';
 import { reducer } from '../../gen/reducer';
 import { z } from '../../gen/schema';
