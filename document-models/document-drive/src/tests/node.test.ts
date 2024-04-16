@@ -4,7 +4,7 @@
  */
 
 import { generateMock } from '@powerhousedao/codegen';
-
+import { Node } from 'document-model-libs/document-drive';
 import * as creators from '../../gen/node/creators';
 import { reducer } from '../../gen/reducer';
 import { z } from '../../gen/schema';
@@ -130,5 +130,26 @@ describe('Node Operations', () => {
         expect(updatedDocument.operations.global[0].type).toBe('MOVE_NODE');
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+    it('should detect circular references and throw an error', () => {
+        // Mock data setup
+        const nodes: Node[] = [
+            { id: '1', parentFolder: null, kind: 'folder', name: 'Root' },
+            { id: '2', parentFolder: '1', kind: 'folder', name: 'Child' },
+            { id: '3', parentFolder: '2', kind: 'folder', name: 'Subchild' },
+        ];
+
+        document.state.global.nodes = nodes;
+
+        // Function invocation and error check
+        expect(() => {
+            reducer(
+                document,
+                creators.moveNode({
+                    srcFolder: '1',
+                    targetParentFolder: '3',
+                }),
+            );
+        }).toThrowError('Cannot move a folder to one of its descendants');
     });
 });
