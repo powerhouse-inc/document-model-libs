@@ -1,3 +1,11 @@
+# [1.28.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0-arbitrum.3...v1.28.0-arbitrum.4) (2024-04-16)
+
+
+### Features
+
+* filling out unit tests ([7102b48](https://github.com/powerhouse-inc/document-model-libs/commit/7102b4865677f1f46ca5680e6f19b520298691b7))
+* reducer role verification ([5a0b3e1](https://github.com/powerhouse-inc/document-model-libs/commit/5a0b3e1a6620eeb9854d0a7c6d6ddb4d263a98b9))
+
 # [1.28.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0-arbitrum.2...v1.28.0-arbitrum.3) (2024-04-15)
 
 
