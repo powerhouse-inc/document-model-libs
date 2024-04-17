@@ -1,3 +1,10 @@
+# [1.28.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0-arbitrum.4...v1.28.0-arbitrum.5) (2024-04-17)
+
+
+### Bug Fixes
+
+* validation issues and auto-enter current address ([d4336b8](https://github.com/powerhouse-inc/document-model-libs/commit/d4336b8ddf8a7ec63d15cdc615dcc7a4613cb229))
+
 # [1.28.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0-arbitrum.3...v1.28.0-arbitrum.4) (2024-04-16)
 
 
