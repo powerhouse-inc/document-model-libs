@@ -11,7 +11,7 @@ import DatePicker from 'react-datepicker';
 import { IProps } from '../../editor';
 import TagSelector from '../TagSelector';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
-import { useIsAdmin } from '../UserProvider';
+import { useAddress, useIsAdmin } from '../UserProvider';
 
 const fundingTypes = [
     {
@@ -52,6 +52,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         grantSize,
         matchingGrantSize,
     } = props;
+    const address = useAddress();
 
     const [showErrors, setShowErrors] = useState(false);
     const [granteeNameLocal, setGranteeNameLocal] = useState(granteeName || '');
@@ -60,7 +61,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         setDisbursementContractAddressLocal,
     ] = useState(disbursementContractAddress || '');
     const [authorizedSignerAddressLocal, setAuthorizedSignerAddressLocal] =
-        useState(authorizedSignerAddress || '');
+        useState(authorizedSignerAddress || address || '');
     const [fundingAddressLocal, setFundingAddressLocal] = useState(
         fundingAddress || '',
     );
@@ -86,6 +87,10 @@ const GranteeForm = (props: GranteeFormProps) => {
         return date;
     }, [startDate]);
 
+    const isAuthorizedSignerAddressValid = useMemo(
+        () => validators.isValidAddress(authorizedSignerAddressLocal),
+        [authorizedSignerAddressLocal],
+    );
     const isDisbursementContractAddressValid = useMemo(
         () => validators.isValidAddress(disbursementContractAddressLocal),
         [disbursementContractAddressLocal],
@@ -95,7 +100,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         [fundingAddressLocal],
     );
     const isGrantSizeValid = useMemo(
-        () => validators.gteZero(grantSizeLocal),
+        () => validators.gtZero(grantSizeLocal),
         [grantSizeLocal],
     );
     const isMatchingGrantSizeValid = useMemo(
@@ -112,6 +117,7 @@ const GranteeForm = (props: GranteeFormProps) => {
     );
     const isFormValid = useMemo(
         () =>
+            isAuthorizedSignerAddressValid &&
             isDisbursementContractAddressValid &&
             isFundingAddressValid &&
             isGrantSizeValid &&
@@ -119,6 +125,7 @@ const GranteeForm = (props: GranteeFormProps) => {
             isFundingTypeValid &&
             isGrantSummaryValid,
         [
+            isAuthorizedSignerAddressValid,
             isDisbursementContractAddressValid,
             isFundingAddressValid,
             isGrantSizeValid,
@@ -300,7 +307,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         />
                     </div>
                 </div>
-                <div className={wrapperClasses(true)}>
+                <div className={wrapperClasses(isAuthorizedSignerAddressValid)}>
                     <label className="text-xs font-medium text-gray-900">
                         Authorized Signer Address
                     </label>
@@ -309,7 +316,11 @@ const GranteeForm = (props: GranteeFormProps) => {
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                         placeholder="0x..."
                         disabled={!isAdmin && !isInit}
-                        value={authorizedSignerAddressLocal}
+                        value={
+                            authorizedSignerAddressLocal === address
+                                ? `${authorizedSignerAddressLocal} (you)`
+                                : authorizedSignerAddressLocal
+                        }
                         onChange={e => {
                             if (isAdmin || isInit) {
                                 setAuthorizedSignerAddressLocal(e.target.value);

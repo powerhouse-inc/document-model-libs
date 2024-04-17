@@ -33,6 +33,11 @@ export const UserProvider = ({ user, state, children }: UserProviderProps) => {
     );
 };
 
+export const useAddress = () => {
+    const context = useContext(UserContext);
+    return context.user?.address;
+};
+
 const useRole = (): Role => {
     const context = useContext(UserContext);
     return useMemo(() => {
