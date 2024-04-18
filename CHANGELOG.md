@@ -1,9 +1,18 @@
-# [1.33.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.32.0...v1.33.0-arbitrum.1) (2024-04-18)
+# [1.34.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.33.0...v1.34.0) (2024-04-18)
 
 
-### Bug Fixes
+### Features
 
-* validation issues and auto-enter current address ([d4336b8](https://github.com/powerhouse-inc/document-model-libs/commit/d4336b8ddf8a7ec63d15cdc615dcc7a4613cb229))
+* fix failing imports ([#136](https://github.com/powerhouse-inc/document-model-libs/issues/136)) ([718202b](https://github.com/powerhouse-inc/document-model-libs/commit/718202bfeb65f8e46b51a5dad335544e911948d8))
+
+# [1.33.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.32.0...v1.33.0) (2024-04-18)
+
+
+### Features
+
+* updated document-model dep ([4eb5a03](https://github.com/powerhouse-inc/document-model-libs/commit/4eb5a03df20e4217a28828addba80d2369936c5a))
+
+# [1.32.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.31.0...v1.32.0) (2024-04-18)
 
 
 ### Features
