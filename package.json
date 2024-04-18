@@ -73,6 +73,7 @@
     "storybook": "powerhouse generate && storybook dev -p 6006",
     "build-storybook": "powerhouse generate && storybook build",
     "test": "powerhouse generate && vitest run",
+    "test:nogen": "vitest run",
     "test:watch": "powerhouse generate && vitest",
     "prepublishOnly": "npm run prepare:scripts && npm run build",
     "prepare:scripts": "node scripts/index.cjs",
@@ -114,7 +115,7 @@
     "chromatic": "^11.0.0",
     "constrained-editor-plugin": "^1.3.0",
     "crypto-browserify": "^3.12.0",
-    "document-model": "^1.0.40",
+    "document-model": "^1.0.42",
     "document-model-editors": "^1.0.1",
     "dspot-powerhouse-components": "^1.1.0",
     "eslint": "^8.56.0",
@@ -149,7 +150,7 @@
     "zod": "^3.22.4"
   },
   "peerDependencies": {
-    "document-model": "^1.0.40",
+    "document-model": "^1.0.42",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
