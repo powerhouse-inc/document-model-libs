@@ -1,63 +1,63 @@
 {
   "name": "document-model-libs",
-  "version": "1.35.0-arbitrum.1",
+  "version": "1.35.0",
   "license": "AGPL-3.0-only",
   "types": "dist/index.d.ts",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/es/index.js",
   "type": "module",
   "files": [
     "/dist"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.cjs",
       "types": "./dist/index.d.ts"
     },
     "./editors": {
-      "import": "./dist/editors.js",
-      "require": "./dist/editors.cjs",
+      "import": "./dist/es/editors.js",
+      "require": "./dist/cjs/editors.cjs",
       "types": "./dist/editors.d.ts"
     },
     "./document-models": {
-      "import": "./dist/document-models.js",
-      "require": "./dist/document-models.cjs",
+      "import": "./dist/es/document-models.js",
+      "require": "./dist/cjs/document-models.cjs",
       "types": "./dist/document-models.d.ts"
     },
     "./budget-statement": {
-      "import": "./dist/budget-statement.js",
-      "require": "./dist/budget-statement.cjs",
+      "import": "./dist/es/budget-statement.js",
+      "require": "./dist/cjs/budget-statement.cjs",
       "types": "./dist/budget-statement.d.ts"
     },
     "./scope-framework": {
-      "import": "./dist/scope-framework.js",
-      "require": "./dist/scope-framework.cjs",
+      "import": "./dist/es/scope-framework.js",
+      "require": "./dist/cjs/scope-framework.cjs",
       "types": "./dist/scope-framework.d.ts"
     },
     "./account-snapshot": {
-      "import": "./dist/account-snapshot.js",
-      "require": "./dist/account-snapshot.cjs",
+      "import": "./dist/es/account-snapshot.js",
+      "require": "./dist/cjs/account-snapshot.cjs",
       "types": "./dist/account-snapshot.d.ts"
     },
     "./document-drive": {
-      "import": "./dist/document-drive.js",
-      "require": "./dist/document-drive.cjs",
+      "import": "./dist/es/document-drive.js",
+      "require": "./dist/cjs/document-drive.cjs",
       "types": "./dist/document-drive.d.ts"
     },
     "./real-world-assets": {
-      "import": "./dist/real-world-assets.js",
-      "require": "./dist/real-world-assets.cjs",
+      "import": "./dist/es/real-world-assets.js",
+      "require": "./dist/cjs/real-world-assets.cjs",
       "types": "./dist/real-world-assets.d.ts"
     },
     "./utils": {
-      "import": "./dist/utils.js",
-      "require": "./dist/utils.cjs",
+      "import": "./dist/es/utils.js",
+      "require": "./dist/cjs/utils.cjs",
       "types": "./dist/utils.d.ts"
     },
     "./arb-ltip-grantee": {
-      "import": "./dist/arb-ltip-grantee.js",
-      "require": "./dist/arb-ltip-grantee.cjs",
+      "import": "./dist/es/arb-ltip-grantee.js",
+      "require": "./dist/cjs/arb-ltip-grantee.cjs",
       "types": "./dist/arb-ltip-grantee.d.ts"
     }
   },
@@ -115,7 +115,7 @@
     "chromatic": "^11.0.0",
     "constrained-editor-plugin": "^1.3.0",
     "crypto-browserify": "^3.12.0",
-    "document-model": "^1.0.42",
+    "document-model": "^1.0.49",
     "document-model-editors": "^1.0.1",
     "dspot-powerhouse-components": "^1.1.0",
     "eslint": "^8.56.0",
@@ -146,11 +146,11 @@
     "viem": "^2.9.18",
     "vite": "^5.2.9",
     "vite-plugin-dts": "^3.8.3",
+    "vite-plugin-generate-file": "^0.1.1",
     "vitest": "^1.2.1",
     "zod": "^3.22.4"
   },
   "peerDependencies": {
-    "document-model": "^1.0.42",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -169,7 +169,7 @@
     "jszip": "^3.10.1",
     "react-aria-components": "1.1.1",
     "react-datepicker": "^6.5.0",
-    "tailwind-merge": "^2.2.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "tailwind-merge": "^2.2.1"
   }
 }
