@@ -9,9 +9,9 @@ import {
     Node,
 } from '..';
 
-import { addFile, copyNode } from '../gen/node/creators';
-import { AddFileAction, CopyNodeAction } from '../gen/node/actions';
 import { OperationScope, SynchronizationUnit } from 'document-model/document';
+import { AddFileAction, CopyNodeAction } from '../gen/node/actions';
+import { addFile, copyNode } from '../gen/node/creators';
 
 export function isFileNode(node: Node): node is FileNode {
     return node.kind === 'file';
@@ -74,7 +74,7 @@ export function generateNodesCopy(
         {
             ...rootNode,
             name: src.targetName || rootNode.name,
-            parentFolder: src.targetParentFolder || rootNode.parentFolder,
+            parentFolder: src.targetParentFolder || null,
         },
         ...getDescendants(rootNode, nodes),
     ];
