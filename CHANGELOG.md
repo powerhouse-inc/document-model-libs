@@ -1,3 +1,10 @@
+# [1.37.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.37.0-arbitrum.1...v1.37.0-arbitrum.2) (2024-04-23)
+
+
+### Features
+
+* refactoring historical view ([9d39bf6](https://github.com/powerhouse-inc/document-model-libs/commit/9d39bf68dcff668d0fe6dfb4c6c977ab1db79871))
+
 # [1.37.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.36.0...v1.37.0-arbitrum.1) (2024-04-19)
 
 
