@@ -2,9 +2,8 @@ import { useState } from 'react';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
 import { IProps } from '../../editor';
 import { classNames, formatDate, toArray } from '../../util';
-import PhaseSummaryModal from '../PhaseSummaryModal';
 import { Phase } from '../../../../document-models/arb-ltip-grantee';
-import { set } from 'date-fns';
+import PhaseSummary from '../PhaseSummary';
 
 type DataBadgeProps = {
     isDue: boolean;
@@ -50,16 +49,37 @@ const StatusBadge = ({ status }: { status: Status }) => {
 type TabHistoricalProps = IProps;
 const TabHistorical = (props: TabHistoricalProps) => {
     const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
-
     const phases = toArray(props.document.state.global.phases);
 
+    if (selectedPhase) {
+        return (
+            <PhaseSummary
+                phase={selectedPhase}
+                onClose={() => setSelectedPhase(null)}
+            />
+        );
+    }
+
+    return (
+        <HistoricalTable
+            phases={phases}
+            selectedPhase={selectedPhase}
+            setSelectedPhase={setSelectedPhase}
+        />
+    );
+};
+
+const HistoricalTable = ({
+    phases,
+    selectedPhase,
+    setSelectedPhase,
+}: {
+    phases: Phase[];
+    selectedPhase: Phase | null;
+    setSelectedPhase: (phase: Phase | null) => void;
+}) => {
     return (
         <div>
-            <PhaseSummaryModal
-                isOpen={!!selectedPhase}
-                onClose={() => setSelectedPhase(null)}
-                phase={selectedPhase}
-            />
             <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto -mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle px-6 lg:px-8">
@@ -124,8 +144,7 @@ const TabHistorical = (props: TabHistoricalProps) => {
                                             phase.actuals,
                                         );
                                     const isStatsValid =
-                                        !!phase.stats &&
-                                        validators.isStatsValid(phase.stats);
+                                        phase.status === 'Finalized';
 
                                     let status: Status = 'Not Started';
                                     if (isPhaseInProgress) {

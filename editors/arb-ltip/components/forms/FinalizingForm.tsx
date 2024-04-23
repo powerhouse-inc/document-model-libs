@@ -75,6 +75,11 @@ const FinalizingForm = (props: FinalizingFormProps) => {
             }),
         );
     }, [
+        avgDailyTVLLocal,
+        avgDailyTXNSLocal,
+        avgDailyVolumeLocal,
+        transactionFeesLocal,
+        uniqueAddressesCountLocal,
         isAvgDailTVLValid,
         isAvgDailyTXNSValid,
         isAvgDailyVolumeValid,

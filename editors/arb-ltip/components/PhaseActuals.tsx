@@ -1,76 +1,87 @@
 import { Phase } from '../../../document-models/arb-ltip-grantee';
 
-const PhaseActuals = ({ phase: { actuals } }: { phase: Phase }) => {
+const PhaseActuals = ({ phase: { actuals, stats } }: { phase: Phase }) => {
     const arbReceived = actuals?.arbReceived ? actuals.arbReceived : 0;
     const arbUtilized = actuals?.arbUtilized ? actuals.arbUtilized : 0;
     const arbRemaining = actuals?.arbRemaining ? actuals.arbRemaining : 0;
 
-    const disclosures = actuals?.disclosures ? actuals.disclosures : 'None';
-
-    const summary = actuals?.summary ? actuals.summary : 'None';
-
-    const contractsDetails =
-        actuals?.contractsIncentivized?.map(contract => ({
-            label: contract?.contractLabel,
-            link: `https://arbiscan.io/address/${contract?.contractAddress}`,
-        })) ?? [];
+    const avgDailyTVL = stats?.avgDailyTVL ? stats.avgDailyTVL : 0;
+    const avgDailyTXNS = stats?.avgDailyTXNS ? stats.avgDailyTXNS : 0;
+    const avgDailyVolume = stats?.avgDailyVolume ? stats.avgDailyVolume : 0;
+    const transactionFees = stats?.transactionFees ? stats.transactionFees : 0;
+    const uniqueAddressesCount = stats?.uniqueAddressesCount
+        ? stats.uniqueAddressesCount
+        : 0;
 
     return (
-        <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex flex-col space-y-2">
-            <div>
-                <span className="text-xl">Actuals</span>
-            </div>
+        <div className="flex flex-col space-y-2 pb-4">
             <>
-                <div>
-                    <label className="text-xs font-medium text-gray-900">
-                        ARB Received
-                    </label>
-                    <p>{arbReceived} </p>
-                </div>
-                <div>
-                    <label className="text-xs font-medium text-gray-900">
-                        ARB Utilized
-                    </label>
-                    <p>{arbUtilized} </p>
-                </div>
-                <div>
-                    <label className="text-xs font-medium text-gray-900">
-                        ARB Remaining
-                    </label>
-                    <p>{arbRemaining} </p>
-                </div>
-
-                <div>
-                    <label className="text-xs font-medium text-gray-900">
-                        Contracts Incentivized
-                    </label>
-                    <div>
-                        {contractsDetails.length === 0 && <p>None</p>}
-                        {contractsDetails.map((contract, index) => (
-                            <div key={index}>
-                                <a
-                                    href={contract.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {contract.label}
-                                </a>
-                            </div>
-                        ))}
+                <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            ARB Received
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {arbReceived}
+                        </dd>
                     </div>
-                </div>
-                <div>
-                    <label className="text-xs font-medium text-gray-900">
-                        Disclosures
-                    </label>
-                    <p>{disclosures}</p>
-                </div>
-                <div>
-                    <label className="text-xs font-medium text-gray-900">
-                        Summary
-                    </label>
-                    <p>{summary}</p>
-                </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            ARB Utilized
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {arbUtilized}
+                        </dd>
+                    </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            ARB Remaining
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {arbRemaining}
+                        </dd>
+                    </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            Average Daily TVL
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {avgDailyTVL}
+                        </dd>
+                    </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            Average Daily Transactions
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {avgDailyTXNS}
+                        </dd>
+                    </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            Average Daily Volume
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {avgDailyVolume}
+                        </dd>
+                    </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            Transaction Fees
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {transactionFees}
+                        </dd>
+                    </div>
+                    <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                        <dt className="truncate text-sm font-medium text-gray-500">
+                            Unique Addresses
+                        </dt>
+                        <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                            {uniqueAddressesCount}
+                        </dd>
+                    </div>
+                </dl>
             </>
         </div>
     );
