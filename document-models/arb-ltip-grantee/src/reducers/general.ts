@@ -5,6 +5,15 @@ import validators from '../validators';
 
 export const reducer: ArbLtipGranteeGeneralOperations = {
     initGranteeOperation(state, action, dispatch) {
+        // this operation is public, but can only happen once
+        if (
+            state.authorizedSignerAddress !== null &&
+            state.authorizedSignerAddress !== undefined &&
+            validators.isValidAddress(state.authorizedSignerAddress)
+        ) {
+            throw new Error('Grantee already initialized');
+        }
+
         const {
             authorizedSignerAddress,
             disbursementContractAddress,

@@ -38,6 +38,8 @@ describe('General Operations', () => {
             phaseDuration: 1,
             startDate: new Date().toISOString(),
         };
+
+        document.state.global.authorizedSignerAddress = '';
         const updatedDocument = reducer(document, creators.initGrantee(input));
 
         expect(updatedDocument.state.global.authorizedSignerAddress).toBe(
