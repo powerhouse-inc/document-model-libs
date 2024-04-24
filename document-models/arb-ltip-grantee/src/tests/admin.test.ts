@@ -11,7 +11,7 @@ import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/admin/creators';
 import { ArbLtipGranteeDocument } from '../../gen/types';
 import { toArray } from '../../../../editors/arb-ltip/util';
-import { createContext, signer } from './util';
+import { createContext, expectException, signer } from './util';
 
 const addr = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
@@ -60,9 +60,7 @@ describe('Admin Operations', () => {
         const action = creators.addEditor(input);
         action.context = createContext();
 
-        expect(() => {
-            reducer(document, action);
-        }).toThrow('Invalid address');
+        expectException(reducer(document, action), 'Invalid address');
     });
 
     it('removeEditor should remove an address', () => {
@@ -98,8 +96,6 @@ describe('Admin Operations', () => {
         const action = creators.removeEditor(input);
         action.context = createContext();
 
-        expect(() => {
-            reducer(document, action);
-        }).toThrow('Invalid address');
+        expectException(reducer(document, action), 'Invalid address');
     });
 });

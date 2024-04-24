@@ -1,5 +1,5 @@
 import { toArray } from '../../../../editors/arb-ltip/util';
-import { ArbLtipGranteeState } from '../../gen';
+import { ArbLtipGranteeDocument, ArbLtipGranteeState } from '../../gen';
 
 export const signer = '0x50379DDB64b77e990Bc4A433c9337618C70D2C2a';
 
@@ -44,4 +44,13 @@ export const isAdminRole = (
     }
 
     return state.authorizedSignerAddress === signer;
+};
+
+export const expectException = (
+    document: ArbLtipGranteeDocument,
+    message: string,
+) => {
+    const lastOp =
+        document.operations.global[document.operations.global.length - 1];
+    expect(lastOp.error).toBe(message);
 };

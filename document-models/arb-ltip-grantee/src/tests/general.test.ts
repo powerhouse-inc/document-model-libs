@@ -10,7 +10,7 @@ import { InitGranteeInput, z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/general/creators';
 import { ArbLtipGranteeDocument } from '../../gen/types';
-import { createContext, signer } from './util';
+import { createContext, expectException, signer } from './util';
 import { toArray } from '../../../../editors/arb-ltip/util';
 
 describe('General Operations', () => {
@@ -72,9 +72,10 @@ describe('General Operations', () => {
         const input = generateMock(z.EditGranteeInputSchema());
         input.grantSummary = 'foo';
 
-        expect(() => {
-            reducer(document, creators.editGrantee(input));
-        }).toThrowError('Unauthorized signer');
+        expectException(
+            reducer(document, creators.editGrantee(input)),
+            'Unauthorized signer',
+        );
     });
 
     it('should handle editGrantee operation', () => {
