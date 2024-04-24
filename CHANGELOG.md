@@ -1,3 +1,33 @@
+# [1.39.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.38.0...v1.39.0-arbitrum.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* validation issues and auto-enter current address ([d4336b8](https://github.com/powerhouse-inc/document-model-libs/commit/d4336b8ddf8a7ec63d15cdc615dcc7a4613cb229))
+
+
+### Features
+
+* correcting arb derived numbers ([a83b4a4](https://github.com/powerhouse-inc/document-model-libs/commit/a83b4a46033a184c69080aa3e1ba28bf1a7c7a7c))
+* filling out unit tests ([7102b48](https://github.com/powerhouse-inc/document-model-libs/commit/7102b4865677f1f46ca5680e6f19b520298691b7))
+* force release ([a111cf2](https://github.com/powerhouse-inc/document-model-libs/commit/a111cf2e9da95b13980e2ee31babde981d70ccd8))
+* form validation for addresses, initial scroll for tabs ([4879fb7](https://github.com/powerhouse-inc/document-model-libs/commit/4879fb70e40f21e2e701d62d0db212239b4850e3))
+* merge branch 'main' into doc-arb-ltip ([78c5e8a](https://github.com/powerhouse-inc/document-model-libs/commit/78c5e8af593b4f380ab83e4ab48fd193fdbb35b5))
+* phase historical view modal ([8c22163](https://github.com/powerhouse-inc/document-model-libs/commit/8c221631f9c6fb823f6b58cb30333f75a0dda0f6))
+* phase historical view modal add styling to actuals and stats ([162ccdb](https://github.com/powerhouse-inc/document-model-libs/commit/162ccdb5593720757704790511e6df03694609a0))
+* phase historical view modal add styling to actuals and stats ([eb6e01f](https://github.com/powerhouse-inc/document-model-libs/commit/eb6e01fa3eb27fcb73ef7eab1d81f16be8b16162))
+* reducer role verification ([5a0b3e1](https://github.com/powerhouse-inc/document-model-libs/commit/5a0b3e1a6620eeb9854d0a7c6d6ddb4d263a98b9))
+* refactoring historical view ([9d39bf6](https://github.com/powerhouse-inc/document-model-libs/commit/9d39bf68dcff668d0fe6dfb4c6c977ab1db79871))
+* reorganizing folder structure for components ([4df369a](https://github.com/powerhouse-inc/document-model-libs/commit/4df369aa75facbd745c7230f4429d7712bcdb99e))
+* replace TextInput with vanilla form input ([801f381](https://github.com/powerhouse-inc/document-model-libs/commit/801f38160b62b2e0b28b807ff85f3588c682a333))
+* responsive pass pt 1 ([db39040](https://github.com/powerhouse-inc/document-model-libs/commit/db390406f551f2fd1867c86fc4cf25ad281c28be))
+* responsive pass pt 2 ([9af2427](https://github.com/powerhouse-inc/document-model-libs/commit/9af2427855f65f781e79a548ce0dfc08bcfa29f5))
+* stubbed in fake role, disallow editing if viewer ([3a56bfc](https://github.com/powerhouse-inc/document-model-libs/commit/3a56bfc1014076d22da5064ef98148eff8788044))
+* style changes ([b0f7839](https://github.com/powerhouse-inc/document-model-libs/commit/b0f7839b1a237b987db7a48b1a981a0397c1b974))
+* style changes ([37c6efa](https://github.com/powerhouse-inc/document-model-libs/commit/37c6efa385fbcf0e88822781a703b9651124629a))
+* update doc model with authorized signer ([c739a76](https://github.com/powerhouse-inc/document-model-libs/commit/c739a7659246b0df3084be0a4b1f7a47de88af74))
+* updated model, stubbed out admin panel, added a few tests ([66d4753](https://github.com/powerhouse-inc/document-model-libs/commit/66d47530c50b941b3251309266fc99427cc48d11))
+
 # [1.38.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.37.0...v1.38.0) (2024-04-24)
 
 
