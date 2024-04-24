@@ -1,3 +1,11 @@
+# [1.39.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.1...v1.39.0-arbitrum.2) (2024-04-24)
+
+
+### Bug Fixes
+
+* disallow double init ([66d4f7a](https://github.com/powerhouse-inc/document-model-libs/commit/66d4f7a98b9e904d0a37b889777a5d1ab040adf0))
+* fixing broken tests from error propagation changes ([63f342e](https://github.com/powerhouse-inc/document-model-libs/commit/63f342efd9e4aaee814b6a5bffd4a2752690bd1e))
+
 # [1.39.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.38.0...v1.39.0-arbitrum.1) (2024-04-24)
 
 
