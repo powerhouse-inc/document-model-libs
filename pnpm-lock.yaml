@@ -175,9 +175,6 @@ devDependencies:
   husky:
     specifier: ^8.0.3
     version: 8.0.3
-  immer:
-    specifier: ^10.0.4
-    version: 10.0.4
   lint-staged:
     specifier: ^15.2.0
     version: 15.2.0
