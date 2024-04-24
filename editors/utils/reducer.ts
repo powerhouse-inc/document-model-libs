@@ -54,8 +54,9 @@ export function useDocumentReducer<State, A extends Action, LocalState>(
                     newState.operations[action.scope].slice(-1)[0];
 
                 if (operation.error) {
-                    onError?.(new Error(operation.error));
-                    onErrorCallback?.(new Error(operation.error));
+                    const error = new Error(operation.error);
+                    onError?.(error);
+                    onErrorCallback?.(error);
                 }
 
                 return newState;
