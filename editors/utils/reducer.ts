@@ -49,6 +49,15 @@ export function useDocumentReducer<State, A extends Action, LocalState>(
         setState(_state => {
             try {
                 const newState = reducer(_state, action);
+
+                const operation =
+                    newState.operations[action.scope].slice(-1)[0];
+
+                if (operation.error) {
+                    onError?.(new Error(operation.error));
+                    onErrorCallback?.(new Error(operation.error));
+                }
+
                 return newState;
             } catch (error) {
                 onError?.(error);
