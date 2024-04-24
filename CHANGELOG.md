@@ -1,4 +1,18 @@
-# [1.37.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.37.0-arbitrum.1...v1.37.0-arbitrum.2) (2024-04-23)
+# [1.38.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.37.0...v1.38.0) (2024-04-24)
+
+
+### Features
+
+* handle name collisions ([#139](https://github.com/powerhouse-inc/document-model-libs/issues/139)) ([8dc099d](https://github.com/powerhouse-inc/document-model-libs/commit/8dc099d2196863e02cb96b2de495510f6a55db37))
+
+# [1.37.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.36.0...v1.37.0) (2024-04-23)
+
+
+### Features
+
+* update document-model 1.0.53 ([#142](https://github.com/powerhouse-inc/document-model-libs/issues/142)) ([b6916f0](https://github.com/powerhouse-inc/document-model-libs/commit/b6916f020c8cdfac113c4a097c2e035e0a73f617))
+
+# [1.36.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.35.0...v1.36.0) (2024-04-19)
 
 
 ### Features

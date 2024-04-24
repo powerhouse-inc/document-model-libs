@@ -232,7 +232,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             selected={startDate}
                             disabled={!isAdmin && !isInit}
                             className="w-32 py-2 outline-none cursor-pointer text-sm"
-                            onChange={date => {
+                            onChange={(date: Date) => {
                                 if (!date) {
                                     return;
                                 }
