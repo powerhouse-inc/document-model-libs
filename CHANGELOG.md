@@ -1,3 +1,10 @@
+# [1.39.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.2...v1.39.0-arbitrum.3) (2024-04-26)
+
+
+### Bug Fixes
+
+* added test and fixed issue where editors could not edit documents ([68887f1](https://github.com/powerhouse-inc/document-model-libs/commit/68887f1c215884f0ac25d59ac37c7192e2b5fca8))
+
 # [1.39.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.1...v1.39.0-arbitrum.2) (2024-04-24)
 
 
