@@ -80,7 +80,7 @@ describe('General Operations', () => {
         );
     });
 
-    it('should handle editGrantee operation', () => {
+    it('should allow the editGrantee operation from the root user', () => {
         const input = generateMock(z.EditGranteeInputSchema());
         input.authorizedSignerAddress = '';
         input.disbursementContractAddress =
@@ -97,6 +97,27 @@ describe('General Operations', () => {
         );
         expect(updatedDocument.state.global.fundingAddress).toBe(
             input.fundingAddress,
+        );
+    });
+
+    it('should allow the editGrantee operation from an editor user', () => {
+        // add the editor to the document
+        const editor = '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747';
+        document.state.global.editorAddresses = [editor];
+
+        const input = generateMock(z.EditGranteeInputSchema());
+        input.authorizedSignerAddress = signer;
+        input.disbursementContractAddress = editor;
+        input.fundingAddress = editor;
+        input.grantSummary = 'THIS IS A TEST';
+
+        const action = creators.editGrantee(input);
+        action.context = createContext(editor);
+
+        const updatedDocument = reducer(document, action);
+
+        expect(updatedDocument.state.global.grantSummary).toBe(
+            input.grantSummary,
         );
     });
 

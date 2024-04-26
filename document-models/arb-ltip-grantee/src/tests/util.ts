@@ -28,7 +28,7 @@ export const isEditorRole = (
 
     for (const editor of toArray(state.editorAddresses)) {
         if (editor === signer) {
-            return false;
+            return true;
         }
     }
 
