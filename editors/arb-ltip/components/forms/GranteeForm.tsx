@@ -78,6 +78,9 @@ const GranteeForm = (props: GranteeFormProps) => {
     const [matchingGrantSizeLocal, setMatchingGrantSizeLocal] = useState(
         matchingGrantSize || 0,
     );
+    const [editorAddressesLocal, setEditorAddressesLocal] = useState<string[]>(
+        [],
+    );
 
     // 12 weeks
     const [startDate, setStartDate] = useState(new Date(2024, 3, 29));
@@ -115,6 +118,10 @@ const GranteeForm = (props: GranteeFormProps) => {
         () => validators.isNotEmptyString(grantSummaryLocal),
         [grantSummaryLocal],
     );
+    const isEditorAddressesValid = useMemo(
+        () => editorAddressesLocal.every(validators.isValidAddress),
+        [editorAddressesLocal],
+    );
     const isFormValid = useMemo(
         () =>
             isAuthorizedSignerAddressValid &&
@@ -123,7 +130,8 @@ const GranteeForm = (props: GranteeFormProps) => {
             isGrantSizeValid &&
             isMatchingGrantSizeValid &&
             isFundingTypeValid &&
-            isGrantSummaryValid,
+            isGrantSummaryValid &&
+            isEditorAddressesValid,
         [
             isAuthorizedSignerAddressValid,
             isDisbursementContractAddressValid,
@@ -132,6 +140,7 @@ const GranteeForm = (props: GranteeFormProps) => {
             isMatchingGrantSizeValid,
             isFundingTypeValid,
             isGrantSummaryValid,
+            isEditorAddressesValid,
         ],
     );
 
@@ -163,6 +172,14 @@ const GranteeForm = (props: GranteeFormProps) => {
                     phaseDuration: phaseDuration,
                 }),
             );
+
+            for (const editor of editorAddressesLocal) {
+                dispatch(
+                    actions.addEditor({
+                        editorAddress: editor,
+                    }),
+                );
+            }
         } else {
             const input: EditGranteeInput = {
                 fundingAddress: fundingAddressLocal,
@@ -194,6 +211,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         metricsDashboardLinkLocal,
         grantSizeLocal,
         matchingGrantSizeLocal,
+        editorAddressesLocal,
         startDate,
         isFormValid,
     ]);
@@ -320,6 +338,26 @@ const GranteeForm = (props: GranteeFormProps) => {
                                     );
                                 }
                             }}
+                        />
+                    </div>
+                )}
+                {isInit && (
+                    <div className={wrapperClasses(isEditorAddressesValid)}>
+                        <label className="text-xs font-medium text-gray-900">
+                            Editor Addresses (comma separated)
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
+                            placeholder="0x..."
+                            value={editorAddressesLocal.join(',')}
+                            onChange={e =>
+                                setEditorAddressesLocal(
+                                    e.target.value
+                                        .split(',')
+                                        .map(v => v.trim()),
+                                )
+                            }
                         />
                     </div>
                 )}
