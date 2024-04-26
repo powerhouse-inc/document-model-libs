@@ -1,3 +1,10 @@
+# [1.39.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.3...v1.39.0-arbitrum.4) (2024-04-26)
+
+
+### Bug Fixes
+
+* updating all int handlers to better handle bad input ([35b5187](https://github.com/powerhouse-inc/document-model-libs/commit/35b5187e8f020064f0534ca1cf24622d0451a34a))
+
 # [1.39.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.2...v1.39.0-arbitrum.3) (2024-04-26)
 
 
