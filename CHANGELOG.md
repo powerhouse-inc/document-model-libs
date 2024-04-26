@@ -1,3 +1,16 @@
+# [1.39.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.4...v1.39.0-arbitrum.5) (2024-04-26)
+
+
+### Bug Fixes
+
+* matching grant size should not be on init form, and it should be editable by editors ([b35aa81](https://github.com/powerhouse-inc/document-model-libs/commit/b35aa81ed04239bb7cacbe7857ea61c3a3286704))
+* remove start/end dates after init, grant size, disbursement, root shows only for admins ([8416997](https://github.com/powerhouse-inc/document-model-libs/commit/8416997d8dc5295f81d78bd8766e037dd86091a4))
+
+
+### Features
+
+* add editoraddresses field to initial grant form ([ff23278](https://github.com/powerhouse-inc/document-model-libs/commit/ff23278383ca194678ae11da72c670efe6d90a7f))
+
 # [1.39.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0-arbitrum.3...v1.39.0-arbitrum.4) (2024-04-26)
 
 
