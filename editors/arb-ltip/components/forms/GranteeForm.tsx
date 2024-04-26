@@ -155,7 +155,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     metricsDashboardLink: metricsDashboardLinkLocal,
                     startDate: startDate.toISOString(),
                     grantSize: grantSizeLocal,
-                    matchingGrantSize: matchingGrantSizeLocal,
+                    matchingGrantSize: 0,
                     authorizedSignerAddress: authorizedSignerAddressLocal,
                     disbursementContractAddress:
                         disbursementContractAddressLocal,
@@ -169,12 +169,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                 fundingType: fundingTypeLocal,
                 granteeName: granteeNameLocal,
                 grantSummary: grantSummaryLocal,
+                matchingGrantSize: matchingGrantSizeLocal,
                 metricsDashboardLink: metricsDashboardLinkLocal,
             };
 
             if (isAdmin) {
                 input.grantSize = grantSizeLocal;
-                input.matchingGrantSize = matchingGrantSizeLocal;
                 input.authorizedSignerAddress = authorizedSignerAddressLocal;
                 input.disbursementContractAddress =
                     disbursementContractAddressLocal;
@@ -275,19 +275,21 @@ const GranteeForm = (props: GranteeFormProps) => {
                         />
                     </div>
 
-                    <div className="w-40">
-                        <label className="text-xs font-medium text-gray-900">
-                            Matching Grant Size
-                        </label>
-                        <input
-                            type="text"
-                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
-                            placeholder="0"
-                            disabled={!isAdmin && !isInit}
-                            value={matchingGrantSizeLocal}
-                            onChange={intHandler(setMatchingGrantSizeLocal)}
-                        />
-                    </div>
+                    {!isInit && (
+                        <div className="w-40">
+                            <label className="text-xs font-medium text-gray-900">
+                                Matching Grant Size
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
+                                placeholder="0"
+                                disabled={!isAdmin && !isInit}
+                                value={matchingGrantSizeLocal}
+                                onChange={intHandler(setMatchingGrantSizeLocal)}
+                            />
+                        </div>
+                    )}
                 </div>
                 <div className={wrapperClasses(isAuthorizedSignerAddressValid)}>
                     <label className="text-xs font-medium text-gray-900">

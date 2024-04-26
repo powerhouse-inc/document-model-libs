@@ -140,10 +140,10 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             granteeName,
             grantSummary,
             metricsDashboardLink,
+            matchingGrantSize,
 
             // admin only
             grantSize,
-            matchingGrantSize,
             authorizedSignerAddress,
             disbursementContractAddress,
         } = action.input;
@@ -176,6 +176,10 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
                 state.grantSummary = grantSummary;
             }
 
+            if (matchingGrantSize != null && matchingGrantSize !== undefined) {
+                state.matchingGrantSize = matchingGrantSize;
+            }
+
             if (metricsDashboardLink) {
                 state.metricsDashboardLink = metricsDashboardLink;
             }
@@ -189,10 +193,6 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
                     throw new Error('grantSize must be greater than 0');
                 }
                 state.grantSize = grantSize;
-            }
-
-            if (matchingGrantSize != null && matchingGrantSize !== undefined) {
-                state.matchingGrantSize = matchingGrantSize;
             }
 
             if (authorizedSignerAddress) {
