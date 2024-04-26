@@ -223,57 +223,61 @@ const GranteeForm = (props: GranteeFormProps) => {
                 />
             </div>
             <div className="isolate -space-y-px rounded-md shadow-sm">
-                <div className={wrapperClasses(true, 'flex')}>
-                    <div className="w-40">
-                        <label className="text-xs font-medium text-gray-900">
-                            Start Date
-                        </label>
-                        <DatePicker
-                            selected={startDate}
-                            disabled={!isAdmin && !isInit}
-                            className="w-32 py-2 outline-none cursor-pointer text-sm"
-                            onChange={(date: Date) => {
-                                if (!date) {
-                                    return;
-                                }
+                {isInit && (
+                    <div className={wrapperClasses(true, 'flex')}>
+                        <div className="w-40">
+                            <label className="text-xs font-medium text-gray-900">
+                                Start Date
+                            </label>
+                            <DatePicker
+                                selected={startDate}
+                                disabled={!isAdmin && !isInit}
+                                className="w-32 py-2 outline-none cursor-pointer text-sm"
+                                onChange={(date: Date) => {
+                                    if (!date) {
+                                        return;
+                                    }
 
-                                if (isAdmin || isInit) {
-                                    setStartDate(date);
-                                }
-                            }}
-                        />
+                                    if (isAdmin || isInit) {
+                                        setStartDate(date);
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="w-40">
+                            <label className="text-xs font-medium text-gray-900">
+                                End Date
+                            </label>
+                            <DatePicker
+                                selected={endDate}
+                                className="w-32 py-2 outline-none cursor-not-allowed text-sm"
+                                onChange={() => {}}
+                                disabled={true}
+                            />
+                        </div>
                     </div>
-                    <div className="w-40">
-                        <label className="text-xs font-medium text-gray-900">
-                            End Date
-                        </label>
-                        <DatePicker
-                            selected={endDate}
-                            className="w-32 py-2 outline-none cursor-not-allowed text-sm"
-                            onChange={() => {}}
-                            disabled={true}
-                        />
-                    </div>
-                </div>
+                )}
                 <div
                     className={wrapperClasses(
                         isGrantSizeValid && isMatchingGrantSizeValid,
                         'flex',
                     )}
                 >
-                    <div className="w-40">
-                        <label className="text-xs font-medium text-gray-900">
-                            Grant Size
-                        </label>
-                        <input
-                            type="text"
-                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
-                            placeholder="0"
-                            disabled={!isAdmin && !isInit}
-                            value={grantSizeLocal}
-                            onChange={intHandler(setGrantSizeLocal)}
-                        />
-                    </div>
+                    {(isAdmin || isInit) && (
+                        <div className="w-40">
+                            <label className="text-xs font-medium text-gray-900">
+                                Grant Size
+                            </label>
+                            <input
+                                type="text"
+                                className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
+                                placeholder="0"
+                                disabled={!isAdmin && !isInit}
+                                value={grantSizeLocal}
+                                onChange={intHandler(setGrantSizeLocal)}
+                            />
+                        </div>
+                    )}
 
                     {!isInit && (
                         <div className="w-40">
@@ -284,57 +288,66 @@ const GranteeForm = (props: GranteeFormProps) => {
                                 type="text"
                                 className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                                 placeholder="0"
-                                disabled={!isAdmin && !isInit}
                                 value={matchingGrantSizeLocal}
                                 onChange={intHandler(setMatchingGrantSizeLocal)}
                             />
                         </div>
                     )}
                 </div>
-                <div className={wrapperClasses(isAuthorizedSignerAddressValid)}>
-                    <label className="text-xs font-medium text-gray-900">
-                        Authorized Signer Address
-                    </label>
-                    <input
-                        type="text"
-                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
-                        placeholder="0x..."
-                        disabled={!isAdmin && !isInit}
-                        value={
-                            authorizedSignerAddressLocal === address
-                                ? `${authorizedSignerAddressLocal} (you)`
-                                : authorizedSignerAddressLocal
-                        }
-                        onChange={e => {
-                            if (isAdmin || isInit) {
-                                setAuthorizedSignerAddressLocal(e.target.value);
+                {(isAdmin || isInit) && (
+                    <div
+                        className={wrapperClasses(
+                            isAuthorizedSignerAddressValid,
+                        )}
+                    >
+                        <label className="text-xs font-medium text-gray-900">
+                            Authorized Signer Address
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
+                            placeholder="0x..."
+                            disabled={!isAdmin && !isInit}
+                            value={
+                                authorizedSignerAddressLocal === address
+                                    ? `${authorizedSignerAddressLocal} (you)`
+                                    : authorizedSignerAddressLocal
                             }
-                        }}
-                    />
-                </div>
-                <div
-                    className={wrapperClasses(
-                        isDisbursementContractAddressValid,
-                    )}
-                >
-                    <label className="text-xs font-medium text-gray-900">
-                        Disbursement Address
-                    </label>
-                    <input
-                        type="text"
-                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
-                        placeholder="0x..."
-                        disabled={!isAdmin && !isInit}
-                        value={disbursementContractAddressLocal}
-                        onChange={e => {
-                            if (isAdmin || isInit) {
-                                setDisbursementContractAddressLocal(
-                                    e.target.value,
-                                );
-                            }
-                        }}
-                    />
-                </div>
+                            onChange={e => {
+                                if (isAdmin || isInit) {
+                                    setAuthorizedSignerAddressLocal(
+                                        e.target.value,
+                                    );
+                                }
+                            }}
+                        />
+                    </div>
+                )}
+                {(isAdmin || isInit) && (
+                    <div
+                        className={wrapperClasses(
+                            isDisbursementContractAddressValid,
+                        )}
+                    >
+                        <label className="text-xs font-medium text-gray-900">
+                            Disbursement Address
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
+                            placeholder="0x..."
+                            disabled={!isAdmin && !isInit}
+                            value={disbursementContractAddressLocal}
+                            onChange={e => {
+                                if (isAdmin || isInit) {
+                                    setDisbursementContractAddressLocal(
+                                        e.target.value,
+                                    );
+                                }
+                            }}
+                        />
+                    </div>
+                )}
                 <div className={wrapperClasses(isFundingAddressValid)}>
                     <label className="text-xs font-medium text-gray-900">
                         Funding Address
