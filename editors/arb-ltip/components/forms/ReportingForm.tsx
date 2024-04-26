@@ -6,7 +6,12 @@ import {
 } from '../../../../document-models/arb-ltip-grantee';
 import { IProps } from '../../editor';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
-import { calculateArbReceived, classNames, toArray } from '../../util';
+import {
+    calculateArbReceived,
+    classNames,
+    intHandler,
+    toArray,
+} from '../../util';
 import ContractSelector from '../ContractSelector';
 import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
 import PhaseTimespan from '../PhaseTimespan';
@@ -163,20 +168,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                             className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                             placeholder="Enter amount"
                             value={arbReceivedLocal}
-                            onChange={e => {
-                                let val;
-                                try {
-                                    val = parseInt(e.target.value);
-                                } catch {
-                                    return;
-                                }
-
-                                if (isNaN(val)) {
-                                    return;
-                                }
-
-                                setArbReceivedLocal(val);
-                            }}
+                            onChange={intHandler(setArbReceivedLocal)}
                         />
                     </div>
                     <div
@@ -195,20 +187,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                             className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                             placeholder="Enter amount"
                             value={arbUtilizedLocal}
-                            onChange={e => {
-                                let val;
-                                try {
-                                    val = parseInt(e.target.value);
-                                } catch {
-                                    return;
-                                }
-
-                                if (isNaN(val)) {
-                                    return;
-                                }
-
-                                setArbUtilizedLocal(val);
-                            }}
+                            onChange={intHandler(setArbUtilizedLocal)}
                         />
                     </div>
                     <div className="flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">

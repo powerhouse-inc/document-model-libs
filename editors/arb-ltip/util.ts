@@ -85,3 +85,21 @@ export const calculateStatus = (phases: Phase[]) => {
 
     return 'On Track';
 };
+
+export const intHandler =
+    (setFn: (value: number) => void) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === '') {
+            setFn(0);
+            return;
+        }
+
+        e.target.value = e.target.value.replace(/\D/g, '');
+
+        const value = parseInt(e.target.value, 10);
+        if (isNaN(value)) {
+            return;
+        }
+
+        setFn(value);
+    };

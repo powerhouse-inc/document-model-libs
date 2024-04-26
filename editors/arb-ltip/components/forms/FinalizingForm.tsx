@@ -4,7 +4,7 @@ import {
     Phase,
 } from '../../../../document-models/arb-ltip-grantee';
 import { IProps } from '../../editor';
-import { classNames } from '../../util';
+import { classNames, intHandler } from '../../util';
 import PhaseTimespan from '../PhaseTimespan';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
 import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
@@ -116,20 +116,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={avgDailyTVLLocal}
-                        onChange={e => {
-                            let val;
-                            try {
-                                val = parseInt(e.target.value);
-                            } catch {
-                                return;
-                            }
-
-                            if (isNaN(val)) {
-                                return;
-                            }
-
-                            setAvgDailyTVLLocal(val);
-                        }}
+                        onChange={intHandler(setAvgDailyTVLLocal)}
                     />
                 </div>
                 <div className={wrapperClasses(isAvgDailTVLValid)}>
@@ -141,20 +128,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={avgDailyTXNSLocal}
-                        onChange={e => {
-                            let val;
-                            try {
-                                val = parseInt(e.target.value);
-                            } catch {
-                                return;
-                            }
-
-                            if (isNaN(val)) {
-                                return;
-                            }
-
-                            setAvgDailyTXNSLocal(val);
-                        }}
+                        onChange={intHandler(setAvgDailyTXNSLocal)}
                     />
                 </div>
                 <div className={wrapperClasses(isAvgDailyVolumeValid)}>
@@ -166,20 +140,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={avgDailyVolumeLocal}
-                        onChange={e => {
-                            let val;
-                            try {
-                                val = parseInt(e.target.value);
-                            } catch {
-                                return;
-                            }
-
-                            if (isNaN(val)) {
-                                return;
-                            }
-
-                            setAvgDailyVolumeLocal(val);
-                        }}
+                        onChange={intHandler(setAvgDailyVolumeLocal)}
                     />
                 </div>
                 <div className={wrapperClasses(isTransactionFeesValid)}>
@@ -191,20 +152,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={transactionFeesLocal}
-                        onChange={e => {
-                            let val;
-                            try {
-                                val = parseInt(e.target.value);
-                            } catch {
-                                return;
-                            }
-
-                            if (isNaN(val)) {
-                                return;
-                            }
-
-                            setTransactionFeesLocal(val);
-                        }}
+                        onChange={intHandler(setTransactionFeesLocal)}
                     />
                 </div>
                 <div className={wrapperClasses(isUniqueAddressesCountValid)}>
@@ -216,20 +164,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={uniqueAddressesCountLocal}
-                        onChange={e => {
-                            let val;
-                            try {
-                                val = parseInt(e.target.value);
-                            } catch {
-                                return;
-                            }
-
-                            if (isNaN(val)) {
-                                return;
-                            }
-
-                            setUniqueAddressesCountLocal(val);
-                        }}
+                        onChange={intHandler(setUniqueAddressesCountLocal)}
                     />
                 </div>
             </div>

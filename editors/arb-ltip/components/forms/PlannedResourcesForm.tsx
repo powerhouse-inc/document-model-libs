@@ -9,7 +9,7 @@ import { IProps } from '../../editor';
 import 'react-datepicker/dist/react-datepicker.css';
 import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
 import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
-import { classNames, toArray } from '../../util';
+import { classNames, intHandler, toArray } from '../../util';
 import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 
@@ -172,20 +172,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
                         value={disbursementAmountLocal}
-                        onChange={e => {
-                            let val;
-                            try {
-                                val = parseInt(e.target.value);
-                            } catch {
-                                return;
-                            }
-
-                            if (isNaN(val)) {
-                                return;
-                            }
-
-                            setDisbursementAmountLocal(val);
-                        }}
+                        onChange={intHandler(setDisbursementAmountLocal)}
                     />
                 </div>
                 <div className={wrapperClasses(isContractsValid)}>

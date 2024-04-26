@@ -6,7 +6,7 @@ import {
     actions,
 } from '../../../../document-models/arb-ltip-grantee';
 import { useCallback, useMemo, useState } from 'react';
-import { classNames, maybeToArray } from '../../util';
+import { classNames, intHandler, maybeToArray } from '../../util';
 import DatePicker from 'react-datepicker';
 import { IProps } from '../../editor';
 import TagSelector from '../TagSelector';
@@ -271,16 +271,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             placeholder="0"
                             disabled={!isAdmin && !isInit}
                             value={grantSizeLocal}
-                            onChange={e => {
-                                const value = parseInt(e.target.value, 10);
-                                if (isNaN(value)) {
-                                    return;
-                                }
-
-                                if (isAdmin || isInit) {
-                                    setGrantSizeLocal(value);
-                                }
-                            }}
+                            onChange={intHandler(setGrantSizeLocal)}
                         />
                     </div>
 
@@ -294,16 +285,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             placeholder="0"
                             disabled={!isAdmin && !isInit}
                             value={matchingGrantSizeLocal}
-                            onChange={e => {
-                                const value = parseInt(e.target.value, 10);
-                                if (isNaN(value)) {
-                                    return;
-                                }
-
-                                if (isAdmin || isInit) {
-                                    setMatchingGrantSizeLocal(value);
-                                }
-                            }}
+                            onChange={intHandler(setMatchingGrantSizeLocal)}
                         />
                     </div>
                 </div>
