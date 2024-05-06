@@ -43,6 +43,7 @@ enum TransmitterType {
     Internal
     SwitchboardPush
     PullResponder
+    Subscription
     SecureConnect
     MatrixConnect
     RESTWebhook
@@ -65,6 +66,7 @@ type Listener {
 
 enum TriggerType {
     PullResponder
+    Subscription
 }
 
 type PullResponderTriggerData {
@@ -73,7 +75,12 @@ type PullResponderTriggerData {
     interval: String!
 }
 
-union TriggerData = PullResponderTriggerData
+type SubscriptionTriggerData {
+    listenerId: ID!
+    url: String!
+}
+
+union TriggerData = PullResponderTriggerData | SubscriptionTriggerData
 
 type Trigger {
     id: ID!
