@@ -136,27 +136,26 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 action.input.cashTransaction.amount;
         }
 
-        if (action.input.cashBalanceChange) {
-            transaction.cashBalanceChange = action.input.cashBalanceChange;
-        }
-
         if (action.input.unitPrice) {
             transaction.unitPrice = action.input.unitPrice;
         }
 
+        if (action.input.cashBalanceChange) {
+            const oldCashBalanceChange = transaction.cashBalanceChange;
+            const newCashBalanceChange = action.input.cashBalanceChange;
+            transaction.cashBalanceChange = newCashBalanceChange;
+
+            const cashAsset = state.portfolio.find(a => isCashAsset(a)) as Cash;
+
+            cashAsset.balance += newCashBalanceChange - oldCashBalanceChange;
+
+            state.portfolio = state.portfolio.map(a =>
+                a.id === cashAsset.id ? cashAsset : a,
+            );
+        }
+
         state.transactions = state.transactions.map(t =>
             t.id === transaction.id ? transaction : t,
-        );
-
-        const cashAsset = state.portfolio.find(a => isCashAsset(a)) as Cash;
-
-        const updatedCashAsset = {
-            ...cashAsset,
-            balance: cashAsset.balance + transaction.cashBalanceChange,
-        };
-
-        state.portfolio = state.portfolio.map(a =>
-            a.id === cashAsset.id ? updatedCashAsset : a,
         );
 
         const fixedIncomeAssetId = transaction.fixedIncomeTransaction?.assetId;
