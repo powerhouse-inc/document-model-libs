@@ -1,3 +1,128 @@
+# [1.41.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.40.0...v1.41.0) (2024-05-01)
+
+
+### Features
+
+* bump design system ([#146](https://github.com/powerhouse-inc/document-model-libs/issues/146)) ([75c8e03](https://github.com/powerhouse-inc/document-model-libs/commit/75c8e03b4fb57af53229377b5978c68d74de3844))
+
+# [1.40.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.39.0...v1.40.0) (2024-04-24)
+
+
+### Features
+
+* re-enable onErrorCallback with new operations error prop ([#145](https://github.com/powerhouse-inc/document-model-libs/issues/145)) ([abbb15b](https://github.com/powerhouse-inc/document-model-libs/commit/abbb15b9e16b916e06e9bb22bb389b385a158e95))
+
+# [1.39.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.38.0...v1.39.0) (2024-04-24)
+
+
+### Features
+
+* do check for both files and folders ([#143](https://github.com/powerhouse-inc/document-model-libs/issues/143)) ([d8ea0cb](https://github.com/powerhouse-inc/document-model-libs/commit/d8ea0cb4952fd2e1e6a29f188856193b34d83ee3))
+
+# [1.38.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.37.0...v1.38.0) (2024-04-24)
+
+
+### Features
+
+* handle name collisions ([#139](https://github.com/powerhouse-inc/document-model-libs/issues/139)) ([8dc099d](https://github.com/powerhouse-inc/document-model-libs/commit/8dc099d2196863e02cb96b2de495510f6a55db37))
+
+# [1.37.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.36.0...v1.37.0) (2024-04-23)
+
+
+### Features
+
+* update document-model 1.0.53 ([#142](https://github.com/powerhouse-inc/document-model-libs/issues/142)) ([b6916f0](https://github.com/powerhouse-inc/document-model-libs/commit/b6916f020c8cdfac113c4a097c2e035e0a73f617))
+
+# [1.36.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.35.0...v1.36.0) (2024-04-19)
+
+
+### Features
+
+* added separate bundles for es and cjs ([4ffb17f](https://github.com/powerhouse-inc/document-model-libs/commit/4ffb17f37692da9d4a65885385948e175a5604b3))
+* changed document-model to dependency ([43f8033](https://github.com/powerhouse-inc/document-model-libs/commit/43f8033477af17d29a0aaa826ee6a33b49a24207))
+
+# [1.35.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.34.0...v1.35.0) (2024-04-19)
+
+
+### Features
+
+* added circular reference error clarification ([#134](https://github.com/powerhouse-inc/document-model-libs/issues/134)) ([191bfe1](https://github.com/powerhouse-inc/document-model-libs/commit/191bfe1acb2d60b73969779e249e4394957bcd7c))
+
+# [1.34.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.33.0...v1.34.0) (2024-04-18)
+
+
+### Features
+
+* fix failing imports ([#136](https://github.com/powerhouse-inc/document-model-libs/issues/136)) ([718202b](https://github.com/powerhouse-inc/document-model-libs/commit/718202bfeb65f8e46b51a5dad335544e911948d8))
+
+# [1.33.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.32.0...v1.33.0) (2024-04-18)
+
+
+### Features
+
+* updated document-model dep ([4eb5a03](https://github.com/powerhouse-inc/document-model-libs/commit/4eb5a03df20e4217a28828addba80d2369936c5a))
+
+# [1.32.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.31.0...v1.32.0) (2024-04-18)
+
+
+### Features
+
+* exclude document-model from bundle ([7a60d7c](https://github.com/powerhouse-inc/document-model-libs/commit/7a60d7c7f605b572829f0c5ab8a4c7d34f74ae69))
+
+# [1.31.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.30.0...v1.31.0) (2024-04-16)
+
+
+### Features
+
+* update document-model lib version ([#133](https://github.com/powerhouse-inc/document-model-libs/issues/133)) ([1f8311e](https://github.com/powerhouse-inc/document-model-libs/commit/1f8311ec4a69a295a12b01233eff0c34eb6d09eb))
+
+# [1.30.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.29.0...v1.30.0) (2024-04-16)
+
+
+### Features
+
+* remove root dir from ts config ([#130](https://github.com/powerhouse-inc/document-model-libs/issues/130)) ([b2c3b80](https://github.com/powerhouse-inc/document-model-libs/commit/b2c3b80d55d8cdf25b3a2073917030eb86ff5b83))
+
+# [1.29.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.28.0...v1.29.0) (2024-04-16)
+
+
+### Features
+
+* handle moving folder to descendent ([#129](https://github.com/powerhouse-inc/document-model-libs/issues/129)) ([d9f5004](https://github.com/powerhouse-inc/document-model-libs/commit/d9f5004e23183f9c96c5d1075726297dc9fb9191))
+
+# [1.28.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.27.0...v1.28.0) (2024-04-15)
+
+
+### Bug Fixes
+
+* clear input on blur if clearOnSubmit is set ([6fd731c](https://github.com/powerhouse-inc/document-model-libs/commit/6fd731c8b17a2b9a71bbc700a54ff675cdb169a1))
+
+
+### Features
+
+* added ens utils ([c3c69e1](https://github.com/powerhouse-inc/document-model-libs/commit/c3c69e181f5c3e4d66f8b2ec74e50224a2cbb5f6))
+
+# [1.27.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.26.0...v1.27.0) (2024-04-15)
+
+
+### Features
+
+* added networkId to user ([58b5af1](https://github.com/powerhouse-inc/document-model-libs/commit/58b5af19d08470562396bf9af9045089b228de18))
+
+# [1.26.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.25.0...v1.26.0) (2024-04-15)
+
+
+### Features
+
+* added support for setting the user in the editor story ([b1ff8d6](https://github.com/powerhouse-inc/document-model-libs/commit/b1ff8d6c04c3c4a6ee65a8f794b0dc0cf31ddc52))
+
+# [1.25.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.24.0...v1.25.0) (2024-04-12)
+
+
+### Features
+
+* added user to editor context ([fed9c6e](https://github.com/powerhouse-inc/document-model-libs/commit/fed9c6e7feef58749755787d72d1f333c5e80131))
+
 # [1.24.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.23.0...v1.24.0) (2024-04-10)
 
 

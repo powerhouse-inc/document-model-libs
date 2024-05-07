@@ -8,7 +8,13 @@ import {
     CreateChildDocumentInput,
     SynchronizationUnit,
 } from 'document-model/document';
-import { FileNode, getDescendants, isFileNode } from '../..';
+import {
+    FileNode,
+    getDescendants,
+    handleTargetNameCollisions,
+    isFileNode,
+    isFolderNode,
+} from '../..';
 import { DocumentDriveNodeOperations } from '../../gen/node/operations';
 
 export const reducer: DocumentDriveNodeOperations = {
@@ -16,6 +22,12 @@ export const reducer: DocumentDriveNodeOperations = {
         if (state.nodes.find(node => node.id === action.input.id)) {
             throw new Error(`Node with id ${action.input.id} already exists!`);
         }
+
+        const name = handleTargetNameCollisions({
+            nodes: state.nodes,
+            srcName: action.input.name,
+            targetParentFolder: action.input.parentFolder || null,
+        });
 
         const synchronizationUnits = action.input
             .synchronizationUnits as SynchronizationUnit[];
@@ -38,6 +50,7 @@ export const reducer: DocumentDriveNodeOperations = {
         }
         const fileNode: FileNode = {
             ...action.input,
+            name,
             kind: 'file',
             parentFolder: action.input.parentFolder ?? null,
             synchronizationUnits,
@@ -59,8 +72,16 @@ export const reducer: DocumentDriveNodeOperations = {
         if (state.nodes.find(node => node.id === action.input.id)) {
             throw new Error(`Node with id ${action.input.id} already exists!`);
         }
+
+        const name = handleTargetNameCollisions({
+            nodes: state.nodes,
+            srcName: action.input.name,
+            targetParentFolder: action.input.parentFolder || null,
+        });
+
         state.nodes.push({
             ...action.input,
+            name,
             kind: 'folder',
             parentFolder: action.input.parentFolder ?? null,
         });
@@ -94,7 +115,12 @@ export const reducer: DocumentDriveNodeOperations = {
                 ? {
                       ...node,
                       ...{
-                          name: action.input.name ?? node.name,
+                          name: handleTargetNameCollisions({
+                              nodes: state.nodes,
+                              srcName: action.input.name ?? node.name,
+                              targetParentFolder:
+                                  action.input.parentFolder || null,
+                          }),
                           documentType:
                               action.input.documentType ??
                               (node as FileNode).documentType,
@@ -109,7 +135,12 @@ export const reducer: DocumentDriveNodeOperations = {
                 ? {
                       ...node,
                       ...{
-                          name: action.input.name ?? node.name,
+                          name: handleTargetNameCollisions({
+                              nodes: state.nodes,
+                              srcName: action.input.name ?? node.name,
+                              targetParentFolder:
+                                  action.input.parentFolder || null,
+                          }),
                           parentFolder:
                               action.input.parentFolder === null
                                   ? null
@@ -126,10 +157,16 @@ export const reducer: DocumentDriveNodeOperations = {
             throw new Error(`Node with id ${action.input.srcId} not found`);
         }
 
+        const name = handleTargetNameCollisions({
+            nodes: state.nodes,
+            srcName: action.input.targetName || node.name,
+            targetParentFolder: action.input.targetParentFolder || null,
+        });
+
         const newNode = {
             ...node,
+            name,
             id: action.input.targetId,
-            name: action.input.targetName || node.name,
             parentFolder: action.input.targetParentFolder || null,
         };
 
@@ -178,6 +215,12 @@ export const reducer: DocumentDriveNodeOperations = {
         }
     },
     moveNodeOperation(state, action) {
+        if (action.input.srcFolder === action.input.targetParentFolder) {
+            throw new Error(
+                'Circular Reference Error: Attempting to move a node to its current parent folder',
+            );
+        }
+
         const node = state.nodes.find(
             node => node.id === action.input.srcFolder,
         );
@@ -186,10 +229,32 @@ export const reducer: DocumentDriveNodeOperations = {
             throw new Error(`Node with id ${action.input.srcFolder} not found`);
         }
 
+        const name = handleTargetNameCollisions({
+            nodes: state.nodes,
+            srcName: node.name,
+            targetParentFolder: action.input.targetParentFolder || null,
+        });
+
+        if (isFolderNode(node)) {
+            const descendants = getDescendants(node, state.nodes);
+            // throw error if moving a folder to one of its descendants
+            if (
+                descendants.find(
+                    descendant =>
+                        descendant.id === action.input.targetParentFolder,
+                )
+            ) {
+                throw new Error(
+                    'Circular Reference Error: Cannot move a folder to one of its descendants',
+                );
+            }
+        }
+
         state.nodes = state.nodes.map(node => {
             if (node.id === action.input.srcFolder) {
                 return {
                     ...node,
+                    name,
                     parentFolder: action.input.targetParentFolder || null,
                 };
             }
