@@ -12,6 +12,7 @@ union Asset = FixedIncome | Cash
 
 type FixedIncome {
     id: ID!
+    type: AssetType!
     fixedIncomeTypeId: ID!
     name: String!
     spvId: ID!
@@ -31,6 +32,7 @@ type FixedIncome {
 
 type Cash {
     id: ID!
+    type: AssetType!
     spvId: ID!
     currency: String!
     balance: Float!
@@ -46,8 +48,14 @@ type Spv {
     name: String!
 }
 
+enum AssetType {
+    Cash
+    FixedIncome
+}
+
 type BaseTransaction {
     id: ID!
+    assetType: AssetType!
     assetId: ID!
     amount: Float!
     entryTime: DateTime!
@@ -204,8 +212,9 @@ input DeleteAccountInput {
     id: ID!
 }
 
-input EditBaseTransactionInput {
+input BaseTransactionInput {
     id: ID!
+    assetType: AssetType
     assetId: ID
     amount: Float
     entryTime: DateTime
@@ -239,8 +248,8 @@ input EditGroupTransactionInput {
     entryTime: DateTime
     cashBalanceChange: Float
     unitPrice: Float
-    cashTransaction: EditBaseTransactionInput
-    fixedIncomeTransaction: EditBaseTransactionInput
+    cashTransaction: BaseTransactionInput
+    fixedIncomeTransaction: BaseTransactionInput
 }
 
 input DeleteGroupTransactionInput {

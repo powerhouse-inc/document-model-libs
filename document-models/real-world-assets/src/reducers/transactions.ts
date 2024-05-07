@@ -27,17 +27,14 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         const cashBalanceChange = action.input.cashBalanceChange;
         const unitPrice = action.input.unitPrice ?? null;
         const fees = action.input.fees ?? null;
-        let cashTransaction = action.input.cashTransaction ?? null;
+        let cashTransaction = action.input.cashTransaction;
         let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
-
-        if (cashTransaction) {
-            cashTransaction = {
-                ...cashTransaction,
-                entryTime,
-            };
-            validateCashTransaction(state, cashTransaction);
-        }
+        cashTransaction = {
+            ...cashTransaction,
+            entryTime,
+        };
+        validateCashTransaction(state, cashTransaction);
 
         if (fixedIncomeTransaction) {
             fixedIncomeTransaction = {
@@ -111,9 +108,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (action.input.entryTime) {
             transaction.entryTime = action.input.entryTime;
-            if (transaction.cashTransaction) {
-                transaction.cashTransaction.entryTime = action.input.entryTime;
-            }
+            transaction.cashTransaction.entryTime = action.input.entryTime;
             if (transaction.fixedIncomeTransaction) {
                 transaction.fixedIncomeTransaction.entryTime =
                     action.input.entryTime;
@@ -136,10 +131,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 action.input.fixedIncomeTransaction.assetId;
         }
 
-        if (
-            action.input.cashTransaction?.amount &&
-            transaction.cashTransaction
-        ) {
+        if (action.input.cashTransaction?.amount) {
             transaction.cashTransaction.amount =
                 action.input.cashTransaction.amount;
         }

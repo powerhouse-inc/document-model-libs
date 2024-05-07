@@ -13,7 +13,7 @@ import diff from 'microdiff';
 import { useCallback, useState } from 'react';
 import {
     BaseTransaction,
-    EditBaseTransactionInput,
+    BaseTransactionInput,
     EditTransactionFeeInput,
     FixedIncome,
     GroupTransaction,
@@ -99,6 +99,7 @@ export const Transactions = (props: IProps) => {
 
             const cashTransaction = {
                 id: utils.hashKey(),
+                assetType: 'Cash' as const,
                 assetId: cashAsset.id,
                 entryTime,
                 counterPartyAccountId: principalLenderAccountId,
@@ -119,6 +120,7 @@ export const Transactions = (props: IProps) => {
                 fixedIncomeId && fixedIncomeAmount
                     ? {
                           id: utils.hashKey(),
+                          assetType: 'FixedIncome' as const,
                           assetId: fixedIncomeId,
                           amount: fixedIncomeAmount,
                           entryTime,
@@ -349,7 +351,7 @@ export const Transactions = (props: IProps) => {
                         editGroupTransaction({
                             ...changedFields,
                             id: selectedItem.id,
-                        } as EditBaseTransactionInput),
+                        } as BaseTransactionInput),
                     );
                 }
 

@@ -63,12 +63,14 @@ export const initialState: RealWorldAssetsState = {
     portfolio: [
         {
             id: 'maker-principal-asset-id',
+            type: 'Cash',
             spvId: '1',
             currency: 'USD',
             balance: 500000,
         },
         {
             id: '137418',
+            type: 'FixedIncome',
             fixedIncomeTypeId: '1',
             name: 'Fixed Income 1',
             spvId: '2',
@@ -87,6 +89,7 @@ export const initialState: RealWorldAssetsState = {
         },
         {
             id: '683189',
+            type: 'FixedIncome',
             fixedIncomeTypeId: '1',
             name: 'FixedIncome 6345',
             spvId: '2',
@@ -105,6 +108,7 @@ export const initialState: RealWorldAssetsState = {
         },
         {
             id: '752165',
+            type: 'FixedIncome',
             fixedIncomeTypeId: '1',
             name: 'FixedIncome 1369',
             spvId: '2',
