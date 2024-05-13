@@ -1,10 +1,11 @@
-import {
+import { lazyWithPreload } from 'document-model-libs/utils';
+import type {
     ArbLtipGranteeAction,
     ArbLtipGranteeLocalState,
     ArbLtipGranteeState,
 } from '../../document-models/arb-ltip-grantee';
-import { ExtendedEditor } from '../types';
-import Editor, { CustomEditorProps } from './editor';
+import type { ExtendedEditor } from '../types';
+import type { CustomEditorProps } from './editor';
 
 export const module: ExtendedEditor<
     ArbLtipGranteeState,
@@ -12,7 +13,7 @@ export const module: ExtendedEditor<
     ArbLtipGranteeLocalState,
     CustomEditorProps
 > = {
-    Component: Editor,
+    Component: lazyWithPreload(() => import('./editor')),
     documentTypes: ['ARBLTIPGrantee'],
     config: {
         id: 'arb-ltip-editor',
