@@ -27,17 +27,14 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         const cashBalanceChange = action.input.cashBalanceChange;
         const unitPrice = action.input.unitPrice ?? null;
         const fees = action.input.fees ?? null;
-        let cashTransaction = action.input.cashTransaction ?? null;
+        let cashTransaction = action.input.cashTransaction;
         let fixedIncomeTransaction =
             action.input.fixedIncomeTransaction ?? null;
-
-        if (cashTransaction) {
-            cashTransaction = {
-                ...cashTransaction,
-                entryTime,
-            };
-            validateCashTransaction(state, cashTransaction);
-        }
+        cashTransaction = {
+            ...cashTransaction,
+            entryTime,
+        };
+        validateCashTransaction(state, cashTransaction);
 
         if (fixedIncomeTransaction) {
             fixedIncomeTransaction = {
@@ -95,17 +92,23 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             throw new Error('Group transaction must have an id');
         }
 
-        const transactionIndex = state.transactions.findIndex(
+        const transaction = state.transactions.find(
             transaction => transaction.id === action.input.id,
         );
 
-        if (transactionIndex === -1) {
+        if (!transaction) {
             throw new Error(
                 `Group transaction with id ${action.input.id} does not exist!`,
             );
         }
 
-        const transaction = state.transactions[transactionIndex];
+        const oldCashBalanceChange = transaction.cashBalanceChange;
+        const newCashBalanceChange = action.input.cashBalanceChange;
+
+        const oldFixedIncomeAssetId =
+            transaction.fixedIncomeTransaction?.assetId;
+        const newFixedIncomeAssetId =
+            action.input.fixedIncomeTransaction?.assetId;
 
         if (action.input.type) {
             transaction.type = action.input.type;
@@ -113,9 +116,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         if (action.input.entryTime) {
             transaction.entryTime = action.input.entryTime;
-            if (transaction.cashTransaction) {
-                transaction.cashTransaction.entryTime = action.input.entryTime;
-            }
+            transaction.cashTransaction.entryTime = action.input.entryTime;
             if (transaction.fixedIncomeTransaction) {
                 transaction.fixedIncomeTransaction.entryTime =
                     action.input.entryTime;
@@ -130,57 +131,58 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
                 action.input.fixedIncomeTransaction.amount;
         }
 
-        if (
-            action.input.fixedIncomeTransaction?.assetId &&
-            transaction.fixedIncomeTransaction
-        ) {
-            transaction.fixedIncomeTransaction.assetId =
-                action.input.fixedIncomeTransaction.assetId;
-        }
-
-        if (
-            action.input.cashTransaction?.amount &&
-            transaction.cashTransaction
-        ) {
+        if (action.input.cashTransaction?.amount) {
             transaction.cashTransaction.amount =
                 action.input.cashTransaction.amount;
-        }
-
-        if (action.input.cashBalanceChange) {
-            transaction.cashBalanceChange = action.input.cashBalanceChange;
         }
 
         if (action.input.unitPrice) {
             transaction.unitPrice = action.input.unitPrice;
         }
 
+        if (newFixedIncomeAssetId && transaction.fixedIncomeTransaction) {
+            transaction.fixedIncomeTransaction.assetId = newFixedIncomeAssetId;
+        }
+
+        if (newCashBalanceChange) {
+            transaction.cashBalanceChange = newCashBalanceChange;
+
+            const cashAsset = state.portfolio.find(a => isCashAsset(a)) as Cash;
+
+            cashAsset.balance += newCashBalanceChange - oldCashBalanceChange;
+
+            state.portfolio = state.portfolio.map(a =>
+                a.id === cashAsset.id ? cashAsset : a,
+            );
+        }
+
         state.transactions = state.transactions.map(t =>
             t.id === transaction.id ? transaction : t,
         );
 
-        const cashAsset = state.portfolio.find(a => isCashAsset(a)) as Cash;
+        if (oldFixedIncomeAssetId) {
+            const updatedOldFixedIncomeAsset =
+                makeFixedIncomeAssetWithDerivedFields(
+                    state,
+                    oldFixedIncomeAssetId,
+                );
 
-        const updatedCashAsset = {
-            ...cashAsset,
-            balance: cashAsset.balance + transaction.cashBalanceChange,
-        };
+            state.portfolio = state.portfolio.map(a =>
+                a.id === oldFixedIncomeAssetId ? updatedOldFixedIncomeAsset : a,
+            );
+        }
 
-        state.portfolio = state.portfolio.map(a =>
-            a.id === cashAsset.id ? updatedCashAsset : a,
-        );
+        if (newFixedIncomeAssetId) {
+            const updatedNewFixedIncomeAsset =
+                makeFixedIncomeAssetWithDerivedFields(
+                    state,
+                    newFixedIncomeAssetId,
+                );
 
-        const fixedIncomeAssetId = transaction.fixedIncomeTransaction?.assetId;
-
-        if (!fixedIncomeAssetId) return;
-
-        const updatedFixedIncomeAsset = makeFixedIncomeAssetWithDerivedFields(
-            state,
-            fixedIncomeAssetId,
-        );
-
-        state.portfolio = state.portfolio.map(a =>
-            a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
-        );
+            state.portfolio = state.portfolio.map(a =>
+                a.id === newFixedIncomeAssetId ? updatedNewFixedIncomeAsset : a,
+            );
+        }
     },
     deleteGroupTransactionOperation(state, action, dispatch) {
         const id = action.input.id;
@@ -215,7 +217,7 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             a.id === fixedIncomeAssetId ? updatedFixedIncomeAsset : a,
         );
 
-        const cashAssetId = transactionToRemove.cashTransaction?.assetId;
+        const cashAssetId = transactionToRemove.cashTransaction.assetId;
 
         if (!cashAssetId) return;
 
