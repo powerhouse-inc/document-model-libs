@@ -1,18 +1,14 @@
 import {
     AssetsTable,
     AssetsTableProps,
-    CashAsset,
     FixedIncome as UiFixedIncome,
 } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
 import { useCallback, useState } from 'react';
 import {
-    FixedIncome,
     actions,
     getDifferences,
-    isCashAsset,
-    isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
 import { IProps } from './editor';
 
@@ -28,21 +24,7 @@ export const Portfolio = (props: IProps) => {
         isAllowedToEditDocuments,
     } = props;
 
-    const spvs = document.state.global.spvs;
-
-    const fixedIncomeTypes = document.state.global.fixedIncomeTypes;
-
-    const fixedIncomeAssets = document.state.global.portfolio.filter(
-        (asset): asset is FixedIncome => isFixedIncomeAsset(asset),
-    );
-
-    const transactions = document.state.global.transactions;
-
-    // there is only one cash asset for v1
-    // this is always defined for every document model
-    const cashAsset = document.state.global.portfolio.find(
-        isCashAsset,
-    ) as CashAsset;
+    const state = document.state.global;
 
     const toggleExpandedRow = useCallback(
         (id: string | undefined) => {
@@ -144,11 +126,7 @@ export const Portfolio = (props: IProps) => {
                 institutions or investment vehicles.
             </p>
             <AssetsTable
-                assets={fixedIncomeAssets as UiFixedIncome[]}
-                transactions={transactions}
-                cashAsset={cashAsset}
-                fixedIncomeTypes={fixedIncomeTypes}
-                spvs={spvs}
+                state={state}
                 expandedRowId={expandedRowId}
                 selectedItem={selectedItem}
                 showNewItemForm={showNewItemForm}
