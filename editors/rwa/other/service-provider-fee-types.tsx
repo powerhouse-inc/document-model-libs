@@ -100,6 +100,26 @@ export function ServiceProviderFeeTypes(props: IProps) {
             [dispatch],
         );
 
+    const onSubmitCreateAccount: ServiceProviderFeeTypesTableProps['onSubmitCreateAccount'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const reference = data.reference;
+                const label = data.label;
+                if (!reference) throw new Error('Reference is required');
+
+                dispatch(
+                    actions.createAccount({
+                        id,
+                        reference,
+                        label,
+                    }),
+                );
+                setShowNewItemForm(false);
+            },
+            [dispatch],
+        );
+
     return (
         <ServiceProviderFeeTypesTable
             state={state}
@@ -114,6 +134,7 @@ export function ServiceProviderFeeTypes(props: IProps) {
             onSubmitEdit={onSubmitEdit}
             onSubmitCreate={onSubmitCreate}
             onSubmitDelete={onSubmitDelete}
+            onSubmitCreateAccount={onSubmitCreateAccount}
         />
     );
 }

@@ -24,6 +24,7 @@ import {
     addFeesToGroupTransaction,
     createFixedIncomeAsset,
     createGroupTransaction,
+    createServiceProviderFeeType,
     deleteGroupTransaction,
     editGroupTransaction,
     editGroupTransactionFees,
@@ -427,6 +428,31 @@ export const Transactions = (props: IProps) => {
         [dispatch],
     );
 
+    const onSubmitCreateServiceProviderFeeType: GroupTransactionsTableProps['onSubmitCreateServiceProviderFeeType'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const name = data.name;
+                const accountId = data.accountId;
+                const feeType = data.feeType;
+
+                if (!name) throw new Error('Name is required');
+                if (!accountId) throw new Error('Account is required');
+                if (!feeType) throw new Error('Fee Type is required');
+
+                dispatch(
+                    createServiceProviderFeeType({
+                        id,
+                        name,
+                        accountId,
+                        feeType,
+                    }),
+                );
+                setShowNewItemForm(false);
+            },
+            [dispatch],
+        );
+
     return (
         <div>
             <h1 className="text-lg font-bold mb-2">Transactions</h1>
@@ -447,6 +473,9 @@ export const Transactions = (props: IProps) => {
                 setShowNewItemForm={setShowNewItemForm}
                 onSubmitDelete={onSubmitDelete}
                 onSubmitCreateAsset={onSubmitCreateAsset}
+                onSubmitCreateServiceProviderFeeType={
+                    onSubmitCreateServiceProviderFeeType
+                }
             />
         </div>
     );

@@ -118,6 +118,39 @@ export const Portfolio = (props: IProps) => {
         [dispatch],
     );
 
+    const onSubmitCreateFixedIncomeType: AssetsTableProps['onSubmitCreateFixedIncomeType'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const name = data.name;
+
+                if (!name) throw new Error('Name is required');
+
+                dispatch(actions.createFixedIncomeType({ id, name }));
+                setShowNewItemForm(false);
+            },
+            [dispatch],
+        );
+
+    const onSubmitCreateSpv: AssetsTableProps['onSubmitCreateSpv'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const name = data.name;
+
+                if (!name) throw new Error('Name is required');
+
+                dispatch(
+                    actions.createSpv({
+                        id,
+                        name,
+                    }),
+                );
+                setShowNewItemForm(false);
+            },
+            [dispatch],
+        );
+
     return (
         <div>
             <h1 className="text-lg font-bold mb-2">Portfolio</h1>
@@ -138,6 +171,8 @@ export const Portfolio = (props: IProps) => {
                 onSubmitEdit={onSubmitEdit}
                 onSubmitCreate={onSubmitCreate}
                 onSubmitDelete={onSubmitDelete}
+                onSubmitCreateFixedIncomeType={onSubmitCreateFixedIncomeType}
+                onSubmitCreateSpv={onSubmitCreateSpv}
             />
         </div>
     );
