@@ -141,6 +141,10 @@ input SetDriveNameInput {
     name: String!
 }
 
+input SetDriveIconInput {
+    icon: String!
+}
+
 input SetSharingTypeInput {
     type: String!
 }

@@ -5,11 +5,11 @@
 
 import { generateMock } from '@powerhousedao/codegen';
 
-import utils from '../../gen/utils';
-import { z } from '../../gen/schema';
-import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/drive/creators';
+import { reducer } from '../../gen/reducer';
+import { z } from '../../gen/schema';
 import { DocumentDriveDocument } from '../../gen/types';
+import utils from '../../gen/utils';
 
 describe('Drive Operations', () => {
     let document: DocumentDriveDocument;
@@ -25,6 +25,18 @@ describe('Drive Operations', () => {
         expect(updatedDocument.operations.global).toHaveLength(1);
         expect(updatedDocument.operations.global[0].type).toBe(
             'SET_DRIVE_NAME',
+        );
+        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
+        expect(updatedDocument.operations.global[0].index).toEqual(0);
+    });
+
+    it('should handle setDriveIcon operation', () => {
+        const input = generateMock(z.SetDriveIconInputSchema());
+        const updatedDocument = reducer(document, creators.setDriveIcon(input));
+
+        expect(updatedDocument.operations.global).toHaveLength(1);
+        expect(updatedDocument.operations.global[0].type).toBe(
+            'SET_DRIVE_ICON',
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
