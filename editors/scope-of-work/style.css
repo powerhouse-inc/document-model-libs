@@ -2,7 +2,38 @@
     width: 100%;
 }
 
+.sow-deliverables-table tr:hover td {
+    background-color: #f6f6f6;
+}
+
 .sow-deliverables-table td {
     padding: 1em;
     border-top: 2px solid #AAA;
+}
+
+.sow-deliverables-delete {
+    color: darkred;
+    font-weight: 600;
+    font-size: 150%;
+}
+
+.sow-deliverables-table--columnCheck {
+    max-width: 10px;
+}
+
+.sow-deliverables-table--columnActions {
+    text-align: right;
+}
+
+.sow-deliverables-status {
+    padding: 3px;
+    font-size: small;
+    color: darkblue;
+    background-color: lightblue;
+    border-radius: 6px;
+}
+
+.sow-deliverables-status--delivered {
+    color: darkgreen;
+    background-color: #d9fb83;
 }
