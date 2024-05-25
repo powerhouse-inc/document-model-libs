@@ -1,12 +1,18 @@
+import { createDocumentStory } from 'document-model-libs/utils';
 import { reducer, utils } from '../../document-models/real-world-assets';
+import { initialState } from '../../document-models/real-world-assets/mock-data/initial-state';
 import Editor from './editor';
-import { createDocumentStory } from 'document-model-editors';
 
-const { meta, CreateDocumentStory: DocumentModel } = createDocumentStory(
+const { meta, CreateDocumentStory } = createDocumentStory(
     // @ts-expect-error todo update type
     Editor,
     reducer,
-    utils.createExtendedState(),
+    utils.createExtendedState({
+        state: {
+            global: initialState,
+            local: {},
+        },
+    }),
 );
 
 export default {
@@ -19,4 +25,11 @@ export default {
     },
 };
 
-export { DocumentModel };
+export const DocumentModel = {
+    ...CreateDocumentStory,
+    args: {
+        ...CreateDocumentStory.args,
+        isAllowedToCreateDocuments: true,
+        isAllowedToEditDocuments: true,
+    },
+};

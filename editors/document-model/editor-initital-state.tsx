@@ -1,8 +1,8 @@
-import { Editor as CodeEditor, EditorProps } from '@monaco-editor/react';
-import { editor } from 'monaco-editor';
+import CodeEditor, { type EditorProps } from '../common/monaco-editor';
+import type { editor } from 'monaco-editor';
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
-import { styles } from 'document-model-editors';
+import { styles } from 'document-model-libs/utils';
 import { isJSONEqual } from '../common/json-editor';
 
 interface IProps extends EditorProps {
@@ -65,9 +65,18 @@ export default function EditorInitialState({
                 onChange={value => setCode(value ?? '')}
                 {...props}
                 value={code}
-                onMount={(editor, monaco) => {
+                onMount={async (editor, monaco) => {
                     editorRef.current = editor;
                     props.onMount?.(editor, monaco);
+                    setTimeout(async () => {
+                        try {
+                            await editor
+                                .getAction('editor.action.formatDocument')
+                                ?.run();
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }, 50);
                 }}
                 options={{
                     lineNumbers: 'off',

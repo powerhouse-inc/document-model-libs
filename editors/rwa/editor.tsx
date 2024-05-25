@@ -8,13 +8,17 @@ import {
     RealWorldAssetsState,
 } from '../../document-models/real-world-assets';
 import { Attachments } from './attachments';
+import { Other } from './other';
 import { Portfolio } from './portfolio';
 import { Transactions } from './transactions';
 
 export type CustomEditorProps = Pick<
     RWATabsProps,
     'onClose' | 'onExport' | 'onSwitchboardLinkClick'
->;
+> & {
+    isAllowedToCreateDocuments: boolean;
+    isAllowedToEditDocuments: boolean;
+};
 
 export type IProps = EditorProps<
     RealWorldAssetsState,
@@ -51,6 +55,7 @@ function Editor(props: IProps) {
                 { id: 'portfolio', label: 'Portfolio' },
                 { id: 'transactions', label: 'Transactions' },
                 { id: 'attachments', label: 'Attachments' },
+                { id: 'other', label: 'Other' },
             ]}
         >
             <div className="flex justify-center mt-3">
@@ -59,10 +64,13 @@ function Editor(props: IProps) {
                         <Portfolio {...props} />
                     </TabPanel>
                     <TabPanel id="transactions">
-                        <Transactions />
+                        <Transactions {...props} />
                     </TabPanel>
                     <TabPanel id="attachments">
                         <Attachments />
+                    </TabPanel>
+                    <TabPanel id="other">
+                        <Other {...props} />
                     </TabPanel>
                 </div>
             </div>

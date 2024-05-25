@@ -5,8 +5,8 @@ import {
     DocumentModelState,
     DocumentModelLocalState,
 } from 'document-model/document-model';
-import { CSSProperties, useEffect } from 'react';
-import { styles, TextInput } from 'document-model-editors';
+import { CSSProperties } from 'react';
+import { styles, TextInput } from 'document-model-libs/utils';
 import { ScopeType } from './editor-schema';
 import EditorOperation from './editor-operation';
 import { useSchemaEditor } from './useSchemaEditor';
@@ -19,7 +19,7 @@ export type IProps = EditorProps<
 >;
 
 function Editor(props: IProps) {
-    const theme: styles.ColorTheme = props.editorContext.theme || 'light';
+    const theme: styles.ColorTheme = props.context.theme || 'light';
     const scheme = styles.colorScheme[theme];
     const style: CSSProperties = {
         backgroundColor: scheme.bgColor,
@@ -40,24 +40,6 @@ function Editor(props: IProps) {
     const latestOperation =
         document.operations.global[document.operations.global.length - 1];
 
-    useEffect(() => {
-        const ops = [
-            ...document.operations.global,
-            ...document.operations.local,
-        ];
-
-        if (ops.length < 1) {
-            dispatch(actions.setModelId({ id: '' }));
-        }
-
-        const globalOps = document.operations.global;
-        const latestGlobalOp = globalOps[globalOps.length - 1];
-
-        if (latestGlobalOp && latestGlobalOp.type === 'SET_MODEL_NAME') {
-            dispatch(actions.setName(latestGlobalOp.input.name));
-        }
-    }, [document.operations]);
-
     const setModelId = (id: string) => {
         dispatch(actions.setModelId({ id }));
     };
@@ -72,6 +54,7 @@ function Editor(props: IProps) {
 
     const setModelName = (name: string) => {
         dispatch(actions.setModelName({ name }));
+        dispatch(actions.setName(name));
     };
 
     const setAuthorName = (authorName: string) => {

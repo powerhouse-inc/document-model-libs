@@ -2,8 +2,9 @@ import { designSystemPreset } from '@powerhousedao/design-system';
 import type { Config } from 'tailwindcss';
 
 const config = {
+    important: '#document-editor-context',
     content: [
-        '.editors/**/*.{html,js,ts,tsx}',
+        './editors/**/*.{html,js,ts,tsx}',
         '.storybook/**/*.{html,js,ts,tsx}',
     ],
     presets: [designSystemPreset],

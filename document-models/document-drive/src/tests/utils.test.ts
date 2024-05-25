@@ -1,4 +1,13 @@
-import { utils, DocumentDriveState, CopyNodeInput } from '../..';
+import { validate } from 'uuid';
+import {
+    CopyNodeInput,
+    DocumentDriveState,
+    generateSynchronizationUnitId,
+    generateSynchronizationUnits,
+    getNextCopyNumber,
+    handleTargetNameCollisions,
+    utils,
+} from '../..';
 
 const baseNodes: DocumentDriveState['nodes'] = [
     {
@@ -204,5 +213,128 @@ describe('DocumentDrive Utils', () => {
                 ),
             ).toThrowError(`Node with id invalid not found`);
         });
+
+        it('should generate uuid sync id', () => {
+            const state: DocumentDriveState = {
+                icon: null,
+                id: '',
+                name: '',
+                nodes: [],
+                slug: null,
+            };
+            const id = generateSynchronizationUnitId(state.nodes);
+            expect(validate(id)).toBe(true);
+        });
+
+        it('should generate a sync unit for each scope', () => {
+            const state: DocumentDriveState = {
+                icon: null,
+                id: '',
+                name: '',
+                nodes: [],
+                slug: null,
+            };
+            const units = generateSynchronizationUnits(state, [
+                'global',
+                'local',
+            ]);
+            expect(units).toStrictEqual([
+                {
+                    scope: 'global',
+                    branch: 'main',
+                    syncId: expect.stringMatching(
+                        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+                    ) as string,
+                },
+                {
+                    scope: 'local',
+                    branch: 'main',
+                    syncId: expect.stringMatching(
+                        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+                    ) as string,
+                },
+            ]);
+        });
+    });
+});
+
+describe('getNextCopyNumber', () => {
+    it('should return 1 if no files match', () => {
+        const files = ['unrelated file.txt', 'another file.pdf'];
+        const baseFilename = 'testfile';
+        expect(getNextCopyNumber(files, baseFilename)).toBe(1);
+    });
+
+    it('should correctly handle the base case with " (copy)" suffix', () => {
+        const files = ['testfile (copy)'];
+        const baseFilename = 'testfile';
+        expect(getNextCopyNumber(files, baseFilename)).toBe(2);
+    });
+
+    it('should extract and increment the highest copy number', () => {
+        const files = [
+            'testfile (copy)',
+            'testfile (copy) 3',
+            'testfile (copy) 2',
+        ];
+        const baseFilename = 'testfile';
+        expect(getNextCopyNumber(files, baseFilename)).toBe(4);
+    });
+
+    it('should handle cases with padded zeroes in numbers', () => {
+        const files = [
+            'testfile (copy) 001',
+            'testfile (copy) 002',
+            'testfile (copy)',
+        ];
+        const baseFilename = 'testfile';
+        expect(getNextCopyNumber(files, baseFilename)).toBe(3);
+    });
+
+    it('should return 1 for unrelated files', () => {
+        const files = ['someotherfile (copy) 1', 'someotherfile (copy) 2'];
+        const baseFilename = 'testfile';
+        expect(getNextCopyNumber(files, baseFilename)).toBe(1);
+    });
+
+    it('handles files with special characters needing escape in regex', () => {
+        const files = ['test.file (copy)', 'test.file (copy) 1'];
+        const baseFilename = 'test.file';
+        expect(getNextCopyNumber(files, baseFilename)).toBe(2);
+    });
+});
+
+describe('handleTargetNameCollisions', () => {
+    it('returns original name if no collision', () => {
+        const nodes = [{ name: 'file1.txt', parentFolder: 'folder' }];
+        const params = {
+            nodes: nodes,
+            targetParentFolder: 'folder',
+            srcName: 'newfile.txt',
+        };
+        // @ts-expect-error mock
+        expect(handleTargetNameCollisions(params)).toBe('newfile.txt');
+    });
+
+    it('appends copy number if collision occurs', () => {
+        const nodes = [{ name: 'newfile.txt', parentFolder: 'folder' }];
+        const params = {
+            nodes: nodes,
+            targetParentFolder: 'folder',
+            srcName: 'newfile.txt',
+        };
+        // @ts-expect-error mock
+        expect(handleTargetNameCollisions(params)).toBe('newfile.txt (copy) 1');
+    });
+
+    it('handles null targetParentFolder correctly', () => {
+        const nodes = [{ name: 'newfile.txt', parentFolder: null }];
+        const params = {
+            nodes: nodes,
+            targetParentFolder: '',
+            srcName: 'newfile.txt',
+        };
+        // @ts-expect-error mock
+        expect(handleTargetNameCollisions(params)).toBe('newfile.txt (copy) 1');
     });
 });
