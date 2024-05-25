@@ -34,72 +34,51 @@ function ScopeOfWorkEditor(props: IProps) {
         state: { global: state },
     } = document;
 
+    const handleCreateDeliverable = (title: string) => {
+        dispatch(actions.createDeliverable({
+            id: randomId(),
+            title: title,
+            keyResults: [],
+            status: 'TODO',
+            owner: {
+                id: randomId(),
+                ref: '',
+                code: 'UBQ-001',
+                name: 'Ubiquity DAO'
+            },
+            budgetAnchor: {
+                project: randomId(),
+                deliverableBudget: 25.00,
+                workUnitBudget: 1
+            }
+        }));
+    }
+
     return (
         <DocumentEditor mode={context.theme}>
             <EditorToolbar
-                key="toolbar"
-                left={[
-                    <ToolbarButton
-                        key="undo"
-                        onClick={() => dispatch(actions.undo(1))}
-                    >
-                        ↺ undo
-                    </ToolbarButton>,
-                    <ToolbarButton
-                        key="redo"
-                        onClick={() => dispatch(actions.redo(1))}
-                    >
-                        ↻ redo
-                    </ToolbarButton>,
-                ]}
-                center={[
-                    <ToolbarButton key="art" onClick={doNothing("Clicked add article")}>
-                        ＋ add article
-                    </ToolbarButton>,
-                    <ToolbarButton key="sct" onClick={doNothing("Clicked add section")}>
-                        ＋ add section
-                    </ToolbarButton>,
-                    <ToolbarButton key="cor" onClick={doNothing("Clicked add core")}>
-                        ＋ add core
-                    </ToolbarButton>,
-                ]}
-                right={[
-                    <ToolbarButton key="rev">revision history</ToolbarButton>,
-                ]}
+                key="toolbar" left={[]} center={[]} right={[]}
             />
             <EditorWorksheet key="sheet">
-                <div
-                    key="header-left"
-                    className="editor-worksheet--header-left"
-                >
-                    <TextInput
-                        key="doc-title"
-                        value={document.name}
-                        size="huge"
-                        theme={context.theme}
-                        onSubmit={doNothing("Submitted doc title")}
-                    />
-                    <p key="lastModified">
-                        Last Modified:{' '}
-                        {document.lastModified
-                            .toString()
-                            .slice(0, 16)
-                            .replace('T', ' ')}{' '}
-                        UTC &ndash; Version: {document.revision.global}
-                    </p>
-                </div>
-                <div
-                    key="header-right"
-                    className="editor-worksheet--header-right"
-                >
-                    <TextInput
-                        key="doc-title"
-                        value={state.deliverables.length + " deliverables"}
-                        size="medium"
-                        theme={context.theme}
-                        onSubmit={doNothing("Submitted doc title")}
-                    />
-                </div>
+                <label>Add deliverable:</label>
+                <TextInput
+                    key="doc-title"
+                    value={document.name}
+                    size="medium"
+                    theme={context.theme}
+                    onSubmit={handleCreateDeliverable}
+                />
+
+                <table className='sow-deliverables-table'>
+                    {state.deliverables.map(d => (
+                        <tr>
+                            <td>{d.title}</td>
+                            <td>{d.status}</td>
+                            <td><input type="checkbox"/></td>
+                        </tr>
+                    ))}
+                </table>
+
             </EditorWorksheet>
         </DocumentEditor>
     );
