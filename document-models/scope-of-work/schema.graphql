@@ -1,0 +1,305 @@
+type ScopeOfWorkState {
+	deliverables: [Deliverable!]!
+    projects: [Project!]!
+	roadmaps: [Roadmap!]!
+	milestones : [Milestone!]!
+	
+	owners:[OwnerInfo!]!
+}
+
+type Deliverable { 
+  id: ID!
+  
+  title: String! # Default value = ""
+  description: String
+  keyResults: [KeyResult!]!
+  
+  status: DeliverableStatus!
+  workProgress: Progress
+  
+  owner: OwnerRef
+  budgetAnchor: BudgetAnchorProject
+}
+
+enum DeliverableStatus {
+	# Don't count towards the number of deliverables to be completed for calculation purposes
+	WONT_DO
+	
+	# Do count towards the number of deliverables
+	DRAFT # => means 0% progress for calculation purposes, if workProgress isn't set
+  TODO # => means 0% progress for calculation purposes, if workProgress isn't set
+  BLOCKED # => means 0% progress for calculation purposes, if workProgress isn't set
+  IN_PROGRESS # => means 50% progress for calculation purposes, if workProgress isn't set
+  DELIVERED # => means 100% progress for calculation purposes, if workProgress isn't set
+}
+
+union Progress = StoryPoints | Percentage
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less than or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+type KeyResult {
+  id: ID!
+  title: String! # default = ""
+  link: String
+}
+
+type BudgetAnchorProject {
+	project: ID!
+	workUnitBudget: Float! # Default is 1.
+  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget
+}
+
+type OwnerRef {
+	ref: String! # "my-tradfi-org:team"  "my-tradfi-org:employee"
+	id: ID! # "10" "10" 
+}
+
+type OwnerInfo {
+	owner: OwnerRef!
+  name: String     # "Sustainable Ecosystem Scaling"           "Sustainable Ecosystem Scaling Core Unit"
+  code: String     # "SES"                                     "SES-001"
+  imageUrl: String # null                                      "https://github.com/makerdao-ses/cu-icons/ses.svg"
+}
+
+type Project {
+  id: ID!
+  code: String! # for now we'll make it mandatory to simplify UI logic; placeholder default "PRJ-??" can be used 
+  title: String! # Default = ""
+  owner: OwnerRef
+  
+  abstract: String
+  imageUrl: String
+  
+  deliverables: DeliverablesSet
+  
+  budgetType: BudgetType
+  budget: Float
+  expenditure: BudgetExpenditure
+}
+
+type DeliverablesSet {
+	deliverables: [ID!]!
+  status: DeliverableSetStatus! # Manually set regardless of the status of the included deliverables
+  progress: Progress!  # calculated over the set of included deliverables; 
+										   # story points only if all deliverables are expressed in story points; percentage otherwise
+										   # if no deliverables are present => 0 out of 0 story points
+  deliverablesCompleted: DeliverablesCompleted! # Alternative progress indicator, kept separate from progress
+}
+
+enum BudgetType {
+  CONTINGENCY
+  OPEX
+  CAPEX
+  OVERHEAD
+}
+
+type BudgetExpenditure {
+  percentage: Float! # between 0 and 1, where 1 means 100%
+  actuals: Float! # denominated in DAI
+  cap: Float! # denominated in DAI
+}
+
+enum DeliverableSetStatus {
+	DRAFT
+  TODO
+  IN_PROGRESS
+  FINISHED # A project or milestone can be FINISHED even if not every deliverable is DELIVERED
+}
+
+type DeliverablesCompleted {
+  total: Int!
+  completed: Int!
+}
+
+type Roadmap {
+	id: ID!
+	slug: String!
+	# default is based on the title + first segment of the ID 
+	# e.g. title = "Endgame Phase 2" and ID = "1a446b7c-0846-4fa0-ac4d-0e0baba750ec" 
+	#      slug= "endgame-phase-2-1a446b7c" URL = /roadmaps/{slug}
+	# if the title is empty, use id as value instead
+	# the slug value should update when a new title is set
+	# Inspired by https://adamcoster.com/blog/notion-changeable-links 
+	
+	title: String! # default="", e.g. "Endgame Phase One"
+	description: String
+	milestones: [Milestone!]!
+}
+
+# frontend-side logic can determine the relationship between a project and milestone by examining the shared deliverables.
+
+type Milestone {
+  id: ID!
+  code: String!   # for now we'll make it mandatory to simplify UI logic; placeholder default "MS-??" can be used 
+  title: String!  # default="", e.g. "Alpha Release"
+  
+  description: String
+  targetDate: String   # Period notation identical to the analytics engine
+										   # Examples 2023, 2023-H2, 2024-Q2, 2024-05, 2024-W31, 2024-09-15, ...
+										 
+	deliverables: DeliverablesSet
+    
+  estimatedBudgetCap: Float! # denominated in DAI
+  estimatedExpenditure: Float! 
+  
+  coordinators: [OwnerRef!]!  # sings-off the deliverables of the contributors; typically an individual
+  contributors: [OwnerRef!]!  # typically will refer to a contributor team; maybe an individual
+}
+
+
+
+# Deliverables
+
+input UpdateDeliverableProgressInput {
+    id: ID!
+    workProgress: Progress
+}
+
+union Progress = StoryPoints | Percentage
+
+type StoryPoints {
+  total: Int!
+  completed: Int!
+}
+
+type Percentage {
+  value: Float! # The value should be between 0 and 1, where 1 means 100%
+}
+
+
+
+
+input DeleteDeliverableInput {
+    id: ID!
+}
+
+# add new types here
+
+
+input CreateDeliverableInput {
+     id: ID!
+  title: String!
+  description: String
+  keyResults: [KeyResult!]!
+  status: DeliverableStatus!
+  workProgress: Progress
+  owner: OwnerRef!
+  budgetAnchor: BudgetAnchor!
+}
+
+type BudgetAnchor {
+  project: ID!
+  workUnitBudget: Float!
+  deliverableBudget: Float!
+}
+
+type OwnerRef {
+  ref: String!
+  id: ID!
+  name: String
+  code: String
+}
+
+type KeyResult {
+  title: String!
+  link: String
+}
+
+
+enum DeliverableStatus {
+	# Don't count towards the number of deliverables to be completed for calculation purposes
+	WONT_DO
+	
+	# Do count towards the number of deliverables
+	DRAFT # => means 0% progress for calculation purposes, if workProgress isn't set
+  TODO # => means 0% progress for calculation purposes, if workProgress isn't set
+  BLOCKED # => means 0% progress for calculation purposes, if workProgress isn't set
+  IN_PROGRESS # => means 50% progress for calculation purposes, if workProgress isn't set
+  DELIVERED # => means 100% progress for calculation purposes, if workProgress isn't set
+}
+
+union Progress = StoryPoints | Percentage
+
+type StoryPoints {
+  total: Int! # a positive number greater than 0
+  completed: Int! # a positive number less than or equal to total, can be 0
+}
+
+type Percentage {
+  value: Float! # between 0 and 1, where 1 means 100%
+}
+
+
+
+input UpdateDeliverableStatusInput {
+    id: ID!
+    status: DeliverableStatus!
+}
+
+enum DeliverableStatus {
+  WONT_DO
+  DRAFT
+  TODO
+  BLOCKED
+  IN_PROGRESS
+  DELIVERED
+}
+
+
+
+
+input UpdateDeliverableDetailsInput {
+     id: ID!
+  title: String
+  description: String
+  owner: OwnerRefInput
+}
+
+input OwnerRefInput {
+  ref: String!
+  id: ID!
+}
+
+
+input AddKeyResultToDeliverableInput {
+    deliverableId: ID!
+    title: String!
+    link: String!
+}
+
+# add new types here
+
+
+input UpdateKeyResultInput {
+    keyResultId: ID!
+    title: String
+    link: String
+}
+
+# add new types here
+
+
+input RemoveKeyResultFromDeliverableInput {
+    id: ID!
+}
+
+# add new types here
+
+
+input SetDeliverableBudgetInput {
+    deliverableId: ID!
+    budgetAnchor: BudgetAnchor
+}
+
+type BudgetAnchor {
+  projectId: ID!
+  workUnitBudget: Float!
+  deliverableBudget: Float!
+}
