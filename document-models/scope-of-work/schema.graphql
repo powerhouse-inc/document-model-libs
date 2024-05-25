@@ -191,10 +191,10 @@ input CreateDeliverableInput {
   status: DeliverableStatus!
   workProgress: Progress
   owner: OwnerRef!
-  budgetAnchor: BudgetAnchor!
+  budgetAnchor: BudgetAnchorProject!
 }
 
-type BudgetAnchor {
+type BudgetAnchorProject {
   project: ID!
   workUnitBudget: Float!
   deliverableBudget: Float!
@@ -208,6 +208,7 @@ type OwnerRef {
 }
 
 type KeyResult {
+  id: ID!
   title: String!
   link: String
 }
@@ -295,11 +296,11 @@ input RemoveKeyResultFromDeliverableInput {
 
 input SetDeliverableBudgetInput {
     deliverableId: ID!
-    budgetAnchor: BudgetAnchor
+    budgetAnchor: BudgetAnchorProject
 }
 
-type BudgetAnchor {
-  projectId: ID!
+type BudgetAnchorProject {
+  project: ID!
   workUnitBudget: Float!
   deliverableBudget: Float!
 }

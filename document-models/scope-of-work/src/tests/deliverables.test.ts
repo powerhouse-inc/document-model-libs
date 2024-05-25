@@ -1,3 +1,5 @@
+// prettier-ignore
+/* eslint-disable */
 /**
  * This is a scaffold file meant for customization:
  * - change it by adding new tests or modifying the existing ones
@@ -10,44 +12,89 @@ import { z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/deliverables/creators';
 import { ScopeOfWorkDocument } from '../../gen/types';
+import { id } from 'date-fns/locale';
 
 describe('Deliverables Operations', () => {
     let document: ScopeOfWorkDocument;
 
     beforeEach(() => {
         document = utils.createDocument();
+        document.state.global.deliverables = [
+            {
+                id: '1',
+                title: 'Deliverable 1',
+                description: 'Description 1',
+                keyResults: [
+                    {
+                        id: '1',
+                        title: 'Key Result 1',
+                        link: 'https://powerhouse.com',
+                    },
+                ],
+                status: 'IN_PROGRESS',
+                workProgress: { value: 0 },
+                owner: {
+                    id: '1',
+                    ref: 'powerhouse-org:team',
+                    name: 'powerhouse',
+                    code: 'PHW',
+                },
+                budgetAnchor: {
+                    project: '1',
+                    workUnitBudget: 12,
+                    deliverableBudget: 11
+                },
+            },
+        ];
     });
 
-    it('should handle updateDeliverableProgress operation', () => {
-        const input = generateMock(z.UpdateDeliverableProgressInputSchema());
+    it.only('should handle updateDeliverableProgress operation', () => {
+
+        const input = {
+            id: '1',
+            workProgress: { value: 0.5 },
+        }
         const updatedDocument = reducer(
             document,
             creators.updateDeliverableProgress(input),
         );
 
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'UPDATE_DELIVERABLE_PROGRESS',
-        );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].workProgress?.value).toEqual(0.5);
     });
-    it('should handle deleteDeliverable operation', () => {
-        const input = generateMock(z.DeleteDeliverableInputSchema());
+    it.only('should handle deleteDeliverable operation', () => {
+
+        const input = {
+            id: '1',
+        }
+
         const updatedDocument = reducer(
             document,
             creators.deleteDeliverable(input),
         );
 
-        expect(updatedDocument.operations.global).toHaveLength(1);
-        expect(updatedDocument.operations.global[0].type).toBe(
-            'DELETE_DELIVERABLE',
-        );
-        expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-        expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables).toHaveLength(0);
     });
-    it('should handle createDeliverable operation', () => {
-        const input = generateMock(z.CreateDeliverableInputSchema());
+    it.only('should handle createDeliverable operation', () => {
+        const input = {
+            id: '1',
+            title: 'Deliverable 1',
+            description: 'Description 1',
+            keyResults: [],
+            status: 'DRAFT',
+            workProgress: { value: 0 },
+            owner: {
+                id: '1',
+                ref: 'powerhouse-org:team',
+                name: 'powerhouse',
+                code: 'PHW',
+            },
+            budgetAnchor: {
+                project: '1',
+                workUnitBudget: 12,
+                deliverableBudget: 11
+            },
+
+        }
         const updatedDocument = reducer(
             document,
             creators.createDeliverable(input),
@@ -60,8 +107,11 @@ describe('Deliverables Operations', () => {
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
     });
-    it('should handle updateDeliverableStatus operation', () => {
-        const input = generateMock(z.UpdateDeliverableStatusInputSchema());
+    it.only('should handle updateDeliverableStatus operation', () => {
+        const input = {
+            id: '1',
+            status: 'DELIVERED',
+        }
         const updatedDocument = reducer(
             document,
             creators.updateDeliverableStatus(input),
@@ -73,9 +123,20 @@ describe('Deliverables Operations', () => {
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].status).toEqual('DELIVERED');
     });
-    it('should handle updateDeliverableDetails operation', () => {
-        const input = generateMock(z.UpdateDeliverableDetailsInputSchema());
+    it.only('should handle updateDeliverableDetails operation', () => {
+        const input = {
+            id: '1',
+            title: 'Updated Title',
+            description: 'Updated Description',
+            owner: {
+                id: '2',
+                ref: 'powerhouse-org:team',
+                name: 'powerhouse',
+                code: 'PHW',
+            },
+        }
         const updatedDocument = reducer(
             document,
             creators.updateDeliverableDetails(input),
@@ -87,9 +148,14 @@ describe('Deliverables Operations', () => {
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].title).toEqual('Updated Title');
     });
-    it('should handle addKeyResultToDeliverable operation', () => {
-        const input = generateMock(z.AddKeyResultToDeliverableInputSchema());
+    it.only('should handle addKeyResultToDeliverable operation', () => {
+        const input = {
+            deliverableId: '1',
+            title: 'Key Result 1',
+            link: 'https://powerhouse.com',
+        }
         const updatedDocument = reducer(
             document,
             creators.addKeyResultToDeliverable(input),
@@ -101,9 +167,15 @@ describe('Deliverables Operations', () => {
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].keyResults[1].title).toBe('Key Result 1');
     });
-    it('should handle updateKeyResult operation', () => {
-        const input = generateMock(z.UpdateKeyResultInputSchema());
+    it.only('should handle updateKeyResult operation', () => {
+        const input = {
+            keyResultId: '1',
+            title: 'Updated Key Result 1',
+            link: 'https://powerhouse.com',
+        }
+
         const updatedDocument = reducer(
             document,
             creators.updateKeyResult(input),
@@ -115,9 +187,12 @@ describe('Deliverables Operations', () => {
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].keyResults[0].title).toBe('Updated Key Result 1');
     });
-    it('should handle removeKeyResultFromDeliverable operation', () => {
-        const input = generateMock(z.RemoveKeyResultFromDeliverableInputSchema());
+    it.only('should handle removeKeyResultFromDeliverable operation', () => {
+        const input = {
+            id: '1',
+        }
         const updatedDocument = reducer(
             document,
             creators.removeKeyResultFromDeliverable(input),
@@ -129,9 +204,17 @@ describe('Deliverables Operations', () => {
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].keyResults).toHaveLength(0);
     });
-    it('should handle setDeliverableBudget operation', () => {
-        const input = generateMock(z.SetDeliverableBudgetInputSchema());
+    it.only('should handle setDeliverableBudget operation', () => {
+        const input = {
+            deliverableId: '1',
+            budgetAnchor: {
+                project: '1',
+                workUnitBudget: 421,
+                deliverableBudget: 1000
+            },
+        }
         const updatedDocument = reducer(
             document,
             creators.setDeliverableBudget(input),
@@ -143,5 +226,6 @@ describe('Deliverables Operations', () => {
         );
         expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
         expect(updatedDocument.operations.global[0].index).toEqual(0);
+        expect(updatedDocument.state.global.deliverables[0].budgetAnchor?.workUnitBudget).toEqual(421);
     });
 });
