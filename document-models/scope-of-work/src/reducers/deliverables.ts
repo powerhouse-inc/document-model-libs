@@ -37,13 +37,12 @@ export const reducer: ScopeOfWorkDeliverablesOperations = {
         );
     },
     createDeliverableOperation(state, action, dispatch) {
-
         const deliverable: Deliverable = {
             id: action.input.id,
             title: action.input.title,
             description: '',
             keyResults: [],
-            status: 'IN_PROGRESS',
+            status: action.input.status,
             workProgress: { value: 0 },
             owner: action.input.owner,
             budgetAnchor: action.input.budgetAnchor,
@@ -91,7 +90,6 @@ export const reducer: ScopeOfWorkDeliverablesOperations = {
             title: action.input.title,
             link: action.input.link,
         });
-
     },
     updateKeyResultOperation(state, action, dispatch) {
         for (const deliverable of state.deliverables) {
