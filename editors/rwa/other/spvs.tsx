@@ -20,7 +20,7 @@ export function SPVs(props: IProps) {
         isAllowedToEditDocuments,
     } = props;
 
-    const spvs = document.state.global.spvs;
+    const state = document.state.global;
 
     const toggleExpandedRow = useCallback(
         (id: string | undefined) => {
@@ -85,7 +85,7 @@ export function SPVs(props: IProps) {
 
     return (
         <SPVsTable
-            spvs={spvs}
+            state={state}
             selectedItem={selectedItem}
             showNewItemForm={showNewItemForm}
             expandedRowId={expandedRowId}

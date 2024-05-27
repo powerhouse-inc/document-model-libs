@@ -24,7 +24,7 @@ export function FixedIncomeTypes(props: IProps) {
         isAllowedToEditDocuments,
     } = props;
 
-    const fixedIncomeTypes = document.state.global.fixedIncomeTypes;
+    const state = document.state.global;
 
     const toggleExpandedRow = useCallback(
         (id: string | undefined) => {
@@ -87,7 +87,7 @@ export function FixedIncomeTypes(props: IProps) {
 
     return (
         <FixedIncomeTypesTable
-            fixedIncomeTypes={fixedIncomeTypes}
+            state={state}
             selectedItem={selectedItem}
             showNewItemForm={showNewItemForm}
             expandedRowId={expandedRowId}

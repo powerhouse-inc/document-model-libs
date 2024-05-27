@@ -23,9 +23,7 @@ export function Accounts(props: IProps) {
         isAllowedToCreateDocuments,
         isAllowedToEditDocuments,
     } = props;
-    const principalLenderAccountId =
-        document.state.global.principalLenderAccountId;
-    const accounts = document.state.global.accounts;
+    const state = document.state.global;
 
     const toggleExpandedRow = useCallback(
         (id: string | undefined) => {
@@ -93,13 +91,12 @@ export function Accounts(props: IProps) {
 
     return (
         <AccountsTable
-            accounts={accounts}
+            state={state}
             selectedItem={selectedItem}
             showNewItemForm={showNewItemForm}
             expandedRowId={expandedRowId}
             isAllowedToCreateDocuments={isAllowedToCreateDocuments}
             isAllowedToEditDocuments={isAllowedToEditDocuments}
-            principalLenderAccountId={principalLenderAccountId}
             toggleExpandedRow={toggleExpandedRow}
             setSelectedItem={setSelectedItem}
             setShowNewItemForm={setShowNewItemForm}
