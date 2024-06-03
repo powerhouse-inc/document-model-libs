@@ -190,7 +190,6 @@ const Editor = (props: IProps) => {
         disbursementContractAddress,
         fundingAddress,
         fundingType,
-        grantSummary,
         granteeName,
     } = document.state.global;
     const isValid = useMemo(() => {
@@ -206,22 +205,12 @@ const Editor = (props: IProps) => {
             return false;
         }
 
-        if (!grantSummary) {
-            return false;
-        }
-
         if (!granteeName) {
             return false;
         }
 
         return true;
-    }, [
-        disbursementContractAddress,
-        fundingAddress,
-        fundingType,
-        grantSummary,
-        granteeName,
-    ]);
+    }, [disbursementContractAddress, fundingAddress, fundingType, granteeName]);
 
     return (
         <UserProvider user={context.user} state={document.state.global}>

@@ -29,6 +29,7 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             phaseDuration,
         } = action.input;
 
+        // required fields
         if (!validators.isValidAddress(authorizedSignerAddress)) {
             throw new Error('authorizedSignerAddress is invalid');
         }
@@ -45,10 +46,6 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
             throw new Error('grantSize must be greater than 0');
         }
 
-        if (!validators.isNotEmptyString(grantSummary)) {
-            throw new Error('grantSummary is required');
-        }
-
         if (!validators.isNotEmptyString(granteeName)) {
             throw new Error('granteeName is required');
         }
@@ -59,10 +56,18 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
         state.fundingType = fundingType;
         state.grantSize = grantSize;
         state.matchingGrantSize = matchingGrantSize;
-        state.grantSummary = grantSummary;
         state.granteeName = granteeName;
-        state.metricsDashboardLink = metricsDashboardLink;
 
+        // optional fields
+        if (grantSummary) {
+            state.grantSummary = grantSummary;
+        }
+
+        if (metricsDashboardLink) {
+            state.metricsDashboardLink = metricsDashboardLink;
+        }
+
+        // phase handling
         if (!numberOfPhases) {
             throw new Error('numberOfPhases is required');
         }
@@ -103,6 +108,7 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
                     arbRemaining: 0,
                     arbUtilized: 0,
                     contractsIncentivized: [],
+                    incentives: '',
                     disclosures: '',
                     summary: '',
                 },
@@ -110,15 +116,16 @@ export const reducer: ArbLtipGranteeGeneralOperations = {
                     arbToBeDistributed: 0,
                     contractsIncentivized: [],
                     distributionMechanism: [],
-                    summary: '',
-                    summaryOfChanges: '',
+                    changes: '',
+                    expectations: '',
                 },
                 stats: {
                     avgDailyTVL: 0,
                     avgDailyTXNS: 0,
-                    avgDailyVolume: 0,
-                    transactionFees: 0,
-                    uniqueAddressesCount: 0,
+                    avgDailyUniqueUsers: 0,
+                    changes: '',
+                    lessons: '',
+                    kpis: [],
                 },
             };
 

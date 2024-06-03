@@ -1,94 +1,109 @@
 scalar DateTime
 
 type ArbLtipGranteeState {
-	id: ID!
-	granteeName: String
-	authorizedSignerAddress: String
-	editorAddresses: [String]
-	grantSize: Float
-	matchingGrantSize: Float
-	grantSummary: String
-	fundingAddress: String
-	fundingType: [FundingType]
-	disbursementContractAddress: String
-	metricsDashboardLink: String
-	phases: [Phase]
+  id: ID!
+  granteeName: String
+  authorizedSignerAddress: String
+  editorAddresses: [String]
+  grantSize: Float
+  matchingGrantSize: Float
+  grantSummary: String
+  fundingAddress: String
+  fundingType: [FundingType]
+  disbursementContractAddress: String
+  metricsDashboardLink: String
+  phases: [Phase]
+  meta: [Meta]
 }
 
 enum FundingType {
-	EOA
-	Multisig
-	TwoofThreeMultisig
-	ThreeofFiveMultisig
+  EOA
+  Multisig
+  TwoofThreeMultisig
+  ThreeofFiveMultisig
 }
 
 type Phase {
-	startDate: DateTime!
-	endDate: DateTime!
-	actuals: GranteeActuals
-	planned: GranteePlanned
-	stats: GranteeStats
-	status: Status
+  startDate: DateTime!
+  endDate: DateTime!
+  actuals: GranteeActuals
+  planned: GranteePlanned
+  stats: GranteeStats
+  status: Status
 }
 
 enum Status {
-	Uninitialized
-	NotStarted
-	InProgress
-	Finalized
+  Uninitialized
+  NotStarted
+  InProgress
+  Finalized
 }
 
-
 type GranteeActuals {
-	arbReceived: Float
-	arbUtilized: Float
-	arbRemaining: Float
-	contractsIncentivized: [Contract]
-	summary: String
-	disclosures: String
+  arbReceived: Float
+  arbUtilized: Float
+  arbRemaining: Float
+  contractsIncentivized: [Contract]
+  incentives: String
+  summary: String
+  disclosures: String
 }
 
 type GranteePlanned {
-	arbToBeDistributed: Float
-	contractsIncentivized: [Contract]
-	distributionMechanism: [DistributionMechanism]
-	summary: String
-	summaryOfChanges: String
+  arbToBeDistributed: Float
+  contractsIncentivized: [Contract]
+  distributionMechanism: [DistributionMechanism]
+  changes: String
+  expectations: String
 }
 
 type GranteeStats {
-	avgDailyTVL: Float
-	avgDailyTXNS: Float
-	avgDailyVolume: Float
-	uniqueAddressesCount: Float
-	transactionFees: Float
+  avgDailyTVL: Float
+  avgDailyTXNS: Float
+  avgDailyUniqueUsers: Float
+  kpis: [NamedKpi]
+  changes: String
+  lessons: String
+}
+
+type NamedKpi {
+  name: String
+  value: Float
 }
 
 type Contract {
-	contractId: ID!
-	contractLabel: String
-	contractAddress: String
+  contractId: ID!
+  contractLabel: String
+  contractAddress: String
 }
 
 enum DistributionMechanism {
-	LPIncentives
-	Airdrop
+  LPIncentives
+  Airdrop
+}
+
+type Meta {
+  protocolVersion: String!
+  isAdmin: Boolean
+  value: String
 }
 
 
+
+type ArbLtipGranteeLocalState
 
 # General
 
 input InitGranteeInput {
-     granteeName: String!
+    granteeName: String!
 	authorizedSignerAddress: String!
 	grantSize: Float!
 	matchingGrantSize: Float!
-	grantSummary: String!
+	grantSummary: String
 	fundingAddress: String!
 	fundingType: [FundingType!]!
 	disbursementContractAddress: String!
-	metricsDashboardLink: String!
+	metricsDashboardLink: String
 	startDate: DateTime!
 	phaseDuration: Int 
 	numberOfPhases: Int
@@ -115,6 +130,8 @@ input EditGranteeInput {
 	disbursementContractAddress: String
 	metricsDashboardLink: String
 }
+
+# add new types here
 
 enum FundingType {
 	EOA
@@ -147,6 +164,7 @@ type GranteeActuals {
 	arbUtilized: Float
 	arbRemaining: Float
 	contractsIncentivized: [Contract]
+	incentives: String
 	summary: String
 	disclosures: String
 }
@@ -155,28 +173,35 @@ type GranteePlanned {
 	arbToBeDistributed: Float
 	contractsIncentivized: [Contract]
 	distributionMechanism: [DistributionMechanism]
-	summary: String
-	summaryOfChanges: String
+	changes: String
+  	expectations: String
 }
 
 type GranteeStats {
 	avgDailyTVL: Float
-	avgDailyTXNS: Float
-	avgDailyVolume: Float
-	uniqueAddressesCount: Float
-	transactionFees: Float
+  avgDailyTXNS: Float
+  avgDailyUniqueUsers: Float
+  kpis: [NamedKpi]
+  changes: String
+  lessons: String
+}
+
+type NamedKpi {
+  name: String
+  value: Float
 }
 
 type Contract {
-	contractId: ID!
-	contractLabel: String
-	contractAddress: String
+  contractId: ID!
+  contractLabel: String
+  contractAddress: String
 }
 
 enum DistributionMechanism {
 	LPIncentives
 	Airdrop
 }
+
 
 # Admin
 
@@ -189,6 +214,34 @@ input AddEditorInput {
 
 input RemoveEditorInput {
     editorAddress: String!
+}
+
+# add new types here
+
+
+# Meta
+
+input AddMetaInput {
+    protocolVersion: String!
+    isAdmin: Boolean
+    value: String
+}
+
+# add new types here
+
+
+input UpdateMetaInput {
+    index: Float
+    protocolVersion: String!
+    isAdmin: Boolean
+    value: String
+}
+
+# add new types here
+
+
+input DeleteMetaInput {
+    index: Float
 }
 
 # add new types here

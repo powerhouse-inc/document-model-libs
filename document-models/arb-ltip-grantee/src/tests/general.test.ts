@@ -10,7 +10,12 @@ import { InitGranteeInput, z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/general/creators';
 import { ArbLtipGranteeDocument } from '../../gen/types';
-import { createContext, expectException, signer } from './util';
+import {
+    createContext,
+    expectException,
+    expectNoException,
+    signer,
+} from './util';
 import { toArray } from '../../../../editors/arb-ltip/util';
 
 describe('General Operations', () => {
@@ -32,8 +37,8 @@ describe('General Operations', () => {
             grantSize: 100,
             grantSummary: 'Summary',
             granteeName: 'Name',
+            metricsDashboardLink: 'https://example.com',
             matchingGrantSize: 10,
-            metricsDashboardLink: '',
             numberOfPhases: 10,
             phaseDuration: 1,
             startDate: new Date().toISOString(),
@@ -41,6 +46,7 @@ describe('General Operations', () => {
 
         document.state.global.authorizedSignerAddress = '';
         const updatedDocument = reducer(document, creators.initGrantee(input));
+        expectNoException(updatedDocument);
 
         expect(updatedDocument.state.global.authorizedSignerAddress).toBe(
             input.authorizedSignerAddress,
@@ -91,6 +97,7 @@ describe('General Operations', () => {
         action.context = createContext();
 
         const updatedDocument = reducer(document, action);
+        expectNoException(updatedDocument);
 
         expect(updatedDocument.state.global.disbursementContractAddress).toBe(
             input.disbursementContractAddress,
@@ -115,6 +122,7 @@ describe('General Operations', () => {
         action.context = createContext(editor);
 
         const updatedDocument = reducer(document, action);
+        expectNoException(updatedDocument);
 
         expect(updatedDocument.state.global.grantSummary).toBe(
             input.grantSummary,
@@ -132,6 +140,7 @@ describe('General Operations', () => {
         action.context = createContext();
 
         const updatedDocument = reducer(document, action);
+        expectNoException(updatedDocument);
 
         expect(updatedDocument.state.global.editorAddresses).toHaveLength(1);
         expect(toArray(updatedDocument.state.global.editorAddresses)[0]).toBe(
@@ -158,6 +167,7 @@ describe('General Operations', () => {
         );
 
         const updatedDocument = reducer(document, action);
+        expectNoException(updatedDocument);
 
         expect(updatedDocument.state.global.editorAddresses).toHaveLength(1);
         expect(toArray(updatedDocument.state.global.editorAddresses)[0]).toBe(

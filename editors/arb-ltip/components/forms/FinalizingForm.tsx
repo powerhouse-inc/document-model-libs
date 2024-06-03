@@ -20,10 +20,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
     const [showErrors, setShowErrors] = useState(false);
     const [avgDailyTVLLocal, setAvgDailyTVLLocal] = useState(0);
     const [avgDailyTXNSLocal, setAvgDailyTXNSLocal] = useState(0);
-    const [avgDailyVolumeLocal, setAvgDailyVolumeLocal] = useState(0);
-    const [transactionFeesLocal, setTransactionFeesLocal] = useState(0);
-    const [uniqueAddressesCountLocal, setUniqueAddressesCountLocal] =
-        useState(0);
+    const [avgDailyUniqueUsersLocal, setAvgDailyUniqueUsersLocal] = useState(0);
+    const [changesLocal, setChangesLocal] = useState('');
+    const [lessonsLocal, setLessonsLocal] = useState('');
 
     const isAvgDailTVLValid = useMemo(
         () => validators.gteZero(avgDailyTVLLocal),
@@ -33,28 +32,18 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         () => validators.gteZero(avgDailyTXNSLocal),
         [avgDailyTXNSLocal],
     );
-    const isAvgDailyVolumeValid = useMemo(
-        () => validators.gteZero(avgDailyVolumeLocal),
-        [avgDailyVolumeLocal],
-    );
-    const isTransactionFeesValid = useMemo(
-        () => validators.gteZero(transactionFeesLocal),
-        [transactionFeesLocal],
-    );
-    const isUniqueAddressesCountValid = useMemo(
-        () => validators.gteZero(uniqueAddressesCountLocal),
-        [uniqueAddressesCountLocal],
+    const isAvgDailyUniqueUsersValid = useMemo(
+        () => validators.gteZero(avgDailyUniqueUsersLocal),
+        [avgDailyUniqueUsersLocal],
     );
 
     useInitialScroll();
 
-    const submit = useCallback(() => {
+    const submit = () => {
         if (
             !isAvgDailTVLValid ||
             !isAvgDailyTXNSValid ||
-            !isAvgDailyVolumeValid ||
-            !isTransactionFeesValid ||
-            !isUniqueAddressesCountValid
+            !isAvgDailyUniqueUsersValid
         ) {
             setShowErrors(true);
             return;
@@ -63,9 +52,10 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         const stats: GranteeStats = {
             avgDailyTVL: avgDailyTVLLocal,
             avgDailyTXNS: avgDailyTXNSLocal,
-            avgDailyVolume: avgDailyVolumeLocal,
-            transactionFees: transactionFeesLocal,
-            uniqueAddressesCount: uniqueAddressesCountLocal,
+            avgDailyUniqueUsers: avgDailyUniqueUsersLocal,
+            changes: changesLocal,
+            lessons: lessonsLocal,
+            kpis: [],
         };
         dispatch(
             editPhase({
@@ -74,18 +64,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                 status: 'Finalized',
             }),
         );
-    }, [
-        avgDailyTVLLocal,
-        avgDailyTXNSLocal,
-        avgDailyVolumeLocal,
-        transactionFeesLocal,
-        uniqueAddressesCountLocal,
-        isAvgDailTVLValid,
-        isAvgDailyTXNSValid,
-        isAvgDailyVolumeValid,
-        isTransactionFeesValid,
-        isUniqueAddressesCountValid,
-    ]);
+    };
 
     const wrapperClasses = useCallback(
         (isValid: boolean) =>
@@ -131,40 +110,38 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         onChange={intHandler(setAvgDailyTXNSLocal)}
                     />
                 </div>
-                <div className={wrapperClasses(isAvgDailyVolumeValid)}>
+                <div className={wrapperClasses(isAvgDailyUniqueUsersValid)}>
                     <label className="block text-xs font-medium text-gray-900">
-                        Average Daily Volume (required)
+                        Average Daily Unique Users (required)
                     </label>
                     <input
                         type="text"
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Enter amount"
-                        value={avgDailyVolumeLocal}
-                        onChange={intHandler(setAvgDailyVolumeLocal)}
+                        value={avgDailyUniqueUsersLocal}
+                        onChange={intHandler(setAvgDailyUniqueUsersLocal)}
                     />
                 </div>
-                <div className={wrapperClasses(isTransactionFeesValid)}>
+                <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-gray-300">
                     <label className="block text-xs font-medium text-gray-900">
-                        Transaction Fees (required)
+                        Changes
                     </label>
-                    <input
-                        type="text"
+                    <textarea
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter amount"
-                        value={transactionFeesLocal}
-                        onChange={intHandler(setTransactionFeesLocal)}
+                        placeholder="Enter changes"
+                        value={changesLocal}
+                        onChange={e => setChangesLocal(e.target.value)}
                     />
                 </div>
-                <div className={wrapperClasses(isUniqueAddressesCountValid)}>
+                <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-gray-300">
                     <label className="block text-xs font-medium text-gray-900">
-                        Number of Unique Addresses (required)
+                        Lessons
                     </label>
-                    <input
-                        type="text"
+                    <textarea
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter amount"
-                        value={uniqueAddressesCountLocal}
-                        onChange={intHandler(setUniqueAddressesCountLocal)}
+                        placeholder="Enter lessons"
+                        value={lessonsLocal}
+                        onChange={e => setLessonsLocal(e.target.value)}
                     />
                 </div>
             </div>

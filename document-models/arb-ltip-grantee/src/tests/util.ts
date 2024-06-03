@@ -46,6 +46,12 @@ export const isAdminRole = (
     return state.authorizedSignerAddress === signer;
 };
 
+export const expectNoException = (document: ArbLtipGranteeDocument) => {
+    const lastOp =
+        document.operations.global[document.operations.global.length - 1];
+    expect(lastOp.error).toBeUndefined();
+};
+
 export const expectException = (
     document: ArbLtipGranteeDocument,
     message: string,

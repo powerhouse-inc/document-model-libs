@@ -44,10 +44,10 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     const [contractsLocal, setContractsLocal] = useState(
         toArray(planned.contractsIncentivized),
     );
-    const [summaryLocal, setSummaryLocal] = useState(planned.summary || '');
-    const [summaryOfChangesLocal, setSummaryOfChangesLocal] = useState(
-        planned.summaryOfChanges || '',
+    const [expectationsLocal, setExpectationsLocal] = useState(
+        planned.expectations || '',
     );
+    const [changesLocal, setChangesLocal] = useState(planned.changes || '');
 
     const startDate = useMemo(
         () => new Date(phase.startDate),
@@ -67,8 +67,8 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
             arbToBeDistributed: disbursementAmountLocal,
             contractsIncentivized: contractsLocal,
             distributionMechanism: distributionMechanismsLocal,
-            summary: summaryLocal,
-            summaryOfChanges: summaryOfChangesLocal,
+            expectations: expectationsLocal,
+            changes: changesLocal,
         };
 
         if (!validators.isPlannedValid(planned)) {
@@ -91,8 +91,8 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         disbursementAmountLocal,
         contractsLocal,
         distributionMechanismsLocal,
-        summaryLocal,
-        summaryOfChangesLocal,
+        expectationsLocal,
+        changesLocal,
     ]);
 
     const isDisbursementValid = useMemo(
@@ -107,13 +107,13 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         () => validators.isNotEmpty(contractsLocal),
         [contractsLocal],
     );
-    const isSummaryValid = useMemo(
-        () => validators.notEmpty(summaryLocal),
-        [summaryLocal],
+    const isExpectationsValid = useMemo(
+        () => validators.isNotEmptyString(expectationsLocal),
+        [expectationsLocal],
     );
-    const isSummaryOfChangesValid = useMemo(
-        () => validators.notEmpty(summaryOfChangesLocal),
-        [summaryOfChangesLocal],
+    const isChangesValid = useMemo(
+        () => validators.isNotEmptyString(changesLocal),
+        [changesLocal],
     );
 
     const description = useMemo(() => {
@@ -213,32 +213,32 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                         }
                     />
                 </div>
-                <div className={wrapperClasses(isSummaryValid)}>
+                <div className={wrapperClasses(isChangesValid)}>
                     <label className="text-xs font-medium text-gray-900 mb-1">
-                        Summary (required)
+                        Changes (required)
                     </label>
                     <textarea
                         rows={4}
                         name="comment"
                         id="comment"
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter summary here"
-                        value={summaryLocal}
-                        onChange={e => setSummaryLocal(e.target.value)}
+                        placeholder="Meaningful changes that will be implemented compared to the original proposal or to the previous biweekly period"
+                        value={changesLocal}
+                        onChange={e => setChangesLocal(e.target.value)}
                     />
                 </div>
-                <div className={wrapperClasses(isSummaryOfChangesValid)}>
+                <div className={wrapperClasses(isExpectationsValid)}>
                     <label className="text-xs font-medium text-gray-900 mb-1">
-                        Summary of Changes (required)
+                        Expectations (required)
                     </label>
                     <textarea
                         rows={4}
                         name="comment"
                         id="comment"
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter summary of changes here"
-                        value={summaryOfChangesLocal}
-                        onChange={e => setSummaryOfChangesLocal(e.target.value)}
+                        placeholder="Expectations for the next biweekly period"
+                        value={expectationsLocal}
+                        onChange={e => setExpectationsLocal(e.target.value)}
                     />
                 </div>
             </div>

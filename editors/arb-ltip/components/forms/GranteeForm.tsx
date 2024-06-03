@@ -114,10 +114,6 @@ const GranteeForm = (props: GranteeFormProps) => {
         () => validators.isNotEmpty(fundingTypeLocal),
         [fundingTypeLocal],
     );
-    const isGrantSummaryValid = useMemo(
-        () => validators.isNotEmptyString(grantSummaryLocal),
-        [grantSummaryLocal],
-    );
     const isEditorAddressesValid = useMemo(
         () => editorAddressesLocal.every(validators.isValidAddress),
         [editorAddressesLocal],
@@ -130,7 +126,6 @@ const GranteeForm = (props: GranteeFormProps) => {
             isGrantSizeValid &&
             isMatchingGrantSizeValid &&
             isFundingTypeValid &&
-            isGrantSummaryValid &&
             isEditorAddressesValid,
         [
             isAuthorizedSignerAddressValid,
@@ -139,12 +134,11 @@ const GranteeForm = (props: GranteeFormProps) => {
             isGrantSizeValid,
             isMatchingGrantSizeValid,
             isFundingTypeValid,
-            isGrantSummaryValid,
             isEditorAddressesValid,
         ],
     );
 
-    const isInit = authorizedSignerAddress === '';
+    const isInit = authorizedSignerAddress === undefined;
     const isAdmin = useIsAdmin();
 
     const onSubmit = useCallback(() => {
@@ -398,20 +392,6 @@ const GranteeForm = (props: GranteeFormProps) => {
                         onChange={e => setFundingAddressLocal(e.target.value)}
                     />
                 </div>
-                <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
-                    <label className="text-xs font-medium text-gray-900">
-                        Metrics Dashboard Link (optional)
-                    </label>
-                    <input
-                        type="text"
-                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
-                        placeholder="https://example.com"
-                        value={metricsDashboardLinkLocal}
-                        onChange={e =>
-                            setMetricsDashboardLinkLocal(e.target.value)
-                        }
-                    />
-                </div>
                 <div className={wrapperClasses(isFundingTypeValid)}>
                     <label className="text-xs font-medium text-gray-900 mb-1">
                         Funding Type(s)
@@ -432,9 +412,23 @@ const GranteeForm = (props: GranteeFormProps) => {
                         }}
                     />
                 </div>
-                <div className={wrapperClasses(isGrantSummaryValid)}>
+                <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
                     <label className="text-xs font-medium text-gray-900">
-                        Grant Summary
+                        Metrics Dashboard Link (optional)
+                    </label>
+                    <input
+                        type="text"
+                        className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
+                        placeholder="https://example.com"
+                        value={metricsDashboardLinkLocal}
+                        onChange={e =>
+                            setMetricsDashboardLinkLocal(e.target.value)
+                        }
+                    />
+                </div>
+                <div className={wrapperClasses(true)}>
+                    <label className="text-xs font-medium text-gray-900">
+                        Grant Summary (optional)
                     </label>
                     <textarea
                         rows={4}

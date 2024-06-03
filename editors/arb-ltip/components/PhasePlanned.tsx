@@ -3,29 +3,26 @@ import {
     Phase,
 } from '../../../document-models/arb-ltip-grantee';
 
+function translateDistributionMechanism(
+    distributionMechanism: DistributionMechanism,
+): string {
+    switch (distributionMechanism) {
+        case 'Airdrop':
+            return 'Airdrop';
+        case 'LPIncentives':
+            return 'LP Incentives';
+        default:
+            return 'Unknown Mechanism';
+    }
+}
+
 const PhasePlanned = ({ phase: { planned, actuals } }: { phase: Phase }) => {
     const arbToBeDistributed = planned?.arbToBeDistributed
         ? planned.arbToBeDistributed
         : 0;
 
-    const summary = planned?.summary ? planned.summary : 'None';
-
-    const summaryOfChanges = planned?.summaryOfChanges
-        ? planned.summaryOfChanges
-        : 'None';
-
-    function translateDistributionMechanism(
-        distributionMechanism: DistributionMechanism,
-    ): string {
-        switch (distributionMechanism) {
-            case 'Airdrop':
-                return 'Airdrop';
-            case 'LPIncentives':
-                return 'LP Incentives';
-            default:
-                return 'Unknown Mechanism';
-        }
-    }
+    const changes = planned?.changes || 'None';
+    const expectations = planned?.expectations || 'None';
 
     const distributionMechanismText =
         planned?.distributionMechanism?.map(distribution =>
@@ -98,15 +95,15 @@ const PhasePlanned = ({ phase: { planned, actuals } }: { phase: Phase }) => {
                 </div>
                 <div>
                     <label className="text-xs font-medium text-gray-900">
-                        Summary
+                        Changes
                     </label>
-                    <p>{summary}</p>
+                    <p>{changes}</p>
                 </div>
                 <div>
                     <label className="text-xs font-medium text-gray-900">
-                        Summary Of Changes
+                        Expectations
                     </label>
-                    <p>{summaryOfChanges}</p>
+                    <p>{expectations}</p>
                 </div>
             </div>
             <div className="flex flex-col justify-start space-y-2 px-4">

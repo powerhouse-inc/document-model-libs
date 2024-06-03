@@ -2,8 +2,6 @@ import { GranteeActuals, GranteePlanned, GranteeStats, Maybe } from '..';
 
 const gtZero = (value: Maybe<number>) => null !== value && value > 0;
 const gteZero = (value: Maybe<number>) => null !== value && value >= 0;
-const notEmpty = (value: Maybe<string>) => !!value && value.length > 0;
-const pastDate = (value: Date) => value.getTime() < Date.now();
 const futureDate = (value: Date) => value.getTime() > Date.now();
 function isNotEmpty<T>(value: Maybe<Array<Maybe<T>>>) {
     return !!value && value.filter(v => !!v).length > 0;
@@ -18,23 +16,21 @@ const isPlannedValid = (planned: GranteePlanned) =>
     gtZero(planned.arbToBeDistributed) &&
     isNotEmpty(planned.distributionMechanism) &&
     isNotEmpty(planned.contractsIncentivized) &&
-    isNotEmptyString(planned.summary) &&
-    notEmpty(planned.summaryOfChanges);
+    isNotEmptyString(planned.expectations) &&
+    isNotEmptyString(planned.changes);
 
 const isActualsValid = (actuals: GranteeActuals) =>
     gteZero(actuals.arbReceived) &&
     gteZero(actuals.arbRemaining) &&
     gteZero(actuals.arbUtilized) &&
     isNotEmpty(actuals.contractsIncentivized) &&
-    notEmpty(actuals.disclosures) &&
+    isNotEmptyString(actuals.disclosures) &&
     isNotEmptyString(actuals.summary);
 
 const isStatsValid = (stats: GranteeStats) =>
     gteZero(stats.avgDailyTVL) &&
     gteZero(stats.avgDailyTXNS) &&
-    gteZero(stats.avgDailyVolume) &&
-    gteZero(stats.transactionFees) &&
-    gteZero(stats.uniqueAddressesCount);
+    gteZero(stats.avgDailyUniqueUsers);
 
 const validators = {
     gtZero,
@@ -42,7 +38,6 @@ const validators = {
     isValidAddress,
     isNotEmpty,
     isNotEmptyString,
-    notEmpty,
     futureDate,
 
     isPlannedValid,

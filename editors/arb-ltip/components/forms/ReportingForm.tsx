@@ -113,6 +113,7 @@ const ReportingForm = (props: ReportingFormProps) => {
             arbUtilized: arbUtilizedLocal,
             arbRemaining: arbRemaining,
             contractsIncentivized: contractsLocal,
+            incentives: '',
             disclosures: disclosuresLocal,
             summary: summaryLocal,
         };
