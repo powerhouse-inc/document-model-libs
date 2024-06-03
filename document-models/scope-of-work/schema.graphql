@@ -8,17 +8,17 @@ type ScopeOfWorkState {
 }
 
 type Deliverable { 
-  id: ID!
-  
-  title: String! # Default value = ""
-  description: String
-  keyResults: [KeyResult!]!
-  
-  status: DeliverableStatus!
-  workProgress: Progress
-  
-  owner: OwnerRef
-  budgetAnchor: BudgetAnchorProject
+    id: ID! # No default value, UI layer generates a fixed value so that the outcome will be deterministic (i.e, same output different enviroments)
+    
+    title: String! # Default value = ""
+    description: String
+    keyResults: [KeyResult!]! # Default value = []
+    
+    status: DeliverableStatus! # Default value = DRAFT
+    workProgress: Progress
+    
+    owner: OwnerRef
+    budgetAnchor: BudgetAnchorProject # True composition, cannot change the parent; e.g., deliverable can't change its budget source/project
 }
 
 enum DeliverableStatus {
@@ -27,33 +27,33 @@ enum DeliverableStatus {
 	
 	# Do count towards the number of deliverables
 	DRAFT # => means 0% progress for calculation purposes, if workProgress isn't set
-  TODO # => means 0% progress for calculation purposes, if workProgress isn't set
-  BLOCKED # => means 0% progress for calculation purposes, if workProgress isn't set
-  IN_PROGRESS # => means 50% progress for calculation purposes, if workProgress isn't set
-  DELIVERED # => means 100% progress for calculation purposes, if workProgress isn't set
+    TODO # => means 0% progress for calculation purposes, if workProgress isn't set
+    BLOCKED # => means 0% progress for calculation purposes, if workProgress isn't set
+    IN_PROGRESS # => means 50% progress for calculation purposes, if workProgress isn't set
+    DELIVERED # => means 100% progress for calculation purposes, if workProgress isn't set
 }
 
 union Progress = StoryPoints | Percentage
 
 type StoryPoints {
-  total: Int! # a positive number greater than 0
-  completed: Int! # a positive number less than or equal to total, can be 0
+    total: Int! # a positive number greater than 0
+    completed: Int! # a positive number less than or equal to total, can be 0
 }
 
 type Percentage {
-  value: Float! # between 0 and 1, where 1 means 100%
+    value: Float! # between 0 and 1, where 1 means 100%
 }
 
-type KeyResult {
-  id: ID!
-  title: String! # default = ""
-  link: String
+type KeyResult { # add a "move" operation for the key results
+    id: ID!
+    title: String! # default = ""
+    link: String
 }
 
 type BudgetAnchorProject {
 	project: ID!
 	workUnitBudget: Float! # Default is 1.
-  deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget
+    deliverableBudget: Float! # Calculated value: based on the Total Project Budget, distributed according to SP and/or number of deliverables and their workUnitBudget
 }
 
 type OwnerRef {
@@ -63,59 +63,59 @@ type OwnerRef {
 
 type OwnerInfo {
 	owner: OwnerRef!
-  name: String     # "Sustainable Ecosystem Scaling"           "Sustainable Ecosystem Scaling Core Unit"
-  code: String     # "SES"                                     "SES-001"
-  imageUrl: String # null                                      "https://github.com/makerdao-ses/cu-icons/ses.svg"
+    name: String     # "Sustainable Ecosystem Scaling"           "Sustainable Ecosystem Scaling Core Unit"
+    code: String     # "SES"                                     "SES-001"
+    imageUrl: String # null                                      "https://github.com/makerdao-ses/cu-icons/ses.svg"
 }
 
 type Project {
-  id: ID!
-  code: String! # for now we'll make it mandatory to simplify UI logic; placeholder default "PRJ-??" can be used 
-  title: String! # Default = ""
-  owner: OwnerRef
-  
-  abstract: String
-  imageUrl: String
-  
-  deliverables: DeliverablesSet
-  
-  budgetType: BudgetType
-  budget: Float
-  expenditure: BudgetExpenditure
+    id: ID!
+    code: String! # for now we'll make it mandatory to simplify UI logic; placeholder default "PRJ-??" can be used 
+    title: String! # Default = ""
+    owner: OwnerRef
+    
+    abstract: String
+    imageUrl: String
+    
+    deliverables: DeliverablesSet
+    
+    budgetType: BudgetType
+    budget: Float
+    expenditure: BudgetExpenditure
 }
 
 type DeliverablesSet {
 	deliverables: [ID!]!
-  status: DeliverableSetStatus! # Manually set regardless of the status of the included deliverables
-  progress: Progress!  # calculated over the set of included deliverables; 
+    status: DeliverableSetStatus! # Manually set regardless of the status of the included deliverables
+    progress: Progress!  # calculated over the set of included deliverables; 
 										   # story points only if all deliverables are expressed in story points; percentage otherwise
 										   # if no deliverables are present => 0 out of 0 story points
-  deliverablesCompleted: DeliverablesCompleted! # Alternative progress indicator, kept separate from progress
+    deliverablesCompleted: DeliverablesCompleted! # Alternative progress indicator, kept separate from progress
 }
 
 enum BudgetType {
-  CONTINGENCY
-  OPEX
-  CAPEX
-  OVERHEAD
+    CONTINGENCY
+    OPEX
+    CAPEX
+    OVERHEAD
 }
 
 type BudgetExpenditure {
-  percentage: Float! # between 0 and 1, where 1 means 100%
-  actuals: Float! # denominated in DAI
-  cap: Float! # denominated in DAI
+    percentage: Float! # between 0 and 1, where 1 means 100%
+    actuals: Float! # denominated in DAI
+    cap: Float! # denominated in DAI
 }
 
 enum DeliverableSetStatus {
 	DRAFT
-  TODO
-  IN_PROGRESS
-  FINISHED # A project or milestone can be FINISHED even if not every deliverable is DELIVERED
+    TODO
+    IN_PROGRESS
+    FINISHED # A project or milestone can be FINISHED even if not every deliverable is DELIVERED
 }
 
 type DeliverablesCompleted {
-  total: Int!
-  completed: Int!
+    total: Int!
+    completed: Int!
 }
 
 type Roadmap {
@@ -136,80 +136,53 @@ type Roadmap {
 # frontend-side logic can determine the relationship between a project and milestone by examining the shared deliverables.
 
 type Milestone {
-  id: ID!
-  code: String!   # for now we'll make it mandatory to simplify UI logic; placeholder default "MS-??" can be used 
-  title: String!  # default="", e.g. "Alpha Release"
-  
-  description: String
-  targetDate: String   # Period notation identical to the analytics engine
-										   # Examples 2023, 2023-H2, 2024-Q2, 2024-05, 2024-W31, 2024-09-15, ...
-										 
-	deliverables: DeliverablesSet
+    id: ID!
+    code: String!   # for now we'll make it mandatory to simplify UI logic; placeholder default "MS-??" can be used 
+    title: String!  # default="", e.g. "Alpha Release"
     
-  estimatedBudgetCap: Float! # denominated in DAI
-  estimatedExpenditure: Float! 
-  
-  coordinators: [OwnerRef!]!  # sings-off the deliverables of the contributors; typically an individual
-  contributors: [OwnerRef!]!  # typically will refer to a contributor team; maybe an individual
+    description: String
+    targetDate: String   # Period notation identical to the analytics engine
+                                            # Examples 2023, 2023-H2, 2024-Q2, 2024-05, 2024-W31, 2024-09-15, ...
+                                            
+    deliverables: DeliverablesSet
+        
+    estimatedBudgetCap: Float! # denominated in DAI
+    estimatedExpenditure: Float! 
+    
+    coordinators: [OwnerRef!]!  # sings-off the deliverables of the contributors; typically an individual
+    contributors: [OwnerRef!]!  # typically will refer to a contributor team; maybe an individual
 }
 
 
 
 # Deliverables
 
-input UpdateDeliverableProgressInput {
+input CreateDeliverableInput {
     id: ID!
+    title: String
+    description: String
+    keyResults: [KeyResult!]
+    status: DeliverableStatus
     workProgress: Progress
-}
-
-union Progress = StoryPoints | Percentage
-
-type StoryPoints {
-  total: Int!
-  completed: Int!
-}
-
-type Percentage {
-  value: Float! # The value should be between 0 and 1, where 1 means 100%
-}
-
-
-
-
-input DeleteDeliverableInput {
-    id: ID!
+    owner: OwnerRef
+    budgetAnchor: BudgetAnchorProject
 }
 
 # add new types here
-
-
-input CreateDeliverableInput {
-     id: ID!
-  title: String!
-  description: String
-  keyResults: [KeyResult!]!
-  status: DeliverableStatus!
-  workProgress: Progress
-  owner: OwnerRef!
-  budgetAnchor: BudgetAnchorProject!
-}
-
-type BudgetAnchorProject {
+type BudgetAnchorProject { # double check that the type duplicates are the same
   project: ID!
   workUnitBudget: Float!
   deliverableBudget: Float!
 }
 
 type OwnerRef {
-  ref: String!
-  id: ID!
-  name: String
-  code: String
+  ref: String! # "my-tradfi-org:team"  "my-tradfi-org:employee"
+	id: ID! # "10" "10" 
 }
 
 type KeyResult {
   id: ID!
-  title: String!
+  title: String! # default = ""
   link: String
 }
 
@@ -238,10 +211,32 @@ type Percentage {
 }
 
 
+input DeleteDeliverableInput {
+    id: ID!
+}
+
+# add new types here
+
+
+input UpdateDeliverableDetailsInput {
+    id: ID!
+    title: String
+    description: String
+    owner: OwnerRef
+    removeDescription: Boolean
+    removeOwner: Boolean
+}
+
+type OwnerRef {
+	ref: String! # "my-tradfi-org:team"  "my-tradfi-org:employee"
+	id: ID! # "10" "10" 
+}
+
 
 input UpdateDeliverableStatusInput {
     id: ID!
     status: DeliverableStatus!
+    comment: String # Context data, should not be reflected in the state
 }
 
 enum DeliverableStatus {
@@ -255,33 +250,29 @@ enum DeliverableStatus {
 
 
 
-
-input UpdateDeliverableDetailsInput {
-     id: ID!
-  title: String
-  description: String
-  owner: OwnerRefInput
-}
-
-input OwnerRefInput {
-  ref: String!
-  id: ID!
-}
-
-
 input AddKeyResultToDeliverableInput {
-    deliverableId: ID!
-    title: String!
-    link: String!
+    id:ID!
+	deliverableId: ID!
+    title: String
+    link: String
 }
 
 # add new types here
 
 
 input UpdateKeyResultInput {
-    keyResultId: ID!
+    id: ID!
     title: String
     link: String
+    removeLink: Boolean
+}
+
+# add new types here
+
+
+input MoveKeyResultInput {
+    id: ID!
+    deliverableId: ID!
 }
 
 # add new types here
@@ -294,13 +285,28 @@ input RemoveKeyResultFromDeliverableInput {
 # add new types here
 
 
-input SetDeliverableBudgetInput {
-    deliverableId: ID!
-    budgetAnchor: BudgetAnchorProject
+input UpdateDeliverableProgressInput {
+    id: ID!
+    workProgress: Progress
 }
 
-type BudgetAnchorProject {
-  project: ID!
-  workUnitBudget: Float!
-  deliverableBudget: Float!
+union Progress = StoryPoints | Percentage
+
+type StoryPoints {
+    total: Int!
+    completed: Int!
 }
+
+type Percentage {
+    value: Float! # The value should be between 0 and 1, where 1 means 100%
+}
+
+
+
+input SetDeliverableBudgetAnchorInput {
+    id: ID!
+    project: ID!
+    workUnitBudget: Float
+}
+
+# add new types here
