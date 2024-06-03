@@ -1,3 +1,10 @@
+# [1.55.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.4...v1.55.0-arbitrum.5) (2024-06-03)
+
+
+### Bug Fixes
+
+* big update to model and fix broken tests ([d794462](https://github.com/powerhouse-inc/document-model-libs/commit/d79446290c7e91a9ac7542350b86fdfacb3d7250))
+
 # [1.55.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.3...v1.55.0-arbitrum.4) (2024-06-03)
 
 
