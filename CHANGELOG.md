@@ -1,3 +1,16 @@
+# [1.55.0-arbitrum.6](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.5...v1.55.0-arbitrum.6) (2024-06-03)
+
+
+### Bug Fixes
+
+* issue where grantee form was not showing init fields ([04f13f4](https://github.com/powerhouse-inc/document-model-libs/commit/04f13f426e68960747c491f7fb751664a2274f89))
+* updating placeholder text in forms ([6facd57](https://github.com/powerhouse-inc/document-model-libs/commit/6facd57e75afa43e071f1a7ecc055de7fb27dd31))
+
+
+### Features
+
+* added % Arb Utilized ([5667d22](https://github.com/powerhouse-inc/document-model-libs/commit/5667d2298139bfc68a70052e3f444e6bdec27a5a))
+
 # [1.55.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.4...v1.55.0-arbitrum.5) (2024-06-03)
 
 
