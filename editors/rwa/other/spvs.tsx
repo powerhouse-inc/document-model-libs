@@ -1,20 +1,14 @@
-import { SPV, SPVsTable, SPVsTableProps } from '@powerhousedao/design-system';
+import { SPVsTable, SPVsTableProps } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import {
-    FixedIncome,
     actions,
     getDifferences,
-    isFixedIncomeAsset,
 } from '../../../document-models/real-world-assets';
 import { IProps } from '../editor';
 
 export function SPVs(props: IProps) {
-    const [expandedRowId, setExpandedRowId] = useState<string>();
-    const [selectedItem, setSelectedItem] = useState<SPV>();
-    const [showNewItemForm, setShowNewItemForm] = useState(false);
-
     const {
         dispatch,
         document,
@@ -22,22 +16,11 @@ export function SPVs(props: IProps) {
         isAllowedToEditDocuments,
     } = props;
 
-    const spvs = document.state.global.spvs;
-    const assets = document.state.global.portfolio.filter(a =>
-        isFixedIncomeAsset(a),
-    ) as FixedIncome[];
-
-    const toggleExpandedRow = useCallback(
-        (id: string | undefined) => {
-            setExpandedRowId(curr =>
-                curr && curr === expandedRowId ? undefined : id,
-            );
-        },
-        [expandedRowId],
-    );
+    const state = document.state.global;
 
     const onSubmitEdit: SPVsTableProps['onSubmitEdit'] = useCallback(
         data => {
+            const selectedItem = state.spvs.find(s => s.id === data.id);
             if (!selectedItem) return;
 
             const update = copy(selectedItem);
@@ -48,7 +31,6 @@ export function SPVs(props: IProps) {
             const changedFields = getDifferences(selectedItem, update);
 
             if (Object.values(changedFields).filter(Boolean).length === 0) {
-                setSelectedItem(undefined);
                 return;
             }
 
@@ -58,9 +40,8 @@ export function SPVs(props: IProps) {
                     id: selectedItem.id,
                 }),
             );
-            setSelectedItem(undefined);
         },
-        [dispatch, selectedItem],
+        [dispatch, state.spvs],
     );
 
     const onSubmitCreate: SPVsTableProps['onSubmitCreate'] = useCallback(
@@ -76,7 +57,6 @@ export function SPVs(props: IProps) {
                     name,
                 }),
             );
-            setShowNewItemForm(false);
         },
         [dispatch],
     );
@@ -90,16 +70,9 @@ export function SPVs(props: IProps) {
 
     return (
         <SPVsTable
-            spvs={spvs}
-            assets={assets}
-            selectedItem={selectedItem}
-            showNewItemForm={showNewItemForm}
-            expandedRowId={expandedRowId}
+            state={state}
             isAllowedToCreateDocuments={isAllowedToCreateDocuments}
             isAllowedToEditDocuments={isAllowedToEditDocuments}
-            toggleExpandedRow={toggleExpandedRow}
-            setSelectedItem={setSelectedItem}
-            setShowNewItemForm={setShowNewItemForm}
             onSubmitEdit={onSubmitEdit}
             onSubmitCreate={onSubmitCreate}
             onSubmitDelete={onSubmitDelete}

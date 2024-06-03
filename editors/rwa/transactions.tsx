@@ -1,30 +1,29 @@
 import {
+    AssetsTableProps,
     CashAsset,
     GroupTransactionFormInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
-    FixedIncome as UiFixedIncome,
-    GroupTransaction as UiGroupTransaction,
     assetGroupTransactions,
 } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
 import diff from 'microdiff';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import {
     BaseTransaction,
     BaseTransactionInput,
     EditTransactionFeeInput,
-    FixedIncome,
     GroupTransaction,
     getDifferences,
     isCashAsset,
-    isFixedIncomeAsset,
     validateTransactionFees,
 } from '../../document-models/real-world-assets';
 import {
     addFeesToGroupTransaction,
+    createFixedIncomeAsset,
     createGroupTransaction,
+    createServiceProviderFeeType,
     deleteGroupTransaction,
     editGroupTransaction,
     editGroupTransactionFees,
@@ -41,11 +40,7 @@ export const Transactions = (props: IProps) => {
         isAllowedToEditDocuments,
     } = props;
 
-    const transactions = document.state.global.transactions;
-
-    const fixedIncomeAssets = document.state.global.portfolio.filter(
-        (asset): asset is FixedIncome => isFixedIncomeAsset(asset),
-    );
+    const state = document.state.global;
 
     // there is only one cash asset for v1
     // this is always defined for every document model
@@ -55,15 +50,6 @@ export const Transactions = (props: IProps) => {
 
     const principalLenderAccountId =
         document.state.global.principalLenderAccountId;
-
-    const serviceProviderFeeTypes =
-        document.state.global.serviceProviderFeeTypes;
-
-    const accounts = document.state.global.accounts;
-
-    const [expandedRowId, setExpandedRowId] = useState<string>();
-    const [selectedItem, setSelectedItem] = useState<UiGroupTransaction>();
-    const [showNewItemForm, setShowNewItemForm] = useState(false);
 
     const createNewGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionFormInputs) => {
@@ -152,15 +138,6 @@ export const Transactions = (props: IProps) => {
             return groupTransaction;
         },
         [principalLenderAccountId, cashAsset.id],
-    );
-
-    const toggleExpandedRow = useCallback(
-        (id: string | undefined) => {
-            setExpandedRowId(curr =>
-                curr && curr === expandedRowId ? undefined : id,
-            );
-        },
-        [expandedRowId],
     );
 
     const handleFeeUpdates = useCallback(
@@ -266,6 +243,9 @@ export const Transactions = (props: IProps) => {
     const onSubmitEdit: GroupTransactionsTableProps['onSubmitEdit'] =
         useCallback(
             data => {
+                const selectedItem = state.transactions.find(
+                    t => t.id === data.id,
+                );
                 if (!selectedItem) return;
                 const newEntryTime = data.entryTime
                     ? new Date(data.entryTime).toISOString()
@@ -365,7 +345,7 @@ export const Transactions = (props: IProps) => {
                 }
 
                 if (data.fees) {
-                    handleFeeUpdates(data.fees, update as GroupTransaction);
+                    handleFeeUpdates(data.fees, update);
                 }
 
                 if (Object.keys(changedFields).length !== 0) {
@@ -376,10 +356,8 @@ export const Transactions = (props: IProps) => {
                         } as BaseTransactionInput),
                     );
                 }
-
-                setSelectedItem(undefined);
             },
-            [dispatch, selectedItem, handleFeeUpdates],
+            [dispatch, handleFeeUpdates, state.transactions],
         );
 
     const onSubmitCreate: GroupTransactionsTableProps['onSubmitCreate'] =
@@ -389,7 +367,6 @@ export const Transactions = (props: IProps) => {
                     createNewGroupTransactionFromFormInputs(data);
 
                 dispatch(createGroupTransaction(transaction));
-                setShowNewItemForm(false);
             },
             [createNewGroupTransactionFromFormInputs, dispatch],
         );
@@ -402,6 +379,65 @@ export const Transactions = (props: IProps) => {
             [dispatch],
         );
 
+    const onSubmitCreateAsset: AssetsTableProps['onSubmitCreate'] = useCallback(
+        data => {
+            const id = utils.hashKey();
+            const name = data.name;
+            const maturity = data.maturity
+                ? new Date(data.maturity).toISOString()
+                : undefined;
+            const fixedIncomeTypeId = data.fixedIncomeTypeId;
+            const spvId = data.spvId;
+            const CUSIP = data.CUSIP;
+            const ISIN = data.ISIN;
+            const coupon = data.coupon;
+
+            if (!name) throw new Error('Name is required');
+            if (!maturity) throw new Error('Maturity is required');
+            if (!fixedIncomeTypeId)
+                throw new Error('Fixed income type is required');
+            if (!spvId) throw new Error('SPV is required');
+
+            dispatch(
+                createFixedIncomeAsset({
+                    id,
+                    name,
+                    maturity,
+                    fixedIncomeTypeId,
+                    spvId,
+                    CUSIP,
+                    ISIN,
+                    coupon,
+                }),
+            );
+        },
+        [dispatch],
+    );
+
+    const onSubmitCreateServiceProviderFeeType: GroupTransactionsTableProps['onSubmitCreateServiceProviderFeeType'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const name = data.name;
+                const accountId = data.accountId;
+                const feeType = data.feeType;
+
+                if (!name) throw new Error('Name is required');
+                if (!accountId) throw new Error('Account is required');
+                if (!feeType) throw new Error('Fee Type is required');
+
+                dispatch(
+                    createServiceProviderFeeType({
+                        id,
+                        name,
+                        accountId,
+                        feeType,
+                    }),
+                );
+            },
+            [dispatch],
+        );
+
     return (
         <div>
             <h1 className="text-lg font-bold mb-2">Transactions</h1>
@@ -409,23 +445,16 @@ export const Transactions = (props: IProps) => {
                 Details of this portfolios transactions
             </p>
             <GroupTransactionsTable
-                fixedIncomes={fixedIncomeAssets as UiFixedIncome[]}
-                cashAsset={cashAsset}
-                transactions={transactions}
-                accounts={accounts}
-                serviceProviderFeeTypes={serviceProviderFeeTypes}
-                expandedRowId={expandedRowId}
-                toggleExpandedRow={toggleExpandedRow}
-                selectedItem={selectedItem}
-                principalLenderAccountId={principalLenderAccountId}
+                state={state}
                 isAllowedToCreateDocuments={isAllowedToCreateDocuments}
                 isAllowedToEditDocuments={isAllowedToEditDocuments}
-                setSelectedItem={setSelectedItem}
                 onSubmitEdit={onSubmitEdit}
                 onSubmitCreate={onSubmitCreate}
-                showNewItemForm={showNewItemForm}
-                setShowNewItemForm={setShowNewItemForm}
                 onSubmitDelete={onSubmitDelete}
+                onSubmitCreateAsset={onSubmitCreateAsset}
+                onSubmitCreateServiceProviderFeeType={
+                    onSubmitCreateServiceProviderFeeType
+                }
             />
         </div>
     );

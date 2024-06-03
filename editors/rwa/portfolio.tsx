@@ -1,26 +1,15 @@
-import {
-    AssetsTable,
-    AssetsTableProps,
-    CashAsset,
-    FixedIncome as UiFixedIncome,
-} from '@powerhousedao/design-system';
+import { AssetsTable, AssetsTableProps } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import {
     FixedIncome,
     actions,
     getDifferences,
-    isCashAsset,
-    isFixedIncomeAsset,
 } from '../../document-models/real-world-assets';
 import { IProps } from './editor';
 
 export const Portfolio = (props: IProps) => {
-    const [expandedRowId, setExpandedRowId] = useState<string>();
-    const [selectedItem, setSelectedItem] = useState<UiFixedIncome>();
-    const [showNewItemForm, setShowNewItemForm] = useState(false);
-
     const {
         dispatch,
         document,
@@ -28,33 +17,13 @@ export const Portfolio = (props: IProps) => {
         isAllowedToEditDocuments,
     } = props;
 
-    const spvs = document.state.global.spvs;
-
-    const fixedIncomeTypes = document.state.global.fixedIncomeTypes;
-
-    const fixedIncomeAssets = document.state.global.portfolio.filter(
-        (asset): asset is FixedIncome => isFixedIncomeAsset(asset),
-    );
-
-    const transactions = document.state.global.transactions;
-
-    // there is only one cash asset for v1
-    // this is always defined for every document model
-    const cashAsset = document.state.global.portfolio.find(
-        isCashAsset,
-    ) as CashAsset;
-
-    const toggleExpandedRow = useCallback(
-        (id: string | undefined) => {
-            setExpandedRowId(curr =>
-                curr && curr === expandedRowId ? undefined : id,
-            );
-        },
-        [expandedRowId],
-    );
+    const state = document.state.global;
 
     const onSubmitEdit: AssetsTableProps['onSubmitEdit'] = useCallback(
         data => {
+            const selectedItem = state.portfolio.find(f => f.id === data.id) as
+                | FixedIncome
+                | undefined;
             if (!selectedItem) return;
             const update = copy(selectedItem);
             const newName = data.name;
@@ -78,7 +47,6 @@ export const Portfolio = (props: IProps) => {
             const changedFields = getDifferences(selectedItem, update);
 
             if (Object.values(changedFields).filter(Boolean).length === 0) {
-                setSelectedItem(undefined);
                 return;
             }
 
@@ -88,9 +56,8 @@ export const Portfolio = (props: IProps) => {
                     id: selectedItem.id,
                 }),
             );
-            setSelectedItem(undefined);
         },
-        [dispatch, selectedItem],
+        [dispatch, state.portfolio],
     );
 
     const onSubmitCreate: AssetsTableProps['onSubmitCreate'] = useCallback(
@@ -124,7 +91,6 @@ export const Portfolio = (props: IProps) => {
                     coupon,
                 }),
             );
-            setShowNewItemForm(false);
         },
         [dispatch],
     );
@@ -136,6 +102,37 @@ export const Portfolio = (props: IProps) => {
         [dispatch],
     );
 
+    const onSubmitCreateFixedIncomeType: AssetsTableProps['onSubmitCreateFixedIncomeType'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const name = data.name;
+
+                if (!name) throw new Error('Name is required');
+
+                dispatch(actions.createFixedIncomeType({ id, name }));
+            },
+            [dispatch],
+        );
+
+    const onSubmitCreateSpv: AssetsTableProps['onSubmitCreateSpv'] =
+        useCallback(
+            data => {
+                const id = utils.hashKey();
+                const name = data.name;
+
+                if (!name) throw new Error('Name is required');
+
+                dispatch(
+                    actions.createSpv({
+                        id,
+                        name,
+                    }),
+                );
+            },
+            [dispatch],
+        );
+
     return (
         <div>
             <h1 className="text-lg font-bold mb-2">Portfolio</h1>
@@ -144,22 +141,14 @@ export const Portfolio = (props: IProps) => {
                 institutions or investment vehicles.
             </p>
             <AssetsTable
-                assets={fixedIncomeAssets as UiFixedIncome[]}
-                transactions={transactions}
-                cashAsset={cashAsset}
-                fixedIncomeTypes={fixedIncomeTypes}
-                spvs={spvs}
-                expandedRowId={expandedRowId}
-                selectedItem={selectedItem}
-                showNewItemForm={showNewItemForm}
+                state={state}
                 isAllowedToCreateDocuments={isAllowedToCreateDocuments}
                 isAllowedToEditDocuments={isAllowedToEditDocuments}
-                toggleExpandedRow={toggleExpandedRow}
-                setSelectedItem={setSelectedItem}
-                setShowNewItemForm={setShowNewItemForm}
                 onSubmitEdit={onSubmitEdit}
                 onSubmitCreate={onSubmitCreate}
                 onSubmitDelete={onSubmitDelete}
+                onSubmitCreateFixedIncomeType={onSubmitCreateFixedIncomeType}
+                onSubmitCreateSpv={onSubmitCreateSpv}
             />
         </div>
     );
