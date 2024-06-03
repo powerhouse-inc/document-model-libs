@@ -128,7 +128,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     </label>
                     <textarea
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter changes"
+                        placeholder="Meaningful changes applied during the biweekly period"
                         value={changesLocal}
                         onChange={e => setChangesLocal(e.target.value)}
                     />
@@ -139,7 +139,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     </label>
                     <textarea
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Enter lessons"
+                        placeholder="Lessons learned over the last 2 weeks"
                         value={lessonsLocal}
                         onChange={e => setLessonsLocal(e.target.value)}
                     />
