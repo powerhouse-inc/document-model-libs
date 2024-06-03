@@ -5,6 +5,7 @@ import {
     calculateDaysRemaining,
     calculateStatus,
     classNames,
+    formatPercent,
     toArray,
 } from '../util';
 
@@ -21,18 +22,16 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
         () => calculateArbReceived(toArray(state.phases)),
         [state],
     );
-    const arbRemaining = useMemo(
-        () => (state.grantSize || 0) - arbReceived,
-        [state, arbReceived],
-    );
     const status = useMemo(
         () => calculateStatus(toArray(state.phases)),
         [state],
     );
 
+    const totalArb = state.grantSize || 0;
+
     return (
         <div>
-            <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+            <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
                     <dt className="truncate text-sm font-medium text-gray-500">
                         Days Remaining
@@ -43,18 +42,10 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
                 </div>
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
                     <dt className="truncate text-sm font-medium text-gray-500">
-                        ARB Received
+                        % ARB Utilized
                     </dt>
                     <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                        {arbReceived}
-                    </dd>
-                </div>
-                <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                    <dt className="truncate text-sm font-medium text-gray-500">
-                        ARB Remaining
-                    </dt>
-                    <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                        {arbRemaining}
+                        {formatPercent(arbReceived / totalArb)}
                     </dd>
                 </div>
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">

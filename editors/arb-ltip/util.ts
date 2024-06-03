@@ -103,3 +103,5 @@ export const intHandler =
 
         setFn(value);
     };
+
+export const formatPercent = (value: number) => `${(value * 100).toFixed(2)}%`;
