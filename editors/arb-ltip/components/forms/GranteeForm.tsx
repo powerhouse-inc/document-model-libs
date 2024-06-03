@@ -138,7 +138,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         ],
     );
 
-    const isInit = authorizedSignerAddress === undefined;
+    const isInit = authorizedSignerAddress === '';
     const isAdmin = useIsAdmin();
 
     const onSubmit = useCallback(() => {
