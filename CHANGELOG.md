@@ -1,3 +1,10 @@
+# [1.55.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.2...v1.55.0-arbitrum.3) (2024-06-03)
+
+
+### Features
+
+* update document-model 1.5.0 ([#171](https://github.com/powerhouse-inc/document-model-libs/issues/171)) ([393117a](https://github.com/powerhouse-inc/document-model-libs/commit/393117a604b28ab0817531661478b073ea0b748a))
+
 # [1.55.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.1...v1.55.0-arbitrum.2) (2024-06-03)
 
 
