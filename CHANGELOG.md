@@ -1,3 +1,10 @@
+# [1.55.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.3...v1.55.0-arbitrum.4) (2024-06-03)
+
+
+### Features
+
+* skip old tests ([#172](https://github.com/powerhouse-inc/document-model-libs/issues/172)) ([d18c5ba](https://github.com/powerhouse-inc/document-model-libs/commit/d18c5ba6f814f723b84e88a80ccd382cb3799224))
+
 # [1.55.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.2...v1.55.0-arbitrum.3) (2024-06-03)
 
 
