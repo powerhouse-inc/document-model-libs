@@ -1,3 +1,10 @@
+# [1.55.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.55.0-arbitrum.1...v1.55.0-arbitrum.2) (2024-06-03)
+
+
+### Features
+
+* added back arrow to close editor ([eb67840](https://github.com/powerhouse-inc/document-model-libs/commit/eb678400e887db78bae05fd7053454795c0a56bf))
+
 # [1.55.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.54.0...v1.55.0-arbitrum.1) (2024-05-27)
 
 
