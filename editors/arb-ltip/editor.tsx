@@ -64,26 +64,55 @@ const TabHeader = ({
         });
     }
 
+    const tabElements = useMemo(
+        () =>
+            tabs.map(tab => (
+                <p
+                    key={tab.name}
+                    className={classNames(
+                        tab.name === active
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                        'cursor-pointer whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium',
+                    )}
+                    aria-current={tab.name === active ? 'page' : undefined}
+                    onClick={() => setActive(tab.name)}
+                >
+                    {tab.name}
+                </p>
+            )),
+        [active],
+    );
+
     return (
         <div className="border-b border-gray-200">
-            <nav className="flex justify-center space-x-8" aria-label="Tabs">
-                <div className="flex-1 flex space-x-2 pt-4"></div>
+            <nav className="block sm:hidden" aria-label="Tabs">
+                <div className="flex space-x-4 w-full pb-4">
+                    <Icon name="arrow-left" onClick={onClose} />
+                    <div className="flex-1" />
+                    <Icon
+                        className="cursor-pointer"
+                        name="save"
+                        onClick={onExport}
+                    />
+                    <Icon
+                        className="cursor-pointer"
+                        name="xmark"
+                        onClick={onClose}
+                    />
+                </div>
+                <div className="flex space-x-8 justify-center">
+                    {tabElements}
+                </div>
+            </nav>
+            <nav className="hidden sm:flex space-x-8" aria-label="Tabs">
+                <div className="flex-1 cursor-pointer flex items-center">
+                    <Icon name="arrow-left" onClick={onClose} />
+                </div>
 
-                {tabs.map(tab => (
-                    <p
-                        key={tab.name}
-                        className={classNames(
-                            tab.name === active
-                                ? 'border-indigo-500 text-indigo-600'
-                                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                            'cursor-pointer whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium',
-                        )}
-                        aria-current={tab.name === active ? 'page' : undefined}
-                        onClick={() => setActive(tab.name)}
-                    >
-                        {tab.name}
-                    </p>
-                ))}
+                <div className="flex-1 flex space-x-8 justify-center">
+                    {tabElements}
+                </div>
 
                 <div className="flex-1 flex space-x-2 justify-end pt-4">
                     <div>
@@ -112,6 +141,13 @@ const ControlsHeader = ({ dispatch, onClose, onExport }: IProps) => {
 
     return (
         <div className="w-full flex space-x-2">
+            <div>
+                <Icon
+                    className="cursor-pointer"
+                    name="arrow-left"
+                    onClick={onClose}
+                />
+            </div>
             <div>
                 <Icon
                     className="hidden -scale-x-100 cursor-pointer"

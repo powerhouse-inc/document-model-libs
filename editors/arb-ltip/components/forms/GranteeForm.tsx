@@ -284,7 +284,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     {(isAdmin || isInit) && (
                         <div className="w-40">
                             <label className="text-xs font-medium text-gray-900">
-                                Grant Size
+                                Grant Size (ARB)
                             </label>
                             <input
                                 type="text"
