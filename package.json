@@ -50,6 +50,11 @@
             "require": "./dist/cjs/real-world-assets.cjs",
             "types": "./dist/real-world-assets.d.ts"
         },
+        "./scope-of-work": {
+            "import": "./dist/es/scope-of-work.js",
+            "require": "./dist/cjs/scope-of-work.cjs",
+            "types": "./dist/scope-of-work.d.ts"
+        },
         "./utils": {
             "import": "./dist/es/utils.js",
             "require": "./dist/cjs/utils.cjs",

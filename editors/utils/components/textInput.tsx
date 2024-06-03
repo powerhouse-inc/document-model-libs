@@ -134,6 +134,7 @@ export function TextInput(props: TextInputProps) {
                 value={state.value}
                 onFocus={e => setFocus(true)}
                 onBlur={e => setFocus(false)}
+                spellCheck={false}
             ></textarea>
         </div>
     );
