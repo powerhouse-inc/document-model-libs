@@ -83,7 +83,7 @@ const GranteeForm = (props: GranteeFormProps) => {
     );
 
     // 12 weeks
-    const [startDate, setStartDate] = useState(new Date(2024, 3, 29));
+    const [startDate, setStartDate] = useState(new Date(2024, 5, 3));
     const endDate = useMemo(() => {
         const date = new Date(startDate);
         date.setDate(date.getDate() + 84);
