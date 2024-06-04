@@ -89,7 +89,7 @@
         "@monaco-editor/react": "^4.6.0",
         "@mui/material": "^5.15.5",
         "@powerhousedao/codegen": "0.0.15",
-        "@powerhousedao/design-system": "1.0.0-alpha.113",
+        "@powerhousedao/design-system": "1.0.0-alpha.117",
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/git": "^10.0.1",
         "@storybook/addon-essentials": "^8.0.2",
@@ -148,7 +148,7 @@
         "vite": "^5.2.9",
         "vite-plugin-dts": "^3.8.3",
         "vite-plugin-generate-file": "^0.1.1",
-        "vitest": "^1.2.1",
+        "vitest": "^1.6.0",
         "zod": "^3.22.4"
     },
     "peerDependencies": {
