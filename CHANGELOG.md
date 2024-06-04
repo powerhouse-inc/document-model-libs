@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.1...v1.59.0-arbitrum.2) (2024-06-04)
+
+
+### Bug Fixes
+
+* updating start date ([23fce73](https://github.com/powerhouse-inc/document-model-libs/commit/23fce7353442433e5b35dfba6d55a31ef58403a4))
+
 # [1.59.0-arbitrum.1](https://github.com/powerhouse-inc/document-model-libs/compare/v1.58.0...v1.59.0-arbitrum.1) (2024-06-04)
 
 
