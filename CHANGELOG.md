@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.2...v1.59.0-arbitrum.3) (2024-06-04)
+
+
+### Features
+
+* updated ArbLtipGrantee editor ([4e10f6d](https://github.com/powerhouse-inc/document-model-libs/commit/4e10f6d9e459a47e337525aa8121fb876d042a5f))
+
 # [1.59.0-arbitrum.2](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.1...v1.59.0-arbitrum.2) (2024-06-04)
 
 
