@@ -14,7 +14,7 @@ export const module: ExtendedEditor<
     CustomEditorProps
 > = {
     Component: lazyWithPreload(() => import('./editor')),
-    documentTypes: ['ARBLTIPGrantee'],
+    documentTypes: ['ArbLtipGrantee'],
     config: {
         id: 'arb-ltip-editor',
         disableExternalControls: true,
