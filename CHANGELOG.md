@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.3...v1.59.0-arbitrum.4) (2024-06-06)
+
+
+### Bug Fixes
+
+* styling on finalize panel ([8c314ab](https://github.com/powerhouse-inc/document-model-libs/commit/8c314abe6907bf90095acb50184b804d90ad89ea))
+
 # [1.59.0-arbitrum.3](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.2...v1.59.0-arbitrum.3) (2024-06-04)
 
 
