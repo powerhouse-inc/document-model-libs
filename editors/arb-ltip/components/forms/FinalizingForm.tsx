@@ -36,6 +36,14 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         () => validators.gteZero(avgDailyUniqueUsersLocal),
         [avgDailyUniqueUsersLocal],
     );
+    const isChangesValid = useMemo(
+        () => validators.isNotEmptyString(changesLocal),
+        [changesLocal],
+    );
+    const isLessonsValid = useMemo(
+        () => validators.isNotEmptyString(lessonsLocal),
+        [lessonsLocal],
+    );
 
     useInitialScroll();
 
@@ -43,7 +51,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         if (
             !isAvgDailTVLValid ||
             !isAvgDailyTXNSValid ||
-            !isAvgDailyUniqueUsersValid
+            !isAvgDailyUniqueUsersValid ||
+            !isChangesValid ||
+            !isLessonsValid
         ) {
             setShowErrors(true);
             return;
@@ -122,7 +132,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         onChange={intHandler(setAvgDailyUniqueUsersLocal)}
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-gray-300">
+                <div className={wrapperClasses(isChangesValid)}>
                     <label className="block text-xs font-medium text-gray-900">
                         Changes
                     </label>
@@ -133,7 +143,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                         onChange={e => setChangesLocal(e.target.value)}
                     />
                 </div>
-                <div className="relative rounded-md rounded-t-none px-3 pb-1.5 pt-2.5 ring-1 ring-gray-300">
+                <div className={wrapperClasses(isLessonsValid)}>
                     <label className="block text-xs font-medium text-gray-900">
                         Lessons
                     </label>
