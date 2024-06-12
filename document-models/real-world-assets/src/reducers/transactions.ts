@@ -10,6 +10,7 @@ import {
     makeFixedIncomeAssetWithDerivedFields,
     validateCashTransaction,
     validateFixedIncomeTransaction,
+    validateGroupTransaction,
     validateTransactionFee,
     validateTransactionFees,
 } from '../..';
@@ -34,18 +35,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             ...cashTransaction,
             entryTime,
         };
-        validateCashTransaction(state, cashTransaction);
 
         if (fixedIncomeTransaction) {
             fixedIncomeTransaction = {
                 ...fixedIncomeTransaction,
                 entryTime,
             };
-            validateFixedIncomeTransaction(state, fixedIncomeTransaction);
-        }
-
-        if (fees) {
-            validateTransactionFees(state, fees);
         }
 
         const newGroupTransaction = {
@@ -58,6 +53,8 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             cashTransaction,
             fixedIncomeTransaction,
         };
+
+        validateGroupTransaction(newGroupTransaction, state);
 
         state.transactions.push(newGroupTransaction);
 
@@ -129,11 +126,16 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         ) {
             transaction.fixedIncomeTransaction.amount =
                 action.input.fixedIncomeTransaction.amount;
+            validateFixedIncomeTransaction(
+                state,
+                transaction.fixedIncomeTransaction,
+            );
         }
 
         if (action.input.cashTransaction?.amount) {
             transaction.cashTransaction.amount =
                 action.input.cashTransaction.amount;
+            validateCashTransaction(state, transaction.cashTransaction);
         }
 
         if (action.input.unitPrice) {

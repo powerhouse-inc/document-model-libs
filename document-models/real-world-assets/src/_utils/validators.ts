@@ -8,6 +8,7 @@ import {
     EditGroupTransactionInput,
     EditTransactionFeeInput,
     FixedIncome,
+    GroupTransaction,
     RealWorldAssetsState,
     TransactionFee,
 } from '../..';
@@ -59,7 +60,7 @@ export function isAssetGroupTransaction(
     return true;
 }
 
-export function validateGroupTransaction(
+export function validateSharedGroupTransactionFields(
     transaction: Partial<EditGroupTransactionInput>,
 ) {
     if (!transaction.id) {
@@ -82,8 +83,8 @@ export function validateGroupTransaction(
     }
 }
 
-export function validateAssetGroupTransaction(
-    transaction: AssetGroupTransaction,
+export function validateGroupTransaction(
+    transaction: GroupTransaction,
     state: RealWorldAssetsState,
 ) {
     if (!numberValidator.safeParse(transaction.unitPrice).success) {
@@ -92,9 +93,14 @@ export function validateAssetGroupTransaction(
     if (!numberValidator.positive().safeParse(transaction.unitPrice).success) {
         throw new Error(`Unit price must be positive`);
     }
-    validateGroupTransaction(transaction);
+    validateSharedGroupTransactionFields(transaction);
     validateCashTransaction(state, transaction.cashTransaction);
-    validateFixedIncomeTransaction(state, transaction.fixedIncomeTransaction);
+    if (transaction.fixedIncomeTransaction) {
+        validateFixedIncomeTransaction(
+            state,
+            transaction.fixedIncomeTransaction,
+        );
+    }
     validateTransactionFees(state, transaction.fees);
 }
 
@@ -112,7 +118,7 @@ export function validatePrincipalGroupTransaction(
     transaction: PrincipalGroupTransaction,
     state: RealWorldAssetsState,
 ) {
-    validateGroupTransaction(transaction);
+    validateSharedGroupTransactionFields(transaction);
     validateCashTransaction(state, transaction.cashTransaction);
     validateTransactionFees(state, transaction.fees);
 }
@@ -130,7 +136,7 @@ export function validateInterestPaymentGroupTransaction(
     transaction: PrincipalGroupTransaction,
     state: RealWorldAssetsState,
 ) {
-    validateGroupTransaction(transaction);
+    validateSharedGroupTransactionFields(transaction);
     validateInterestTransaction(state, transaction.cashTransaction);
     validateTransactionFees(state, transaction.fees);
 }
@@ -148,7 +154,7 @@ export function validateFeesPaymentGroupTransaction(
     transaction: FeesPaymentGroupTransaction,
     state: RealWorldAssetsState,
 ) {
-    validateGroupTransaction(transaction);
+    validateSharedGroupTransactionFields(transaction);
     validateFeeBaseTransaction(state, transaction.cashTransaction);
 }
 
