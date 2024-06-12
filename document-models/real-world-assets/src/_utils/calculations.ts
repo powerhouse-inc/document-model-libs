@@ -1,7 +1,7 @@
 import {
     GroupTransaction,
     GroupTransactionType,
-} from '@powerhousedao/design-system';
+} from 'document-models/real-world-assets';
 import { ASSET_PURCHASE, ASSET_SALE } from '../constants';
 
 /**

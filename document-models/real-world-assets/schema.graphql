@@ -94,7 +94,9 @@ enum GroupTransactionType {
     PrincipalReturn
     AssetPurchase
     AssetSale
+    InterestIncome
     InterestPayment
+    FeesIncome
     FeesPayment
 }
 
