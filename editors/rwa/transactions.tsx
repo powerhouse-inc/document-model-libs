@@ -58,14 +58,10 @@ export const Transactions = (props: IProps) => {
                 fixedIncomeId,
                 fixedIncomeAmount,
                 type,
-                cashBalanceChange,
                 unitPrice,
             } = data;
             if (!type) throw new Error('Type is required');
             if (!data.entryTime) throw new Error('Entry time is required');
-            if (!cashBalanceChange) {
-                throw new Error('Cash balance change is required');
-            }
             if (!cashAmount) {
                 throw new Error('Cash amount is required');
             }
@@ -127,7 +123,6 @@ export const Transactions = (props: IProps) => {
                 id: utils.hashKey(),
                 type,
                 cashTransaction,
-                cashBalanceChange,
                 unitPrice,
                 entryTime,
                 fees,

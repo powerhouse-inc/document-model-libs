@@ -32,3 +32,17 @@ export const groupTransactionTypesToAllowedTransactions: Record<
     [FEES_INCOME]: [CASH_TRANSACTION],
     [FEES_PAYMENT]: [CASH_TRANSACTION],
 } as const;
+
+export const cashTransactionSignByTransactionType: Record<
+    GroupTransactionType,
+    -1 | 1
+> = {
+    [ASSET_SALE]: 1,
+    [PRINCIPAL_DRAW]: 1,
+    [ASSET_PURCHASE]: -1,
+    [PRINCIPAL_RETURN]: -1,
+    [FEES_INCOME]: 1,
+    [FEES_PAYMENT]: -1,
+    [INTEREST_INCOME]: 1,
+    [INTEREST_PAYMENT]: -1,
+} as const;
