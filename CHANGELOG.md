@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.6](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.5...v1.59.0-arbitrum.6) (2024-06-13)
+
+
+### Bug Fixes
+
+* block explorer links ([e78813f](https://github.com/powerhouse-inc/document-model-libs/commit/e78813fd67433ebd89f80d8b09139961415f66b9))
+
 # [1.59.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.4...v1.59.0-arbitrum.5) (2024-06-13)
 
 
