@@ -249,7 +249,6 @@ export const Transactions = (props: IProps) => {
                 const newFixedIncomeAssetId = data.fixedIncomeId;
                 const newFixedIncomeAssetAmount = data.fixedIncomeAmount;
                 const newCashAmount = data.cashAmount;
-                const newCashBalanceChange = data.cashBalanceChange;
 
                 const existingCashTransaction = selectedItem.cashTransaction;
 
@@ -293,10 +292,6 @@ export const Transactions = (props: IProps) => {
                     }
                     update.fixedIncomeTransaction.amount =
                         newFixedIncomeAssetAmount;
-                }
-
-                if (newCashBalanceChange) {
-                    update.cashBalanceChange = newCashBalanceChange;
                 }
 
                 let changedFields = getDifferences(selectedItem, update);
