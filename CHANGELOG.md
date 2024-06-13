@@ -1,3 +1,12 @@
+# [1.59.0-arbitrum.5](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.4...v1.59.0-arbitrum.5) (2024-06-13)
+
+
+### Bug Fixes
+
+* renamed document model json ([5e390c7](https://github.com/powerhouse-inc/document-model-libs/commit/5e390c79cd2e0cac81cedfe44c18612230cc272f))
+* updated editor ([4250ff0](https://github.com/powerhouse-inc/document-model-libs/commit/4250ff0ae8065a92463d299b5b2054270cd77114))
+* updated specification ([54c2aee](https://github.com/powerhouse-inc/document-model-libs/commit/54c2aee0eecd7ab5f858a200c219ca5c43d6324c))
+
 # [1.59.0-arbitrum.4](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.3...v1.59.0-arbitrum.4) (2024-06-06)
 
 
