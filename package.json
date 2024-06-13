@@ -55,10 +55,10 @@
             "require": "./dist/cjs/utils.cjs",
             "types": "./dist/utils.d.ts"
         },
-        "./arb-ltip-grantee": {
-            "import": "./dist/es/arb-ltip-grantee.js",
-            "require": "./dist/cjs/arb-ltip-grantee.cjs",
-            "types": "./dist/arb-ltip-grantee.d.ts"
+        "./arbitrum-ltip-grantee": {
+            "import": "./dist/es/arbitrum-ltip-grantee.js",
+            "require": "./dist/cjs/arbitrum-ltip-grantee.cjs",
+            "types": "./dist/arbitrum-ltip-grantee.d.ts"
         }
     },
     "scripts": {
