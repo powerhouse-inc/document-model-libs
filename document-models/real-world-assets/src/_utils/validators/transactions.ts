@@ -47,14 +47,14 @@ export function isInterestGroupTransaction(
     transaction: Partial<EditGroupTransactionInput>,
 ): transaction is InterestGroupTransaction {
     if (!transaction.type) return false;
-    return ![INTEREST_PAYMENT, INTEREST_INCOME].includes(transaction.type);
+    return [INTEREST_PAYMENT, INTEREST_INCOME].includes(transaction.type);
 }
 
 export function isFeesGroupTransaction(
     transaction: Partial<EditGroupTransactionInput>,
 ): transaction is FeesGroupTransaction {
     if (!transaction.type) return false;
-    return ![FEES_PAYMENT, FEES_INCOME].includes(transaction.type);
+    return [FEES_PAYMENT, FEES_INCOME].includes(transaction.type);
 }
 
 export function validateSharedGroupTransactionFields(
@@ -148,13 +148,9 @@ export function validateInterestGroupTransaction(
     }
 
     if (transaction.type === INTEREST_INCOME) {
-        if (
-            !state.serviceProviderFeeTypes.find(
-                a => a.accountId === counterPartyAccountId,
-            )
-        ) {
+        if (!state.accounts.find(a => a.id === counterPartyAccountId)) {
             throw new Error(
-                `Counter party with id ${counterPartyAccountId} must be a known service provider`,
+                `Counter party with account id ${counterPartyAccountId} does not exist!`,
             );
         }
     }
@@ -165,9 +161,10 @@ export function validateFeesGroupTransaction(
     state: RealWorldAssetsState,
     transaction: FeesGroupTransaction,
 ) {
-    if (!('serviceProviderFeeTypeId' in transaction)) {
-        throw new Error(`Fees transaction must have a service provider`);
+    if (!transaction.serviceProviderFeeTypeId) {
+        return;
     }
+
     const serviceProviderFeeType = state.serviceProviderFeeTypes.find(
         a => a.id === transaction.serviceProviderFeeTypeId,
     );
@@ -296,7 +293,7 @@ export function validateTransactionFee(
             `Service provider with account id ${fee.serviceProviderFeeTypeId} does not exist!`,
         );
     }
-    if (!numberValidator.safeParse(fee.amount).success) {
+    if (!numberValidator.positive().safeParse(fee.amount).success) {
         throw new Error(`Fee amount must be a number`);
     }
 }
@@ -305,6 +302,8 @@ export function validateTransactionFees(
     state: RealWorldAssetsState,
     fees: InputMaybe<EditTransactionFeeInput[]>,
 ): asserts fees is TransactionFee[] {
+    if (fees === null) return;
+
     if (!Array.isArray(fees)) {
         throw new Error(`Transaction fees must be an array`);
     }

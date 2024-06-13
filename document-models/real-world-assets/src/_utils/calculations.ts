@@ -273,3 +273,11 @@ export function calculateCashBalanceChange(
 
     return cashAmount * sign - totalFees;
 }
+
+export function calculateUnitPrice(
+    cashAmount: InputMaybe<number>,
+    fixedIncomeAmount: InputMaybe<number>,
+) {
+    if (!cashAmount || !fixedIncomeAmount) return 0;
+    return cashAmount / fixedIncomeAmount;
+}

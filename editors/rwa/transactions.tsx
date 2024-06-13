@@ -4,7 +4,6 @@ import {
     GroupTransactionFormInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
-    assetGroupTransactions,
 } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
@@ -53,22 +52,11 @@ export const Transactions = (props: IProps) => {
 
     const createNewGroupTransactionFromFormInputs = useCallback(
         (data: GroupTransactionFormInputs) => {
-            const {
-                cashAmount,
-                fixedIncomeId,
-                fixedIncomeAmount,
-                type,
-                unitPrice,
-            } = data;
+            const { cashAmount, fixedIncomeId, fixedIncomeAmount, type } = data;
             if (!type) throw new Error('Type is required');
             if (!data.entryTime) throw new Error('Entry time is required');
             if (!cashAmount) {
                 throw new Error('Cash amount is required');
-            }
-            if (!unitPrice && assetGroupTransactions.includes(type)) {
-                throw new Error(
-                    'Unit price is required for asset transactions',
-                );
             }
 
             const entryTime = new Date(data.entryTime).toISOString();
@@ -123,7 +111,6 @@ export const Transactions = (props: IProps) => {
                 id: utils.hashKey(),
                 type,
                 cashTransaction,
-                unitPrice,
                 entryTime,
                 fees,
                 fixedIncomeTransaction,

@@ -8,6 +8,7 @@ import { copy } from 'copy-anything';
 import {
     Cash,
     calculateCashBalanceChange,
+    calculateUnitPrice,
     isCashAsset,
     makeFixedIncomeAssetWithDerivedFields,
     validateGroupTransaction,
@@ -25,7 +26,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
 
         const type = action.input.type;
         const entryTime = action.input.entryTime;
-        const unitPrice = action.input.unitPrice ?? null;
         const fees = action.input.fees ?? null;
         const serviceProviderFeeTypeId =
             action.input.serviceProviderFeeTypeId ?? null;
@@ -37,6 +37,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             cashTransaction.amount,
             fees,
         );
+        const unitPrice = fixedIncomeTransaction
+            ? calculateUnitPrice(
+                  cashTransaction.amount,
+                  fixedIncomeTransaction.amount,
+              )
+            : null;
 
         cashTransaction = {
             ...cashTransaction,
@@ -56,10 +62,10 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             entryTime,
             cashBalanceChange,
             unitPrice,
+            serviceProviderFeeTypeId,
             fees,
             cashTransaction,
             fixedIncomeTransaction,
-            serviceProviderFeeTypeId,
         };
 
         validateGroupTransaction(state, newGroupTransaction);
@@ -67,6 +73,12 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         state.transactions.push(newGroupTransaction);
 
         const cashAsset = state.portfolio.find(a => isCashAsset(a)) as Cash;
+
+        console.log({
+            balance: cashAsset.balance,
+            cashBalanceChange,
+            newBalance: cashAsset.balance + cashBalanceChange,
+        });
 
         const updatedCashAsset = {
             ...cashAsset,
@@ -113,7 +125,6 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         const {
             type,
             entryTime,
-            unitPrice,
             serviceProviderFeeTypeId,
             cashTransaction,
             fixedIncomeTransaction,
@@ -128,16 +139,15 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
             newTransaction.cashTransaction.entryTime = entryTime;
         }
 
-        if (unitPrice) {
-            newTransaction.unitPrice = unitPrice;
-        }
-
         if (serviceProviderFeeTypeId) {
             newTransaction.serviceProviderFeeTypeId = serviceProviderFeeTypeId;
         }
 
         if (cashTransaction?.amount) {
             newTransaction.cashTransaction.amount = cashTransaction.amount;
+        }
+
+        if (cashTransaction?.amount || type) {
             newTransaction.cashBalanceChange = calculateCashBalanceChange(
                 newTransaction.type,
                 newTransaction.cashTransaction.amount,
@@ -170,8 +180,16 @@ export const reducer: RealWorldAssetsTransactionsOperations = {
         // if successfully updated transaction, also update related assets
 
         // if cash amount has changed, update the cash asset in state
-        if (cashTransaction?.amount) {
+        if (cashTransaction?.amount || type) {
             const cashAsset = state.portfolio.find(a => isCashAsset(a)) as Cash;
+
+            console.log({
+                balance: cashAsset.balance,
+                cashBalanceChange: newTransaction.cashBalanceChange,
+                newBalance:
+                    newTransaction.cashBalanceChange -
+                    oldTransaction.cashBalanceChange,
+            });
 
             cashAsset.balance +=
                 newTransaction.cashBalanceChange -
