@@ -57,7 +57,7 @@ const TabSummary = (props: TabSummaryProps) => {
                         </dt>
                         <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline">
                             <a
-                                href={`https://optimistic.etherscan.io/address/${disbursementContractAddress}`}
+                                href={`https://arbiscan.io/address/${disbursementContractAddress}`}
                                 target="blank"
                             >
                                 {disbursementContractAddress}
@@ -70,7 +70,7 @@ const TabSummary = (props: TabSummaryProps) => {
                         </dt>
                         <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline">
                             <a
-                                href={`https://optimistic.etherscan.io/address/${fundingAddress}`}
+                                href={`https://arbiscan.io/address/${fundingAddress}`}
                                 target="blank"
                             >
                                 {fundingAddress}

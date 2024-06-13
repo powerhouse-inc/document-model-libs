@@ -31,7 +31,7 @@ const ContractCard = (props: ContractCardProps) => {
             <div className="relative px-3 pb-1.5 pt-2.5">
                 <p className="block w-full p-0 text-gray-900 text-sm truncate underline">
                     <a
-                        href={`https://optimistic.etherscan.io/address/${contractAddress}`}
+                        href={`https://arbiscan.io/address/${contractAddress}`}
                         target="blank"
                     >
                         {contractAddress}
