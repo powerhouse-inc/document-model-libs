@@ -9,17 +9,17 @@ import utils from '../../gen/utils';
 import { InitGranteeInput, z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/general/creators';
-import { ArbLtipGranteeDocument } from '../../gen/types';
+import { ArbitrumLtipGranteeDocument } from '../../gen/types';
 import {
     createContext,
     expectException,
     expectNoException,
     signer,
-} from './util';
+} from '../utils';
 import { toArray } from '../../../../editors/arb-ltip/util';
 
 describe('General Operations', () => {
-    let document: ArbLtipGranteeDocument;
+    let document: ArbitrumLtipGranteeDocument;
 
     beforeEach(() => {
         document = utils.createDocument();

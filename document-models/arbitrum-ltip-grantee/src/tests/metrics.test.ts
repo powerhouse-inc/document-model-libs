@@ -9,11 +9,11 @@ import utils from '../../gen/utils';
 import { z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/metrics/creators';
-import { ArbLtipGranteeDocument } from '../../gen/types';
-import { createContext, expectNoException, signer } from './util';
+import { ArbitrumLtipGranteeDocument } from '../../gen/types';
+import { createContext, expectNoException, signer } from '../utils';
 
 describe('Metrics Operations', () => {
-    let document: ArbLtipGranteeDocument;
+    let document: ArbitrumLtipGranteeDocument;
 
     beforeEach(() => {
         document = utils.createDocument();

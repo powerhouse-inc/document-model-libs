@@ -5,9 +5,9 @@
  */
 
 import { toArray } from '../../../../editors/arb-ltip/util';
-import { ArbLtipGranteeMetaOperations } from '../../gen/meta/operations';
+import { ArbitrumLtipGranteeMetaOperations } from '../../gen/meta/operations';
 
-export const reducer: ArbLtipGranteeMetaOperations = {
+export const reducer: ArbitrumLtipGranteeMetaOperations = {
     addMetaOperation(state, action, dispatch) {
         if (!action.input.protocolVersion) {
             throw new Error('protocolVersion is required');

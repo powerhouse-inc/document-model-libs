@@ -1,6 +1,6 @@
-import { Maybe } from 'document-model/document-model';
-import { Phase } from '../../document-models/arb-ltip-grantee';
-import validators from '../../document-models/arb-ltip-grantee/src/validators';
+import { Maybe } from 'document-models/document-drive';
+import { Phase } from '../../document-models/arbitrum-ltip-grantee';
+import validators from '../../document-models/arbitrum-ltip-grantee/src/validators';
 
 export function maybeToArray<T>(value: Maybe<Maybe<T>[]>): T[] {
     if (!value) {

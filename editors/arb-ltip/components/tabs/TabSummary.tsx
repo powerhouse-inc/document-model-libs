@@ -1,8 +1,8 @@
-import { ArbLtipGranteeState } from '../../../../document-models/arb-ltip-grantee';
+import { ArbitrumLtipGranteeState } from '../../../../document-models/arbitrum-ltip-grantee';
 import GranteeStats from '../GranteeStats';
 import { useIsEditor } from '../UserProvider';
 
-type TabSummaryProps = ArbLtipGranteeState & {
+type TabSummaryProps = ArbitrumLtipGranteeState & {
     onEdit: () => void;
     onOpenHistorical: () => void;
 };

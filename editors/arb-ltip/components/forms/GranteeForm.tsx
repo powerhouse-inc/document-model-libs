@@ -1,16 +1,16 @@
 import {
-    ArbLtipGranteeState,
+    ArbitrumLtipGranteeState,
     EditGranteeInput,
     FundingType,
     InitGranteeInput,
     actions,
-} from '../../../../document-models/arb-ltip-grantee';
+} from '../../../../document-models/arbitrum-ltip-grantee';
 import { useCallback, useMemo, useState } from 'react';
 import { classNames, intHandler, maybeToArray } from '../../util';
 import DatePicker from 'react-datepicker';
 import { IProps } from '../../editor';
 import TagSelector from '../TagSelector';
-import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { useAddress, useIsAdmin } from '../UserProvider';
 
 const fundingTypes = [
@@ -35,7 +35,7 @@ const fundingTypes = [
 const numPhases = 8;
 const phaseDuration = 14;
 
-type GranteeFormProps = ArbLtipGranteeState &
+type GranteeFormProps = ArbitrumLtipGranteeState &
     Pick<IProps, 'context' | 'dispatch'> & { onClose: () => void };
 
 const GranteeForm = (props: GranteeFormProps) => {

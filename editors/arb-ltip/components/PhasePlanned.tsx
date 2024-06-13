@@ -1,7 +1,7 @@
 import {
     DistributionMechanism,
     Phase,
-} from '../../../document-models/arb-ltip-grantee';
+} from '../../../document-models/arbitrum-ltip-grantee';
 
 function translateDistributionMechanism(
     distributionMechanism: DistributionMechanism,

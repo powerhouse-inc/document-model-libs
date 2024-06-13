@@ -1,8 +1,8 @@
-import { ArbLtipGranteeAdminOperations } from '../../gen/admin/operations';
-import { isAdminRole } from '../tests/util';
+import { ArbitrumLtipGranteeAdminOperations } from '../../gen/admin/operations';
+import { isAdminRole } from '../utils';
 import validators from '../validators';
 
-export const reducer: ArbLtipGranteeAdminOperations = {
+export const reducer: ArbitrumLtipGranteeAdminOperations = {
     addEditorOperation(state, action, dispatch) {
         const signer = action.context?.signer?.user.address;
         if (!isAdminRole(state, signer)) {

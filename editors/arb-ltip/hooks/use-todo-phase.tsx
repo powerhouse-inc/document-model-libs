@@ -1,4 +1,4 @@
-import { Phase } from '../../../document-models/arb-ltip-grantee';
+import { Phase } from '../../../document-models/arbitrum-ltip-grantee';
 import { Maybe } from 'document-model/document-model';
 
 // finds the next phase that needs attention

@@ -1,9 +1,9 @@
 import { EditorProps } from 'document-model/document';
 import {
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState,
-    ArbLtipGranteeState,
-} from '../../document-models/arb-ltip-grantee';
+    ArbitrumLtipGranteeLocalState,
+    ArbitrumLtipGranteeAction,
+    ArbitrumLtipGranteeState,
+} from '../../document-models/arbitrum-ltip-grantee';
 import { Icon, RWATabsProps } from '@powerhousedao/design-system';
 import { useMemo, useState } from 'react';
 import GranteeForm from './components/forms/GranteeForm';
@@ -25,9 +25,9 @@ export type CustomEditorProps = Pick<
 >;
 
 export type IProps = EditorProps<
-    ArbLtipGranteeState,
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState
+    ArbitrumLtipGranteeState,
+    ArbitrumLtipGranteeAction,
+    ArbitrumLtipGranteeLocalState
 > &
     CustomEditorProps;
 

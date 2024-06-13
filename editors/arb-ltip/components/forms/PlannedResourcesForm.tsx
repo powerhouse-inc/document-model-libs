@@ -3,12 +3,12 @@ import TagSelector from '../TagSelector';
 import {
     DistributionMechanism,
     Phase,
-} from '../../../../document-models/arb-ltip-grantee';
+} from '../../../../document-models/arbitrum-ltip-grantee';
 import ContractSelector from '../ContractSelector';
 import { IProps } from '../../editor';
 import 'react-datepicker/dist/react-datepicker.css';
-import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
-import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import { editPhase } from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
+import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { classNames, intHandler, toArray } from '../../util';
 import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';

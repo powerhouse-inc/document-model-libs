@@ -1,4 +1,4 @@
-import { reducer, utils } from '../../document-models/arb-ltip-grantee';
+import { reducer, utils } from '../../document-models/arbitrum-ltip-grantee';
 import Editor from './editor';
 import { createDocumentStory } from 'document-model-libs/utils';
 
