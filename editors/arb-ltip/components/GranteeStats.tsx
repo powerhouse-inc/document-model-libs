@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
+import { ArbitrumLtipGranteeState } from '../../../document-models/arbitrum-ltip-grantee';
 import {
     calculateArbReceived,
     calculateDaysRemaining,
@@ -10,7 +10,7 @@ import {
 } from '../util';
 
 type GranteeStatsProps = {
-    state: ArbLtipGranteeState;
+    state: ArbitrumLtipGranteeState;
     onOpenHistorical: () => void;
 };
 const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {

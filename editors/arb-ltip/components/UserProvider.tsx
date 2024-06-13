@@ -1,6 +1,6 @@
 import { User } from 'document-model/document';
 import { createContext, useContext, useMemo, useState } from 'react';
-import { ArbLtipGranteeState } from '../../../document-models/arb-ltip-grantee';
+import { ArbitrumLtipGranteeState } from '../../../document-models/arbitrum-ltip-grantee';
 import { toArray } from '../util';
 
 export enum Role {
@@ -11,7 +11,7 @@ export enum Role {
 
 type UserContextType = {
     user: User | undefined;
-    state: ArbLtipGranteeState | undefined;
+    state: ArbitrumLtipGranteeState | undefined;
 };
 
 const UserContext = createContext<UserContextType>({
@@ -21,7 +21,7 @@ const UserContext = createContext<UserContextType>({
 
 type UserProviderProps = {
     user: User | undefined;
-    state: ArbLtipGranteeState | undefined;
+    state: ArbitrumLtipGranteeState | undefined;
     children: React.ReactNode;
 };
 

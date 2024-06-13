@@ -1,5 +1,5 @@
-import { toArray } from '../../../../editors/arb-ltip/util';
-import { ArbLtipGranteeDocument, ArbLtipGranteeState } from '../../gen';
+import { toArray } from '../../../editors/arb-ltip/util';
+import { ArbitrumLtipGranteeDocument, ArbitrumLtipGranteeState } from '../gen';
 
 export const signer = '0x50379DDB64b77e990Bc4A433c9337618C70D2C2a';
 
@@ -19,7 +19,7 @@ export const createContext = (addr: string = signer) => ({
 });
 
 export const isEditorRole = (
-    state: ArbLtipGranteeState,
+    state: ArbitrumLtipGranteeState,
     signer: string | undefined,
 ) => {
     if (!signer) {
@@ -36,7 +36,7 @@ export const isEditorRole = (
 };
 
 export const isAdminRole = (
-    state: ArbLtipGranteeState,
+    state: ArbitrumLtipGranteeState,
     signer: string | undefined,
 ) => {
     if (!signer) {
@@ -46,14 +46,14 @@ export const isAdminRole = (
     return state.authorizedSignerAddress === signer;
 };
 
-export const expectNoException = (document: ArbLtipGranteeDocument) => {
+export const expectNoException = (document: ArbitrumLtipGranteeDocument) => {
     const lastOp =
         document.operations.global[document.operations.global.length - 1];
     expect(lastOp.error).toBeUndefined();
 };
 
 export const expectException = (
-    document: ArbLtipGranteeDocument,
+    document: ArbitrumLtipGranteeDocument,
     message: string,
 ) => {
     const lastOp =

@@ -1,9 +1,9 @@
 import { Phase } from '../..';
-import { ArbLtipGranteeGeneralOperations } from '../../gen/general/operations';
-import { isAdminRole, isEditorRole } from '../tests/util';
+import { ArbitrumLtipGranteeGeneralOperations } from '../../gen/general/operations';
+import { isAdminRole, isEditorRole } from '../utils';
 import validators from '../validators';
 
-export const reducer: ArbLtipGranteeGeneralOperations = {
+export const reducer: ArbitrumLtipGranteeGeneralOperations = {
     initGranteeOperation(state, action, dispatch) {
         // this operation is public, but can only happen once
         if (

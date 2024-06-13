@@ -1,4 +1,4 @@
-import { Phase } from '../../../document-models/arb-ltip-grantee';
+import { Phase } from '../../../document-models/arbitrum-ltip-grantee';
 
 const PhaseActuals = ({ phase: { actuals, stats } }: { phase: Phase }) => {
     const arbReceived = actuals?.arbReceived ? actuals.arbReceived : 0;

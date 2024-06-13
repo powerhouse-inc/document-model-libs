@@ -9,14 +9,14 @@ import utils from '../../gen/utils';
 import { z } from '../../gen/schema';
 import { reducer } from '../../gen/reducer';
 import * as creators from '../../gen/admin/creators';
-import { ArbLtipGranteeDocument } from '../../gen/types';
+import { ArbitrumLtipGranteeDocument } from '../../gen/types';
 import { toArray } from '../../../../editors/arb-ltip/util';
-import { createContext, expectException, signer } from './util';
+import { createContext, expectException, signer } from '../utils';
 
 const addr = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
 describe('Admin Operations', () => {
-    let document: ArbLtipGranteeDocument;
+    let document: ArbitrumLtipGranteeDocument;
 
     beforeEach(() => {
         document = utils.createDocument();

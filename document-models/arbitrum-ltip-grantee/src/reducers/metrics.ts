@@ -4,11 +4,11 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import { ArbLtipGranteeMetricsOperations } from '../../gen/metrics/operations';
-import { isEditorRole } from '../tests/util';
+import { ArbitrumLtipGranteeMetricsOperations } from '../../gen/metrics/operations';
+import { isEditorRole } from '../utils';
 import validators from '../validators';
 
-export const reducer: ArbLtipGranteeMetricsOperations = {
+export const reducer: ArbitrumLtipGranteeMetricsOperations = {
     editPhaseOperation(state, action, dispatch) {
         const signer = action.context?.signer?.user.address;
         if (!isEditorRole(state, signer)) {

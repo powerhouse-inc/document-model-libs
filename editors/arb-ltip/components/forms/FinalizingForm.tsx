@@ -2,12 +2,12 @@ import { useCallback, useMemo, useState } from 'react';
 import {
     GranteeStats,
     Phase,
-} from '../../../../document-models/arb-ltip-grantee';
+} from '../../../../document-models/arbitrum-ltip-grantee';
 import { IProps } from '../../editor';
 import { classNames, intHandler } from '../../util';
 import PhaseTimespan from '../PhaseTimespan';
-import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
-import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
+import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
+import { editPhase } from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 
 type FinalizingFormProps = Pick<IProps, 'context' | 'dispatch'> & {

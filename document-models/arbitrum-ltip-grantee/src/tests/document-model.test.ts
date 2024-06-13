@@ -10,7 +10,7 @@ describe('Arb Ltip Grantee Document Model', () => {
         const document = utils.createDocument();
 
         expect(document).toBeDefined();
-        expect(document.documentType).toBe('ArbLtipGrantee');
+        expect(document.documentType).toBe('arbitrum/ltip-grantee');
     });
 
     it('should create a new Arb Ltip Grantee document with a valid initial state', () => {

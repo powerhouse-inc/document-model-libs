@@ -1,4 +1,4 @@
-import { Phase } from '../../../document-models/arb-ltip-grantee';
+import { Phase } from '../../../document-models/arbitrum-ltip-grantee';
 import PhaseTimespan from './PhaseTimespan';
 import PhasePlanned from './PhasePlanned';
 import PhaseActuals from './PhaseActuals';

@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
-    ArbLtipGranteeState,
+    ArbitrumLtipGranteeState,
     GranteeActuals,
     Phase,
-} from '../../../../document-models/arb-ltip-grantee';
+} from '../../../../document-models/arbitrum-ltip-grantee';
 import { IProps } from '../../editor';
-import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import {
     calculateArbReceived,
     classNames,
@@ -13,14 +13,14 @@ import {
     toArray,
 } from '../../util';
 import ContractSelector from '../ContractSelector';
-import { editPhase } from '../../../../document-models/arb-ltip-grantee/gen/creators';
+import { editPhase } from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
 import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 
 type ReportingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
-    state: ArbLtipGranteeState;
+    state: ArbitrumLtipGranteeState;
 };
 const ReportingForm = (props: ReportingFormProps) => {
     const { dispatch, phase, phaseIndex, state } = props;

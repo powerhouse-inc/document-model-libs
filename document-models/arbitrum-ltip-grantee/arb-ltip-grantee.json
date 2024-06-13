@@ -1,6 +1,6 @@
 {
-    "id": "ArbLtipGrantee",
-    "name": "ArbLtipGrantee",
+    "id": "arbitrum/ltip-grantee",
+    "name": "Arbitrum LTIP Grantee",
     "extension": "grantee",
     "description": "ArbLtipGrantee",
     "author": {

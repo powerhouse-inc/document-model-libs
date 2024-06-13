@@ -5,7 +5,7 @@ import { toArray } from '../../util';
 import {
     addEditor,
     removeEditor,
-} from '../../../../document-models/arb-ltip-grantee/gen/creators';
+} from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
 import { useState } from 'react';
 
 const RoleBadge = ({ role }: { role: Role }) => (

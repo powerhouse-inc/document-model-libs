@@ -4,25 +4,28 @@
  */
 
 import { actions as BaseActions, DocumentModel } from 'document-model/document';
-import { actions as ArbLtipGranteeActions, ArbLtipGrantee } from './gen';
+import {
+    actions as ArbitrumLtipGranteeActions,
+    ArbitrumLtipGrantee,
+} from './gen';
 import { reducer } from './gen/reducer';
 import { documentModel } from './gen/document-model';
 import genUtils from './gen/utils';
 import * as customUtils from './src/utils';
 import {
-    ArbLtipGranteeState,
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState,
+    ArbitrumLtipGranteeState,
+    ArbitrumLtipGranteeAction,
+    ArbitrumLtipGranteeLocalState,
 } from './gen/types';
 
-const Document = ArbLtipGrantee;
+const Document = ArbitrumLtipGrantee;
 const utils = { ...genUtils, ...customUtils };
-const actions = { ...BaseActions, ...ArbLtipGranteeActions };
+const actions = { ...BaseActions, ...ArbitrumLtipGranteeActions };
 
 export const module: DocumentModel<
-    ArbLtipGranteeState,
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState
+    ArbitrumLtipGranteeState,
+    ArbitrumLtipGranteeAction,
+    ArbitrumLtipGranteeLocalState
 > = {
     Document,
     reducer,
@@ -31,7 +34,14 @@ export const module: DocumentModel<
     documentModel,
 };
 
-export { ArbLtipGrantee, Document, reducer, actions, utils, documentModel };
+export {
+    ArbitrumLtipGrantee,
+    Document,
+    reducer,
+    actions,
+    utils,
+    documentModel,
+};
 
 export * from './gen/types';
 export * from './src/utils';

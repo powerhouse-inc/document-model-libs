@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { IProps } from '../../editor';
 import { classNames, formatDate, toArray } from '../../util';
-import { Phase } from '../../../../document-models/arb-ltip-grantee';
+import { Phase } from '../../../../document-models/arbitrum-ltip-grantee';
 import PhaseSummary from '../PhaseSummary';
 
 type DataBadgeProps = {

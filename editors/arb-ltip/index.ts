@@ -1,20 +1,20 @@
 import { lazyWithPreload } from 'document-model-libs/utils';
 import type {
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState,
-    ArbLtipGranteeState,
-} from '../../document-models/arb-ltip-grantee';
+    ArbitrumLtipGranteeAction,
+    ArbitrumLtipGranteeLocalState,
+    ArbitrumLtipGranteeState,
+} from '../../document-models/arbitrum-ltip-grantee';
 import type { ExtendedEditor } from '../types';
 import type { CustomEditorProps } from './editor';
 
 export const module: ExtendedEditor<
-    ArbLtipGranteeState,
-    ArbLtipGranteeAction,
-    ArbLtipGranteeLocalState,
+    ArbitrumLtipGranteeState,
+    ArbitrumLtipGranteeAction,
+    ArbitrumLtipGranteeLocalState,
     CustomEditorProps
 > = {
     Component: lazyWithPreload(() => import('./editor')),
-    documentTypes: ['ArbLtipGrantee'],
+    documentTypes: ['arbitrum/ltip-grantee'],
     config: {
         id: 'arb-ltip-editor',
         disableExternalControls: true,

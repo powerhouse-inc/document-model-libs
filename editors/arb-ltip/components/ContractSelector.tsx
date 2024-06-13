@@ -1,9 +1,9 @@
-import { Icon } from '@powerhousedao/design-system';
-import { Contract } from '../../../document-models/arb-ltip-grantee';
+import { Contract } from '../../../document-models/arbitrum-ltip-grantee';
 import { useCallback, useMemo, useState } from 'react';
 import { v4 } from 'uuid';
-import validators from '../../../document-models/arb-ltip-grantee/src/validators';
+import validators from '../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { classNames } from '../util';
+import { Icon } from '@powerhousedao/design-system';
 
 type ContractSelectorProps = {
     contracts: Contract[];

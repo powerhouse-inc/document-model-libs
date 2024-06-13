@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import ReportingForm from '../forms/ReportingForm';
 import FinalizingForm from '../forms/FinalizingForm';
 import useTodoPhase from '../../hooks/use-todo-phase';
-import validators from '../../../../document-models/arb-ltip-grantee/src/validators';
+import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 
 type TabTodoProps = IProps;
 const TabTodo = (props: TabTodoProps) => {
