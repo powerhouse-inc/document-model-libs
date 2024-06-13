@@ -1,8 +1,8 @@
 {
     "id": "arbitrum/ltip-grantee",
-    "name": "Arbitrum LTIP Grantee",
+    "name": "Arbitrum ltip grantee",
     "extension": "grantee",
-    "description": "ArbLtipGrantee",
+    "description": "Arbitrum ltip grantee",
     "author": {
         "name": "Goldenmule Media",
         "website": "https://thegoldenmule.com"
@@ -13,12 +13,12 @@
             "changeLog": [],
             "state": {
                 "global": {
-                    "schema": "scalar DateTime\n\ntype ArbLtipGranteeState {\n  id: ID!\n  granteeName: String\n  authorizedSignerAddress: String\n  editorAddresses: [String]\n  grantSize: Float\n  matchingGrantSize: Float\n  grantSummary: String\n  fundingAddress: String\n  fundingType: [FundingType]\n  disbursementContractAddress: String\n  metricsDashboardLink: String\n  phases: [Phase]\n  meta: [Meta]\n}\n\nenum FundingType {\n  EOA\n  Multisig\n  TwoofThreeMultisig\n  ThreeofFiveMultisig\n}\n\ntype Phase {\n  startDate: DateTime!\n  endDate: DateTime!\n  actuals: GranteeActuals\n  planned: GranteePlanned\n  stats: GranteeStats\n  status: Status\n}\n\nenum Status {\n  Uninitialized\n  NotStarted\n  InProgress\n  Finalized\n}\n\ntype GranteeActuals {\n  arbReceived: Float\n  arbUtilized: Float\n  arbRemaining: Float\n  contractsIncentivized: [Contract]\n  incentives: String\n  summary: String\n  disclosures: String\n}\n\ntype GranteePlanned {\n  arbToBeDistributed: Float\n  contractsIncentivized: [Contract]\n  distributionMechanism: [DistributionMechanism]\n  changes: String\n  expectations: String\n}\n\ntype GranteeStats {\n  avgDailyTVL: Float\n  avgDailyTXNS: Float\n  avgDailyUniqueUsers: Float\n  kpis: [NamedKpi]\n  changes: String\n  lessons: String\n}\n\ntype NamedKpi {\n  name: String\n  value: Float\n}\n\ntype Contract {\n  contractId: ID!\n  contractLabel: String\n  contractAddress: String\n}\n\nenum DistributionMechanism {\n  LPIncentives\n  Airdrop\n}\n\ntype Meta {\n  protocolVersion: String!\n  isAdmin: Boolean\n  value: String\n}\n\n",
+                    "schema": "scalar DateTime\n\ntype ArbitrumLtipGranteeState {\n  id: ID!\n  granteeName: String\n  authorizedSignerAddress: String\n  editorAddresses: [String]\n  grantSize: Float\n  matchingGrantSize: Float\n  grantSummary: String\n  fundingAddress: String\n  fundingType: [FundingType]\n  disbursementContractAddress: String\n  metricsDashboardLink: String\n  phases: [Phase]\n  meta: [Meta]\n}\n\nenum FundingType {\n  EOA\n  Multisig\n  TwoofThreeMultisig\n  ThreeofFiveMultisig\n}\n\ntype Phase {\n  startDate: DateTime!\n  endDate: DateTime!\n  actuals: GranteeActuals\n  planned: GranteePlanned\n  stats: GranteeStats\n  status: Status\n}\n\nenum Status {\n  Uninitialized\n  NotStarted\n  InProgress\n  Finalized\n}\n\ntype GranteeActuals {\n  arbReceived: Float\n  arbUtilized: Float\n  arbRemaining: Float\n  contractsIncentivized: [Contract]\n  incentives: String\n  summary: String\n  disclosures: String\n}\n\ntype GranteePlanned {\n  arbToBeDistributed: Float\n  contractsIncentivized: [Contract]\n  distributionMechanism: [DistributionMechanism]\n  changes: String\n  expectations: String\n}\n\ntype GranteeStats {\n  avgDailyTVL: Float\n  avgDailyTXNS: Float\n  avgDailyUniqueUsers: Float\n  kpis: [NamedKpi]\n  changes: String\n  lessons: String\n}\n\ntype NamedKpi {\n  name: String\n  value: Float\n}\n\ntype Contract {\n  contractId: ID!\n  contractLabel: String\n  contractAddress: String\n}\n\nenum DistributionMechanism {\n  LPIncentives\n  Airdrop\n}\n\ntype Meta {\n  protocolVersion: String!\n  isAdmin: Boolean\n  value: String\n}\n\n",
                     "initialValue": "{\"id\":\"\",\"granteeName\":\"\",\"authorizedSignerAddress\":\"\",\"editorAddresses\":[],\"grantSize\":0,\"matchingGrantSize\":0,\"grantSummary\":\"\",\"fundingAddress\":\"\",\"fundingType\":[],\"disbursementContractAddress\":\"\",\"metricsDashboardLink\":\"\",\"phases\":[],\"meta\":[]}",
                     "examples": []
                 },
                 "local": {
-                    "schema": "type ArbLtipGranteeLocalState",
+                    "schema": "type ArbitrumLtipGranteeLocalState",
                     "initialValue": "",
                     "examples": []
                 }

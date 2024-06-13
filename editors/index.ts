@@ -10,4 +10,4 @@ export { module as BudgetStatement } from './budget-statement';
 export { module as DocumentModel } from './document-model';
 export { module as ScopeFramework } from './scope-framework';
 export { module as RealWorldAssets } from './rwa';
-export { module as ArbLtipGrantee } from './arb-ltip';
+export { module as ArbitrumLtipGrantee } from './arb-ltip';
