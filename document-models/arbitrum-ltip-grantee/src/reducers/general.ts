@@ -1,6 +1,11 @@
 import { Phase } from '../..';
 import { ArbitrumLtipGranteeGeneralOperations } from '../../gen/general/operations';
-import { isAdminRole, isEditorRole } from '../utils';
+import {
+    fromCommaDelimitedString,
+    isAdminRole,
+    isEditorRole,
+    toCommaDelimitedString,
+} from '../utils';
 import validators from '../validators';
 
 export const reducer: ArbitrumLtipGranteeGeneralOperations = {
@@ -34,14 +39,6 @@ export const reducer: ArbitrumLtipGranteeGeneralOperations = {
             throw new Error('authorizedSignerAddress is invalid');
         }
 
-        if (!validators.isValidAddress(disbursementContractAddress)) {
-            throw new Error('disbursementContractAddress is invalid');
-        }
-
-        if (!validators.isValidAddress(fundingAddress)) {
-            throw new Error('fundingAddress is required');
-        }
-
         if (!validators.gtZero(grantSize)) {
             throw new Error('grantSize must be greater than 0');
         }
@@ -50,9 +47,35 @@ export const reducer: ArbitrumLtipGranteeGeneralOperations = {
             throw new Error('granteeName is required');
         }
 
+        const disbursementAddresses = fromCommaDelimitedString(
+            disbursementContractAddress,
+        );
+        if (disbursementAddresses.length < 1) {
+            throw new Error('disbursementContractAddress is required');
+        }
+
+        if (
+            disbursementAddresses.some(addr => !validators.isValidAddress(addr))
+        ) {
+            throw new Error(
+                'disbursementContractAddress is improperly formatted',
+            );
+        }
+
+        const fundingAddresses = fromCommaDelimitedString(fundingAddress);
+        if (fundingAddresses.length < 1) {
+            throw new Error('fundingAddress is required');
+        }
+
+        if (fundingAddresses.some(addr => !validators.isValidAddress(addr))) {
+            throw new Error('fundingAddress is improperly formatted');
+        }
+
         state.authorizedSignerAddress = authorizedSignerAddress;
-        state.disbursementContractAddress = disbursementContractAddress;
-        state.fundingAddress = fundingAddress;
+        state.disbursementContractAddress = toCommaDelimitedString(
+            disbursementAddresses,
+        );
+        state.fundingAddress = toCommaDelimitedString(fundingAddresses);
         state.fundingType = fundingType;
         state.grantSize = grantSize;
         state.matchingGrantSize = matchingGrantSize;
@@ -164,8 +187,18 @@ export const reducer: ArbitrumLtipGranteeGeneralOperations = {
         // editor or admin
         {
             if (fundingAddress) {
-                if (!validators.isValidAddress(fundingAddress)) {
-                    throw new Error('fundingAddress is invalid');
+                const fundingAddresses =
+                    fromCommaDelimitedString(fundingAddress);
+                if (fundingAddresses.length < 1) {
+                    throw new Error('fundingAddress is required');
+                }
+
+                if (
+                    fundingAddresses.some(
+                        addr => !validators.isValidAddress(addr),
+                    )
+                ) {
+                    throw new Error('fundingAddress is improperly formatted');
                 }
 
                 state.fundingAddress = fundingAddress;
@@ -226,8 +259,22 @@ export const reducer: ArbitrumLtipGranteeGeneralOperations = {
             }
 
             if (disbursementContractAddress) {
-                if (!validators.isValidAddress(disbursementContractAddress)) {
-                    throw new Error('disbursementContractAddress is invalid');
+                const disbursementContractAddresses = fromCommaDelimitedString(
+                    disbursementContractAddress,
+                );
+
+                if (disbursementContractAddresses.length < 1) {
+                    throw new Error('disbursementContractAddress is required');
+                }
+
+                if (
+                    disbursementContractAddresses.some(
+                        addr => !validators.isValidAddress(addr),
+                    )
+                ) {
+                    throw new Error(
+                        'disbursementContractAddress is improperly formatted',
+                    );
                 }
 
                 state.disbursementContractAddress = disbursementContractAddress;

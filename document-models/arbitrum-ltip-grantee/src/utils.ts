@@ -60,3 +60,7 @@ export const expectException = (
         document.operations.global[document.operations.global.length - 1];
     expect(lastOp.error).toBe(message);
 };
+
+export const fromCommaDelimitedString = (str: string) =>
+    (str || '').split(',').map(v => v.trim());
+export const toCommaDelimitedString = (arr: string[]) => (arr || []).join(', ');

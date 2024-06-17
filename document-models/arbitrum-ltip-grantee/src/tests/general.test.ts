@@ -18,6 +18,21 @@ import {
 } from '../utils';
 import { toArray } from '../../../../editors/arb-ltip/util';
 
+const generateInitGranteeInput = (): InitGranteeInput => ({
+    authorizedSignerAddress: '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
+    disbursementContractAddress: '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
+    fundingAddress: '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
+    fundingType: ['EOA'],
+    grantSize: 100,
+    grantSummary: 'Summary',
+    granteeName: 'Name',
+    metricsDashboardLink: 'https://example.com',
+    matchingGrantSize: 10,
+    numberOfPhases: 10,
+    phaseDuration: 1,
+    startDate: new Date().toISOString(),
+});
+
 describe('General Operations', () => {
     let document: ArbitrumLtipGranteeDocument;
 
@@ -27,22 +42,7 @@ describe('General Operations', () => {
     });
 
     it('should handle initGrantee operation from anyone', () => {
-        const input: InitGranteeInput = {
-            authorizedSignerAddress:
-                '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
-            disbursementContractAddress:
-                '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
-            fundingAddress: '0xe6b8a5cf854791412c1f6efc7caf629f5df1c747',
-            fundingType: ['EOA'],
-            grantSize: 100,
-            grantSummary: 'Summary',
-            granteeName: 'Name',
-            metricsDashboardLink: 'https://example.com',
-            matchingGrantSize: 10,
-            numberOfPhases: 10,
-            phaseDuration: 1,
-            startDate: new Date().toISOString(),
-        };
+        const input: InitGranteeInput = generateInitGranteeInput();
 
         document.state.global.authorizedSignerAddress = '';
         const updatedDocument = reducer(document, creators.initGrantee(input));
@@ -74,6 +74,29 @@ describe('General Operations', () => {
             input.metricsDashboardLink,
         );
         expect(updatedDocument.state.global.phases).toHaveLength(10);
+    });
+
+    it('initGrantee should deny invalid formatting for multiple funding addresses', () => {
+        document.state.global.authorizedSignerAddress = '';
+
+        const input: InitGranteeInput = generateInitGranteeInput();
+        input.fundingAddress =
+            input.fundingAddress + ' ' + input.fundingAddress;
+
+        expectException(
+            reducer(document, creators.initGrantee(input)),
+            'fundingAddress is improperly formatted',
+        );
+    });
+
+    it('initGrantee should allow properly formatted multiple funding addresseses', () => {
+        document.state.global.authorizedSignerAddress = '';
+
+        const input: InitGranteeInput = generateInitGranteeInput();
+        input.fundingAddress =
+            input.fundingAddress + ',' + input.fundingAddress;
+
+        expectNoException(reducer(document, creators.initGrantee(input)));
     });
 
     it('should reject editGrantee operation from unauthorized signer', () => {

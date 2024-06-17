@@ -4,6 +4,8 @@ import {
     FundingType,
     InitGranteeInput,
     actions,
+    fromCommaDelimitedString,
+    toCommaDelimitedString,
 } from '../../../../document-models/arbitrum-ltip-grantee';
 import { useCallback, useMemo, useState } from 'react';
 import { classNames, intHandler, maybeToArray } from '../../util';
@@ -48,6 +50,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         authorizedSignerAddress,
         disbursementContractAddress,
         fundingAddress,
+        editorAddresses,
         fundingType,
         grantSize,
         matchingGrantSize,
@@ -78,8 +81,10 @@ const GranteeForm = (props: GranteeFormProps) => {
     const [matchingGrantSizeLocal, setMatchingGrantSizeLocal] = useState(
         matchingGrantSize || 0,
     );
-    const [editorAddressesLocal, setEditorAddressesLocal] = useState<string[]>(
-        [],
+    const [editorAddressesLocal, setEditorAddressesLocal] = useState(
+        editorAddresses
+            ? toCommaDelimitedString(maybeToArray(editorAddresses))
+            : '',
     );
 
     // 12 weeks
@@ -95,11 +100,11 @@ const GranteeForm = (props: GranteeFormProps) => {
         [authorizedSignerAddressLocal],
     );
     const isDisbursementContractAddressValid = useMemo(
-        () => validators.isValidAddress(disbursementContractAddressLocal),
+        () => validators.isValidAddressList(disbursementContractAddressLocal),
         [disbursementContractAddressLocal],
     );
     const isFundingAddressValid = useMemo(
-        () => validators.isValidAddress(fundingAddressLocal),
+        () => validators.isValidAddressList(fundingAddressLocal),
         [fundingAddressLocal],
     );
     const isGrantSizeValid = useMemo(
@@ -115,7 +120,7 @@ const GranteeForm = (props: GranteeFormProps) => {
         [fundingTypeLocal],
     );
     const isEditorAddressesValid = useMemo(
-        () => editorAddressesLocal.every(validators.isValidAddress),
+        () => validators.isValidAddressList(editorAddressesLocal),
         [editorAddressesLocal],
     );
     const isFormValid = useMemo(
@@ -167,7 +172,8 @@ const GranteeForm = (props: GranteeFormProps) => {
                 }),
             );
 
-            for (const editor of editorAddressesLocal) {
+            const addresses = fromCommaDelimitedString(editorAddressesLocal);
+            for (const editor of addresses) {
                 dispatch(
                     actions.addEditor({
                         editorAddress: editor,
@@ -344,13 +350,9 @@ const GranteeForm = (props: GranteeFormProps) => {
                             type="text"
                             className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
                             placeholder="0x..."
-                            value={editorAddressesLocal.join(',')}
+                            value={editorAddressesLocal}
                             onChange={e =>
-                                setEditorAddressesLocal(
-                                    e.target.value
-                                        .split(',')
-                                        .map(v => v.trim()),
-                                )
+                                setEditorAddressesLocal(e.target.value)
                             }
                         />
                     </div>
@@ -362,7 +364,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         )}
                     >
                         <label className="text-xs font-medium text-gray-900">
-                            Disbursement Address
+                            Disbursement Addresses (comma separated)
                         </label>
                         <input
                             type="text"
@@ -382,7 +384,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                 )}
                 <div className={wrapperClasses(isFundingAddressValid)}>
                     <label className="text-xs font-medium text-gray-900">
-                        Funding Address
+                        Funding Addresses (comma separated)
                     </label>
                     <input
                         type="text"

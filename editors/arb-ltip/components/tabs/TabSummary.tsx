@@ -1,4 +1,8 @@
-import { ArbitrumLtipGranteeState } from '../../../../document-models/arbitrum-ltip-grantee';
+import { useMemo } from 'react';
+import {
+    ArbitrumLtipGranteeState,
+    fromCommaDelimitedString,
+} from '../../../../document-models/arbitrum-ltip-grantee';
 import GranteeStats from '../GranteeStats';
 import { useIsEditor } from '../UserProvider';
 
@@ -16,6 +20,15 @@ const TabSummary = (props: TabSummaryProps) => {
     } = props;
 
     const isEditor = useIsEditor();
+
+    const disbursementContractAddresses = useMemo(
+        () => fromCommaDelimitedString(disbursementContractAddress || ''),
+        [disbursementContractAddress],
+    );
+    const fundingAddresses = useMemo(
+        () => fromCommaDelimitedString(fundingAddress || ''),
+        [fundingAddress],
+    );
 
     return (
         <div>
@@ -53,29 +66,39 @@ const TabSummary = (props: TabSummaryProps) => {
                 <dl className="grid grid-cols-1 sm:grid-cols-2">
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
                         <dt className="text-sm font-medium leading-6 text-gray-900">
-                            Disbursement Address
+                            Disbursement Addresses
                         </dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline">
-                            <a
-                                href={`https://arbiscan.io/address/${disbursementContractAddress}`}
-                                target="blank"
+                        {disbursementContractAddresses.map((address, index) => (
+                            <dd
+                                key={index}
+                                className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline"
                             >
-                                {disbursementContractAddress}
-                            </a>
-                        </dd>
+                                <a
+                                    href={`https://arbiscan.io/address/${address}`}
+                                    target="blank"
+                                >
+                                    {address}
+                                </a>
+                            </dd>
+                        ))}
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
                         <dt className="text-sm font-medium leading-6 text-gray-900">
                             Funding Address
                         </dt>
-                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline">
-                            <a
-                                href={`https://arbiscan.io/address/${fundingAddress}`}
-                                target="blank"
+                        {fundingAddresses.map((address, index) => (
+                            <dd
+                                key={index}
+                                className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2 truncate underline"
                             >
-                                {fundingAddress}
-                            </a>
-                        </dd>
+                                <a
+                                    href={`https://arbiscan.io/address/${address}`}
+                                    target="blank"
+                                >
+                                    {address}
+                                </a>
+                            </dd>
+                        ))}
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-0">
                         <dt className="text-sm font-medium leading-6 text-gray-900">
