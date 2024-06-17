@@ -1,3 +1,15 @@
+# [1.59.0-arbitrum.7](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.6...v1.59.0-arbitrum.7) (2024-06-17)
+
+
+### Bug Fixes
+
+* in historical view, contract links should be underlined ([f69721f](https://github.com/powerhouse-inc/document-model-libs/commit/f69721f17e2142bb5f7cdfa75265604dd9dc92aa))
+
+
+### Features
+
+* funding and disbursement address can now be multiple addresses ([16fbdf5](https://github.com/powerhouse-inc/document-model-libs/commit/16fbdf5b9d6d7daed0bf8661c2c14cea8c9995f8))
+
 # [1.59.0-arbitrum.6](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.5...v1.59.0-arbitrum.6) (2024-06-13)
 
 
