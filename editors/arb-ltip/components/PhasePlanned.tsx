@@ -71,6 +71,7 @@ const PhasePlanned = ({ phase: { planned, actuals } }: { phase: Phase }) => {
                                     href={contract.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    className="underline"
                                 >
                                     {contract.label}
                                 </a>
@@ -122,6 +123,7 @@ const PhasePlanned = ({ phase: { planned, actuals } }: { phase: Phase }) => {
                                     href={contract.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    className="underline"
                                 >
                                     {contract.label}
                                 </a>
