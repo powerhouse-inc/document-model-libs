@@ -1,6 +1,6 @@
 {
     "name": "document-model-libs",
-    "version": "1.40.2",
+    "version": "1.60.0",
     "license": "AGPL-3.0-only",
     "types": "dist/index.d.ts",
     "main": "dist/cjs/index.cjs",
@@ -161,7 +161,7 @@
         "jsonc-parser": "^3.2.1",
         "jszip": "^3.10.1",
         "react-aria-components": "1.2.0",
-        "react-lazy-with-preload": "^2.2.1",
         "tailwind-merge": "^2.2.1"
-    }
+    },
+    "packageManager": "pnpm@9.4.0+sha256.b6fd0bfda555e7e584ad7e56b30c68b01d5a04f9ee93989f4b93ca8473c49c74"
 }
