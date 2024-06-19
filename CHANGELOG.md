@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.8](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.7...v1.59.0-arbitrum.8) (2024-06-19)
+
+
+### Bug Fixes
+
+* allow 0 for planned disbursement amount ([522de41](https://github.com/powerhouse-inc/document-model-libs/commit/522de41b4fc28caa4bb5a91ef6cea981b5f6bb7e))
+
 # [1.59.0-arbitrum.7](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.6...v1.59.0-arbitrum.7) (2024-06-17)
 
 
