@@ -96,7 +96,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     ]);
 
     const isDisbursementValid = useMemo(
-        () => validators.gtZero(disbursementAmountLocal),
+        () => validators.gteZero(disbursementAmountLocal),
         [disbursementAmountLocal],
     );
     const isDistributionMechanismsValid = useMemo(

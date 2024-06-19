@@ -23,7 +23,7 @@ const isValidAddressList = (value: string) => {
 };
 
 const isPlannedValid = (planned: GranteePlanned) =>
-    gtZero(planned.arbToBeDistributed) &&
+    gteZero(planned.arbToBeDistributed) &&
     isNotEmpty(planned.distributionMechanism) &&
     isNotEmpty(planned.contractsIncentivized) &&
     isNotEmptyString(planned.expectations) &&
