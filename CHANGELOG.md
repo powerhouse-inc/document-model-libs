@@ -1,3 +1,11 @@
+# [1.59.0-arbitrum.9](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.8...v1.59.0-arbitrum.9) (2024-06-20)
+
+
+### Features
+
+* contracts incentivized fields use unified list + drop down ([ab0aa52](https://github.com/powerhouse-inc/document-model-libs/commit/ab0aa5234336aa291d6a6c88caf5efd72010553f))
+* pre-populate actuals as much as possible ([9077b65](https://github.com/powerhouse-inc/document-model-libs/commit/9077b65bd80b4bbac1787f11db12b14b505c290c))
+
 # [1.59.0-arbitrum.8](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.7...v1.59.0-arbitrum.8) (2024-06-19)
 
 
