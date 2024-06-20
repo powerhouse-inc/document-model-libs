@@ -3,6 +3,7 @@ import TagSelector from '../TagSelector';
 import {
     ArbitrumLtipGranteeState,
     DistributionMechanism,
+    GranteeActuals,
     Phase,
 } from '../../../../document-models/arbitrum-ltip-grantee';
 import ContractSelector from '../ContractSelector';
@@ -82,10 +83,22 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
             return;
         }
 
+        // set initial contracts on actuals as well
+        const actuals: GranteeActuals = {
+            arbReceived: disbursementAmountLocal,
+            arbUtilized: 0,
+            arbRemaining: 0,
+            contractsIncentivized: contractsLocal,
+            incentives: '',
+            disclosures: '',
+            summary: '',
+        };
+
         dispatch(
             editPhase({
                 phaseIndex,
                 planned,
+                actuals,
                 status: 'InProgress',
             }),
         );
