@@ -25,7 +25,6 @@ const isValidAddressList = (value: string) => {
 const isPlannedValid = (planned: GranteePlanned) =>
     gteZero(planned.arbToBeDistributed) &&
     isNotEmpty(planned.distributionMechanism) &&
-    isNotEmpty(planned.contractsIncentivized) &&
     isNotEmptyString(planned.expectations) &&
     isNotEmptyString(planned.changes);
 
@@ -33,7 +32,6 @@ const isActualsValid = (actuals: GranteeActuals) =>
     gteZero(actuals.arbReceived) &&
     gteZero(actuals.arbRemaining) &&
     gteZero(actuals.arbUtilized) &&
-    isNotEmpty(actuals.contractsIncentivized) &&
     isNotEmptyString(actuals.disclosures) &&
     isNotEmptyString(actuals.summary);
 

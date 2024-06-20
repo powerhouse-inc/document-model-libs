@@ -122,10 +122,6 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         () => validators.isNotEmpty(distributionMechanismsLocal),
         [distributionMechanismsLocal],
     );
-    const isContractsValid = useMemo(
-        () => validators.isNotEmpty(contractsLocal),
-        [contractsLocal],
-    );
     const isExpectationsValid = useMemo(
         () => validators.isNotEmptyString(expectationsLocal),
         [expectationsLocal],
@@ -194,9 +190,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                         onChange={intHandler(setDisbursementAmountLocal)}
                     />
                 </div>
-                <div className={wrapperClasses(isContractsValid)}>
+                <div className={wrapperClasses(true)}>
                     <label className="text-xs font-medium text-gray-900">
-                        Contracts Incentivized (required)
+                        Contracts Incentivized
                     </label>
                     <ContractSelector
                         allContracts={allContracts}

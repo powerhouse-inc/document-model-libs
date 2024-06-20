@@ -55,10 +55,6 @@ const ReportingForm = (props: ReportingFormProps) => {
         () => validators.gteZero(arbUtilizedLocal),
         [arbUtilizedLocal],
     );
-    const isContractsValid = useMemo(
-        () => validators.isNotEmpty(contractsLocal),
-        [contractsLocal],
-    );
     const isDisclosuresValid = useMemo(
         () => validators.isNotEmptyString(disclosuresLocal),
         [disclosuresLocal],
@@ -71,13 +67,11 @@ const ReportingForm = (props: ReportingFormProps) => {
         () =>
             isArbReceivedValid &&
             isArbUtilizedValid &&
-            isContractsValid &&
             isDisclosuresValid &&
             isSummaryValid,
         [
             isArbReceivedValid,
             isArbUtilizedValid,
-            isContractsValid,
             isDisclosuresValid,
             isSummaryValid,
         ],
@@ -207,9 +201,9 @@ const ReportingForm = (props: ReportingFormProps) => {
                         />
                     </div>
                 </div>
-                <div className={wrapperClasses(isContractsValid)}>
+                <div className={wrapperClasses(true)}>
                     <label className="block text-xs font-medium text-gray-900">
-                        Contracts Incentivized (required)
+                        Contracts Incentivized
                     </label>
                     <ContractSelector
                         allContracts={allContracts}
