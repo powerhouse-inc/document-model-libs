@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.10](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.9...v1.59.0-arbitrum.10) (2024-06-20)
+
+
+### Bug Fixes
+
+* contracts are now optional in planned and actual reporting ([22aba42](https://github.com/powerhouse-inc/document-model-libs/commit/22aba429dee719f3ceb6298d36718c1c31867ff9))
+
 # [1.59.0-arbitrum.9](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.8...v1.59.0-arbitrum.9) (2024-06-20)
 
 
