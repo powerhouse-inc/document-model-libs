@@ -6,7 +6,8 @@ import { classNames } from '../util';
 import { Icon } from '@powerhousedao/design-system';
 
 type ContractSelectorProps = {
-    contracts: Contract[];
+    allContracts: Contract[];
+    contractsSelected: Contract[];
     onAdd: (contract: Contract) => void;
     onRemove: (id: string) => void;
 };
@@ -51,12 +52,55 @@ const ContractCard = (props: ContractCardProps) => {
     );
 };
 
+const NEW_VALUE = 'new';
+
+type ContractListProps = {
+    contracts: Contract[];
+    selected: string;
+    setSelected: (selected: string) => void;
+};
+const ContractList = ({
+    contracts,
+    selected,
+    setSelected,
+}: ContractListProps) => {
+    return (
+        <div>
+            <select
+                id="contracts"
+                name="contracts"
+                className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+                <option
+                    value={NEW_VALUE}
+                    selected={selected === NEW_VALUE}
+                    onClick={() => setSelected(NEW_VALUE)}
+                >
+                    Add new...
+                </option>
+
+                {contracts.map(contract => (
+                    <option
+                        key={contract.contractId}
+                        value={contract.contractId}
+                        selected={contract.contractId === selected}
+                        onClick={() => setSelected(contract.contractId)}
+                    >
+                        {contract.contractLabel}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+};
+
 const ContractSelector = (props: ContractSelectorProps) => {
-    const { contracts, onAdd, onRemove } = props;
+    const { contractsSelected, allContracts, onAdd, onRemove } = props;
 
     const [showErrors, setShowErrors] = useState(false);
     const [labelLocal, setLabelLocal] = useState('');
     const [addressLocal, setAddressLocal] = useState('');
+    const [selected, setSelected] = useState('Funding Address');
 
     const isLabelValid = useMemo(
         () => validators.isNotEmptyString(labelLocal),
@@ -69,23 +113,43 @@ const ContractSelector = (props: ContractSelectorProps) => {
     );
 
     const submit = useCallback(() => {
-        if (!isLabelValid || !isAddressValid) {
-            setShowErrors(true);
-            return;
-        }
+        let contract: Contract;
 
-        const contract: Contract = {
-            contractId: v4(),
-            contractAddress: addressLocal,
-            contractLabel: labelLocal,
-        };
+        if (NEW_VALUE === selected) {
+            if (!isLabelValid || !isAddressValid) {
+                setShowErrors(true);
+                return;
+            }
+
+            contract = {
+                contractId: v4(),
+                contractAddress: addressLocal,
+                contractLabel: labelLocal,
+            };
+        } else {
+            const selectedContract = allContracts.find(
+                c => c.contractId === selected,
+            );
+            if (!selectedContract) {
+                return;
+            }
+
+            contract = selectedContract;
+        }
 
         onAdd(contract);
 
         setShowErrors(false);
         setLabelLocal('');
         setAddressLocal('');
-    }, [isLabelValid, isAddressValid, labelLocal, addressLocal, onAdd]);
+    }, [
+        isLabelValid,
+        isAddressValid,
+        labelLocal,
+        addressLocal,
+        selected,
+        onAdd,
+    ]);
 
     const wrapperClasses = useCallback(
         (isValid: boolean, classes = '') =>
@@ -102,32 +166,48 @@ const ContractSelector = (props: ContractSelectorProps) => {
     return (
         <div>
             <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div className="h-60 rounded-lg bg-white px-4 py-5 shadow-lg sm:p-6 flex flex-col -space-y-px">
-                    <div className={wrapperClasses(isLabelValid)}>
-                        <label className="block text-xs font-medium text-gray-900">
-                            Contract Label
-                        </label>
-                        <input
-                            type="text"
-                            className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            placeholder="Enter label"
-                            value={labelLocal}
-                            onChange={e => setLabelLocal(e.target.value)}
+                <div className="h-60 rounded-lg bg-white px-4 pt-2 pb-5 shadow-lg flex flex-col -space-y-px">
+                    <div className="pb-4">
+                        <ContractList
+                            contracts={allContracts}
+                            selected={selected}
+                            setSelected={setSelected}
                         />
                     </div>
-                    <div className={wrapperClasses(isAddressValid)}>
-                        <label className="block text-xs font-medium text-gray-900">
-                            Contract Address
-                        </label>
-                        <input
-                            type="text"
-                            className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            placeholder="0x..."
-                            value={addressLocal}
-                            onChange={e => setAddressLocal(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex-1"></div>
+
+                    {selected === 'new' && (
+                        <div className="pb-4">
+                            <div className={wrapperClasses(isLabelValid)}>
+                                <label className="block text-xs font-medium text-gray-900">
+                                    Contract Label
+                                </label>
+                                <input
+                                    type="text"
+                                    className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                    placeholder="Enter label"
+                                    value={labelLocal}
+                                    onChange={e =>
+                                        setLabelLocal(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className={wrapperClasses(isAddressValid)}>
+                                <label className="block text-xs font-medium text-gray-900">
+                                    Contract Address
+                                </label>
+                                <input
+                                    type="text"
+                                    className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                    placeholder="0x..."
+                                    value={addressLocal}
+                                    onChange={e =>
+                                        setAddressLocal(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className="flex-1"></div>
+                        </div>
+                    )}
                     <div className="flex justify-between w-100">
                         <button
                             type="button"
@@ -138,7 +218,7 @@ const ContractSelector = (props: ContractSelectorProps) => {
                         </button>
                     </div>
                 </div>
-                {contracts.map(contract => (
+                {contractsSelected.map(contract => (
                     <ContractCard
                         key={contract.contractId}
                         contract={contract}

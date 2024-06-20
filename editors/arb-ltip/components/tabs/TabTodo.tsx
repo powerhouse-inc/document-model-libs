@@ -63,6 +63,7 @@ const TabTodo = (props: TabTodoProps) => {
 
                     {status === 'Planning' && (
                         <PlannedResourcesForm
+                            state={props.document.state.global}
                             phase={phase}
                             phaseIndex={phaseIndex}
                             {...props}

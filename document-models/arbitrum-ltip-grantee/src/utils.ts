@@ -1,5 +1,10 @@
 import { toArray } from '../../../editors/arb-ltip/util';
-import { ArbitrumLtipGranteeDocument, ArbitrumLtipGranteeState } from '../gen';
+import {
+    ArbitrumLtipGranteeDocument,
+    ArbitrumLtipGranteeState,
+    Contract,
+    Maybe,
+} from '../gen';
 
 export const signer = '0x50379DDB64b77e990Bc4A433c9337618C70D2C2a';
 
@@ -64,3 +69,31 @@ export const expectException = (
 export const fromCommaDelimitedString = (str: string) =>
     (str || '').split(',').map(v => v.trim());
 export const toCommaDelimitedString = (arr: string[]) => (arr || []).join(', ');
+
+const containsContract = (contracts: Contract[], addr: Maybe<string>) =>
+    contracts.some(c => c.contractAddress === addr);
+
+const addDistinct = (all: Contract[], contracts: Maybe<Contract>[]) =>
+    contracts
+        .map(c => c!)
+        .filter(c => !containsContract(all, c.contractAddress))
+        .forEach(contract => all.push(contract));
+
+export const findAllContracts = (state: ArbitrumLtipGranteeState) => {
+    const all: Contract[] = [];
+
+    // add funding address
+    all.push({
+        contractAddress: state.fundingAddress!,
+        contractId: 'Funding Address',
+        contractLabel: 'Funding Address',
+    });
+
+    // add all contracts from all phases
+    for (const phase of toArray(state.phases)) {
+        addDistinct(all, phase.planned?.contractsIncentivized || []);
+        addDistinct(all, phase.actuals?.contractsIncentivized || []);
+    }
+
+    return all;
+};

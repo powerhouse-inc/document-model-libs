@@ -16,6 +16,7 @@ import ContractSelector from '../ContractSelector';
 import { editPhase } from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
 import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
+import useAllContracts from '../../hooks/use-all-contracts';
 
 type ReportingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
@@ -26,6 +27,7 @@ const ReportingForm = (props: ReportingFormProps) => {
     const { dispatch, phase, phaseIndex, state } = props;
     const actuals = phase.actuals!;
 
+    // state
     const [showErrors, setShowErrors] = useState(
         Date.now() >= new Date(phase.endDate).getTime(),
     );
@@ -42,6 +44,9 @@ const ReportingForm = (props: ReportingFormProps) => {
         actuals.disclosures ?? '',
     );
     const [summaryLocal, setSummaryLocal] = useState(actuals.summary ?? '');
+
+    // derived
+    const allContracts = useAllContracts(state);
     const isArbReceivedValid = useMemo(
         () => validators.gteZero(arbReceivedLocal),
         [arbReceivedLocal],
@@ -77,13 +82,11 @@ const ReportingForm = (props: ReportingFormProps) => {
             isSummaryValid,
         ],
     );
-
     const arbRemaining = useMemo(() => {
         return (
             (state.grantSize || 0) - calculateArbReceived(toArray(state.phases))
         );
     }, [state.grantSize, state.phases]);
-
     const dueDate = useMemo(() => {
         const date = new Date(phase.endDate);
 
@@ -107,6 +110,7 @@ const ReportingForm = (props: ReportingFormProps) => {
 
     useInitialScroll();
 
+    // callbacks
     const submit = useCallback(() => {
         const actuals: GranteeActuals = {
             arbReceived: arbReceivedLocal,
@@ -208,7 +212,8 @@ const ReportingForm = (props: ReportingFormProps) => {
                         Contracts Incentivized (required)
                     </label>
                     <ContractSelector
-                        contracts={contractsLocal}
+                        allContracts={allContracts}
+                        contractsSelected={contractsLocal}
                         onAdd={contract =>
                             setContractsLocal([...contractsLocal, contract])
                         }

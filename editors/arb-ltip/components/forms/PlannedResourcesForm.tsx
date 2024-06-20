@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import TagSelector from '../TagSelector';
 import {
+    ArbitrumLtipGranteeState,
     DistributionMechanism,
     Phase,
 } from '../../../../document-models/arbitrum-ltip-grantee';
@@ -12,6 +13,7 @@ import validators from '../../../../document-models/arbitrum-ltip-grantee/src/va
 import { classNames, intHandler, toArray } from '../../util';
 import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
+import useAllContracts from '../../hooks/use-all-contracts';
 
 const distributionMechanisms = [
     {
@@ -25,13 +27,15 @@ const distributionMechanisms = [
 ];
 
 type PlannedResourcesFormProps = Pick<IProps, 'context' | 'dispatch'> & {
+    state: ArbitrumLtipGranteeState;
     phase: Phase;
     phaseIndex: number;
 };
 const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
-    const { dispatch, phase, phaseIndex } = props;
+    const { dispatch, phase, phaseIndex, state } = props;
     const planned = phase.planned!;
 
+    // state
     const [showErrors, setShowErrors] = useState(
         Date.now() >= new Date(phase.startDate).getTime(),
     );
@@ -49,6 +53,8 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
     );
     const [changesLocal, setChangesLocal] = useState(planned.changes || '');
 
+    // derived
+    const allContracts = useAllContracts(state);
     const startDate = useMemo(
         () => new Date(phase.startDate),
         [phase.startDate],
@@ -180,7 +186,8 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                         Contracts Incentivized (required)
                     </label>
                     <ContractSelector
-                        contracts={contractsLocal}
+                        allContracts={allContracts}
+                        contractsSelected={contractsLocal}
                         onAdd={contract =>
                             setContractsLocal([...contractsLocal, contract])
                         }
