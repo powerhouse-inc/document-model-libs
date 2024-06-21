@@ -4,7 +4,7 @@ import {
     fromCommaDelimitedString,
 } from '../../../../document-models/arbitrum-ltip-grantee';
 import GranteeStats from '../GranteeStats';
-import { useIsEditor } from '../UserProvider';
+import useIsEditor from '../../hooks/use-is-editor';
 
 type TabSummaryProps = ArbitrumLtipGranteeState & {
     onEdit: () => void;

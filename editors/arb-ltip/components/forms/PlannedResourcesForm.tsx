@@ -5,6 +5,8 @@ import {
     DistributionMechanism,
     GranteeActuals,
     Phase,
+    Status,
+    isActualsEmpty,
 } from '../../../../document-models/arbitrum-ltip-grantee';
 import ContractSelector from '../ContractSelector';
 import { IProps } from '../../editor';
@@ -31,9 +33,10 @@ type PlannedResourcesFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     state: ArbitrumLtipGranteeState;
     phase: Phase;
     phaseIndex: number;
+    hideDescription?: boolean;
 };
 const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
-    const { dispatch, phase, phaseIndex, state } = props;
+    const { dispatch, phase, phaseIndex, state, hideDescription } = props;
     const planned = phase.planned!;
 
     // state
@@ -83,23 +86,29 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
             return;
         }
 
-        // set initial contracts on actuals as well
-        const actuals: GranteeActuals = {
-            arbReceived: disbursementAmountLocal,
-            arbUtilized: 0,
-            arbRemaining: 0,
-            contractsIncentivized: contractsLocal,
-            incentives: '',
-            disclosures: '',
-            summary: '',
-        };
+        // set initial contracts on actuals, if we need to
+        let actuals: GranteeActuals | null = null;
+        if (isActualsEmpty(phase.actuals)) {
+            actuals = {
+                arbReceived: disbursementAmountLocal,
+                arbUtilized: 0,
+                arbRemaining: 0,
+                contractsIncentivized: contractsLocal,
+                incentives: '',
+                disclosures: '',
+                summary: '',
+            };
+        }
 
         dispatch(
             editPhase({
                 phaseIndex,
                 planned,
                 actuals,
-                status: 'InProgress',
+
+                // only write status if we're not finalized
+                status:
+                    phase.status === 'Finalized' ? 'Finalized' : 'InProgress',
             }),
         );
     }, [
@@ -112,6 +121,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         distributionMechanismsLocal,
         expectationsLocal,
         changesLocal,
+        phase,
     ]);
 
     const isDisbursementValid = useMemo(
@@ -173,11 +183,12 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
 
     return (
         <div className="w-full">
-            <div className="isolate -space-y-px rounded-md shadow-sm">
-                <PhaseTimespan phase={phase} />
-                <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
-                    {description}
-                </div>
+            <div>
+                {!hideDescription && (
+                    <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
+                        {description}
+                    </div>
+                )}
                 <div className={wrapperClasses(isDisbursementValid)}>
                     <label className="text-xs font-medium text-gray-900">
                         ARB Disbursement Amount (required)

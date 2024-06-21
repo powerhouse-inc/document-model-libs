@@ -3,6 +3,7 @@ import {
     ArbitrumLtipGranteeDocument,
     ArbitrumLtipGranteeState,
     Contract,
+    GranteeActuals,
     Maybe,
 } from '../gen';
 
@@ -97,3 +98,8 @@ export const findAllContracts = (state: ArbitrumLtipGranteeState) => {
 
     return all;
 };
+
+// since we require summary to be filled in, this is enough to guarantee we haven't already submitted.
+// however, we leave this function in case someone changes this requirement in the future.
+export const isActualsEmpty = (actuals: Maybe<GranteeActuals>) =>
+    actuals?.summary === '';

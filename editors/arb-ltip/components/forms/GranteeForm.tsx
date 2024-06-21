@@ -13,7 +13,8 @@ import DatePicker from 'react-datepicker';
 import { IProps } from '../../editor';
 import TagSelector from '../TagSelector';
 import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
-import { useAddress, useIsAdmin } from '../UserProvider';
+import useAddress from '../../hooks/use-address';
+import useIsAdmin from '../../hooks/use-is-admin';
 
 const fundingTypes = [
     {

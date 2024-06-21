@@ -4,6 +4,8 @@ import { IProps } from '../../editor';
 import { classNames, formatDate, toArray } from '../../util';
 import { Phase } from '../../../../document-models/arbitrum-ltip-grantee';
 import PhaseSummary from '../PhaseSummary';
+import useIsEditor from '../../hooks/use-is-editor';
+import EditPhaseForm from '../forms/EditPhaseForm';
 
 type DataBadgeProps = {
     isDue: boolean;
@@ -49,6 +51,8 @@ const StatusBadge = ({ status }: { status: Status }) => {
 type TabHistoricalProps = IProps;
 const TabHistorical = (props: TabHistoricalProps) => {
     const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
+    const [editPhase, setEditPhase] = useState<Phase | null>(null);
+    const [editPhaseIndex, setEditPhaseIndex] = useState<number>(-1);
     const phases = toArray(props.document.state.global.phases);
 
     if (selectedPhase) {
@@ -60,24 +64,40 @@ const TabHistorical = (props: TabHistoricalProps) => {
         );
     }
 
+    if (editPhase) {
+        return (
+            <EditPhaseForm
+                phase={editPhase}
+                phaseIndex={editPhaseIndex}
+                onCloseForm={() => setEditPhase(null)}
+                {...props}
+            />
+        );
+    }
+
     return (
         <HistoricalTable
             phases={phases}
-            selectedPhase={selectedPhase}
             setSelectedPhase={setSelectedPhase}
+            onEdit={(phase, phaseIndex) => {
+                setEditPhase(phase);
+                setEditPhaseIndex(phaseIndex);
+            }}
         />
     );
 };
 
 const HistoricalTable = ({
     phases,
-    selectedPhase,
     setSelectedPhase,
+    onEdit,
 }: {
     phases: Phase[];
-    selectedPhase: Phase | null;
     setSelectedPhase: (phase: Phase | null) => void;
+    onEdit: (phase: Phase, phaseIndex: number) => void;
 }) => {
+    const isEditor = useIsEditor();
+
     return (
         <div>
             <div className="mt-8 flow-root">
@@ -206,9 +226,22 @@ const HistoricalTable = ({
                                                     isSubmitted={isStatsValid}
                                                 />
                                             </td>
-                                            <td className="relative whitespace-nowrap py-5 pl-3 text-right text-sm font-medium">
+                                            <td className="relative whitespace-nowrap py-5 pl-3 text-right text-sm font-medium flex divide-x">
+                                                {isEditor && (
+                                                    <p
+                                                        className="text-purple-600 hover:text-purple-900 cursor-pointer px-2"
+                                                        onClick={() =>
+                                                            onEdit(
+                                                                phase,
+                                                                phaseIndex,
+                                                            )
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </p>
+                                                )}
                                                 <p
-                                                    className="text-purple-600 pr-4 hover:text-purple-900 cursor-pointer"
+                                                    className="text-purple-600 hover:text-purple-900 cursor-pointer px-2"
                                                     onClick={() =>
                                                         setSelectedPhase(phase)
                                                     }

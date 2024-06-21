@@ -5,7 +5,6 @@ import {
 } from '../../../../document-models/arbitrum-ltip-grantee';
 import { IProps } from '../../editor';
 import { classNames, intHandler } from '../../util';
-import PhaseTimespan from '../PhaseTimespan';
 import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { editPhase } from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
 import useInitialScroll from '../../hooks/use-initial-scroll';
@@ -13,16 +12,27 @@ import useInitialScroll from '../../hooks/use-initial-scroll';
 type FinalizingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
+    hideDescription?: boolean;
 };
 const FinalizingForm = (props: FinalizingFormProps) => {
-    const { dispatch, phase, phaseIndex } = props;
+    const { dispatch, phase, phaseIndex, hideDescription } = props;
 
     const [showErrors, setShowErrors] = useState(false);
-    const [avgDailyTVLLocal, setAvgDailyTVLLocal] = useState(0);
-    const [avgDailyTXNSLocal, setAvgDailyTXNSLocal] = useState(0);
-    const [avgDailyUniqueUsersLocal, setAvgDailyUniqueUsersLocal] = useState(0);
-    const [changesLocal, setChangesLocal] = useState('');
-    const [lessonsLocal, setLessonsLocal] = useState('');
+    const [avgDailyTVLLocal, setAvgDailyTVLLocal] = useState(
+        phase.stats?.avgDailyTVL || 0,
+    );
+    const [avgDailyTXNSLocal, setAvgDailyTXNSLocal] = useState(
+        phase.stats?.avgDailyTXNS || 0,
+    );
+    const [avgDailyUniqueUsersLocal, setAvgDailyUniqueUsersLocal] = useState(
+        phase.stats?.avgDailyUniqueUsers || 0,
+    );
+    const [changesLocal, setChangesLocal] = useState(
+        phase.stats?.changes || '',
+    );
+    const [lessonsLocal, setLessonsLocal] = useState(
+        phase.stats?.lessons || '',
+    );
 
     const isAvgDailTVLValid = useMemo(
         () => validators.gteZero(avgDailyTVLLocal),
@@ -89,13 +99,14 @@ const FinalizingForm = (props: FinalizingFormProps) => {
 
     return (
         <div className="w-full">
-            <div className="isolate -space-y-px rounded-md shadow-sm">
-                <PhaseTimespan phase={phase} />
-                <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
-                    Please enter statistics for the period from{' '}
-                    {new Date(phase.startDate).toDateString()} to{' '}
-                    {new Date(phase.endDate).toDateString()}.
-                </div>
+            <div>
+                {!hideDescription && (
+                    <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
+                        Please enter statistics for the period from{' '}
+                        {new Date(phase.startDate).toDateString()} to{' '}
+                        {new Date(phase.endDate).toDateString()}.
+                    </div>
+                )}
                 <div className={wrapperClasses(isAvgDailTVLValid)}>
                     <label className="block text-xs font-medium text-gray-900">
                         Average Daily TVL (required)

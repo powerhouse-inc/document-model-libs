@@ -1,7 +1,6 @@
 import { User } from 'document-model/document';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext } from 'react';
 import { ArbitrumLtipGranteeState } from '../../../document-models/arbitrum-ltip-grantee';
-import { toArray } from '../util';
 
 export enum Role {
     Root = 'root',
@@ -14,7 +13,7 @@ type UserContextType = {
     state: ArbitrumLtipGranteeState | undefined;
 };
 
-const UserContext = createContext<UserContextType>({
+export const UserContext = createContext<UserContextType>({
     user: undefined,
     state: undefined,
 });
@@ -32,33 +31,3 @@ export const UserProvider = ({ user, state, children }: UserProviderProps) => {
         </UserContext.Provider>
     );
 };
-
-export const useAddress = () => {
-    const context = useContext(UserContext);
-    return context.user?.address;
-};
-
-const useRole = (): Role => {
-    const context = useContext(UserContext);
-    return useMemo(() => {
-        const { user, state } = context;
-        if (user?.address === state?.authorizedSignerAddress) {
-            return Role.Root;
-        }
-
-        for (const addr of toArray(state?.editorAddresses || [])) {
-            if (user?.address === addr) {
-                return Role.Editor;
-            }
-        }
-
-        return Role.Viewer;
-    }, [context]);
-};
-
-export const useIsEditor = () => {
-    const role = useRole();
-    return role === Role.Root || role === Role.Editor;
-};
-
-export const useIsAdmin = () => useRole() === Role.Root;

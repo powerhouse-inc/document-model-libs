@@ -13,11 +13,9 @@ import { actions } from 'document-model/document-model';
 import TabSummary from './components/tabs/TabSummary';
 import TabHistorical from './components/tabs/TabHistorical';
 import TabAdmin from './components/tabs/TabAdmin';
-import {
-    UserProvider,
-    useIsAdmin,
-    useIsEditor,
-} from './components/UserProvider';
+import { UserProvider } from './components/UserProvider';
+import useIsAdmin from './hooks/use-is-admin';
+import useIsEditor from './hooks/use-is-editor';
 
 export type CustomEditorProps = Pick<
     RWATabsProps,

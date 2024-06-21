@@ -22,9 +22,10 @@ type ReportingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
     phaseIndex: number;
     state: ArbitrumLtipGranteeState;
+    hideDescription?: boolean;
 };
 const ReportingForm = (props: ReportingFormProps) => {
-    const { dispatch, phase, phaseIndex, state } = props;
+    const { dispatch, phase, phaseIndex, state, hideDescription } = props;
     const actuals = phase.actuals!;
 
     // state
@@ -145,11 +146,12 @@ const ReportingForm = (props: ReportingFormProps) => {
 
     return (
         <div className="w-full">
-            <div className="isolate -space-y-px rounded-md shadow-sm">
-                <PhaseTimespan phase={phase} />
-                <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
-                    {description}
-                </div>
+            <div>
+                {!hideDescription && (
+                    <div className="text-lg px-4 py-4 ring-1 ring-inset ring-gray-300">
+                        {description}
+                    </div>
+                )}
                 <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex">
                     <div
                         className={classNames(
