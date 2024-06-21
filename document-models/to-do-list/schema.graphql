@@ -1,0 +1,43 @@
+type ToDoListState {
+    items: [ToDoItem!]!
+    stats: ToDoListStats!
+}
+
+type ToDoItem {
+    id: ID!
+    text: String!
+    checked: Boolean!
+}
+
+type ToDoListStats {
+    total: Int!
+    checked: Int!
+    unchecked: Int!
+}
+
+type ToDoListLocalState
+
+# ToDoList
+
+input AddTodoItemInput {
+    id: ID!
+    text: String!
+}
+
+# add new types here
+
+
+input UpdateTodoItemInput {
+    id: ID!
+    text: String
+    checked: Boolean
+}
+
+# add new types here
+
+
+input DeleteTodoItemInput {
+    id: ID!
+}
+
+# add new types here
