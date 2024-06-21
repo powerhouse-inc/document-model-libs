@@ -1,3 +1,10 @@
+# [1.59.0-arbitrum.11](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.10...v1.59.0-arbitrum.11) (2024-06-21)
+
+
+### Features
+
+* full phase editing ([9cf494b](https://github.com/powerhouse-inc/document-model-libs/commit/9cf494b8446e33597967341dfb213a590aa56e40))
+
 # [1.59.0-arbitrum.10](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.9...v1.59.0-arbitrum.10) (2024-06-20)
 
 
