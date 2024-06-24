@@ -1,3 +1,15 @@
+# [1.59.0-arbitrum.12](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.11...v1.59.0-arbitrum.12) (2024-06-24)
+
+
+### Bug Fixes
+
+* disallow editing ahead of time ([6f4434c](https://github.com/powerhouse-inc/document-model-libs/commit/6f4434c26d2047524228d9363fbc361b8dd6f8e8))
+
+
+### Features
+
+* invalid form state is much more clear ([4f63b1c](https://github.com/powerhouse-inc/document-model-libs/commit/4f63b1c1aa3efa43f5869e69c52d938b22b265d2))
+
 # [1.59.0-arbitrum.11](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.10...v1.59.0-arbitrum.11) (2024-06-21)
 
 
