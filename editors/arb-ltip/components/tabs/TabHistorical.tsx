@@ -227,7 +227,7 @@ const HistoricalTable = ({
                                                 />
                                             </td>
                                             <td className="relative whitespace-nowrap py-5 pl-3 text-right text-sm font-medium flex divide-x">
-                                                {isEditor && (
+                                                {isEditor && isPhaseStarted && (
                                                     <p
                                                         className="text-purple-600 hover:text-purple-900 cursor-pointer px-2"
                                                         onClick={() =>
