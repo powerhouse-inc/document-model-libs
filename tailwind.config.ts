@@ -19,6 +19,18 @@ const config: Config = {
             boxShadow: {
                 button: '0px 2px 4px 0px rgba(0, 0, 0, 0.15)',
             },
+            keyframes: {
+                wiggle: {
+                  '0%, 100%': {  },
+                  '20%': { transform: 'rotate(3deg)', },
+                  '40%': { transform: 'rotate(-3deg)', },
+                  '60%': { transform: 'rotate(3deg)', },
+                  '80%': { transform: 'rotate(-3deg)', },
+                },
+            },
+            animation: {
+                'shake': 'wiggle 300ms ease-in-out',
+            }
         },
     },
 }

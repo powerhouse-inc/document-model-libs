@@ -54,6 +54,12 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         () => validators.isNotEmptyString(lessonsLocal),
         [lessonsLocal],
     );
+    const isFormValid =
+        isAvgDailTVLValid &&
+        isAvgDailyTXNSValid &&
+        isAvgDailyUniqueUsersValid &&
+        isChangesValid &&
+        isLessonsValid;
 
     useInitialScroll();
 
@@ -90,7 +96,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         (isValid: boolean) =>
             classNames(
                 showErrors && !isValid
-                    ? 'ring-2 ring-red-300'
+                    ? 'ring-4 ring-red-600'
                     : 'ring-1 ring-gray-300',
                 'relative rounded-md rounded-b-none rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
             ),
@@ -168,7 +174,12 @@ const FinalizingForm = (props: FinalizingFormProps) => {
             </div>
             <button
                 type="button"
-                className="inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                className={classNames(
+                    isFormValid
+                        ? 'hover:bg-purple-700'
+                        : 'hover:animate-shake hover:bg-red-500',
+                    'inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100',
+                )}
                 onClick={submit}
             >
                 Submit

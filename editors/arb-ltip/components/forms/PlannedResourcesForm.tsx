@@ -140,6 +140,11 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         () => validators.isNotEmptyString(changesLocal),
         [changesLocal],
     );
+    const isFormValid =
+        isDisbursementValid &&
+        isDistributionMechanismsValid &&
+        isExpectationsValid &&
+        isChangesValid;
 
     const description = useMemo(() => {
         const now = new Date();
@@ -174,7 +179,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         (isValid: boolean) =>
             classNames(
                 showErrors && !isValid
-                    ? 'ring-2 ring-red-300'
+                    ? 'ring-4 ring-red-600'
                     : 'ring-1 ring-gray-300',
                 'rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
             ),
@@ -271,7 +276,12 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
             </div>
             <button
                 type="button"
-                className="inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                className={classNames(
+                    isFormValid
+                        ? 'hover:bg-purple-700'
+                        : 'hover:animate-shake hover:bg-red-500',
+                    'inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100',
+                )}
                 onClick={submit}
             >
                 {isValid ? 'Update' : 'Submit'}
