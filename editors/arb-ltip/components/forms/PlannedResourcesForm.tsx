@@ -179,7 +179,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         (isValid: boolean) =>
             classNames(
                 showErrors && !isValid
-                    ? 'ring-4 ring-red-600'
+                    ? 'ring-2 ring-red-300'
                     : 'ring-1 ring-gray-300',
                 'rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
             ),
