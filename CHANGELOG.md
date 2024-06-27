@@ -1,3 +1,15 @@
+# [1.59.0-arbitrum.13](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.12...v1.59.0-arbitrum.13) (2024-06-27)
+
+
+### Bug Fixes
+
+* do not allow duplicate contracts to be added ([449ee97](https://github.com/powerhouse-inc/document-model-libs/commit/449ee9741bc78f4ad51e444149e6d4c5a7656d0b))
+
+
+### Features
+
+* switch back to thin red border for invalid elements ([3713938](https://github.com/powerhouse-inc/document-model-libs/commit/3713938304dd4464f07d18302821d793d31810b7))
+
 # [1.59.0-arbitrum.12](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.11...v1.59.0-arbitrum.12) (2024-06-24)
 
 
