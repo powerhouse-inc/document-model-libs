@@ -88,6 +88,10 @@ const ReportingForm = (props: ReportingFormProps) => {
         // nice date string
         return date.toLocaleDateString();
     }, [phase.endDate]);
+    const showSubmitNote = useMemo(
+        () => Date.now() < new Date(phase.endDate).getTime(),
+        [phase.endDate],
+    );
 
     const description = isValid ? (
         <div>
@@ -101,6 +105,15 @@ const ReportingForm = (props: ReportingFormProps) => {
             actuals here. This information should be submitted by
             <span className="font-bold">&nbsp;{dueDate}</span>.
         </div>
+    );
+
+    const submitNote = isValid ? (
+        <div>
+            The next reporting phase will be unlocked on{' '}
+            <span className="font-bold">{dueDate}</span>.
+        </div>
+    ) : (
+        <></>
     );
 
     useInitialScroll();
@@ -247,18 +260,23 @@ const ReportingForm = (props: ReportingFormProps) => {
                     />
                 </div>
             </div>
-            <button
-                type="button"
-                className={classNames(
-                    isValid
-                        ? 'hover:bg-purple-700'
-                        : 'hover:animate-shake hover:bg-red-500',
-                    'inline-flex items-center mt-4 px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100',
+            <div className="flex items-center py-4">
+                <button
+                    type="button"
+                    className={classNames(
+                        isValid
+                            ? 'hover:bg-purple-700'
+                            : 'hover:animate-shake hover:bg-red-500',
+                        'px-4 py-2 text-base font-medium rounded-md text-white bg-purple-600 disabled:bg-slate-100',
+                    )}
+                    onClick={submit}
+                >
+                    Update
+                </button>
+                {showSubmitNote && (
+                    <div className="text-lg px-4 py-4">{submitNote}</div>
                 )}
-                onClick={submit}
-            >
-                Update
-            </button>
+            </div>
         </div>
     );
 };

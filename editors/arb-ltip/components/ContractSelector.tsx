@@ -70,21 +70,15 @@ const ContractList = ({
                 id="contracts"
                 name="contracts"
                 className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                value={selected}
+                onChange={e => setSelected(e.target.value)}
             >
-                <option
-                    value={NEW_VALUE}
-                    selected={selected === NEW_VALUE}
-                    onClick={() => setSelected(NEW_VALUE)}
-                >
-                    Add new...
-                </option>
+                <option value={NEW_VALUE}>Add new...</option>
 
                 {contracts.map(contract => (
                     <option
                         key={contract.contractId}
                         value={contract.contractId}
-                        selected={contract.contractId === selected}
-                        onClick={() => setSelected(contract.contractId)}
                     >
                         {contract.contractLabel}
                     </option>
