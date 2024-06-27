@@ -108,7 +108,9 @@ const ContractSelector = (props: ContractSelectorProps) => {
     );
 
     const isAddressValid = useMemo(
-        () => validators.isValidAddress(addressLocal),
+        () =>
+            validators.isValidAddress(addressLocal) &&
+            !contractsSelected.find(c => c.contractAddress === addressLocal),
         [addressLocal],
     );
 
@@ -135,6 +137,15 @@ const ContractSelector = (props: ContractSelectorProps) => {
             }
 
             contract = selectedContract;
+        }
+
+        // check if this contract is already added
+        if (
+            contractsSelected.find(
+                c => c.contractAddress === contract.contractAddress,
+            )
+        ) {
+            return;
         }
 
         onAdd(contract);
