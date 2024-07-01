@@ -145,12 +145,15 @@ devDependencies:
   crypto-browserify:
     specifier: ^3.12.0
     version: 3.12.0
+  did-key-creator:
+    specifier: ^1.2.0
+    version: 1.2.0
   document-model:
-    specifier: ^1.5.0
-    version: 1.5.0
+    specifier: ^1.7.0
+    version: 1.7.0
   document-model-editors:
     specifier: ^1.0.1
-    version: 1.0.1(document-model@1.5.0)(react-dom@18.2.0)(react@18.2.0)(storybook@8.0.2)
+    version: 1.0.1(document-model@1.7.0)(react-dom@18.2.0)(react@18.2.0)(storybook@8.0.2)
   dspot-powerhouse-components:
     specifier: ^1.1.0
     version: 1.1.0(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@mui/material@5.15.5)(document-model-libs@1.24.0)(react-dom@18.2.0)(react@18.2.0)
@@ -3796,7 +3799,7 @@ packages:
       '@types/node': 20.11.20
       arg: 5.0.2
       change-case: 4.1.2
-      document-model: 1.5.0
+      document-model: 1.7.0
       enquirer: 2.4.1
       execa: 8.0.1
       graphql: 16.8.1
@@ -8927,6 +8930,15 @@ packages:
       - supports-color
     dev: true
 
+  /did-key-creator@1.2.0:
+    resolution: {integrity: sha512-mo5hPvQeAskHQT5s3QCFLttv6fQxr5S/Lo5IXM9lkDml7Y0pWJp7xNsOyf7tGwYBLpTyFDecOU+TSfZPWEAk5g==}
+    engines: {node: '>=14.06'}
+    dependencies:
+      multicodec: 3.2.1
+      multiformats: 9.9.0
+      uint8arrays: 2.1.10
+    dev: true
+
   /didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
     dev: true
@@ -8968,7 +8980,7 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /document-model-editors@1.0.1(document-model@1.5.0)(react-dom@18.2.0)(react@18.2.0)(storybook@8.0.2):
+  /document-model-editors@1.0.1(document-model@1.7.0)(react-dom@18.2.0)(react@18.2.0)(storybook@8.0.2):
     resolution: {integrity: sha512-fRUAGRQQQaEh0QiefLspUtJqodutTMfMz80oGcyh1PFoR3S4jozMdmMWukAJxqx+lapzSmMMteTnnslC+JWslw==}
     peerDependencies:
       document-model: ^1.0.5
@@ -8976,7 +8988,7 @@ packages:
       react-dom: ^18.2.0
       storybook: ^7.0.17
     dependencies:
-      document-model: 1.5.0
+      document-model: 1.7.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       storybook: 8.0.2(react-dom@18.2.0)(react@18.2.0)
@@ -9013,8 +9025,8 @@ packages:
       - vitest
     dev: true
 
-  /document-model@1.5.0:
-    resolution: {integrity: sha512-HdVsoX6RBYP1GDFTtgycWpyXFcjVz/kX06Dnikqwj65Mn9hU2puJtEKb90gCtTFAnoaBWVWZlpgjCpolKJH0Ow==}
+  /document-model@1.7.0:
+    resolution: {integrity: sha512-g35SSY9+pqsCKz0xwZm3tWp9/bEQlvrVEp+96vyFtR/w1zyrGXwBOYslpKhpfuDmqJfN0ERq+LgB26rmf+YDyQ==}
     dependencies:
       change-case: 5.4.3
       jszip: 3.10.1
@@ -12194,6 +12206,18 @@ packages:
     resolution: {integrity: sha512-ckmWDJjphvd/FvZawgygcUeQCxzvohjFO5RxTjj4eq8kw359gFF3E1brjfI+viLMxss5JrHTDRHZvu2/tuy0Qg==}
     dev: true
 
+  /multicodec@3.2.1:
+    resolution: {integrity: sha512-+expTPftro8VAW8kfvcuNNNBgb9gPeNYV9dn+z1kJRWF2vih+/S79f2RVeIwmrJBUJ6NT9IUPWnZDQvegEh5pw==}
+    deprecated: This module has been superseded by the multiformats module
+    dependencies:
+      uint8arrays: 3.1.1
+      varint: 6.0.0
+    dev: true
+
+  /multiformats@9.9.0:
+    resolution: {integrity: sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==}
+    dev: true
+
   /mutative@1.0.5:
     resolution: {integrity: sha512-uN4rD54sN8NRG2wuIO3K8nI0sB4Kk/wmjG5UbZa3amFU3bdF1k80OojBGQMomCeEIphq2hzIvK5T7f4hoZdkWA==}
     engines: {node: '>=14.0'}
@@ -15103,6 +15127,18 @@ packages:
     dev: true
     optional: true
 
+  /uint8arrays@2.1.10:
+    resolution: {integrity: sha512-Q9/hhJa2836nQfEJSZTmr+pg9+cDJS9XEAp7N2Vg5MzL3bK/mkMVfjscRGYruP9jNda6MAdf4QD/y78gSzkp6A==}
+    dependencies:
+      multiformats: 9.9.0
+    dev: true
+
+  /uint8arrays@3.1.1:
+    resolution: {integrity: sha512-+QJa8QRnbdXVpHYjLoTpJIdCTiw9Ir62nocClWuXIq2JIh4Uta0cQsTSpFL678p2CN8B+XSApwcU+pQEqVpKWg==}
+    dependencies:
+      multiformats: 9.9.0
+    dev: true
+
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
     dependencies:
@@ -15372,6 +15408,10 @@ packages:
   /value-or-promise@1.0.12:
     resolution: {integrity: sha512-Z6Uz+TYwEqE7ZN50gwn+1LCVo9ZVrpxRPOhOLnncYkY1ZzOYtrX8Fwf/rFktZ8R5mJms6EZf5TqNOMeZmnPq9Q==}
     engines: {node: '>=12'}
+
+  /varint@6.0.0:
+    resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
+    dev: true
 
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
