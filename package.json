@@ -159,8 +159,6 @@
         "copy-anything": "^3.0.5",
         "date-fns": "^3.3.1",
         "deep-object-diff": "^1.1.9",
-        "electron": "^31.1.0",
-        "electron-store": "^10.0.0",
         "jsonc-parser": "^3.2.1",
         "jszip": "^3.10.1",
         "mathjs": "^13.0.0",
