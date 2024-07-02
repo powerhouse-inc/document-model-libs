@@ -9,3 +9,4 @@ export { module as DocumentDrive } from './document-drive';
 export { module as ScopeFramework } from './scope-framework';
 export { module as RealWorldAssets } from './real-world-assets';
 export { module as ArbitrumLtipGrantee } from './arbitrum-ltip-grantee';
+export { module as ArbitrumStipGrantee } from './arbitrum-stip-grantee';
