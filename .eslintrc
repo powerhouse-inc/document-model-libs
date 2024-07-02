@@ -26,7 +26,7 @@
         "react/react-in-jsx-scope": "off",
         "@typescript-eslint/no-unnecessary-type-assertion": "off",
         "@typescript-eslint/use-unknown-in-catch-callback-variable": "warn",
-        "@typescript-eslint/non-nullable-type-assertion-style": "warn",
+        "@typescript-eslint/non-nullable-type-assertion-style": "off",
         "@typescript-eslint/ban-ts-comment": "warn",
         "@typescript-eslint/restrict-plus-operands": "warn",
         "@typescript-eslint/explicit-function-return-type": "off",
