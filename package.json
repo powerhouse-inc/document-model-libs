@@ -59,6 +59,11 @@
             "import": "./dist/es/arbitrum-ltip-grantee.js",
             "require": "./dist/cjs/arbitrum-ltip-grantee.cjs",
             "types": "./dist/arbitrum-ltip-grantee.d.ts"
+        },
+        "./arbitrum-stip-grantee": {
+            "import": "./dist/es/arbitrum-stip-grantee.js",
+            "require": "./dist/cjs/arbitrum-stip-grantee.cjs",
+            "types": "./dist/arbitrum-stip-grantee.d.ts"
         }
     },
     "scripts": {
