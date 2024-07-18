@@ -7,6 +7,7 @@ import {
     removeEditor,
 } from '../../../../document-models/arbitrum-ltip-grantee/gen/creators';
 import { useState } from 'react';
+import InfoTooltip from '../InfoTooltip';
 
 const RoleBadge = ({ role }: { role: Role }) => (
     <span
@@ -48,13 +49,19 @@ const TabAdmin = (props: TabAdminProps) => {
                                     scope="col"
                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                 >
-                                    Address
+                                    <span className="flex">
+                                        Address
+                                        <InfoTooltip text="The Ethereum address of the user." />
+                                    </span>
                                 </th>
                                 <th
                                     scope="col"
                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                 >
-                                    Role
+                                    <span className="flex">
+                                        Role
+                                        <InfoTooltip text="Admin or editor. Admins can add other users, editors can only edit documents." />
+                                    </span>
                                 </th>
                                 <th
                                     scope="col"

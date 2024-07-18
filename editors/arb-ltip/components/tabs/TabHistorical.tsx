@@ -6,6 +6,7 @@ import { Phase } from '../../../../document-models/arbitrum-ltip-grantee';
 import PhaseSummary from '../PhaseSummary';
 import useIsEditor from '../../hooks/use-is-editor';
 import EditPhaseForm from '../forms/EditPhaseForm';
+import InfoTooltip from '../InfoTooltip';
 
 type DataBadgeProps = {
     isDue: boolean;
@@ -110,31 +111,46 @@ const HistoricalTable = ({
                                         scope="col"
                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        Start Date
+                                        <span className="flex">
+                                            Start Date
+                                            <InfoTooltip text="The date the phase starts." />
+                                        </span>
                                     </th>
                                     <th
                                         scope="col"
                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        Status
+                                        <span className="flex">
+                                            Status
+                                            <InfoTooltip text="Aggregate status of planned, actuals, and stats statues." />
+                                        </span>
                                     </th>
                                     <th
                                         scope="col"
                                         className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        Planned
+                                        <span className="flex">
+                                            Planned
+                                            <InfoTooltip text="Updates automatically based on planned resource data entry and date." />
+                                        </span>
                                     </th>
                                     <th
                                         scope="col"
                                         className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        Actuals
+                                        <span className="flex">
+                                            Actuals
+                                            <InfoTooltip text="Updates automatically based on actuals resource data entry and date." />
+                                        </span>
                                     </th>
                                     <th
                                         scope="col"
                                         className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        Stats
+                                        <span className="flex">
+                                            Stats
+                                            <InfoTooltip text="Updates automatically based on stats resource data entry and date." />
+                                        </span>
                                     </th>
                                     <th
                                         scope="col"

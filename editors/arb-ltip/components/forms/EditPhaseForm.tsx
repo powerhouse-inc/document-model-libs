@@ -21,7 +21,6 @@ const EditPhaseForm = ({
 
     const isPhaseStarted = new Date(phase.startDate) < new Date();
     const isPhaseComplete = new Date(phase.endDate) < new Date();
-    const isPhaseInProgress = isPhaseStarted && !isPhaseComplete;
 
     return (
         <div className="flex flex-col space-y-4">
