@@ -4,7 +4,6 @@ import {
     GroupTransactionFormInputs,
     GroupTransactionsTable,
     GroupTransactionsTableProps,
-    assetGroupTransactions,
 } from '@powerhousedao/design-system';
 import { copy } from 'copy-anything';
 import { utils } from 'document-model/document';
@@ -58,21 +57,13 @@ export const Transactions = (props: IProps) => {
                 fixedIncomeId,
                 fixedIncomeAmount,
                 type,
-                cashBalanceChange,
-                unitPrice,
+                txRef,
+                serviceProviderFeeTypeId,
             } = data;
             if (!type) throw new Error('Type is required');
             if (!data.entryTime) throw new Error('Entry time is required');
-            if (!cashBalanceChange) {
-                throw new Error('Cash balance change is required');
-            }
             if (!cashAmount) {
                 throw new Error('Cash amount is required');
-            }
-            if (!unitPrice && assetGroupTransactions.includes(type)) {
-                throw new Error(
-                    'Unit price is required for asset transactions',
-                );
             }
 
             const entryTime = new Date(data.entryTime).toISOString();
@@ -98,7 +89,6 @@ export const Transactions = (props: IProps) => {
                 accountId: null,
                 settlementTime: null,
                 tradeTime: null,
-                txRef: null,
             };
 
             if (fixedIncomeId && !fixedIncomeAmount) {
@@ -119,18 +109,17 @@ export const Transactions = (props: IProps) => {
                           counterPartyAccountId: null,
                           settlementTime: null,
                           tradeTime: null,
-                          txRef: null,
                       }
                     : null;
 
             const groupTransaction = {
                 id: utils.hashKey(),
                 type,
-                cashTransaction,
-                cashBalanceChange,
-                unitPrice,
                 entryTime,
                 fees,
+                txRef,
+                serviceProviderFeeTypeId,
+                cashTransaction,
                 fixedIncomeTransaction,
                 interestTransaction: null,
                 feeTransactions: null,
@@ -254,7 +243,9 @@ export const Transactions = (props: IProps) => {
                 const newFixedIncomeAssetId = data.fixedIncomeId;
                 const newFixedIncomeAssetAmount = data.fixedIncomeAmount;
                 const newCashAmount = data.cashAmount;
-                const newCashBalanceChange = data.cashBalanceChange;
+                const newTxRef = data.txRef;
+                const newServiceProviderFeeTypeId =
+                    data.serviceProviderFeeTypeId;
 
                 const existingCashTransaction = selectedItem.cashTransaction;
 
@@ -269,6 +260,15 @@ export const Transactions = (props: IProps) => {
 
                 if (newEntryTime) {
                     update.entryTime = newEntryTime;
+                }
+
+                if (newTxRef) {
+                    update.txRef = newTxRef;
+                }
+
+                if (newServiceProviderFeeTypeId) {
+                    update.serviceProviderFeeTypeId =
+                        newServiceProviderFeeTypeId;
                 }
 
                 // use type comparison to avoid false positives on zero
@@ -298,10 +298,6 @@ export const Transactions = (props: IProps) => {
                     }
                     update.fixedIncomeTransaction.amount =
                         newFixedIncomeAssetAmount;
-                }
-
-                if (newCashBalanceChange) {
-                    update.cashBalanceChange = newCashBalanceChange;
                 }
 
                 let changedFields = getDifferences(selectedItem, update);
@@ -393,7 +389,6 @@ export const Transactions = (props: IProps) => {
             const coupon = data.coupon;
 
             if (!name) throw new Error('Name is required');
-            if (!maturity) throw new Error('Maturity is required');
             if (!fixedIncomeTypeId)
                 throw new Error('Fixed income type is required');
             if (!spvId) throw new Error('SPV is required');
