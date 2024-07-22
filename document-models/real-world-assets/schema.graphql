@@ -16,7 +16,6 @@ type FixedIncome {
     fixedIncomeTypeId: ID!
     name: String!
     spvId: ID!
-    maturity: DateTime!
     purchaseDate: DateTime!
     notional: Float!
     assetProceeds: Float!
@@ -25,6 +24,7 @@ type FixedIncome {
     purchasePrice: Float!
     totalDiscount: Float!
     realizedSurplus: Float!
+    maturity: DateTime
     ISIN: String
     CUSIP: String
     coupon: Float
@@ -61,7 +61,6 @@ type BaseTransaction {
     entryTime: DateTime!
     tradeTime: DateTime
     settlementTime: DateTime
-    txRef: String
     accountId: ID
     counterPartyAccountId: ID
 }
@@ -87,6 +86,8 @@ type GroupTransaction {
     fees: [TransactionFee!]
     cashTransaction: BaseTransaction!
     fixedIncomeTransaction: BaseTransaction
+    serviceProviderFeeTypeId: ID
+    txRef: String
 }
 
 enum GroupTransactionType {
@@ -94,7 +95,9 @@ enum GroupTransactionType {
     PrincipalReturn
     AssetPurchase
     AssetSale
+    InterestIncome
     InterestPayment
+    FeesIncome
     FeesPayment
 }
 
@@ -158,7 +161,7 @@ input CreateFixedIncomeAssetInput {
     fixedIncomeTypeId: ID!
     spvId: ID!
     name: String!
-    maturity: DateTime!
+    maturity: DateTime
     ISIN: String
     CUSIP: String
     coupon: Float
@@ -220,7 +223,6 @@ input BaseTransactionInput {
     entryTime: DateTime
     tradeTime: DateTime
     settlementTime: DateTime
-    txRef: String
     accountId: ID
     counterPartyAccountId: ID
 }
@@ -235,21 +237,21 @@ input CreateGroupTransactionInput {
     id: ID!
     type: GroupTransactionType!
     entryTime: DateTime!
-    cashBalanceChange: Float!
     cashTransaction: BaseTransaction!
     fees: [TransactionFee!]
-    unitPrice: Float
     fixedIncomeTransaction: BaseTransaction
+    serviceProviderFeeTypeId: ID
+    txRef: String
 }
 
 input EditGroupTransactionInput {
     id: ID!
     type: GroupTransactionType
     entryTime: DateTime
-    cashBalanceChange: Float
-    unitPrice: Float
     cashTransaction: BaseTransactionInput
     fixedIncomeTransaction: BaseTransactionInput
+    serviceProviderFeeTypeId: ID
+    txRef: String
 }
 
 input DeleteGroupTransactionInput {
