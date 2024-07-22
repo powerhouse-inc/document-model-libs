@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { IProps } from '../../editor';
 import { classNames, formatDate, toArray } from '../../util';
@@ -7,23 +7,34 @@ import PhaseSummary from '../PhaseSummary';
 import useIsEditor from '../../hooks/use-is-editor';
 import EditPhaseForm from '../forms/EditPhaseForm';
 import InfoTooltip from '../InfoTooltip';
+import { v4 as uuid } from 'uuid';
+import { Tooltip } from 'react-tooltip';
 
 type DataBadgeProps = {
     isDue: boolean;
     isSubmitted: boolean;
+    tooltip: string;
 };
-const DataBadge = ({ isDue, isSubmitted }: DataBadgeProps) => {
+const DataBadge = ({ isDue, isSubmitted, tooltip }: DataBadgeProps) => {
+    const id = useMemo(() => `info-${uuid()}`, []);
+
     return (
         <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium cursor-pointer ${
                 isSubmitted
                     ? 'bg-green-100 text-green-800'
                     : isDue
                       ? 'bg-red-100 text-red-800'
                       : 'bg-gray-100 text-gray-800'
             }`}
+            data-tooltip-id={id}
+            data-tooltip-content={tooltip}
         >
             {isSubmitted ? 'Submitted' : isDue ? 'Due' : 'Not Started'}
+
+            {isDue && !isSubmitted && (
+                <Tooltip id={id} place="top-start" className="z-50" />
+            )}
         </span>
     );
 };
@@ -36,16 +47,30 @@ const statusStyles = {
     Overdue: 'bg-red-100 text-red-800 ring-red-100',
 };
 
-const StatusBadge = ({ status }: { status: Status }) => {
+const StatusBadge = ({
+    status,
+    tooltip,
+}: {
+    status: Status;
+    tooltip: string;
+}) => {
+    const id = useMemo(() => `info-${uuid()}`, []);
+
     return (
-        <span
-            className={classNames(
-                statusStyles[status],
-                'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset',
-            )}
-        >
-            {status}
-        </span>
+        <>
+            <span
+                className={classNames(
+                    statusStyles[status],
+                    'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset cursor-pointer',
+                )}
+                data-tooltip-id={id}
+                data-tooltip-content={tooltip}
+            >
+                {status}
+            </span>
+
+            {tooltip && <Tooltip id={id} place="top-start" className="z-50" />}
+        </>
     );
 };
 
@@ -196,6 +221,18 @@ const HistoricalTable = ({
                                             status = 'Overdue';
                                         }
                                     }
+
+                                    let statusTooltip = '';
+                                    if (status === 'Not Started') {
+                                        statusTooltip = `Phase starts on ${formatDate(phase.startDate)}.`;
+                                    } else if (status === 'In Progress') {
+                                        statusTooltip = `Phase started on ${formatDate(phase.startDate)}.`;
+                                    } else if (status === 'Complete') {
+                                        statusTooltip = `Phase completed on ${formatDate(phase.endDate)}.`;
+                                    } else if (status === 'Overdue') {
+                                        statusTooltip = `One or more reports are overdue.`;
+                                    }
+
                                     return (
                                         <tr
                                             key={phaseIndex}
@@ -217,24 +254,30 @@ const HistoricalTable = ({
                                                 </div>
                                             </td>
                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                <StatusBadge status={status} />
+                                                <StatusBadge
+                                                    status={status}
+                                                    tooltip={statusTooltip}
+                                                />
                                             </td>
                                             <td className="hidden sm:table-cell whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <DataBadge
                                                     isDue={isPhaseStarted}
                                                     isSubmitted={isPlannedValid}
+                                                    tooltip={`Planned resources were due on ${formatDate(phase.startDate)}.`}
                                                 />
                                             </td>
                                             <td className="hidden sm:table-cell whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <DataBadge
                                                     isDue={isPhaseComplete}
                                                     isSubmitted={isActualsValid}
+                                                    tooltip={`Actuals were due on ${formatDate(phase.endDate)}.`}
                                                 />
                                             </td>
                                             <td className="hidden sm:table-cell whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                 <DataBadge
                                                     isDue={isPhaseComplete}
                                                     isSubmitted={isStatsValid}
+                                                    tooltip={`Stats were due on ${formatDate(phase.endDate)}.`}
                                                 />
                                             </td>
                                             <td className="relative whitespace-nowrap py-5 pl-3 text-right text-sm font-medium flex divide-x">
