@@ -111,7 +111,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     </div>
                 )}
                 <div className={wrapperClasses(isAvgDailTVLValid)}>
-                    <label className="block text-xs font-medium text-gray-900 flex">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Average Daily TVL (required)
                         <InfoTooltip text="Average daily transaction volume, in ARB." />
                     </label>
@@ -124,7 +124,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isAvgDailTVLValid)}>
-                    <label className="block text-xs font-medium text-gray-900 flex">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Average Daily Transactions (required)
                         <InfoTooltip text="Average numer of daily transactions." />
                     </label>
@@ -137,7 +137,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isAvgDailyUniqueUsersValid)}>
-                    <label className="block text-xs font-medium text-gray-900 flex">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Average Daily Unique Users (required)
                         <InfoTooltip text="Average number of distinct users." />
                     </label>
@@ -150,7 +150,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isChangesValid)}>
-                    <label className="block text-xs font-medium text-gray-900 flex">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Changes
                         <InfoTooltip text="Summary of changes made during this phase." />
                     </label>
@@ -162,7 +162,7 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isLessonsValid)}>
-                    <label className="block text-xs font-medium text-gray-900 flex">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Lessons
                         <InfoTooltip text="Summary of lessons learned during this phase." />
                     </label>

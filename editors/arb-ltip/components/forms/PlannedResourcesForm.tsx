@@ -192,7 +192,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     </div>
                 )}
                 <div className={wrapperClasses(isDisbursementValid)}>
-                    <label className="text-xs font-medium text-gray-900 flex">
+                    <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         ARB Disbursement Amount (required)
                         <InfoTooltip text="Amount of ARB the disbursement address is planning to receive." />
                     </label>
@@ -205,7 +205,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(true)}>
-                    <label className="text-xs font-medium text-gray-900 flex">
+                    <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         Contracts Incentivized
                         <InfoTooltip text="Contracts intended to be fundeded from disbursement address." />
                     </label>
@@ -223,7 +223,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isDistributionMechanismsValid)}>
-                    <label className="text-xs font-medium text-gray-900 flex">
+                    <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         Distribution Mechanisms (required)
                         <InfoTooltip text="Specific methods intended to be used to distribute ARB." />
                     </label>
@@ -246,7 +246,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isChangesValid)}>
-                    <label className="text-xs font-medium text-gray-900 mb-1 flex">
+                    <label className="text-xs font-medium text-gray-900 mb-1 flex items-baseline">
                         Changes (required)
                         <InfoTooltip text="Summary of changes intended to be made during this phase." />
                     </label>
@@ -261,7 +261,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isExpectationsValid)}>
-                    <label className="text-xs font-medium text-gray-900 mb-1 flex">
+                    <label className="text-xs font-medium text-gray-900 mb-1 flex items-baseline">
                         Expectations (required)
                         <InfoTooltip text="Expected result at the end of the phase." />
                     </label>

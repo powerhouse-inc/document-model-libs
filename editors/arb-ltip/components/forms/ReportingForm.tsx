@@ -170,7 +170,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                             'flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
                         )}
                     >
-                        <label className="block text-xs font-medium text-gray-900 flex">
+                        <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                             ARB Received (required)
                             <InfoTooltip text="Amount of ARB the disbursement address received." />
                         </label>
@@ -190,7 +190,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                             'flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600',
                         )}
                     >
-                        <label className="block text-xs font-medium text-gray-900 flex">
+                        <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                             ARB Utilized (required)
                             <InfoTooltip text="Amount of ARB actually used." />
                         </label>
@@ -203,7 +203,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                         />
                     </div>
                     <div className="flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
-                        <label className="block text-xs font-medium text-gray-900 flex">
+                        <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                             ARB Remaining
                             <InfoTooltip text="Total amount of ARB remaining in the grant (grant size - total arb received)." />
                         </label>
@@ -216,7 +216,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                     </div>
                 </div>
                 <div className={wrapperClasses(true)}>
-                    <label className="block text-xs font-medium text-gray-900 flex">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Contracts Incentivized
                         <InfoTooltip text="Contracts that received ARB from the disbursement address." />
                     </label>
@@ -234,7 +234,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isDisclosuresValid)}>
-                    <label className="block text-xs font-medium text-gray-900 mb-1 flex">
+                    <label className="block text-xs font-medium text-gray-900 mb-1 flex items-baseline">
                         Disclosures (required)
                         <InfoTooltip text="Any information that needs to be disclosed." />
                     </label>
@@ -247,7 +247,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isSummaryValid)}>
-                    <label className="block text-xs font-medium text-gray-900 mb-1 flex">
+                    <label className="block text-xs font-medium text-gray-900 mb-1 flex items-baseline">
                         Summary (required)
                         <InfoTooltip text="Brief summary of grant progress." />
                     </label>

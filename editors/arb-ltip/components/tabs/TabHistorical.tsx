@@ -109,7 +109,7 @@ const HistoricalTable = ({
                                         scope="col"
                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        <span className="flex">
+                                        <span className="flex items-baseline">
                                             Start Date
                                             <InfoTooltip text="The date the phase starts." />
                                         </span>
@@ -118,7 +118,7 @@ const HistoricalTable = ({
                                         scope="col"
                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        <span className="flex">
+                                        <span className="flex items-baseline">
                                             Status
                                             <InfoTooltip text="Aggregate status of planned, actuals, and stats statues." />
                                         </span>
@@ -127,7 +127,7 @@ const HistoricalTable = ({
                                         scope="col"
                                         className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        <span className="flex">
+                                        <span className="flex items-baseline">
                                             Planned
                                             <InfoTooltip text="Updates automatically based on planned resource data entry and date." />
                                         </span>
@@ -136,7 +136,7 @@ const HistoricalTable = ({
                                         scope="col"
                                         className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        <span className="flex">
+                                        <span className="flex items-baseline">
                                             Actuals
                                             <InfoTooltip text="Updates automatically based on actuals resource data entry and date." />
                                         </span>
@@ -145,7 +145,7 @@ const HistoricalTable = ({
                                         scope="col"
                                         className="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                     >
-                                        <span className="flex">
+                                        <span className="flex items-baseline">
                                             Stats
                                             <InfoTooltip text="Updates automatically based on stats resource data entry and date." />
                                         </span>

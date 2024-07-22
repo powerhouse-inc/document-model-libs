@@ -47,7 +47,7 @@ const TabAdmin = (props: TabAdminProps) => {
                                     scope="col"
                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                 >
-                                    <span className="flex">
+                                    <span className="flex items-baseline">
                                         Address
                                         <InfoTooltip text="The Ethereum address of the user." />
                                     </span>
@@ -56,7 +56,7 @@ const TabAdmin = (props: TabAdminProps) => {
                                     scope="col"
                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                 >
-                                    <span className="flex">
+                                    <span className="flex items-baseline">
                                         Role
                                         <InfoTooltip text="Admin or editor. Admins can add other users, editors can only edit documents." />
                                     </span>

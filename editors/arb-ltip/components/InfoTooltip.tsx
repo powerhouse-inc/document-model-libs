@@ -27,7 +27,7 @@ const InfoTooltip = ({ text }: { text: string }) => {
     return (
         <>
             <span
-                className="relative w-[12px] h-[12px] mt-[1px] mx-1 cursor-pointer overflow-visible"
+                className="relative w-[12px] h-[12px] mx-1 cursor-pointer"
                 data-tooltip-id={id}
                 data-tooltip-content={text}
             >

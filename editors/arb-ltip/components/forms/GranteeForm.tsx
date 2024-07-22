@@ -246,7 +246,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                 {isInit && (
                     <div className={wrapperClasses(true, 'flex')}>
                         <div className="w-40">
-                            <div className="flex">
+                            <div className="flex items-baseline">
                                 <label className="text-xs font-medium text-gray-900">
                                     Start Date
                                 </label>
@@ -269,7 +269,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             />
                         </div>
                         <div className="w-40">
-                            <div className="flex">
+                            <div className="flex items-baseline">
                                 <label className="text-xs font-medium text-gray-900">
                                     End Date
                                 </label>
@@ -292,7 +292,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                 >
                     {(isAdmin || isInit) && (
                         <div className="w-40">
-                            <div className="flex">
+                            <div className="flex items-baseline">
                                 <label className="text-xs font-medium text-gray-900">
                                     Grant Size (ARB)
                                 </label>
@@ -311,7 +311,7 @@ const GranteeForm = (props: GranteeFormProps) => {
 
                     {!isInit && (
                         <div className="w-40">
-                            <div className="flex">
+                            <div className="flex items-baseline">
                                 <label className="text-xs font-medium text-gray-900">
                                     Matching Grant Size
                                 </label>
@@ -333,7 +333,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             isAuthorizedSignerAddressValid,
                         )}
                     >
-                        <div className="flex">
+                        <div className="flex items-baseline">
                             <label className="text-xs font-medium text-gray-900">
                                 Authorized Signer Address
                             </label>
@@ -361,7 +361,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                 )}
                 {isInit && (
                     <div className={wrapperClasses(isEditorAddressesValid)}>
-                        <div className="flex">
+                        <div className="flex items-baseline">
                             <label className="text-xs font-medium text-gray-900">
                                 Editor Addresses (comma separated)
                             </label>
@@ -384,7 +384,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             isDisbursementContractAddressValid,
                         )}
                     >
-                        <div className="flex">
+                        <div className="flex items-baseline">
                             <label className="text-xs font-medium text-gray-900">
                                 Disbursement Addresses (comma separated)
                             </label>
@@ -407,7 +407,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     </div>
                 )}
                 <div className={wrapperClasses(isFundingAddressValid)}>
-                    <div className="flex">
+                    <div className="flex items-baseline">
                         <label className="text-xs font-medium text-gray-900">
                             Funding Addresses (comma separated)
                         </label>
@@ -422,7 +422,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isFundingTypeValid)}>
-                    <div className="flex">
+                    <div className="flex items-baseline">
                         <label className="text-xs font-medium text-gray-900 mb-1">
                             Funding Type(s)
                         </label>
@@ -445,7 +445,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
-                    <div className="flex">
+                    <div className="flex items-baseline">
                         <label className="text-xs font-medium text-gray-900">
                             Metrics Dashboard Link (optional)
                         </label>
@@ -462,7 +462,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(true)}>
-                    <div className="flex">
+                    <div className="flex items-baseline">
                         <label className="text-xs font-medium text-gray-900">
                             Grant Summary (optional)
                         </label>

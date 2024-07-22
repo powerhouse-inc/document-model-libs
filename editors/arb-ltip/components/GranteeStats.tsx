@@ -32,7 +32,7 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
         <div>
             <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                    <dt className="truncate text-sm font-medium text-gray-500 flex">
+                    <dt className="truncate text-sm font-medium text-gray-500 flex items-baseline">
                         Days Remaining
                         <InfoTooltip text="The number of days remaining in the grant period." />
                     </dt>
@@ -41,7 +41,7 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
                     </dd>
                 </div>
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                    <dt className="truncate text-sm font-medium text-gray-500 flex">
+                    <dt className="truncate text-sm font-medium text-gray-500 flex items-baseline">
                         % ARB Utilized
                         <InfoTooltip text="The total amount of reported ARB received / grant size." />
                     </dt>
@@ -50,7 +50,7 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
                     </dd>
                 </div>
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                    <dt className="truncate text-sm font-medium text-gray-500 flex">
+                    <dt className="truncate text-sm font-medium text-gray-500 flex items-baseline">
                         Status
                         <InfoTooltip text="Report status." />
                     </dt>
