@@ -116,9 +116,7 @@ const ReportingForm = (props: ReportingFormProps) => {
     ) : (
         <></>
     );
-
     useInitialScroll();
-
     // callbacks
     const submit = useCallback(() => {
         const actuals: GranteeActuals = {
@@ -130,7 +128,6 @@ const ReportingForm = (props: ReportingFormProps) => {
             disclosures: disclosuresLocal,
             summary: summaryLocal,
         };
-
         dispatch(
             editPhase({
                 phaseIndex,
@@ -146,7 +143,6 @@ const ReportingForm = (props: ReportingFormProps) => {
         disclosuresLocal,
         summaryLocal,
     ]);
-
     const wrapperClasses = useCallback(
         (isValid: boolean) =>
             classNames(
@@ -157,7 +153,6 @@ const ReportingForm = (props: ReportingFormProps) => {
             ),
         [showErrors],
     );
-
     return (
         <div className="w-full">
             <div>
@@ -287,5 +282,4 @@ const ReportingForm = (props: ReportingFormProps) => {
         </div>
     );
 };
-
 export default ReportingForm;

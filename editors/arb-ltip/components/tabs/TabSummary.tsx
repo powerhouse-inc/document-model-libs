@@ -21,7 +21,6 @@ const TabSummary = (props: TabSummaryProps) => {
     } = props;
 
     const isEditor = useIsEditor();
-
     const disbursementContractAddresses = useMemo(
         () => fromCommaDelimitedString(disbursementContractAddress || ''),
         [disbursementContractAddress],
@@ -30,7 +29,6 @@ const TabSummary = (props: TabSummaryProps) => {
         () => fromCommaDelimitedString(fundingAddress || ''),
         [fundingAddress],
     );
-
     return (
         <div>
             <div className="px-4 sm:px-0 flex items-center">
@@ -117,5 +115,4 @@ const TabSummary = (props: TabSummaryProps) => {
         </div>
     );
 };
-
 export default TabSummary;

@@ -33,11 +33,9 @@ const TabAdmin = (props: TabAdminProps) => {
     const add = (addr: string) => {
         dispatch(addEditor({ editorAddress: addr }));
     };
-
     const remove = (addr: string) => {
         dispatch(removeEditor({ editorAddress: addr }));
     };
-
     return (
         <div className="mt-8 flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto -mx-6 lg:-mx-8">

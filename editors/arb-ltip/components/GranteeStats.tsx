@@ -27,9 +27,7 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
         () => calculateStatus(toArray(state.phases)),
         [state],
     );
-
     const totalArb = state.grantSize || 0;
-
     return (
         <div>
             <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -72,5 +70,4 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
         </div>
     );
 };
-
 export default GranteeStats;

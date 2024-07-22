@@ -87,7 +87,6 @@ const TabHistorical = (props: TabHistoricalProps) => {
         />
     );
 };
-
 const HistoricalTable = ({
     phases,
     setSelectedPhase,
@@ -98,7 +97,6 @@ const HistoricalTable = ({
     onEdit: (phase: Phase, phaseIndex: number) => void;
 }) => {
     const isEditor = useIsEditor();
-
     return (
         <div>
             <div className="mt-8 flow-root">
@@ -168,7 +166,6 @@ const HistoricalTable = ({
                                         new Date(phase.endDate) < new Date();
                                     const isPhaseInProgress =
                                         isPhaseStarted && !isPhaseComplete;
-
                                     const isPlannedValid =
                                         !!phase.planned &&
                                         validators.isPlannedValid(
@@ -181,7 +178,6 @@ const HistoricalTable = ({
                                         );
                                     const isStatsValid =
                                         phase.status === 'Finalized';
-
                                     let status: Status = 'Not Started';
                                     if (isPhaseInProgress) {
                                         if (isPlannedValid) {
@@ -200,7 +196,6 @@ const HistoricalTable = ({
                                             status = 'Overdue';
                                         }
                                     }
-
                                     return (
                                         <tr
                                             key={phaseIndex}

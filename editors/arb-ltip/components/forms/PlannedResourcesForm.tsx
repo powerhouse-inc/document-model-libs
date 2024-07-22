@@ -146,7 +146,6 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         isDistributionMechanismsValid &&
         isExpectationsValid &&
         isChangesValid;
-
     const description = useMemo(() => {
         const now = new Date();
         if (now < startDate) {
@@ -158,7 +157,6 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     </div>
                 );
             }
-
             return (
                 <div>
                     Before the two-week disbursement phase begins, please enter
@@ -175,7 +173,6 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
             );
         }
     }, [isValid, startDate]);
-
     const wrapperClasses = useCallback(
         (isValid: boolean) =>
             classNames(
@@ -186,7 +183,6 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
             ),
         [showErrors],
     );
-
     return (
         <div className="w-full">
             <div>
@@ -295,5 +291,4 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
         </div>
     );
 };
-
 export default PlannedResourcesForm;

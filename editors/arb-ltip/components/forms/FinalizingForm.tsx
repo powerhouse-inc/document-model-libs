@@ -63,7 +63,6 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         isLessonsValid;
 
     useInitialScroll();
-
     const submit = () => {
         if (
             !isAvgDailTVLValid ||
@@ -75,7 +74,6 @@ const FinalizingForm = (props: FinalizingFormProps) => {
             setShowErrors(true);
             return;
         }
-
         const stats: GranteeStats = {
             avgDailyTVL: avgDailyTVLLocal,
             avgDailyTXNS: avgDailyTXNSLocal,
@@ -92,7 +90,6 @@ const FinalizingForm = (props: FinalizingFormProps) => {
             }),
         );
     };
-
     const wrapperClasses = useCallback(
         (isValid: boolean) =>
             classNames(
@@ -103,7 +100,6 @@ const FinalizingForm = (props: FinalizingFormProps) => {
             ),
         [showErrors],
     );
-
     return (
         <div className="w-full">
             <div>
@@ -193,5 +189,4 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         </div>
     );
 };
-
 export default FinalizingForm;
