@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ArbitrumLtipGranteeState } from '../../../document-models/arbitrum-ltip-grantee';
 import {
     calculateArbReceived,
+    calculateArbUtilized,
     calculateDaysRemaining,
     calculateStatus,
     classNames,
@@ -19,8 +20,8 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
         () => calculateDaysRemaining(toArray(state.phases)),
         [state],
     );
-    const arbReceived = useMemo(
-        () => calculateArbReceived(toArray(state.phases)),
+    const arbUtilized = useMemo(
+        () => calculateArbUtilized(toArray(state.phases)),
         [state],
     );
     const status = useMemo(
@@ -43,10 +44,10 @@ const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
                     <dt className="truncate text-sm font-medium text-gray-500 flex items-baseline">
                         % ARB Utilized
-                        <InfoTooltip text="The total amount of reported ARB received / grant size." />
+                        <InfoTooltip text="The total amount of reported ARB utilized / grant size." />
                     </dt>
                     <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                        {formatPercent(arbReceived / totalArb)}
+                        {formatPercent(arbUtilized / totalArb)}
                     </dd>
                 </div>
                 <div className="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">

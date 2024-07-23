@@ -388,7 +388,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             <label className="text-xs font-medium text-gray-900">
                                 Disbursement Addresses (comma separated)
                             </label>
-                            <InfoTooltip text="Addresses that is receiving grant funds." />
+                            <InfoTooltip text="Addresses that are receiving grant funds." />
                         </div>
                         <input
                             type="text"
@@ -426,7 +426,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                         <label className="text-xs font-medium text-gray-900 mb-1">
                             Funding Type(s)
                         </label>
-                        <InfoTooltip text="The types of addresses used." />
+                        <InfoTooltip text="The types of funding addresses used." />
                     </div>
                     <TagSelector
                         value={fundingTypeLocal}

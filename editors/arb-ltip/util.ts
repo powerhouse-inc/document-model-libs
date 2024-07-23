@@ -52,6 +52,15 @@ export const calculateArbReceived = (phases: Phase[]) => {
     return total;
 };
 
+export const calculateArbUtilized = (phases: Phase[]) => {
+    let total = 0;
+    for (const phase of phases) {
+        total += phase.actuals?.arbUtilized || 0;
+    }
+
+    return total;
+};
+
 export const calculateStatus = (phases: Phase[]) => {
     const now = new Date();
     for (const phase of phases) {

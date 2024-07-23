@@ -207,7 +207,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                 <div className={wrapperClasses(true)}>
                     <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         Contracts Incentivized
-                        <InfoTooltip text="Contracts intended to be fundeded from disbursement address." />
+                        <InfoTooltip text="Contracts intended to be funded from disbursement address." />
                     </label>
                     <ContractSelector
                         allContracts={allContracts}
