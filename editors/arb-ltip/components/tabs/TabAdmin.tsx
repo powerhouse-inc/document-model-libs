@@ -23,11 +23,11 @@ const RoleBadge = ({ role }: { role: Role }) => (
     </span>
 );
 
-type TabAdminProps = IProps;
+type TabAdminProps = { title: string } & IProps;
 const TabAdmin = (props: TabAdminProps) => {
     const [localAddress, setLocalAddress] = useState('');
 
-    const { dispatch } = props;
+    const { dispatch, title } = props;
     const editors = toArray(props.document.state.global.editorAddresses);
 
     const add = (addr: string) => {
@@ -37,9 +37,12 @@ const TabAdmin = (props: TabAdminProps) => {
         dispatch(removeEditor({ editorAddress: addr }));
     };
     return (
-        <div className="mt-8 flow-root">
+        <div className="flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto -mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle px-6 lg:px-8">
+                    <p className="flex-1 mt-3 font-semibold text-4xl text-gray-900 truncate">
+                        {title}
+                    </p>
                     <table className="min-w-full divide-y divide-gray-300">
                         <thead>
                             <tr>

@@ -80,6 +80,7 @@ const TabHistorical = (props: TabHistoricalProps) => {
     const [editPhase, setEditPhase] = useState<Phase | null>(null);
     const [editPhaseIndex, setEditPhaseIndex] = useState<number>(-1);
     const phases = toArray(props.document.state.global.phases);
+    const title = props.document.state.global.granteeName;
 
     if (selectedPhase) {
         return (
@@ -103,6 +104,7 @@ const TabHistorical = (props: TabHistoricalProps) => {
 
     return (
         <HistoricalTable
+            title={title || 'Historical Phases'}
             phases={phases}
             setSelectedPhase={setSelectedPhase}
             onEdit={(phase, phaseIndex) => {
@@ -112,11 +114,14 @@ const TabHistorical = (props: TabHistoricalProps) => {
         />
     );
 };
+
 const HistoricalTable = ({
+    title,
     phases,
     setSelectedPhase,
     onEdit,
 }: {
+    title: string;
     phases: Phase[];
     setSelectedPhase: (phase: Phase | null) => void;
     onEdit: (phase: Phase, phaseIndex: number) => void;
@@ -124,9 +129,12 @@ const HistoricalTable = ({
     const isEditor = useIsEditor();
     return (
         <div>
-            <div className="mt-8 flow-root">
+            <div className="flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto -mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle px-6 lg:px-8">
+                        <p className="flex-1 mt-3 font-semibold text-4xl text-gray-900 truncate">
+                            {title}
+                        </p>
                         <table className="min-w-full divide-y divide-gray-300">
                             <thead>
                                 <tr>

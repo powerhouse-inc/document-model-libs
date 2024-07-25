@@ -244,7 +244,12 @@ const Editor = (props: IProps) => {
                         {activeTab === 'Historical' && (
                             <TabHistorical {...props} />
                         )}
-                        {activeTab === 'Admin' && <TabAdmin {...props} />}
+                        {activeTab === 'Admin' && (
+                            <TabAdmin
+                                title={granteeName || 'Admin'}
+                                {...props}
+                            />
+                        )}
                     </>
                 )}
             </div>
