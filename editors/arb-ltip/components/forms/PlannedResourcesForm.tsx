@@ -194,7 +194,7 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                 <div className={wrapperClasses(isDisbursementValid)}>
                     <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         ARB Disbursement Amount (required)
-                        <InfoTooltip text="Amount of ARB the disbursement address is planning to receive." />
+                        <InfoTooltip text="Amount of ARB the disbursement address is planning to receive from the hedgey stream." />
                     </label>
                     <input
                         type="text"

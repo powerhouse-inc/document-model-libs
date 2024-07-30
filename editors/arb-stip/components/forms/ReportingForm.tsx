@@ -177,7 +177,7 @@ const ReportingForm = (props: ReportingFormProps) => {
                     >
                         <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                             ARB Received (required)
-                            <InfoTooltip text="Amount of ARB the disbursement address received." />
+                            <InfoTooltip text="Amount of ARB the disbursement address received from the hedgey stream." />
                         </label>
                         <input
                             type="text"

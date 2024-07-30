@@ -388,7 +388,7 @@ const GranteeForm = (props: GranteeFormProps) => {
                             <label className="text-xs font-medium text-gray-900">
                                 Disbursement Addresses (comma separated)
                             </label>
-                            <InfoTooltip text="Addresses that are receiving grant funds." />
+                            <InfoTooltip text="Addresses that are receiving grant funds from the hedgey stream." />
                         </div>
                         <input
                             type="text"
