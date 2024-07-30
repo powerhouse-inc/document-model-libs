@@ -199,10 +199,10 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(prettier@3.3.3)(typescript@5.5.4)
       react:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.2.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-lazy-with-preload:
         specifier: ^2.2.1
@@ -214,8 +214,8 @@ importers:
         specifier: ^8.2.6
         version: 8.2.6(@babel/preset-env@7.25.2(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       storybook-mock-date-decorator:
-        specifier: ^1.0.1
-        version: 1.0.2(@storybook/addons@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: ^2.0.6
+        version: 2.0.6(@storybook/addons@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.7
@@ -8557,8 +8557,8 @@ packages:
   store2@2.14.3:
     resolution: {integrity: sha512-4QcZ+yx7nzEFiV4BMLnr/pRa5HYzNITX2ri0Zh6sT9EyQHbBHacC6YigllUPU9X3D0f/22QCgfokpKs52YRrUg==}
 
-  storybook-mock-date-decorator@1.0.2:
-    resolution: {integrity: sha512-aLM/mRtrgQIiBrgtaWI8r+Jo66pRvlxTYdRoZ3uX3+uMFHGvjIf2AJ7/fAJsQVhTwSQpQ3JBKMiBGqjgRXefYA==}
+  storybook-mock-date-decorator@2.0.6:
+    resolution: {integrity: sha512-5y9daZ5mhQnAQ0OZ7jIicAgMQjWvTmBwVuQYJB8uVue0HUpVL2goNLXSPAtn7vWyYebhYD2s29300t/rmaXigg==}
     peerDependencies:
       '@storybook/addons': '>=6'
 
@@ -20631,7 +20631,7 @@ snapshots:
 
   store2@2.14.3: {}
 
-  storybook-mock-date-decorator@1.0.2(@storybook/addons@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+  storybook-mock-date-decorator@2.0.6(@storybook/addons@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
     dependencies:
       '@storybook/addons': 7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       mockdate: 3.0.5
