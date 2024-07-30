@@ -8,6 +8,7 @@ import { classNames, intHandler } from '../../util';
 import validators from '../../../../document-models/arbitrum-stip-grantee/src/validators';
 import { editPhase } from '../../../../document-models/arbitrum-stip-grantee/gen/creators';
 import useInitialScroll from '../../hooks/use-initial-scroll';
+import InfoTooltip from '../../../arb-ltip/components/InfoTooltip';
 
 type FinalizingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
@@ -114,8 +115,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     </div>
                 )}
                 <div className={wrapperClasses(isAvgDailTVLValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Average Daily TVL (required)
+                        <InfoTooltip text="Average daily transaction volume, in ARB." />
                     </label>
                     <input
                         type="text"
@@ -126,8 +128,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isAvgDailTVLValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Average Daily Transactions (required)
+                        <InfoTooltip text="Average numer of daily transactions." />
                     </label>
                     <input
                         type="text"
@@ -138,8 +141,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isAvgDailyUniqueUsersValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Average Daily Unique Users (required)
+                        <InfoTooltip text="Average number of distinct users." />
                     </label>
                     <input
                         type="text"
@@ -150,8 +154,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isChangesValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Changes
+                        <InfoTooltip text="Summary of changes made during this phase." />
                     </label>
                     <textarea
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
@@ -161,8 +166,9 @@ const FinalizingForm = (props: FinalizingFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isLessonsValid)}>
-                    <label className="block text-xs font-medium text-gray-900">
+                    <label className="block text-xs font-medium text-gray-900 flex items-baseline">
                         Lessons
+                        <InfoTooltip text="Summary of lessons learned during this phase." />
                     </label>
                     <textarea
                         className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
@@ -187,5 +193,4 @@ const FinalizingForm = (props: FinalizingFormProps) => {
         </div>
     );
 };
-
 export default FinalizingForm;

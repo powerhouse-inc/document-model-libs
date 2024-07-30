@@ -5,7 +5,6 @@ import {
     DistributionMechanism,
     GranteeActuals,
     Phase,
-    Status,
     isActualsEmpty,
 } from '../../../../document-models/arbitrum-stip-grantee';
 import ContractSelector from '../ContractSelector';
@@ -14,9 +13,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { editPhase } from '../../../../document-models/arbitrum-stip-grantee/gen/creators';
 import validators from '../../../../document-models/arbitrum-stip-grantee/src/validators';
 import { classNames, intHandler, toArray } from '../../util';
-import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 import useAllContracts from '../../hooks/use-all-contracts';
+import InfoTooltip from '../../../arb-ltip/components/InfoTooltip';
 
 const distributionMechanisms = [
     {
@@ -195,8 +194,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     </div>
                 )}
                 <div className={wrapperClasses(isDisbursementValid)}>
-                    <label className="text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         ARB Disbursement Amount (required)
+                        <InfoTooltip text="Amount of ARB the disbursement address is planning to receive." />
                     </label>
                     <input
                         type="text"
@@ -207,8 +207,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(true)}>
-                    <label className="text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         Contracts Incentivized
+                        <InfoTooltip text="Contracts intended to be funded from disbursement address." />
                     </label>
                     <ContractSelector
                         allContracts={allContracts}
@@ -224,8 +225,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isDistributionMechanismsValid)}>
-                    <label className="text-xs font-medium text-gray-900">
+                    <label className="text-xs font-medium text-gray-900 flex items-baseline">
                         Distribution Mechanisms (required)
+                        <InfoTooltip text="Specific methods intended to be used to distribute ARB." />
                     </label>
                     <TagSelector
                         value={distributionMechanismsLocal}
@@ -246,8 +248,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isChangesValid)}>
-                    <label className="text-xs font-medium text-gray-900 mb-1">
+                    <label className="text-xs font-medium text-gray-900 mb-1 flex items-baseline">
                         Changes (required)
+                        <InfoTooltip text="Summary of changes intended to be made during this phase." />
                     </label>
                     <textarea
                         rows={4}
@@ -260,8 +263,9 @@ const PlannedResourcesForm = (props: PlannedResourcesFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isExpectationsValid)}>
-                    <label className="text-xs font-medium text-gray-900 mb-1">
+                    <label className="text-xs font-medium text-gray-900 mb-1 flex items-baseline">
                         Expectations (required)
+                        <InfoTooltip text="Expected result at the end of the phase." />
                     </label>
                     <textarea
                         rows={4}

@@ -5,6 +5,7 @@ import {
 } from '../../../../document-models/arbitrum-stip-grantee';
 import GranteeStats from '../GranteeStats';
 import useIsEditor from '../../hooks/use-is-editor';
+import InfoTooltip from '../../../arb-ltip/components/InfoTooltip';
 
 type TabSummaryProps = ArbitrumStipGranteeState & {
     onEdit: () => void;
@@ -65,8 +66,9 @@ const TabSummary = (props: TabSummaryProps) => {
             <div className="mt-6">
                 <dl className="grid grid-cols-1 sm:grid-cols-2">
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">
+                        <dt className="text-sm font-medium leading-6 text-gray-900 flex items-baseline">
                             Disbursement Addresses
+                            <InfoTooltip text="Address that is receiving grant funds." />
                         </dt>
                         {disbursementContractAddresses.map((address, index) => (
                             <dd
@@ -83,8 +85,9 @@ const TabSummary = (props: TabSummaryProps) => {
                         ))}
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">
+                        <dt className="text-sm font-medium leading-6 text-gray-900 flex items-baseline">
                             Funding Address
+                            <InfoTooltip text="Addresses that will be funded by the grant." />
                         </dt>
                         {fundingAddresses.map((address, index) => (
                             <dd
@@ -101,8 +104,9 @@ const TabSummary = (props: TabSummaryProps) => {
                         ))}
                     </div>
                     <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-0">
-                        <dt className="text-sm font-medium leading-6 text-gray-900">
+                        <dt className="text-sm font-medium leading-6 text-gray-900 flex items-baseline">
                             Summary
+                            <InfoTooltip text="A brief summary of the grant." />
                         </dt>
                         <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
                             {grantSummary}

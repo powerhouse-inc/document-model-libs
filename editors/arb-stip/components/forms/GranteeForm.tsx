@@ -2,7 +2,6 @@ import {
     ArbitrumStipGranteeState,
     EditGranteeInput,
     FundingType,
-    InitGranteeInput,
     actions,
     fromCommaDelimitedString,
     toCommaDelimitedString,
@@ -15,6 +14,7 @@ import TagSelector from '../TagSelector';
 import validators from '../../../../document-models/arbitrum-stip-grantee/src/validators';
 import useAddress from '../../hooks/use-address';
 import useIsAdmin from '../../hooks/use-is-admin';
+import InfoTooltip from '../../../arb-ltip/components/InfoTooltip';
 
 const fundingTypes = [
     {
@@ -245,9 +245,13 @@ const GranteeForm = (props: GranteeFormProps) => {
                 {isInit && (
                     <div className={wrapperClasses(true, 'flex')}>
                         <div className="w-40">
-                            <label className="text-xs font-medium text-gray-900">
-                                Start Date
-                            </label>
+                            <div className="flex items-baseline">
+                                <label className="text-xs font-medium text-gray-900">
+                                    Start Date
+                                </label>
+                                <InfoTooltip text="The start date of the grant." />
+                            </div>
+
                             <DatePicker
                                 selected={startDate}
                                 disabled={!isAdmin && !isInit}
@@ -264,9 +268,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                             />
                         </div>
                         <div className="w-40">
-                            <label className="text-xs font-medium text-gray-900">
-                                End Date
-                            </label>
+                            <div className="flex items-baseline">
+                                <label className="text-xs font-medium text-gray-900">
+                                    End Date
+                                </label>
+                                <InfoTooltip text="The end date of the grant." />
+                            </div>
                             <DatePicker
                                 selected={endDate}
                                 className="w-32 py-2 outline-none cursor-not-allowed text-sm"
@@ -284,9 +291,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                 >
                     {(isAdmin || isInit) && (
                         <div className="w-40">
-                            <label className="text-xs font-medium text-gray-900">
-                                Grant Size (ARB)
-                            </label>
+                            <div className="flex items-baseline">
+                                <label className="text-xs font-medium text-gray-900">
+                                    Grant Size (ARB)
+                                </label>
+                                <InfoTooltip text="The total grant size in ARB." />
+                            </div>
                             <input
                                 type="text"
                                 className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -300,9 +310,12 @@ const GranteeForm = (props: GranteeFormProps) => {
 
                     {!isInit && (
                         <div className="w-40">
-                            <label className="text-xs font-medium text-gray-900">
-                                Matching Grant Size
-                            </label>
+                            <div className="flex items-baseline">
+                                <label className="text-xs font-medium text-gray-900">
+                                    Matching Grant Size
+                                </label>
+                                <InfoTooltip text="If matching, the total match size in ARB." />
+                            </div>
                             <input
                                 type="text"
                                 className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -319,9 +332,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                             isAuthorizedSignerAddressValid,
                         )}
                     >
-                        <label className="text-xs font-medium text-gray-900">
-                            Authorized Signer Address
-                        </label>
+                        <div className="flex items-baseline">
+                            <label className="text-xs font-medium text-gray-900">
+                                Authorized Signer Address
+                            </label>
+                            <InfoTooltip text="Admin account, which can add editors." />
+                        </div>
                         <input
                             type="text"
                             className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -344,9 +360,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                 )}
                 {isInit && (
                     <div className={wrapperClasses(isEditorAddressesValid)}>
-                        <label className="text-xs font-medium text-gray-900">
-                            Editor Addresses (comma separated)
-                        </label>
+                        <div className="flex items-baseline">
+                            <label className="text-xs font-medium text-gray-900">
+                                Editor Addresses (comma separated)
+                            </label>
+                            <InfoTooltip text="Addresses allowed to edit grant." />
+                        </div>
                         <input
                             type="text"
                             className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -364,9 +383,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                             isDisbursementContractAddressValid,
                         )}
                     >
-                        <label className="text-xs font-medium text-gray-900">
-                            Disbursement Addresses (comma separated)
-                        </label>
+                        <div className="flex items-baseline">
+                            <label className="text-xs font-medium text-gray-900">
+                                Disbursement Addresses (comma separated)
+                            </label>
+                            <InfoTooltip text="Addresses that are receiving grant funds." />
+                        </div>
                         <input
                             type="text"
                             className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -384,9 +406,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                     </div>
                 )}
                 <div className={wrapperClasses(isFundingAddressValid)}>
-                    <label className="text-xs font-medium text-gray-900">
-                        Funding Addresses (comma separated)
-                    </label>
+                    <div className="flex items-baseline">
+                        <label className="text-xs font-medium text-gray-900">
+                            Funding Addresses (comma separated)
+                        </label>
+                        <InfoTooltip text="Addresses that will be funded by the grant." />
+                    </div>
                     <input
                         type="text"
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -396,9 +421,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(isFundingTypeValid)}>
-                    <label className="text-xs font-medium text-gray-900 mb-1">
-                        Funding Type(s)
-                    </label>
+                    <div className="flex items-baseline">
+                        <label className="text-xs font-medium text-gray-900 mb-1">
+                            Funding Type(s)
+                        </label>
+                        <InfoTooltip text="The types of funding addresses used." />
+                    </div>
                     <TagSelector
                         value={fundingTypeLocal}
                         schema={fundingTypes}
@@ -416,9 +444,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className="rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
-                    <label className="text-xs font-medium text-gray-900">
-                        Metrics Dashboard Link (optional)
-                    </label>
+                    <div className="flex items-baseline">
+                        <label className="text-xs font-medium text-gray-900">
+                            Metrics Dashboard Link (optional)
+                        </label>
+                        <InfoTooltip text="If available, the link to the grantee's metrics dashboard." />
+                    </div>
                     <input
                         type="text"
                         className="w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 text-sm sm:leading-6"
@@ -430,9 +461,12 @@ const GranteeForm = (props: GranteeFormProps) => {
                     />
                 </div>
                 <div className={wrapperClasses(true)}>
-                    <label className="text-xs font-medium text-gray-900">
-                        Grant Summary (optional)
-                    </label>
+                    <div className="flex items-baseline">
+                        <label className="text-xs font-medium text-gray-900">
+                            Grant Summary (optional)
+                        </label>
+                        <InfoTooltip text="A summary of the grant." />
+                    </div>
                     <textarea
                         rows={4}
                         name="comment"
