@@ -70,11 +70,12 @@
         "test": "powerhouse generate && vitest run",
         "test:nogen": "vitest run",
         "test:watch": "powerhouse generate && vitest",
-        "prepublishOnly": "npm run prepare:scripts && npm run build",
-        "prepare:scripts": "node scripts/index.cjs",
+        "update-icons": "node scripts/copyIconsFromDesignSystem.cjs",
         "chromatic": "npx chromatic --project-token chpt_7f618da80620e4d",
         "prepare": "husky install",
-        "release": "semantic-release"
+        "release": "semantic-release",
+        "postinstall": "npm run update-icons",
+        "prepublishOnly": "npm run build"
     },
     "devDependencies": {
         "@commitlint/cli": "^18.4.4",
@@ -84,7 +85,7 @@
         "@monaco-editor/react": "^4.6.0",
         "@mui/material": "^5.15.5",
         "@powerhousedao/codegen": "0.0.15",
-        "@powerhousedao/design-system": "1.0.0-alpha.145",
+        "@powerhousedao/design-system": "1.0.0-alpha.153",
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/git": "^10.0.1",
         "@storybook/addon-essentials": "^8.2.6",
