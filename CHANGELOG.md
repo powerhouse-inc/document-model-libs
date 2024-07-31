@@ -1,3 +1,38 @@
+# [1.75.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.74.0...v1.75.0) (2024-07-31)
+
+
+### Features
+
+* add exclusion in the script itself ([8febd72](https://github.com/powerhouse-inc/document-model-libs/commit/8febd7273b3873261b98b0b362ee58d08d57aafb))
+
+# [1.74.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.73.0...v1.74.0) (2024-07-31)
+
+
+### Features
+
+* add try catch ([6a3f5af](https://github.com/powerhouse-inc/document-model-libs/commit/6a3f5afa28200d1e0aca905bb2380f3f52da600f))
+
+# [1.73.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.72.0...v1.73.0) (2024-07-31)
+
+
+### Features
+
+* exit when not installing in local ([0c1e27b](https://github.com/powerhouse-inc/document-model-libs/commit/0c1e27b4fd176b2e10621e185a7bc61b35b51a15))
+
+# [1.72.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.71.0...v1.72.0) (2024-07-31)
+
+
+### Features
+
+* make script path relative ([521e588](https://github.com/powerhouse-inc/document-model-libs/commit/521e588966ef6e2253daa3a883dffee87efab47c))
+
+# [1.71.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.70.0...v1.71.0) (2024-07-30)
+
+
+### Features
+
+* remove react aria ([#197](https://github.com/powerhouse-inc/document-model-libs/issues/197)) ([64ae046](https://github.com/powerhouse-inc/document-model-libs/commit/64ae046591ce2adefb0db7e68444f525f788b127))
+
 # [1.70.0](https://github.com/powerhouse-inc/document-model-libs/compare/v1.69.0...v1.70.0) (2024-07-08)
 
 
