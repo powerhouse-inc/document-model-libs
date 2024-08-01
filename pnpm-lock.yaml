@@ -126,6 +126,9 @@ importers:
       '@types/react':
         specifier: ^18.2.57
         version: 18.3.3
+      '@types/react-datepicker':
+        specifier: ^6.2.0
+        version: 6.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
@@ -3774,6 +3777,9 @@ packages:
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
+
+  '@types/react-datepicker@6.2.0':
+    resolution: {integrity: sha512-+JtO4Fm97WLkJTH8j8/v3Ldh7JCNRwjMYjRaKh4KHH0M3jJoXtwiD3JBCsdlg3tsFIw9eQSqyAPeVDN2H2oM9Q==}
 
   '@types/react-transition-group@4.4.10':
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
@@ -14759,6 +14765,15 @@ snapshots:
   '@types/qs@6.9.15': {}
 
   '@types/range-parser@1.2.7': {}
+
+  '@types/react-datepicker@6.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@floating-ui/react': 0.26.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/react': 18.3.3
+      date-fns: 3.6.0
+    transitivePeerDependencies:
+      - react
+      - react-dom
 
   '@types/react-transition-group@4.4.10':
     dependencies:

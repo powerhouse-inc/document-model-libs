@@ -18,7 +18,7 @@ const PhaseSummary = ({ phase, onClose }: PhaseSummaryProps) => {
             <div className="flex pt-4">
                 <Icon
                     className="cursor-pointer"
-                    name="base-arrow-left"
+                    name="BaseArrowLeft"
                     onClick={onClose}
                 />
                 <span className="cursor-pointer" onClick={onClose}>

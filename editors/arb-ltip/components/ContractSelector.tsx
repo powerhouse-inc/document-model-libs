@@ -43,7 +43,7 @@ const ContractCard = (props: ContractCardProps) => {
             <span>
                 <Icon
                     className="text-red-600 hover:text-red-800 cursor-pointer mt-2"
-                    name="trash"
+                    name="Trash"
                     size={24}
                     onClick={onRemove}
                 />

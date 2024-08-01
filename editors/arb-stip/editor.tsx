@@ -86,16 +86,16 @@ const TabHeader = ({
         <div className="border-b border-gray-200">
             <nav className="block sm:hidden" aria-label="Tabs">
                 <div className="flex space-x-4 w-full pb-4">
-                    <Icon name="arrow-left" onClick={onClose} />
+                    <Icon name="ArrowLeft" onClick={onClose} />
                     <div className="flex-1" />
                     <Icon
                         className="cursor-pointer"
-                        name="save"
+                        name="Save"
                         onClick={onExport}
                     />
                     <Icon
                         className="cursor-pointer"
-                        name="xmark"
+                        name="Xmark"
                         onClick={onClose}
                     />
                 </div>
@@ -105,7 +105,7 @@ const TabHeader = ({
             </nav>
             <nav className="hidden sm:flex space-x-8" aria-label="Tabs">
                 <div className="flex-1 cursor-pointer flex items-center">
-                    <Icon name="arrow-left" onClick={onClose} />
+                    <Icon name="ArrowLeft" onClick={onClose} />
                 </div>
 
                 <div className="flex-1 flex space-x-8 justify-center">
@@ -116,14 +116,14 @@ const TabHeader = ({
                     <div>
                         <Icon
                             className="cursor-pointer"
-                            name="save"
+                            name="Save"
                             onClick={onExport}
                         />
                     </div>
                     <div>
                         <Icon
                             className="cursor-pointer"
-                            name="xmark"
+                            name="Xmark"
                             onClick={onClose}
                         />
                     </div>
@@ -142,21 +142,21 @@ const ControlsHeader = ({ dispatch, onClose, onExport }: IProps) => {
             <div>
                 <Icon
                     className="cursor-pointer"
-                    name="arrow-left"
+                    name="ArrowLeft"
                     onClick={onClose}
                 />
             </div>
             <div>
                 <Icon
                     className="hidden -scale-x-100 cursor-pointer"
-                    name="redo-arrow"
+                    name="RedoArrow"
                     onClick={undo}
                 />
             </div>
             <div>
                 <Icon
                     className="hidden cursor-pointer"
-                    name="redo-arrow"
+                    name="RedoArrow"
                     onClick={redo}
                 />
             </div>
@@ -164,14 +164,14 @@ const ControlsHeader = ({ dispatch, onClose, onExport }: IProps) => {
             <div>
                 <Icon
                     className="cursor-pointer"
-                    name="save"
+                    name="Save"
                     onClick={onExport}
                 />
             </div>
             <div>
                 <Icon
                     className="cursor-pointer"
-                    name="xmark"
+                    name="Xmark"
                     onClick={onClose}
                 />
             </div>

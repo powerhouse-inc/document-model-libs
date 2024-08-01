@@ -24,7 +24,7 @@ const TagSelector = ({ value, schema, onAdd, onRemove }: TagSelectorProps) => {
                         Add
                         <Icon
                             className="pt-2"
-                            name="caret-down"
+                            name="CaretDown"
                             size={16}
                             color="#7C878E"
                         />
@@ -89,7 +89,7 @@ const TagSelector = ({ value, schema, onAdd, onRemove }: TagSelectorProps) => {
                         className="flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-purple-400 hover:bg-purple-200 hover:text-purple-500 focus:outline-none focus:bg-purple-500"
                         onClick={() => onRemove(type)}
                     >
-                        <Icon name="trash" size={16} />
+                        <Icon name="Trash" size={16} />
                     </button>
                 </span>
             ))}

@@ -20,7 +20,7 @@ export const createContext = (addr: string = signer) => ({
             key: '',
             name: '',
         },
-        signature: '',
+        signatures: [],
     },
 });
 

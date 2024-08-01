@@ -28,7 +28,7 @@ const EditPhaseForm = ({
             <div className="flex pt-4">
                 <Icon
                     className="cursor-pointer"
-                    name="base-arrow-left"
+                    name="BaseArrowLeft"
                     onClick={onCloseForm}
                 />
                 <span className="cursor-pointer" onClick={onCloseForm}>
