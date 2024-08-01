@@ -8,6 +8,7 @@ import { IProps } from '../../editor';
 import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import {
     calculateArbReceived,
+    calculateArbUtilized,
     classNames,
     intHandler,
     toArray,
@@ -78,11 +79,25 @@ const ReportingForm = (props: ReportingFormProps) => {
             isSummaryValid,
         ],
     );
-    const arbRemaining = useMemo(() => {
-        return (
-            (state.grantSize || 0) - calculateArbReceived(toArray(state.phases))
+    const arbReceived = useMemo(() => {
+        // calculate arb remaining in all phases except this one
+        const filteredPhases = toArray(state.phases).filter(
+            (p, i) => i !== phaseIndex,
         );
-    }, [state.grantSize, state.phases]);
+
+        // add this phase's arb received
+        return calculateArbReceived(filteredPhases) + arbReceivedLocal;
+    }, [state.phases, arbReceivedLocal, phaseIndex]);
+    const arbRemaining = useMemo(() => {
+        return (state.grantSize || 0) - arbReceived;
+    }, [arbReceived, state.grantSize]);
+    const arbReceivedRemaining = useMemo(() => {
+        const filteredPhases = toArray(state.phases).filter(
+            (p, i) => i !== phaseIndex,
+        );
+        const utilized = calculateArbUtilized(filteredPhases);
+        return arbReceived - utilized - arbUtilizedLocal;
+    }, [state.phases, arbReceived, arbUtilizedLocal, phaseIndex]);
     const dueDate = useMemo(() => {
         const date = new Date(phase.endDate);
 
@@ -182,6 +197,13 @@ const ReportingForm = (props: ReportingFormProps) => {
                             onChange={intHandler(setArbReceivedLocal)}
                         />
                     </div>
+                    <div className="flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
+                        <p className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
+                            {arbRemaining} ARB Remaining in Grant
+                        </p>
+                    </div>
+                </div>
+                <div className="relative rounded-md !rounded-t-none !rounded-b-none px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 flex">
                     <div
                         className={classNames(
                             showErrors && !isArbUtilizedValid
@@ -203,16 +225,10 @@ const ReportingForm = (props: ReportingFormProps) => {
                         />
                     </div>
                     <div className="flex-1 relative rounded-md !rounded-b-none !rounded-t-none px-3 pb-1.5 pt-2.5 ring-inset focus-within:z-10 focus-within:ring-2 focus-within:ring-purple-600">
-                        <label className="block text-xs font-medium text-gray-900 flex items-baseline">
-                            ARB Remaining
-                            <InfoTooltip text="Total amount of ARB remaining in the grant (grant size - total arb received)." />
-                        </label>
-                        <input
-                            type="text"
-                            className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                            value={arbRemaining}
-                            readOnly
-                        />
+                        <p className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
+                            {arbReceivedRemaining} ARB Remaining in Received
+                            Funds
+                        </p>
                     </div>
                 </div>
                 <div className={wrapperClasses(true)}>
