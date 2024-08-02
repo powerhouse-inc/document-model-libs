@@ -1,5 +1,6 @@
 import {
     FixedIncome,
+    FixedIncomeType,
     GroupTransaction,
     GroupTransactionType,
     InputMaybe,
@@ -339,25 +340,39 @@ For T-bills, which mature at $1 each, the Total Discount is calculated as:
 
 Total Discount = Quantity − Purchase Proceeds
 */
-export function calculateCurrentValue(
-    asset: FixedIncome,
-    transactions: GroupTransaction[],
-    currentDate = new Date(),
-) {
-    const purchaseTransactions = transactions.filter(
-        ({ type }) => type === ASSET_PURCHASE,
+export function calculateCurrentValue(props: {
+    asset: FixedIncome;
+    transactions: GroupTransaction[];
+    fixedIncomeTypes: FixedIncomeType[];
+    currentDate?: Date;
+}) {
+    const {
+        asset,
+        transactions,
+        fixedIncomeTypes,
+        currentDate = new Date(),
+    } = props;
+    const fixedIncomeType = fixedIncomeTypes.find(
+        ({ id }) => id === asset.fixedIncomeTypeId,
+    )!;
+    const purchaseTransactionsForAsset = transactions.filter(
+        ({ type, fixedIncomeTransaction }) =>
+            type === ASSET_PURCHASE &&
+            fixedIncomeTransaction?.assetId === asset.id,
     );
     if (
         !asset.maturity ||
-        asset.name !== 'T-Bill' ||
-        !purchaseTransactions.length
+        fixedIncomeType.name !== 'Treasury Bill' ||
+        !purchaseTransactionsForAsset.length
     )
-        return;
+        return null;
     const currentDateMs = math.bignumber(currentDate.getTime());
     const maturityDateMs = math.bignumber(new Date(asset.maturity).getTime());
-    const purchaseDateMs = calculatePurchaseDate(transactions, 'ms', false);
-    const sumQuantities = calculateSumQuantity(purchaseTransactions);
-    const purchaseProceeds = calculatePurchaseProceeds(transactions);
+    const purchaseDateMs = math.bignumber(
+        new Date(asset.purchaseDate).getTime(),
+    );
+    const sumQuantities = calculateSumQuantity(purchaseTransactionsForAsset);
+    const purchaseProceeds = math.bignumber(asset.purchaseProceeds);
     const totalDiscount = sumQuantities.sub(purchaseProceeds);
     const currentDateMinusPurchaseDate = currentDateMs.sub(purchaseDateMs);
     const maturityMinusCurrentDate = maturityDateMs.sub(currentDateMs);
@@ -366,7 +381,8 @@ export function calculateCurrentValue(
 
     return currentDateMinusPurchaseDate
         .div(maturityMinusCurrentDate)
-        .mul(totalDiscountPlusPurchaseProceeds);
+        .mul(totalDiscountPlusPurchaseProceeds)
+        .toNumber();
 }
 
 export function calculateSumQuantity(transactions: GroupTransaction[]) {
