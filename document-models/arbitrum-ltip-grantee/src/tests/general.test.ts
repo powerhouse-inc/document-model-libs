@@ -200,4 +200,90 @@ describe('General Operations', () => {
             signer,
         );
     });
+
+    it('should generate the same phase dates for different timezones', () => {
+        const input: InitGranteeInput = generateInitGranteeInput();
+        input.startDate = new Date(Date.UTC(2024, 7, 17)).toISOString();
+        input.phaseDuration = 14;
+        expect(input.startDate).toBe('2024-08-17T00:00:00.000Z');
+
+        document.state.global.authorizedSignerAddress = '';
+        const updatedDocument = reducer(document, creators.initGrantee(input));
+        expectNoException(updatedDocument);
+
+        expect(
+            updatedDocument.state.global.phases?.map(p => p?.startDate),
+        ).toStrictEqual([
+            '2024-08-17T00:00:00.000Z',
+            '2024-08-31T00:00:00.000Z',
+            '2024-09-14T00:00:00.000Z',
+            '2024-09-28T00:00:00.000Z',
+            '2024-10-12T00:00:00.000Z',
+            '2024-10-26T00:00:00.000Z',
+            '2024-11-09T00:00:00.000Z',
+            '2024-11-23T00:00:00.000Z',
+            '2024-12-07T00:00:00.000Z',
+            '2024-12-21T00:00:00.000Z',
+        ]);
+
+        expect(
+            updatedDocument.state.global.phases?.map(p => p?.endDate),
+        ).toStrictEqual([
+            '2024-08-31T00:00:00.000Z',
+            '2024-09-14T00:00:00.000Z',
+            '2024-09-28T00:00:00.000Z',
+            '2024-10-12T00:00:00.000Z',
+            '2024-10-26T00:00:00.000Z',
+            '2024-11-09T00:00:00.000Z',
+            '2024-11-23T00:00:00.000Z',
+            '2024-12-07T00:00:00.000Z',
+            '2024-12-21T00:00:00.000Z',
+            '2025-01-04T00:00:00.000Z',
+        ]);
+
+        // checks daylight savings time change
+        process.env.TZ = 'Chile/Continental';
+
+        const input2: InitGranteeInput = generateInitGranteeInput();
+        input2.startDate = new Date(Date.UTC(2024, 7, 17)).toISOString();
+        input2.phaseDuration = 14;
+
+        expect(input2.startDate).toBe('2024-08-17T00:00:00.000Z');
+
+        const updatedDocument2 = reducer(
+            document,
+            creators.initGrantee(input2),
+        );
+        expectNoException(updatedDocument2);
+
+        expect(
+            updatedDocument2.state.global.phases?.map(p => p?.startDate),
+        ).toStrictEqual([
+            '2024-08-17T00:00:00.000Z',
+            '2024-08-31T00:00:00.000Z',
+            '2024-09-14T00:00:00.000Z',
+            '2024-09-28T00:00:00.000Z',
+            '2024-10-12T00:00:00.000Z',
+            '2024-10-26T00:00:00.000Z',
+            '2024-11-09T00:00:00.000Z',
+            '2024-11-23T00:00:00.000Z',
+            '2024-12-07T00:00:00.000Z',
+            '2024-12-21T00:00:00.000Z',
+        ]);
+
+        expect(
+            updatedDocument2.state.global.phases?.map(p => p?.endDate),
+        ).toStrictEqual([
+            '2024-08-31T00:00:00.000Z',
+            '2024-09-14T00:00:00.000Z',
+            '2024-09-28T00:00:00.000Z',
+            '2024-10-12T00:00:00.000Z',
+            '2024-10-26T00:00:00.000Z',
+            '2024-11-09T00:00:00.000Z',
+            '2024-11-23T00:00:00.000Z',
+            '2024-12-07T00:00:00.000Z',
+            '2024-12-21T00:00:00.000Z',
+            '2025-01-04T00:00:00.000Z',
+        ]);
+    });
 });
