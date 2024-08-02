@@ -132,7 +132,7 @@
         "react-lazy-with-preload": "^2.2.1",
         "semantic-release": "^23.0.2",
         "storybook": "^8.2.6",
-        "storybook-mock-date-decorator": "^1.0.1",
+        "storybook-mock-date-decorator": "^2.0.6",
         "tailwind-merge": "^2.2.1",
         "tailwindcss": "^3.4.1",
         "typescript": "^5.5.3",
