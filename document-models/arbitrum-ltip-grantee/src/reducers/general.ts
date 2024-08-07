@@ -112,6 +112,7 @@ export const reducer: ArbitrumLtipGranteeGeneralOperations = {
             startDateObject.getUTCFullYear(),
             startDateObject.getUTCMonth(),
             startDateObject.getUTCDate(),
+            7,
         );
         const phases = [];
         for (let i = 0; i < numberOfPhases; i++) {

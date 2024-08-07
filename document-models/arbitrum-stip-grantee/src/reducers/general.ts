@@ -107,16 +107,23 @@ export const reducer: ArbitrumStipGranteeGeneralOperations = {
             throw new Error('phaseDuration must be in than [1, 31]');
         }
 
+        const startDateObject = new Date(startDate);
+        const startDateUTC = Date.UTC(
+            startDateObject.getUTCFullYear(),
+            startDateObject.getUTCMonth(),
+            startDateObject.getUTCDate(),
+            7,
+        );
         const phases = [];
         for (let i = 0; i < numberOfPhases; i++) {
-            const phaseStartDate = new Date(startDate);
-            phaseStartDate.setDate(
-                phaseStartDate.getDate() + i * phaseDuration,
+            const phaseStartDate = new Date(startDateUTC);
+            phaseStartDate.setUTCDate(
+                phaseStartDate.getUTCDate() + i * phaseDuration,
             );
 
-            const phaseEndDate = new Date(startDate);
-            phaseEndDate.setDate(
-                phaseEndDate.getDate() + (i + 1) * phaseDuration,
+            const phaseEndDate = new Date(startDateUTC);
+            phaseEndDate.setUTCDate(
+                phaseEndDate.getUTCDate() + (i + 1) * phaseDuration,
             );
 
             const phaseStartDateString = phaseStartDate.toISOString();
