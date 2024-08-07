@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+pnpm install --frozen-lockfile
+pnpm generate
+pnpm run check-types
+pnpm run lint-staged
