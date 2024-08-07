@@ -1,4 +1,4 @@
-import { toArray } from '../../../editors/arb-ltip/util';
+import { correctPhases, toArray } from '../../../editors/arb-ltip/util';
 import {
     ArbitrumLtipGranteeDocument,
     ArbitrumLtipGranteeState,
@@ -91,7 +91,7 @@ export const findAllContracts = (state: ArbitrumLtipGranteeState) => {
     });
 
     // add all contracts from all phases
-    for (const phase of toArray(state.phases)) {
+    for (const phase of correctPhases(state.phases)) {
         addDistinct(all, phase.planned?.contractsIncentivized || []);
         addDistinct(all, phase.actuals?.contractsIncentivized || []);
     }

@@ -10,6 +10,7 @@ import EditPhaseForm from '../forms/EditPhaseForm';
 import InfoTooltip from '../../../arb-ltip/components/InfoTooltip';
 import { v4 as uuid } from 'uuid';
 import { Tooltip } from 'react-tooltip';
+import { correctPhases } from '../../../arb-ltip/util';
 
 type DataBadgeProps = {
     isDue: boolean;
@@ -80,7 +81,7 @@ const TabHistorical = (props: TabHistoricalProps) => {
     const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
     const [editPhase, setEditPhase] = useState<Phase | null>(null);
     const [editPhaseIndex, setEditPhaseIndex] = useState<number>(-1);
-    const phases = toArray(props.document.state.global.phases);
+    const phases = correctPhases(props.document.state.global.phases);
     const title = props.document.state.global.granteeName;
 
     if (selectedPhase) {

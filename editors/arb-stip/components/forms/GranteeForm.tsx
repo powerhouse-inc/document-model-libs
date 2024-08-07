@@ -35,7 +35,7 @@ const fundingTypes = [
     },
 ];
 
-const numPhases = 8;
+const numPhases = 6;
 const phaseDuration = 14;
 
 type GranteeFormProps = ArbitrumStipGranteeState &

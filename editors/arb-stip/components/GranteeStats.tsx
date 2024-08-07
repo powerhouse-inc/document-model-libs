@@ -7,7 +7,7 @@ import {
     formatPercent,
     toArray,
 } from '../util';
-import { calculateArbUtilized } from '../../arb-ltip/util';
+import { calculateArbUtilized, correctPhases } from '../../arb-ltip/util';
 import InfoTooltip from '../../arb-ltip/components/InfoTooltip';
 
 type GranteeStatsProps = {
@@ -16,15 +16,15 @@ type GranteeStatsProps = {
 };
 const GranteeStats = ({ state, onOpenHistorical }: GranteeStatsProps) => {
     const daysRemaining = useMemo(
-        () => calculateDaysRemaining(toArray(state.phases)),
+        () => calculateDaysRemaining(correctPhases(state.phases)),
         [state],
     );
     const arbUtilized = useMemo(
-        () => calculateArbUtilized(toArray(state.phases)),
+        () => calculateArbUtilized(correctPhases(state.phases)),
         [state],
     );
     const status = useMemo(
-        () => calculateStatus(toArray(state.phases)),
+        () => calculateStatus(correctPhases(state.phases)),
         [state],
     );
     const totalArb = state.grantSize || 0;

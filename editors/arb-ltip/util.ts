@@ -2,6 +2,15 @@ import { Maybe } from 'document-models/document-drive';
 import { Phase } from '../../document-models/arbitrum-ltip-grantee';
 import validators from '../../document-models/arbitrum-ltip-grantee/src/validators';
 
+export function correctPhases(phases: Maybe<Maybe<Phase>[]>): Phase[] {
+    if (!phases) {
+        return [];
+    }
+
+    // turns out, this program is only 6 phases, not 8
+    return phases.slice(0, 6).map(p => p as Phase) || [];
+}
+
 export function maybeToArray<T>(value: Maybe<Maybe<T>[]>): T[] {
     if (!value) {
         return [];

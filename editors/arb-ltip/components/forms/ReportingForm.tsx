@@ -10,6 +10,7 @@ import {
     calculateArbReceived,
     calculateArbUtilized,
     classNames,
+    correctPhases,
     intHandler,
     toArray,
 } from '../../util';
@@ -81,7 +82,7 @@ const ReportingForm = (props: ReportingFormProps) => {
     );
     const arbReceived = useMemo(() => {
         // calculate arb remaining in all phases except this one
-        const filteredPhases = toArray(state.phases).filter(
+        const filteredPhases = correctPhases(state.phases).filter(
             (p, i) => i !== phaseIndex,
         );
 
@@ -92,7 +93,7 @@ const ReportingForm = (props: ReportingFormProps) => {
         return (state.grantSize || 0) - arbReceived;
     }, [arbReceived, state.grantSize]);
     const arbReceivedRemaining = useMemo(() => {
-        const filteredPhases = toArray(state.phases).filter(
+        const filteredPhases = correctPhases(state.phases).filter(
             (p, i) => i !== phaseIndex,
         );
         const utilized = calculateArbUtilized(filteredPhases);

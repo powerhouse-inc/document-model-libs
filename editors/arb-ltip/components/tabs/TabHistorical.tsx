@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import validators from '../../../../document-models/arbitrum-ltip-grantee/src/validators';
 import { IProps } from '../../editor';
-import { classNames, formatDate, toArray } from '../../util';
+import { classNames, correctPhases, formatDate, toArray } from '../../util';
 import { Phase } from '../../../../document-models/arbitrum-ltip-grantee';
 import PhaseSummary from '../PhaseSummary';
 import useIsEditor from '../../hooks/use-is-editor';
@@ -79,7 +79,7 @@ const TabHistorical = (props: TabHistoricalProps) => {
     const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
     const [editPhase, setEditPhase] = useState<Phase | null>(null);
     const [editPhaseIndex, setEditPhaseIndex] = useState<number>(-1);
-    const phases = toArray(props.document.state.global.phases);
+    const phases = correctPhases(props.document.state.global.phases);
     const title = props.document.state.global.granteeName;
 
     if (selectedPhase) {

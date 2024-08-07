@@ -18,6 +18,7 @@ import PhaseTimespan from '../PhaseTimespan';
 import useInitialScroll from '../../hooks/use-initial-scroll';
 import useAllContracts from '../../hooks/use-all-contracts';
 import InfoTooltip from '../../../arb-ltip/components/InfoTooltip';
+import { correctPhases } from '../../../arb-ltip/util';
 
 type ReportingFormProps = Pick<IProps, 'context' | 'dispatch'> & {
     phase: Phase;
@@ -80,7 +81,8 @@ const ReportingForm = (props: ReportingFormProps) => {
     );
     const arbRemaining = useMemo(() => {
         return (
-            (state.grantSize || 0) - calculateArbReceived(toArray(state.phases))
+            (state.grantSize || 0) -
+            calculateArbReceived(correctPhases(state.phases))
         );
     }, [state.grantSize, state.phases]);
     const dueDate = useMemo(() => {

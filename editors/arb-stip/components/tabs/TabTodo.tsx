@@ -9,10 +9,11 @@ import {
     useTodoPhaseIndex,
 } from '../../hooks/use-todo-phase';
 import PhaseTimespan from '../PhaseTimespan';
+import { correctPhases } from '../../../arb-ltip/util';
 
 type TabTodoProps = IProps;
 const TabTodo = (props: TabTodoProps) => {
-    const phases = props.document.state.global.phases;
+    const phases = correctPhases(props.document.state.global.phases);
 
     const phaseIndex = useTodoPhaseIndex(phases);
     const phase = useTodoPhase(phases);
