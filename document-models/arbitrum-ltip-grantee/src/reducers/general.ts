@@ -8,6 +8,27 @@ import {
 } from '../utils';
 import validators from '../validators';
 
+const getStartDate = (granteeName: string) => {
+    // 2024-06-02T23:00:00.000Z
+    if (['Across Protocol', 'Clipper', 'Copra', 'DODO', 'Verified USD', 'Pear Protocol', 'Synthetix',].includes(granteeName)) {
+        return Date.UTC(
+            2024, 5, 2, 23,
+        );
+    };
+
+    // 2024-06-02T22:00:00.000Z
+    if (['Peapods Finance',].includes(granteeName)) {
+        return Date.UTC(
+            2024, 5, 2, 22,
+        );
+    }
+
+    // default offset is 7
+    return Date.UTC(
+        2024, 5, 3, 7,
+    );
+};
+
 export const reducer: ArbitrumLtipGranteeGeneralOperations = {
     initGranteeOperation(state, action, dispatch) {
         // this operation is public, but can only happen once
@@ -107,13 +128,7 @@ export const reducer: ArbitrumLtipGranteeGeneralOperations = {
             throw new Error('phaseDuration must be in than [1, 31]');
         }
 
-        const startDateObject = new Date(startDate);
-        const startDateUTC = Date.UTC(
-            startDateObject.getUTCFullYear(),
-            startDateObject.getUTCMonth(),
-            startDateObject.getUTCDate(),
-            7,
-        );
+        const startDateUTC = getStartDate(granteeName);
         const phases = [];
         for (let i = 0; i < numberOfPhases; i++) {
             const phaseStartDate = new Date(startDateUTC);

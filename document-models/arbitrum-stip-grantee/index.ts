@@ -4,10 +4,7 @@
  */
 
 import { actions as BaseActions, DocumentModel } from 'document-model/document';
-import {
-    actions as ArbitrumStipGranteeActions,
-    ArbitrumStipGrantee,
-} from './gen';
+import { actions as ArbitrumStipGranteeActions, ArbitrumStipGrantee } from './gen';
 import { reducer } from './gen/reducer';
 import { documentModel } from './gen/document-model';
 import genUtils from './gen/utils';
@@ -34,14 +31,7 @@ export const module: DocumentModel<
     documentModel,
 };
 
-export {
-    ArbitrumStipGrantee,
-    Document,
-    reducer,
-    actions,
-    utils,
-    documentModel,
-};
+export { ArbitrumStipGrantee, Document, reducer, actions, utils, documentModel };
 
 export * from './gen/types';
 export * from './src/utils';
