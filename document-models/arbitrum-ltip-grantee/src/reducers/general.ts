@@ -10,23 +10,27 @@ import validators from '../validators';
 
 const getStartDate = (granteeName: string) => {
     // 2024-06-02T23:00:00.000Z
-    if (['Across Protocol', 'Clipper', 'Copra', 'DODO', 'Verified USD', 'Pear Protocol', 'Synthetix',].includes(granteeName)) {
-        return Date.UTC(
-            2024, 5, 2, 23,
-        );
-    };
+    if (
+        [
+            'Across Protocol',
+            'Clipper',
+            'Copra',
+            'DODO',
+            'Verified USD',
+            'Pear Protocol',
+            'Synthetix',
+        ].includes(granteeName)
+    ) {
+        return Date.UTC(2024, 5, 2, 23);
+    }
 
     // 2024-06-02T22:00:00.000Z
-    if (['Peapods Finance',].includes(granteeName)) {
-        return Date.UTC(
-            2024, 5, 2, 22,
-        );
+    if (['Peapods Finance'].includes(granteeName)) {
+        return Date.UTC(2024, 5, 2, 22);
     }
 
     // default offset is 7
-    return Date.UTC(
-        2024, 5, 3, 7,
-    );
+    return Date.UTC(2024, 5, 3, 7);
 };
 
 export const reducer: ArbitrumLtipGranteeGeneralOperations = {
