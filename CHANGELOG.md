@@ -1,6 +1,5 @@
 # [1.59.0-arbitrum.14](https://github.com/powerhouse-inc/document-model-libs/compare/v1.59.0-arbitrum.13...v1.59.0-arbitrum.14) (2024-07-01)
 
-
 ### Bug Fixes
 
 * added note to bottom of reporting form, and fixed issue with adding new contracts ([5e4af68](https://github.com/powerhouse-inc/document-model-libs/commit/5e4af682382b35944220e93e723933cc15377966))
