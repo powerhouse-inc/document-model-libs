@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
-import { ArbitrumStipGranteeState, Phase } from '../../../document-models/arbitrum-stip-grantee';
+import {
+    ArbitrumStipGranteeState,
+    Phase,
+} from '../../../document-models/arbitrum-stip-grantee';
 import { correctPhases } from '../../arb-ltip/util';
 import { calculateArbReceived } from '../util';
 

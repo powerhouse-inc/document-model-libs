@@ -1,4 +1,7 @@
-import { ArbitrumStipGranteeState, Phase } from '../../../document-models/arbitrum-stip-grantee';
+import {
+    ArbitrumStipGranteeState,
+    Phase,
+} from '../../../document-models/arbitrum-stip-grantee';
 import PhaseTimespan from './PhaseTimespan';
 import PhasePlanned from './PhasePlanned';
 import PhaseActuals from './PhaseActuals';
