@@ -1,4 +1,7 @@
-import { ArbitrumLtipGranteeState, Phase } from '../../../document-models/arbitrum-ltip-grantee';
+import {
+    ArbitrumLtipGranteeState,
+    Phase,
+} from '../../../document-models/arbitrum-ltip-grantee';
 import PhaseTimespan from './PhaseTimespan';
 import PhasePlanned from './PhasePlanned';
 import PhaseActuals from './PhaseActuals';
@@ -33,7 +36,9 @@ const PhaseSummary = ({ phaseIndex, state, onClose }: PhaseSummaryProps) => {
             </div>
             <div className="my-4">
                 <PhaseTimespan phase={phase} />
-                {phase.status === 'Finalized' && <PhaseActuals state={state} phaseIndex={phaseIndex} />}
+                {phase.status === 'Finalized' && (
+                    <PhaseActuals state={state} phaseIndex={phaseIndex} />
+                )}
                 <PhasePlanned phase={phase} />
             </div>
         </div>

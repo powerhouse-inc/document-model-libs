@@ -1,8 +1,17 @@
 import { useMemo } from 'react';
-import { ArbitrumLtipGranteeState, Phase } from '../../../document-models/arbitrum-ltip-grantee';
+import {
+    ArbitrumLtipGranteeState,
+    Phase,
+} from '../../../document-models/arbitrum-ltip-grantee';
 import { calculateArbReceived, correctPhases } from '../util';
 
-const PhaseActuals = ({ phaseIndex, state, }: { phaseIndex: number, state:ArbitrumLtipGranteeState }) => {
+const PhaseActuals = ({
+    phaseIndex,
+    state,
+}: {
+    phaseIndex: number;
+    state: ArbitrumLtipGranteeState;
+}) => {
     const phases = useMemo(() => correctPhases(state.phases), [state.phases]);
     const phase = phases[phaseIndex];
     const { actuals, stats } = phase;
@@ -20,9 +29,7 @@ const PhaseActuals = ({ phaseIndex, state, }: { phaseIndex: number, state:Arbitr
 
     const arbRemaining = useMemo(() => {
         // calculate arb remaining before this phase
-        const filteredPhases = phases.filter(
-            (_, i) => i < phaseIndex,
-        );
+        const filteredPhases = phases.filter((_, i) => i < phaseIndex);
 
         // previous arb received
         const previousArbReceived = calculateArbReceived(filteredPhases);

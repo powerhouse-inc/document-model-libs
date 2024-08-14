@@ -305,7 +305,11 @@ const HistoricalTable = ({
                                                 )}
                                                 <p
                                                     className="text-purple-600 hover:text-purple-900 cursor-pointer px-2"
-                                                    onClick={() => setSelectedPhase(phaseIndex)}
+                                                    onClick={() =>
+                                                        setSelectedPhase(
+                                                            phaseIndex,
+                                                        )
+                                                    }
                                                 >
                                                     View
                                                 </p>
