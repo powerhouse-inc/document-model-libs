@@ -1,17 +1,23 @@
-import { Phase } from '../../../document-models/arbitrum-ltip-grantee';
+import { ArbitrumLtipGranteeState, Phase } from '../../../document-models/arbitrum-ltip-grantee';
 import PhaseTimespan from './PhaseTimespan';
 import PhasePlanned from './PhasePlanned';
 import PhaseActuals from './PhaseActuals';
 import { Icon } from '@powerhousedao/design-system';
+import { useMemo } from 'react';
+import { correctPhases } from '../util';
 
 type PhaseSummaryProps = {
-    phase: Phase | null;
+    state: ArbitrumLtipGranteeState;
+    phaseIndex: number;
     onClose: () => void;
 };
-const PhaseSummary = ({ phase, onClose }: PhaseSummaryProps) => {
-    if (!phase) {
+const PhaseSummary = ({ phaseIndex, state, onClose }: PhaseSummaryProps) => {
+    const phases = useMemo(() => correctPhases(state.phases), [state.phases]);
+    if (phaseIndex < 0 || phaseIndex >= phases.length) {
         return null;
     }
+
+    const phase = phases[phaseIndex];
 
     return (
         <div>
@@ -27,7 +33,7 @@ const PhaseSummary = ({ phase, onClose }: PhaseSummaryProps) => {
             </div>
             <div className="my-4">
                 <PhaseTimespan phase={phase} />
-                {phase.status === 'Finalized' && <PhaseActuals phase={phase} />}
+                {phase.status === 'Finalized' && <PhaseActuals state={state} phaseIndex={phaseIndex} />}
                 <PhasePlanned phase={phase} />
             </div>
         </div>

@@ -76,17 +76,18 @@ const StatusBadge = ({
 
 type TabHistoricalProps = IProps;
 const TabHistorical = (props: TabHistoricalProps) => {
-    const [selectedPhase, setSelectedPhase] = useState<Phase | null>(null);
+    const [selectedPhase, setSelectedPhase] = useState<number>(-1);
     const [editPhase, setEditPhase] = useState<Phase | null>(null);
     const [editPhaseIndex, setEditPhaseIndex] = useState<number>(-1);
     const phases = correctPhases(props.document.state.global.phases);
     const title = props.document.state.global.granteeName;
 
-    if (selectedPhase) {
+    if (selectedPhase > -1) {
         return (
             <PhaseSummary
-                phase={selectedPhase}
-                onClose={() => setSelectedPhase(null)}
+                state={props.document.state.global}
+                phaseIndex={selectedPhase}
+                onClose={() => setSelectedPhase(-1)}
             />
         );
     }
@@ -123,7 +124,7 @@ const HistoricalTable = ({
 }: {
     title: string;
     phases: Phase[];
-    setSelectedPhase: (phase: Phase | null) => void;
+    setSelectedPhase: (phase: number) => void;
     onEdit: (phase: Phase, phaseIndex: number) => void;
 }) => {
     const isEditor = useIsEditor();
@@ -304,9 +305,7 @@ const HistoricalTable = ({
                                                 )}
                                                 <p
                                                     className="text-purple-600 hover:text-purple-900 cursor-pointer px-2"
-                                                    onClick={() =>
-                                                        setSelectedPhase(phase)
-                                                    }
+                                                    onClick={() => setSelectedPhase(phaseIndex)}
                                                 >
                                                     View
                                                 </p>
