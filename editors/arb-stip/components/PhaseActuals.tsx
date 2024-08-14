@@ -1,9 +1,21 @@
-import { Phase } from '../../../document-models/arbitrum-stip-grantee';
+import { useMemo } from 'react';
+import { ArbitrumStipGranteeState, Phase } from '../../../document-models/arbitrum-stip-grantee';
+import { correctPhases } from '../../arb-ltip/util';
+import { calculateArbReceived } from '../util';
 
-const PhaseActuals = ({ phase: { actuals, stats } }: { phase: Phase }) => {
+const PhaseActuals = ({
+    phaseIndex,
+    state,
+}: {
+    phaseIndex: number;
+    state: ArbitrumStipGranteeState;
+}) => {
+    const phases = useMemo(() => correctPhases(state.phases), [state.phases]);
+    const phase = phases[phaseIndex];
+    const { actuals, stats } = phase;
+
     const arbReceived = actuals?.arbReceived ? actuals.arbReceived : 0;
     const arbUtilized = actuals?.arbUtilized ? actuals.arbUtilized : 0;
-    const arbRemaining = actuals?.arbRemaining ? actuals.arbRemaining : 0;
 
     const avgDailyTVL = stats?.avgDailyTVL ? stats.avgDailyTVL : 0;
     const avgDailyTXNS = stats?.avgDailyTXNS ? stats.avgDailyTXNS : 0;
@@ -12,6 +24,16 @@ const PhaseActuals = ({ phase: { actuals, stats } }: { phase: Phase }) => {
         : 0;
     const changes = stats?.changes || '';
     const lessons = stats?.lessons || '';
+
+    const arbRemaining = useMemo(() => {
+        // calculate arb remaining before this phase
+        const filteredPhases = phases.filter((_, i) => i < phaseIndex);
+
+        // previous arb received
+        const previousArbReceived = calculateArbReceived(filteredPhases);
+
+        return (state.grantSize || 0) - previousArbReceived - arbReceived;
+    }, [arbReceived, state.grantSize]);
 
     return (
         <div className="flex flex-col space-y-2 pb-4">

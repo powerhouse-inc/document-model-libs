@@ -30,7 +30,6 @@ const isPlannedValid = (planned: GranteePlanned) =>
 
 const isActualsValid = (actuals: GranteeActuals) =>
     gteZero(actuals.arbReceived) &&
-    gteZero(actuals.arbRemaining) &&
     gteZero(actuals.arbUtilized) &&
     isNotEmptyString(actuals.disclosures) &&
     isNotEmptyString(actuals.summary);
