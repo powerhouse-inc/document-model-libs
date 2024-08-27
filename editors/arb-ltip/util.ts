@@ -7,8 +7,8 @@ export function correctPhases(phases: Maybe<Maybe<Phase>[]>): Phase[] {
         return [];
     }
 
-    // turns out, this program is only 6 phases, not 8
-    return phases.slice(0, 6).map(p => p as Phase) || [];
+    // turns out, this program is only 7 phases, not 8
+    return phases.slice(0, 7).map(p => p as Phase) || [];
 }
 
 export function maybeToArray<T>(value: Maybe<Maybe<T>[]>): T[] {
