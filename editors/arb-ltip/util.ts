@@ -49,7 +49,7 @@ export const calculateDaysRemaining = (phases: Phase[]) => {
 
     const end = new Date(lastPhase.endDate);
     const diff = end.getTime() - start.getTime();
-    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 };
 
 export const calculateArbReceived = (phases: Phase[]) => {
