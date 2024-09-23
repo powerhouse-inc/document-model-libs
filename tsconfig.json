@@ -29,6 +29,7 @@
         "*.config.ts",
         "postcss.config.cjs",
         "create-require.js",
+        ".storybook/**/*",
     ],
     "exclude": ["dist/", "node_modules"],
 }

@@ -1,3 +1,3 @@
 export default {
-    './**/*.{js,jsx,ts,tsx}': ['eslint --fix', 'vitest related --run'],
+    './**/*.{js,jsx,ts,tsx}': ['npm run lint --fix', 'vitest related --run'],
 };

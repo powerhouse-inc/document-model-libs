@@ -89,8 +89,13 @@ export default tseslint.config(
             'react/button-has-type': 'warn',
             'react/hook-use-state': 'warn',
             'react/jsx-no-useless-fragment': 'warn',
+            '@typescript-eslint/require-await': 'warn',
+            '@typescript-eslint/ban-ts-comment': 'warn',
             '@typescript-eslint/unbound-method': 'warn',
+            '@typescript-eslint/no-empty-object-type': 'warn',
             '@typescript-eslint/no-non-null-assertion': 'warn',
+            '@typescript-eslint/prefer-find': 'warn',
+            '@typescript-eslint/no-floating-promises': 'warn',
             '@typescript-eslint/use-unknown-in-catch-callback-variable': 'warn',
             '@typescript-eslint/restrict-plus-operands': 'warn',
             '@typescript-eslint/restrict-template-expressions': [

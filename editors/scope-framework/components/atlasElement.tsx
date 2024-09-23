@@ -103,13 +103,13 @@ function AtlasElement(props: AtlasElementProps) {
                     <div className="atlas-element--componentLabel">Content</div>
                     <div className="atlas-element--componentInput">
                         <TextInputVariant
+                            onSubmit={handleComponentsUpdate}
+                            theme={props.mode}
                             value={
                                 components && 'content' in components
                                     ? components.content || ''
                                     : ''
                             } // TODO deal with TypeSpecificationComponent
-                            onSubmit={handleComponentsUpdate}
-                            theme={props.mode}
                         />
                     </div>
                 </div>

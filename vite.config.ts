@@ -71,7 +71,7 @@ export default defineConfig(({ mode }) => {
                     manualChunks: (id) => {
                         if (
                             id.startsWith(path.join(__dirname, 'editors')) &&
-                            /editors\/[^\/]+\/editor.tsx/.exec(id)
+                            /editors\/[^/]+\/editor.tsx/.exec(id)
                         ) {
                             const editorName = path.basename(path.dirname(id));
                             return `editors/${editorName}/editor`;
@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
                             id.startsWith(
                                 path.join(__dirname, 'document-models'),
                             ) &&
-                            /document-models\/[^\/]+\/index.ts/.exec(id)
+                            /document-models\/[^/]+\/index.ts/.exec(id)
                         ) {
                             const modelName = path.basename(path.dirname(id));
                             return `document-models/${modelName}`;

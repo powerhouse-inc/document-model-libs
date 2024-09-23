@@ -139,6 +139,7 @@ describe('ScopeFramework Class', () => {
                 .length,
         ).toBe(1);
 
+        // eslint-disable-next-line @typescript-eslint/prefer-find
         const elementId = framework.state.global.elements.filter(
             (e) => e.path == 'B.1.3',
         )[0].id;
@@ -180,6 +181,7 @@ describe('ScopeFramework Class', () => {
                 );
             });
 
+        // eslint-disable-next-line @typescript-eslint/prefer-find
         const removeId = framework.state.global.elements.filter(
             (e) => e.path == 'B.1.2',
         )[0]?.id;
