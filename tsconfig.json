@@ -15,6 +15,7 @@
         "jsx": "react-jsx",
         "lib": ["ESNext", "dom", "dom.iterable"],
         "baseUrl": "./",
+        "allowJs": true,
         "paths": {
             "document-model-libs/utils": ["./editors/utils"],
             "document-model-libs/utils/*": ["./editors/utils/*"],

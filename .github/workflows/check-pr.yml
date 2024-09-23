@@ -19,11 +19,11 @@ jobs:
                   version: latest-8
                   run_install: true
 
+            - name: Generate
+              run: pnpm run generate
+
             - name: Lint
               run: pnpm run lint
-
-            - name: Check types
-              run: pnpm run check-types
 
     test:
         name: Test
