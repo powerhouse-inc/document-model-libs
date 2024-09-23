@@ -51,7 +51,7 @@ const fieldsToRemove = ['resultingState'];
 for (const name of documentDirNames) {
     const path = join(srcDir, name, 'operations.json');
     const file = readFileSync(path);
-    const operations = (JSON.parse(file.toString())) as {
+    const operations = JSON.parse(file.toString()) as {
         global: Record<string, any>[];
         local: Record<string, any>[];
     };

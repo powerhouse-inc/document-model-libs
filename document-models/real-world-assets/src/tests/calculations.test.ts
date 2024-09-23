@@ -2,6 +2,7 @@ import { copy } from 'copy-anything';
 import {
     BaseTransaction,
     GroupTransaction,
+    GroupTransactionType,
     TransactionFee,
     calculateAssetProceeds,
     calculateCashBalanceChange,
@@ -304,10 +305,10 @@ describe('sumCashTransactionsForType', () => {
             feesPaymentMockTransaction,
         ]) as GroupTransaction[];
 
-        const results = allGroupTransactionTypes.map(type => {
+        const results = allGroupTransactionTypes.map((type) => {
             const result = sumCashTransactionsForType(
                 transactions,
-                type,
+                type as GroupTransactionType,
             ).toNumber();
             return result;
         });

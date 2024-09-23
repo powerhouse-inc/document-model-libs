@@ -19,7 +19,14 @@ export default tseslint.config(
     ...tailwind.configs['flat/recommended'],
     eslintPluginPrettierRecommended,
     {
-        ignores: ['node_modules/', 'dist/', 'build/', 'storybook-static/', 'coverage/', 'scripts/'],
+        ignores: [
+            'node_modules/',
+            'dist/',
+            'build/',
+            'storybook-static/',
+            'coverage/',
+            'scripts/',
+        ],
     },
     {
         files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],

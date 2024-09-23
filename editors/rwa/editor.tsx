@@ -20,8 +20,8 @@ export type CustomEditorProps = Pick<
     RWATabsProps,
     'onClose' | 'onExport' | 'onSwitchboardLinkClick' | 'onShowRevisionHistory'
 > & {
-    isAllowedToCreateDocuments: boolean;
-    isAllowedToEditDocuments: boolean;
+    readonly isAllowedToCreateDocuments: boolean;
+    readonly isAllowedToEditDocuments: boolean;
 };
 
 export type IProps = EditorProps<

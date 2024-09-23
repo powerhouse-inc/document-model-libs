@@ -54,7 +54,7 @@ export function createDocumentStory<S, A extends Action, L = unknown>(
             const [state, _dispatch] = useDocumentReducer(
                 reducer,
                 args.document,
-                error => {
+                (error) => {
                     console.error(error);
                     setError(error);
                 },
