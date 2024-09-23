@@ -58,7 +58,7 @@
     },
     "scripts": {
         "generate": "powerhouse generate",
-        "postgenerate": "npm run lint --fix",
+        "postgenerate": "npx prettier '**/gen/**/*' --write --config ./prettier.config.js --ignore-path /dev/null",
         "check-types": "tsc",
         "postlint": "npm run check-types",
         "lint": "eslint",

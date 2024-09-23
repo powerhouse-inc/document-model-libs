@@ -107,6 +107,8 @@ export default tseslint.config(
             '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
             '@typescript-eslint/no-unused-vars': 'warn',
             '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/consistent-indexed-object-style': 'off',
+            '@typescript-eslint/no-duplicate-type-constituents': 'off',
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/consistent-type-imports': 'off',
             '@typescript-eslint/array-type': 'off',
