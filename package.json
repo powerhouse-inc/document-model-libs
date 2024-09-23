@@ -58,7 +58,7 @@
     },
     "scripts": {
         "generate": "powerhouse generate",
-        "postgenerate": "npm run lint",
+        "postgenerate": "npm run lint --fix",
         "check-types": "tsc",
         "postlint": "npm run check-types",
         "lint": "eslint",
