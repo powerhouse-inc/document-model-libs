@@ -22,6 +22,9 @@ jobs:
             - name: Generate
               run: pnpm run generate
 
+            - name: Format generated
+              run: pnpm run format-generated
+
             - name: Lint
               run: pnpm run lint
 
