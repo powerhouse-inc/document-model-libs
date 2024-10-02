@@ -1,11 +1,23 @@
-import { createDocumentStory } from 'document-model-libs/utils';
-import { reducer, utils } from '../../document-models/real-world-assets';
+import {
+    createDocumentStory,
+    EditorStoryComponent,
+} from 'document-model-libs/utils';
+import {
+    RealWorldAssetsAction,
+    RealWorldAssetsLocalState,
+    RealWorldAssetsState,
+    reducer,
+    utils,
+} from '../../document-models/real-world-assets';
 import { initialState } from '../../document-models/real-world-assets/mock-data/initial-state';
 import Editor from './editor';
 
-const { meta, CreateDocumentStory } = createDocumentStory(
-    // @ts-expect-error todo update type
-    Editor,
+const { meta, CreateDocumentStory: RealWorldAssets } = createDocumentStory(
+    Editor as EditorStoryComponent<
+        RealWorldAssetsState,
+        RealWorldAssetsAction,
+        RealWorldAssetsLocalState
+    >,
     reducer,
     utils.createExtendedState({
         state: {
@@ -13,6 +25,10 @@ const { meta, CreateDocumentStory } = createDocumentStory(
             local: {},
         },
     }),
+    {
+        isAllowedToCreateDocuments: true,
+        isAllowedToEditDocuments: true,
+    },
 );
 
 export default {
@@ -25,11 +41,4 @@ export default {
     },
 };
 
-export const DocumentModel = {
-    ...CreateDocumentStory,
-    args: {
-        ...CreateDocumentStory.args,
-        isAllowedToCreateDocuments: true,
-        isAllowedToEditDocuments: true,
-    },
-};
+export { RealWorldAssets };
