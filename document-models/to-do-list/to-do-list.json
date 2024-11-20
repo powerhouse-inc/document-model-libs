@@ -1,0 +1,70 @@
+{
+    "id": "ToDoList",
+    "name": "ToDoList",
+    "extension": "phtodo",
+    "description": "A to do list",
+    "author": {
+        "name": "Powerhouse",
+        "website": "https://powerhouse.inc"
+    },
+    "specifications": [
+        {
+            "version": 1,
+            "changeLog": [],
+            "state": {
+                "global": {
+                    "schema": "type ToDoListState {\n    items: [ToDoItem!]!\n    stats: ToDoListStats!\n}\n\ntype ToDoItem {\n    id: ID!\n    text: String!\n    checked: Boolean!\n}\n\ntype ToDoListStats {\n    total: Int!\n    checked: Int!\n    unchecked: Int!\n}",
+                    "initialValue": "{\"items\":[],\"stats\":{\"total\":0,\"checked\":0,\"unchecked\":0}}",
+                    "examples": []
+                },
+                "local": {
+                    "schema": "type ToDoListLocalState",
+                    "initialValue": "",
+                    "examples": []
+                }
+            },
+            "modules": [
+                {
+                    "id": "c1hj401FGsfpv6NUQiuNx/tEqGI=",
+                    "name": "ToDoList",
+                    "description": "",
+                    "operations": [
+                        {
+                            "id": "axJje/J6ih8EwPfkzPNSb0/KUq4=",
+                            "name": "AddTodoItem",
+                            "description": "",
+                            "schema": "input AddTodoItemInput {\n    id: ID!\n    text: String!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "0d7BQgkfMdNhxErh7Wlb0qg8Tac=",
+                            "name": "UpdateTodoItem",
+                            "description": "",
+                            "schema": "input UpdateTodoItemInput {\n    id: ID!\n    text: String\n    checked: Boolean\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        },
+                        {
+                            "id": "Ahr9PDEVWRx5DcvPjiTLuyWqBtk=",
+                            "name": "DeleteTodoItem",
+                            "description": "",
+                            "schema": "input DeleteTodoItemInput {\n    id: ID!\n}\n\n# add new types here\n",
+                            "template": "",
+                            "reducer": "",
+                            "errors": [],
+                            "examples": [],
+                            "scope": "global"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
